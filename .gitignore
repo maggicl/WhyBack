@@ -9,5 +9,6 @@ build
 
 # Ignore Buildship files
 .settings
+.classpath
 .project
 bin/

@@ -1,0 +1,9 @@
+plugins {
+    id 'jayproof.java-common-conventions'
+    id 'jayproof.java-integration-conventions'
+}
+
+dependencies {
+    implementation project(':jayproof-annotations')
+    integrationImplementation project(':jayproof-dummy:jdk1.8')
+}

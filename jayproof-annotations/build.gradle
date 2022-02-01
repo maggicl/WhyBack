@@ -1,0 +1,4 @@
+plugins {
+    id 'jayproof.java-common-conventions'
+    id 'jayproof.java-integration-conventions'
+}

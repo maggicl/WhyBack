@@ -4,7 +4,7 @@
 # Ignore Gradle build output directory
 build
 
-# Ignore Emacs .projectile file
+# Ignore Emacs projectile-mode file
 .projectile
 
 # Ignore Buildship files

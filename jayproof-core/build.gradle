@@ -1,9 +1,14 @@
 plugins {
     id 'jayproof.java-common-conventions'
     id 'jayproof.java-integration-conventions'
+    id 'application'
 }
 
 dependencies {
     implementation project(':jayproof-annotations')
     integrationImplementation project(':jayproof-dummy:jdk1.8')
+}
+
+application {
+    mainClass = 'jayproof.core.Main'
 }

@@ -1,0 +1,2 @@
+#+TITLE: JayProof
+#+AUTHOR: Marco Paganoni

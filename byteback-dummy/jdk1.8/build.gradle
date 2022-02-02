@@ -1,5 +1,5 @@
 plugins {
-    id 'jayproof.java-common-conventions'
+    id 'byteback.java-common-conventions'
 }
 
 java {

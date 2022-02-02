@@ -1,6 +1,6 @@
 
-rootProject.name = 'jayproof'
+rootProject.name = 'byteback'
 
 includeBuild('./conventions')
 
-include(':jayproof-core', ':jayproof-annotations', ':jayproof-dummy:jdk1.8')
+include(':byteback-core', ':byteback-annotations', ':byteback-dummy:jdk1.8')

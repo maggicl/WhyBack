@@ -1,0 +1,14 @@
+plugins {
+    id 'byteback.java-common-conventions'
+    id 'byteback.java-integration-conventions'
+    id 'application'
+}
+
+dependencies {
+    implementation project(':byteback-annotations')
+    integrationImplementation project(':byteback-dummy:jdk1.8')
+}
+
+application {
+    mainClass = 'byteback.core.Main'
+}

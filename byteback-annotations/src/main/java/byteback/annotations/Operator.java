@@ -1,7 +1,7 @@
 package byteback.annotations;
 
 /**
- * Utilities to formulate complex boolean expressions.
+ * Utilities to aid the formulation of complex boolean expressions.
  * 
  * Note that being defined as static functions, none of these
  * operations are short-circuiting. For this reason, using them

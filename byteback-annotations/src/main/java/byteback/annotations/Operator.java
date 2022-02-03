@@ -22,8 +22,8 @@ public interface Operator {
     /**
      * Boolean equivalence.
      * @param a first statement.
-     * @param a second statement.
-     * @return `true` if a iff b
+     * @param b second statement.
+     * @return `true` if a iff b.
      */
     public static boolean iff(final boolean a, final boolean b) {
         return a == b;

@@ -15,7 +15,7 @@ public interface Operator {
      * @param b the consequent of the implication.
      * @return `true` if a implies b.
      */
-    public static boolean implies(boolean a, boolean b) {
+    public static boolean implies(final boolean a, final boolean b) {
         return !a || b;
     }
 
@@ -25,7 +25,7 @@ public interface Operator {
      * @param a second statement.
      * @return `true` if a iff b
      */
-    public static boolean iff(boolean a, boolean b) {
+    public static boolean iff(final boolean a, final boolean b) {
         return a == b;
     }
 

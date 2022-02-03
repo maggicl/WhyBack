@@ -7,7 +7,7 @@ package byteback.annotations;
  * operations are short-circuiting. For this reason, using them
  * outside of ByteBack might not be ideal.
  */
-public abstract class Operator {
+public interface Operator {
 
     /**
      * Boolean implication.

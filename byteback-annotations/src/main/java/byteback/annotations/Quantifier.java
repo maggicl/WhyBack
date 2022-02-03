@@ -24,4 +24,20 @@ public interface Quantifier {
         return false;
     }
 
+    /**
+     * Universal quantifier.
+     * @param d the domain of discourse.
+     * @param p the predicate applied to the domain.
+     * @return `true` if all terms in d satisfy p.
+     */
+    public static <T> boolean forAll(final Iterable<T> d, final Predicate<T> p) {
+        for (T x : d) {
+            if (!p.test(x)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }

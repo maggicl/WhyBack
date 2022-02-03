@@ -19,4 +19,15 @@ public abstract class Operator {
         return !a || b;
     }
 
+    /**
+     * Boolean equivalence.
+     * @param a first statement.
+     * @param a second statement.
+     * @return `true` if a iff b
+     */
+    public static boolean iff(boolean a, boolean b) {
+        return a == b;
+    }
+
 }
+

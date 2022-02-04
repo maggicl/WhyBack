@@ -3,10 +3,10 @@ package byteback.annotations;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import static byteback.annotations.Quantifier.*;
+
 import java.util.Arrays;
 import java.util.Collections;
-
-import static byteback.annotations.Quantifier.*;
 
 import org.junit.Test;
 

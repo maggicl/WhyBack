@@ -22,7 +22,7 @@ public interface Contract {
      *
      * TODO: delineate such exceptions here.
      */
-    @Retention(RetentionPolicy.CLASS)
+    @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.METHOD })
     public static @interface Predicate {
     }
@@ -35,14 +35,14 @@ public interface Contract {
      * type of the annotated method must be void, as conditions are enforced by
      * means of assertions. A condition method may only call predicate methods.
      */
-    @Retention(RetentionPolicy.CLASS)
+    @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.METHOD })
     public static @interface Condition {
 
         /**
          * Declares a parameter containing the old invocation target.
          */
-        @Retention(RetentionPolicy.CLASS)
+        @Retention(RetentionPolicy.RUNTIME)
         @Target({ ElementType.PARAMETER })
         public static @interface Old {
         }
@@ -50,7 +50,7 @@ public interface Contract {
         /**
          * Declares a parameter containing the current invocation target.
          */
-        @Retention(RetentionPolicy.CLASS)
+        @Retention(RetentionPolicy.RUNTIME)
         @Target({ ElementType.PARAMETER })
         public static @interface Current {
         }
@@ -58,7 +58,7 @@ public interface Contract {
         /**
          * Declares a parameter containing the return value of the invocation.
          */
-        @Retention(RetentionPolicy.CLASS)
+        @Retention(RetentionPolicy.RUNTIME)
         @Target({ ElementType.PARAMETER })
         public static @interface Returns {
         }

@@ -10,8 +10,9 @@ public interface Quantifier {
 
     /**
      * Existential quantifier.
-     * @param d the domain of discourse.
-     * @param p the predicate applied to the domain.
+     * 
+     * @param d   the domain of discourse.
+     * @param p   the predicate applied to the domain.
      * @param <T> type of the iterated elements.
      * @return `true` if there exists a term in d that satisfies p.
      */
@@ -27,8 +28,9 @@ public interface Quantifier {
 
     /**
      * Universal quantifier.
-     * @param d the domain of discourse.
-     * @param p the predicate applied to the domain.
+     * 
+     * @param d   the domain of discourse.
+     * @param p   the predicate applied to the domain.
      * @param <T> type of the iterated elements.
      * @return `true` if all terms in d satisfy p.
      */

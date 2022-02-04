@@ -16,10 +16,10 @@ public interface Contract {
      * A predicate method is a completely pure static method containing boolean
      * statements verifying conditions on its inputs. A predicate method may only
      * indirectly call other static predicate methods.
-     *
+     * <p>
      * There could possibly be exceptions for certain virtual or interface calls
      * needed for the specification of quantifiers.
-     *
+     * <p>
      * TODO: delineate such exceptions here.
      */
     @Retention(RetentionPolicy.RUNTIME)
@@ -29,7 +29,7 @@ public interface Contract {
 
     /**
      * Declares a condition method.
-     *
+     * <p>
      * Condition methods can be used to represent preconditions, postconditions or
      * invariants. Every condition method must be both, static and pure. The return
      * type of the annotated method must be void, as conditions are enforced by

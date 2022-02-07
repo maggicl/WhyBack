@@ -7,8 +7,7 @@ plugins {
 dependencies {
     implementation project(':byteback-annotations')
     implementation 'org.soot-oss:soot:4.1.0'
-
-    integrationImplementation project(':byteback-dummy:jdk1.8')
+    testRuntimeOnly project(':byteback-dummy:java8')
 }
 
 application {

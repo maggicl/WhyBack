@@ -16,3 +16,6 @@ compiled
 .classpath
 .project
 bin/
+
+# Ignore idea files
+.idea

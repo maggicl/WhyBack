@@ -2,6 +2,7 @@ package byteback.core.context;
 
 import java.nio.file.Path;
 
+import soot.G;
 import soot.Scene;
 import soot.SootClass;
 import soot.options.Options;
@@ -36,51 +37,61 @@ public class SootContext implements Context {
     }
 
     /**
-     * The main scene managed by Soot.
+     * @return Soot's Scene singleton.
      */
-    private final Scene scene;
+    private static Scene scene() {
+        return Scene.v();
+    }
 
     /**
-     * The options for the scene.
+     * @return Soot's Options singleton.
      */
-    private final Options options;
-
-    /**
-     * Configures Soot parameters.
-     */
-    private void configureSoot() {
-        options.set_output_format(Options.output_format_jimple);
-        options.set_whole_program(true);
-        scene.loadBasicClasses();
+    private static Options options() {
+        return Options.v();
     }
 
     /**
      * Initializes fields with the singletons and sets the global Soot options.
      */
     private SootContext() {
-        this.scene = Scene.v();
-        this.options = Options.v();
-        configureSoot();
+        configure();
+    }
+
+    /**
+     * Configures Soot parameters.
+     */
+    private void configure() {
+        options().set_output_format(Options.output_format_jimple);
+        options().set_whole_program(true);
+        scene().loadBasicClasses();
+    }
+
+    /**
+     * Resets Soot's globals.
+     */
+    public void reset() {
+        G.reset();
+        configure();
     }
 
     /**
      * Prepends the classpath of the Soot scene.
      *
-     * @param path The path to be prepended to the classpath.
+     * @param path Path to be prepended to the classpath.
      */
     public void prependClassPath(final Path path) {
-        final String oldPath = scene.getSootClassPath();
-        scene.setSootClassPath(path.toString() + ":" + oldPath);
+        final String oldPath = scene().getSootClassPath();
+        scene().setSootClassPath(path.toString() + ":" + oldPath);
     }
 
     /**
      * Loads a class in the Soot scene.
      *
-     * @param canonicalName A name of a class present in the Soot classpath.
+     * @param qualifiedName Qualified name of a class present in the classpath.
      */
     @Override
-    public void loadClass(final String canonicalName) {
-        scene.loadClass(canonicalName, SootClass.BODIES);
+    public void loadClass(final QualifiedName qualifiedName) {
+        scene().loadClass(qualifiedName.toString(), SootClass.BODIES);
     }
 
     /**
@@ -90,7 +101,7 @@ public class SootContext implements Context {
      */
     @Override
     public int getClassesCount() {
-        return scene.getClasses().size();
+        return scene().getClasses().size();
     }
 
 }

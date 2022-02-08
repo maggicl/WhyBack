@@ -8,9 +8,9 @@ public interface Context {
     /**
      * Loads a new class based on the canonical name.
      *
-     * @param canonicalName The canonical name of the class.
+     * @param qualifiedName The qualified name of the class.
      */
-    public void loadClass(final String canonicalName);
+    public void loadClass(final QualifiedName qualifiedName);
 
     /**
      * Computes the total number of classes.

@@ -2,6 +2,7 @@ package byteback.core.context;
 
 import java.nio.file.Path;
 
+import soot.G;
 import soot.Scene;
 import soot.SootClass;
 import soot.options.Options;
@@ -46,15 +47,21 @@ public class SootContext implements Context {
     private final Options options;
 
     /**
+     * Configures Soot parameters.
+     */
+    private void configureSoot() {
+        options.set_output_format(Options.output_format_jimple);
+        options.set_whole_program(true);
+        scene.loadBasicClasses();
+    }
+
+    /**
      * Initializes fields with the singletons and sets the global Soot options.
      */
     private SootContext() {
         this.scene = Scene.v();
         this.options = Options.v();
-        this.options.set_output_format(Options.output_format_jimple);
-        this.options.set_whole_program(true);
-        this.options.set_prepend_classpath(true);
-        this.scene.loadNecessaryClasses();
+        configureSoot();
     }
 
     /**
@@ -63,7 +70,8 @@ public class SootContext implements Context {
      * @param path The path to be prepended to the classpath.
      */
     public void prependClassPath(final Path path) {
-        options.set_soot_classpath(path.toString());
+        final String oldPath = scene.getSootClassPath();
+        scene.setSootClassPath(path.toString() + ":" + oldPath);
     }
 
     /**

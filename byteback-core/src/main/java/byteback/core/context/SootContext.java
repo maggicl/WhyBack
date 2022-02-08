@@ -2,7 +2,6 @@ package byteback.core.context;
 
 import java.nio.file.Path;
 
-import soot.G;
 import soot.Scene;
 import soot.SootClass;
 import soot.options.Options;

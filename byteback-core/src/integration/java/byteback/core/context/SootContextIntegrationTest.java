@@ -1,6 +1,6 @@
 package byteback.core.context;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
@@ -16,7 +16,7 @@ public class SootContextIntegrationTest {
     public void Instance_CalledTwice_ReturnsSameContext() {
         final SootContext a = SootContext.instance();
         final SootContext b = SootContext.instance();
-        assertEquals(a, b);
+        assertSame(a, b);
     }
 
     @Test

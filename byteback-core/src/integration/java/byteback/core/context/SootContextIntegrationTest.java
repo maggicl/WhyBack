@@ -22,13 +22,6 @@ public class SootContextIntegrationTest {
     }
 
     @Test
-    public void Instance_CalledTwice_ReturnsSameContext() {
-        final SootContext a = SootContext.instance();
-        final SootContext b = SootContext.instance();
-        assertSame(a, b);
-    }
-
-    @Test
     public void Reset_AfterLoadClass_ResetsClassesCountTo0() throws FileNotFoundException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = context.getClassesCount();
@@ -44,8 +37,8 @@ public class SootContextIntegrationTest {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = context.getClassesCount();
         context.prependClassPath(classPath);
-        final QualifiedName unitPath = new QualifiedName("byteback", "dummy", "java8", "Unit");
-        context.loadClass(unitPath);
+        final QualifiedName unitName = new QualifiedName("byteback", "dummy", "java8", "Unit");
+        context.loadClass(unitName);
         final int newCount = context.getClassesCount();
         assertTrue(oldCount == newCount - 1);
     }

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import byteback.core.identifier.ClassName;
 import org.junit.After;
 import org.junit.Test;
 

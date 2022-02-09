@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import byteback.core.identifier.ClassName;
 import org.junit.Test;
 
 public class ClassNameTest {

@@ -2,7 +2,7 @@ package byteback.core.representation;
 
 import java.util.Collection;
 
-import byteback.core.context.ClassName;
+import byteback.core.identifier.ClassName;
 import soot.SootClass;
 
 public class SootClassRepresentation implements ClassRepresentation {

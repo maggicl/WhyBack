@@ -1,8 +1,6 @@
-package byteback.core.context;
+package byteback.core.identifier;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import byteback.core.identifier.QualifiedName;
 
 /**
  * Represents the qualified name of a class.
@@ -27,6 +25,11 @@ public class ClassName extends QualifiedName {
         super(name);
     }
 
+    /**
+     * Validates the classname.
+     *
+     * @return {@code true} if the classname could be validated.
+     */
     @Override
     public boolean validate() {
         if (!super.validate()) {

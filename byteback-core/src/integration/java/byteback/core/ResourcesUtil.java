@@ -10,8 +10,14 @@ import java.nio.file.Paths;
  */
 public class ResourcesUtil {
 
+    /**
+     * Base path to the resource folder.
+     */
     final private static Path resourcesPath = Paths.get("src", "integration", "resources");
 
+    /**
+     * Base path to the compiled resource folder.
+     */
     final private static Path compiledPath = resourcesPath.resolve("compiled");
 
     /**

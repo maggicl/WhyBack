@@ -7,59 +7,40 @@ import java.util.stream.Collectors;
 /**
  * Represents the qualified name of a class.
  */
-public class ClassName {
+public class ClassName extends QualifiedName {
 
     /**
-     * Validates a single name.
+     * Constructs a classname from its parts.
      *
-     * @return {@code true} if the name is valid.
-     */
-    private static boolean validatePart(String part) {
-        return part.length() > 0 && Character.isJavaIdentifierStart(part.charAt(0))
-                && part.chars().allMatch(Character::isJavaIdentifierPart);
-    }
-
-    /**
-     * Parts of the qualified name.
-     */
-    private final List<String> parts;
-
-    /**
-     * Constructs a qualified name.
-     *
-     * @param parts The parts of the qualified name.
-     * @see #ClassName
+     * @param parts Qualified path ending with a legal class name.
      */
     public ClassName(String... parts) {
-        this.parts = List.of(parts);
+        super(parts);
     }
 
     /**
-     * @param name The string representation of the qualified name.
-     * @see #ClassName
+     * Constructs a classname from its parts.
+     *
+     * @param name String representing the qualified path.
      */
     public ClassName(String name) {
-        this.parts = Arrays.asList(name.split("."));
+        super(name);
     }
 
-    /**
-     * Validates the qualified name.
-     *
-     * @return {@code true} if the qualified name follows a valid form.
-     */
+    @Override
     public boolean validate() {
+        if (!super.validate()) {
+            return false;
+        }
+        
         boolean classEncountered = false;
 
         for (String part : parts) {
-            if (validatePart(part)) {
-                final boolean isClass = Character.isUpperCase(part.charAt(0));
+            final boolean isClass = Character.isUpperCase(part.charAt(0));
 
-                if (isClass) {
-                    classEncountered = true;
-                } else if (classEncountered) {
-                    return false;
-                }
-            } else {
+            if (isClass) {
+                classEncountered = true;
+            } else if (classEncountered) {
                 return false;
             }
         }
@@ -69,7 +50,7 @@ public class ClassName {
 
     @Override
     public String toString() {
-        return parts.stream().collect(Collectors.joining("."));
+        return String.join(".", parts);
     }
 
 }

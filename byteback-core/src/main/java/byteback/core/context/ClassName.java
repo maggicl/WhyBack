@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 /**
  * Represents the qualified name of a class.
  */
-public class QualifiedName {
+public class ClassName {
 
     /**
      * Validates a single name.
@@ -28,17 +28,17 @@ public class QualifiedName {
      * Constructs a qualified name.
      *
      * @param parts The parts of the qualified name.
-     * @see #QualifiedName
+     * @see #ClassName
      */
-    public QualifiedName(String... parts) {
+    public ClassName(String... parts) {
         this.parts = List.of(parts);
     }
 
     /**
      * @param name The string representation of the qualified name.
-     * @see #QualifiedName
+     * @see #ClassName
      */
-    public QualifiedName(String name) {
+    public ClassName(String name) {
         this.parts = Arrays.asList(name.split("."));
     }
 

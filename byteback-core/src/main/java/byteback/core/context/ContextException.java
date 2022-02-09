@@ -12,7 +12,7 @@ public abstract class ContextException extends Exception {
      * @param context The context in which the exception occurred.
      * @param message The message of the exception.
      */
-    public ContextException(Context context, String message) {
+    public ContextException(Context<?> context, String message) {
         super(context.toString() + " : " + message);
     }
 

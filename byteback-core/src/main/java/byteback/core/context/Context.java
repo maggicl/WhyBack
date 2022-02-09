@@ -1,9 +1,15 @@
 package byteback.core.context;
 
+import java.util.stream.Stream;
+
+import byteback.core.representation.ClassRepresentation;
+
 /**
- * A context used to keep track and provide the classes to be analyzed.
+ * A context used to keep track of the classes to be analyzed.
+ *
+ * @param <T> The type of class representation provided by the context.
  */
-public interface Context {
+public interface Context<T extends ClassRepresentation> {
 
     /**
      * Loads a new class based on the canonical name.
@@ -27,5 +33,12 @@ public interface Context {
      * @return Total number of classes loaded in the context.
      */
     public int getClassesCount();
+
+    /**
+     * Streams all of the loaded classes.
+     *
+     * @return The stream of class representations supported by the context.
+     */
+    public Stream<T> stream();
 
 }

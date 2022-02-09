@@ -1,5 +1,6 @@
 package byteback.core.context;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,9 +28,18 @@ public class QualifiedName {
      * Constructs a qualified name.
      *
      * @param parts The parts of the qualified name.
+     * @see #QualifiedName
      */
     public QualifiedName(String... parts) {
         this.parts = List.of(parts);
+    }
+
+    /**
+     * @param name The string representation of the qualified name.
+     * @see #QualifiedName
+     */
+    public QualifiedName(String name) {
+        this.parts = Arrays.asList(name.split("."));
     }
 
     /**

@@ -5,10 +5,12 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import byteback.core.representation.SootClassRepresentation;
 import soot.G;
 import soot.Scene;
 import soot.SootClass;
@@ -27,7 +29,7 @@ import soot.options.Options;
  * principle also allow us to keep multiple Soot contexts at the same time,
  * without being constrained to the singleton pattern.
  */
-public class SootContext implements Context {
+public class SootContext implements Context<SootClassRepresentation> {
 
     private static Logger log = LoggerFactory.getLogger(SootContext.class);
 
@@ -150,6 +152,16 @@ public class SootContext implements Context {
     @Override
     public int getClassesCount() {
         return scene().getClasses().size();
+    }
+
+    /**
+     * Computes the number of classes loaded in the Soot scene.
+     *
+     * @return Total number of classes in the Soot scene.
+     */
+    @Override
+    public Stream<SootClassRepresentation> stream() {
+        return scene().getClasses().stream().map(SootClassRepresentation::new);
     }
 
 }

@@ -9,9 +9,9 @@ public class ClassLoadException extends ContextException {
      * Constructs a basic context exception.
      *
      * @param context The context that could not load the class.
-     * @param
+     * @param className The name of the class that could not be loaded.
      */
-    public ClassLoadException(Context context, QualifiedName className) {
+    public ClassLoadException(Context<?> context, QualifiedName className) {
         super(context, "Could not load class " + className.toString());
     }
 

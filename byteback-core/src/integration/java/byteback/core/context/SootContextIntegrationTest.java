@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.After;
 import org.junit.Test;
@@ -19,6 +20,14 @@ public class SootContextIntegrationTest {
     @After
     public void resetContext() {
         context.reset();
+    }
+
+    @Test
+    public void PrependClasspath_ModifiesSootClasspath() {
+        final Path classPath = Paths.get("test", "class", "path");
+        context.prependClassPath(classPath);
+        final Path prependedPath = context.getClassPath().get(0);
+        assertEquals(classPath, prependedPath);
     }
 
     @Test

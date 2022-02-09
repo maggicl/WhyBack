@@ -1,6 +1,10 @@
 package byteback.core.context;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import soot.G;
 import soot.Scene;
@@ -86,6 +90,16 @@ public class SootContext implements Context {
     public void prependClassPath(final Path path) {
         final String classPath = scene().getSootClassPath();
         scene().setSootClassPath(path.toString() + ":" + classPath);
+    }
+
+    /**
+     * Returns the classpath of the Soot scene.
+     *
+     * @return Current classpath loaded in the scene.
+     */
+    public List<Path> getClassPath() {
+        final String[] parts = scene().getSootClassPath().split(":");
+        return Arrays.stream(parts).map((part) -> Paths.get(part)).collect(Collectors.toList());
     }
 
     /**

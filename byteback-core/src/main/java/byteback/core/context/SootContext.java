@@ -89,7 +89,7 @@ public class SootContext implements Context {
      */
     public void prependClassPath(final Path path) {
         final String classPath = scene().getSootClassPath();
-        scene().setSootClassPath(path.toString() + ":" + classPath);
+        scene().setSootClassPath(path.toAbsolutePath().toString() + ":" + classPath);
     }
 
     /**

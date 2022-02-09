@@ -8,17 +8,17 @@ public interface Context {
     /**
      * Loads a new class based on the canonical name.
      *
-     * @param qualifiedName The qualified name of the class.
+     * @param className The qualified name of the class.
      */
-    public void loadClass(final QualifiedName qualifiedName);
+    public void loadClass(final QualifiedName className) throws ClassLoadException;
 
     /**
      * Loads a new class based on the canonical name along with its supporting
      * classes.
      *
-     * @param qualifiedName The qualified name of the class.
+     * @param className The qualified name of the class.
      */
-    public void loadClassAndSupport(final QualifiedName qualifiedName);
+    public void loadClassAndSupport(final QualifiedName className) throws ClassLoadException;
 
     /**
      * Computes the total number of classes.

@@ -105,11 +105,16 @@ public class SootContext implements Context {
     /**
      * Loads a class in the Soot scene.
      *
-     * @param qualifiedName Qualified name of a class present in the classpath.
+     * @param className Qualified name of a class present in the classpath.
+     * @throws ClassLoadException If the class could not be loaded into the context.
      */
     @Override
-    public void loadClass(final QualifiedName qualifiedName) {
-        scene().loadClass(qualifiedName.toString(), SootClass.BODIES);
+    public void loadClass(final QualifiedName className) throws ClassLoadException {
+        if (scene().containsClass(className.toString())) {
+            scene().loadClass(className.toString(), SootClass.BODIES);
+        } else {
+            throw new ClassLoadException(this, className);
+        }
     }
 
     /**
@@ -118,8 +123,12 @@ public class SootContext implements Context {
      * @see #loadClass
      */
     @Override
-    public void loadClassAndSupport(final QualifiedName qualifiedName) {
-        scene().loadClassAndSupport(qualifiedName.toString());
+    public void loadClassAndSupport(final QualifiedName className) throws ClassLoadException {
+        if (scene().containsClass(className.toString())) {
+            scene().loadClassAndSupport(className.toString());
+        } else {
+            throw new ClassLoadException(this, className);
+        }
     }
 
     /**

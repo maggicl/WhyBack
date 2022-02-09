@@ -45,7 +45,7 @@ public class SootContextIntegrationTest {
     }
 
     @Test
-    public void Reset_AfterLoadingUnitClass_ResetsClassesCount() throws FileNotFoundException {
+    public void Reset_AfterLoadingUnitClass_ResetsClassesCount() throws FileNotFoundException, ClassLoadException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = context.getClassesCount();
         context.prependClassPath(classPath);
@@ -56,7 +56,7 @@ public class SootContextIntegrationTest {
     }
 
     @Test
-    public void LoadClass_OnUnitClass_IncreasesClassesCountBy1() throws FileNotFoundException {
+    public void LoadClass_OnUnitClass_IncreasesClassesCountBy1() throws FileNotFoundException, ClassLoadException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = context.getClassesCount();
         context.prependClassPath(classPath);
@@ -67,7 +67,8 @@ public class SootContextIntegrationTest {
     }
 
     @Test
-    public void LoadClassAndSupport_OnSupportedClass_IncreasesClassesCountBy2() throws FileNotFoundException {
+    public void LoadClassAndSupport_OnSupportedClass_IncreasesClassesCountBy2()
+            throws FileNotFoundException, ClassLoadException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = context.getClassesCount();
         context.prependClassPath(classPath);

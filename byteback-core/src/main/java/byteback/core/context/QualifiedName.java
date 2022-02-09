@@ -11,7 +11,7 @@ public class QualifiedName {
     /**
      * Validates a single name.
      *
-     * @return <code>true</code> if the name is valid.
+     * @return {@code true} if the name is valid.
      */
     private static boolean validatePart(String part) {
         return part.length() > 0
@@ -19,6 +19,9 @@ public class QualifiedName {
             && part.chars().allMatch(Character::isJavaIdentifierPart);
     }
 
+    /**
+     * Parts of the qualified name.
+     */
     private final List<String> parts;
 
     /**
@@ -33,7 +36,7 @@ public class QualifiedName {
     /**
      * Validates the qualified name.
      *
-     * @return <code>true</code> if the qualified name follows a valid form.
+     * @return {@code true} if the qualified name follows a valid form.
      */
     public boolean validate() {
         boolean classEncountered = false;
@@ -61,3 +64,4 @@ public class QualifiedName {
     }
 
 }
+

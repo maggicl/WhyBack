@@ -23,28 +23,32 @@ import soot.options.Options;
 public class SootContext implements Context {
 
     /**
-     * SootContext singleton value.
+     * Singleton value.
      */
     private static final SootContext instance = new SootContext();
 
     /**
      * Singleton accessor.
      *
-     * @return The <code>SootContext</code> singleton instance.
+     * @return Singleton instance.
      */
     public static SootContext instance() {
         return instance;
     }
 
     /**
-     * @return Soot's Scene singleton.
+     * Simple function yielding the soot.Scene singleton.
+     *
+     * @return Soot's {@code Scene} singleton.
      */
     private static Scene scene() {
         return Scene.v();
     }
 
     /**
-     * @return Soot's Options singleton.
+     * Simple function yielding the soot.Options singleton.
+     *
+     * @return Soot's {@code Options} singleton.
      */
     private static Options options() {
         return Options.v();
@@ -58,7 +62,7 @@ public class SootContext implements Context {
     }
 
     /**
-     * Configures Soot parameters.
+     * Configures Soot's parameters.
      */
     private void configure() {
         options().set_output_format(Options.output_format_jimple);
@@ -80,8 +84,8 @@ public class SootContext implements Context {
      * @param path Path to be prepended to the classpath.
      */
     public void prependClassPath(final Path path) {
-        final String oldPath = scene().getSootClassPath();
-        scene().setSootClassPath(path.toString() + ":" + oldPath);
+        final String classPath = scene().getSootClassPath();
+        scene().setSootClassPath(path.toString() + ":" + classPath);
     }
 
     /**
@@ -97,7 +101,7 @@ public class SootContext implements Context {
     /**
      * Computes the number of classes loaded in the Soot scene.
      *
-     * @return The total number of classes in the Soot scene.
+     * @return Total number of classes in the Soot scene.
      */
     @Override
     public int getClassesCount() {

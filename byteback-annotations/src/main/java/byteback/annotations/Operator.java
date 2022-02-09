@@ -12,9 +12,9 @@ public interface Operator {
     /**
      * Boolean implication.
      * 
-     * @param a the antecedent of the implication.
-     * @param b the consequent of the implication.
-     * @return <code>true</code> if a implies b.
+     * @param a Antecedent of the implication.
+     * @param b Consequent of the implication.
+     * @return {@code true} if {@code a -> b}.
      */
     public static boolean implies(final boolean a, final boolean b) {
         return !a || b;
@@ -23,9 +23,9 @@ public interface Operator {
     /**
      * Boolean equivalence.
      * 
-     * @param a first statement.
-     * @param b second statement.
-     * @return <code>true</code> if a iff b.
+     * @param a First statement.
+     * @param b Second statement.
+     * @return {@code true} if {@code a <-> b}.
      */
     public static boolean iff(final boolean a, final boolean b) {
         return a == b;

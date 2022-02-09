@@ -110,9 +110,9 @@ public class SootContext implements Context {
      */
     @Override
     public void loadClass(final QualifiedName className) throws ClassLoadException {
-        if (scene().containsClass(className.toString())) {
+        try {
             scene().loadClass(className.toString(), SootClass.BODIES);
-        } else {
+        } catch (AssertionError exception) {
             throw new ClassLoadException(this, className);
         }
     }
@@ -124,9 +124,9 @@ public class SootContext implements Context {
      */
     @Override
     public void loadClassAndSupport(final QualifiedName className) throws ClassLoadException {
-        if (scene().containsClass(className.toString())) {
+        try {
             scene().loadClassAndSupport(className.toString());
-        } else {
+        } catch (AssertionError exception) {
             throw new ClassLoadException(this, className);
         }
     }

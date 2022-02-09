@@ -2,23 +2,23 @@ package byteback.core.representation;
 
 import java.util.Collection;
 
-import byteback.core.context.QualifiedName;
+import byteback.core.context.ClassName;
 
 public interface ClassRepresentation {
 
     /**
      * @return The name of the class.
      */
-    public QualifiedName getName();
+    ClassName getName();
 
     /**
      * @return The methods of the class.
      */
-    public Collection<MethodRepresentation> getMethods();
+    Collection<MethodRepresentation> getMethods();
 
     /**
      * @return The fields of the class.
      */
-    public Collection<FieldRepresentation> getFields();
+    Collection<FieldRepresentation> getFields();
 
 }

@@ -118,7 +118,7 @@ public class SootContext implements Context<SootClassRepresentation> {
      * @throws ClassLoadException If the class could not be loaded into the context.
      */
     @Override
-    public void loadClass(final QualifiedName className) throws ClassLoadException {
+    public void loadClass(final ClassName className) throws ClassLoadException {
         try {
             scene().loadClass(className.toString(), SootClass.BODIES);
             log.info("Loaded {} in context", className);
@@ -131,10 +131,10 @@ public class SootContext implements Context<SootClassRepresentation> {
     /**
      * Loads a root class and its supporting classes in the Soot scene.
      *
-     * @see #loadClass(QualifiedName)
+     * @see #loadClass(ClassName)
      */
     @Override
-    public void loadClassAndSupport(final QualifiedName className) throws ClassLoadException {
+    public void loadClassAndSupport(final ClassName className) throws ClassLoadException {
         try {
             scene().loadClassAndSupport(className.toString());
             log.info("Loaded {} and support classes in context", className);

@@ -5,6 +5,6 @@ public interface MethodRepresentation {
     /**
      * @return The unqualified name of the method.
      */
-    public String getName();
+    String getName();
 
 }

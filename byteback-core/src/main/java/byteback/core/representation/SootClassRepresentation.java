@@ -2,21 +2,21 @@ package byteback.core.representation;
 
 import java.util.Collection;
 
-import byteback.core.context.QualifiedName;
+import byteback.core.context.ClassName;
 import soot.SootClass;
 
 public class SootClassRepresentation implements ClassRepresentation {
 
     private final SootClass sootClass;
 
-    private final QualifiedName name;
+    private final ClassName name;
 
     public SootClassRepresentation(final SootClass sootClass) {
         this.sootClass = sootClass;
-        this.name = new QualifiedName(sootClass.getName());
+        this.name = new ClassName(sootClass.getName());
     }
 
-    public QualifiedName getName() {
+    public ClassName getName() {
         return name;
     }
 

@@ -17,28 +17,28 @@ public interface Context<T extends ClassRepresentation> {
      * @param className The qualified name of the class.
      * @throws ClassLoadException If the class could not be loaded into the context.
      */
-    public void loadClass(QualifiedName className) throws ClassLoadException;
+    void loadClass(ClassName className) throws ClassLoadException;
 
     /**
      * Loads a new class based on the canonical name along with its supporting
      * classes.
      *
-     * @see #loadClass(QualifiedName)
+     * @see #loadClass(ClassName)
      */
-    public void loadClassAndSupport(QualifiedName className) throws ClassLoadException;
+    void loadClassAndSupport(ClassName className) throws ClassLoadException;
 
     /**
      * Computes the total number of classes.
      *
      * @return Total number of classes loaded in the context.
      */
-    public int getClassesCount();
+    int getClassesCount();
 
     /**
      * Streams all of the loaded classes.
      *
      * @return The stream of class representations supported by the context.
      */
-    public Stream<T> stream();
+    Stream<T> stream();
 
 }

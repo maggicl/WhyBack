@@ -25,7 +25,7 @@ public class SootContextIntegrationTest {
         final Path classPath = Paths.get("test", "class", "path");
         context.prependClassPath(classPath);
         final Path prependedPath = context.getClassPath().get(0);
-        assertEquals(classPath, prependedPath);
+        assertEquals(classPath.toAbsolutePath(), prependedPath);
     }
 
     @Test
@@ -33,7 +33,7 @@ public class SootContextIntegrationTest {
         final Path classPath = Paths.get("");
         context.prependClassPath(classPath);
         final Path prependedPath = context.getClassPath().get(0);
-        assertEquals(classPath, prependedPath);
+        assertEquals(classPath.toAbsolutePath(), prependedPath);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class SootContextIntegrationTest {
         final Path classPath = Paths.get(".");
         context.prependClassPath(classPath);
         final Path prependedPath = context.getClassPath().get(0);
-        assertEquals(classPath, prependedPath);
+        assertEquals(classPath.toAbsolutePath(), prependedPath);
     }
 
     @Test

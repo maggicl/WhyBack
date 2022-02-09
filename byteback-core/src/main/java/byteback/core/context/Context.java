@@ -17,8 +17,7 @@ public interface Context {
      * Loads a new class based on the canonical name along with its supporting
      * classes.
      *
-     * @param className The qualified name of the class.
-     * @throws ClassLoadException If the classes could not be loaded into the context.
+     * @see #loadClass(QualifiedName)
      */
     public void loadClassAndSupport(final QualifiedName className) throws ClassLoadException;
 

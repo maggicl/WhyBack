@@ -105,6 +105,7 @@ public class SootContext implements Context {
      */
     public List<Path> getClassPath() {
         final String[] parts = scene().getSootClassPath().split(":");
+
         return Arrays.stream(parts).map((part) -> Paths.get(part)).collect(Collectors.toList());
     }
 
@@ -128,7 +129,7 @@ public class SootContext implements Context {
     /**
      * Loads a root class and its supporting classes in the Soot scene.
      *
-     * @see #loadClass
+     * @see #loadClass(QualifiedName)
      */
     @Override
     public void loadClassAndSupport(final QualifiedName className) throws ClassLoadException {

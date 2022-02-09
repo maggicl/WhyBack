@@ -31,6 +31,22 @@ public class SootContextIntegrationTest {
     }
 
     @Test
+    public void PrependClasspath_WithEmptyPath_ModifiesSootClasspath() {
+        final Path classPath = Paths.get("");
+        context.prependClassPath(classPath);
+        final Path prependedPath = context.getClassPath().get(0);
+        assertEquals(classPath, prependedPath);
+    }
+
+    @Test
+    public void PrependClasspath_WithRelativePath_ModifiesSootClasspath() {
+        final Path classPath = Paths.get(".");
+        context.prependClassPath(classPath);
+        final Path prependedPath = context.getClassPath().get(0);
+        assertEquals(classPath, prependedPath);
+    }
+
+    @Test
     public void Reset_AfterLoadClass_ResetsClassesCountTo0() throws FileNotFoundException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = context.getClassesCount();

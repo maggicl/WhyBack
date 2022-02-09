@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.G;
 import soot.Scene;
 import soot.SootClass;
@@ -25,6 +28,8 @@ import soot.options.Options;
  * without being constrained to the singleton pattern.
  */
 public class SootContext implements Context {
+
+    private static Logger log = LoggerFactory.getLogger(SootContext.class);
 
     /**
      * Singleton value.
@@ -72,6 +77,7 @@ public class SootContext implements Context {
         options().set_output_format(Options.output_format_jimple);
         options().set_whole_program(true);
         scene().loadBasicClasses();
+        log.info("Soot context initialized successfully");
     }
 
     /**
@@ -112,7 +118,9 @@ public class SootContext implements Context {
     public void loadClass(final QualifiedName className) throws ClassLoadException {
         try {
             scene().loadClass(className.toString(), SootClass.BODIES);
+            log.info("Loaded {} in context", className);
         } catch (AssertionError exception) {
+            log.error("Failed to load {}", className);
             throw new ClassLoadException(this, className);
         }
     }
@@ -126,7 +134,9 @@ public class SootContext implements Context {
     public void loadClassAndSupport(final QualifiedName className) throws ClassLoadException {
         try {
             scene().loadClassAndSupport(className.toString());
+            log.info("Loaded {} and support classes in context", className);
         } catch (AssertionError exception) {
+            log.error("Failed to load {}", className);
             throw new ClassLoadException(this, className);
         }
     }

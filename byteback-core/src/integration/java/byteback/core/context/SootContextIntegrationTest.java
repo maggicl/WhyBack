@@ -66,6 +66,15 @@ public class SootContextIntegrationTest {
         assertEquals(oldCount, newCount - 1);
     }
 
+    @Test(expected = ClassLoadException.class)
+    public void LoadClass_OnNonExistentClass_ThrowsClassLoadException()
+            throws FileNotFoundException, ClassLoadException {
+        final Path classPath = ResourcesUtil.getJarPath("java8");
+        context.prependClassPath(classPath);
+        final QualifiedName nonExistentName = new QualifiedName("byteback", "dummy", "java8", "AAAAA");
+        context.loadClass(nonExistentName);
+    }
+
     @Test
     public void LoadClassAndSupport_OnSupportedClass_IncreasesClassesCountBy2()
             throws FileNotFoundException, ClassLoadException {

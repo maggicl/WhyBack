@@ -113,6 +113,16 @@ public class SootContext implements Context {
     }
 
     /**
+     * Loads a root class and its supporting classes in the Soot scene.
+     *
+     * @param qualifiedName {@see #loadClass(QualifiedName)}
+     */
+    @Override
+    public void loadClassAndSupport(final QualifiedName qualifiedName) {
+        scene().loadClassAndSupport(qualifiedName.toString());
+    }
+
+    /**
      * Computes the number of classes loaded in the Soot scene.
      *
      * @return Total number of classes in the Soot scene.

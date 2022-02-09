@@ -1,7 +1,6 @@
 package byteback.core.context;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
@@ -46,7 +45,7 @@ public class SootContextIntegrationTest {
     }
 
     @Test
-    public void Reset_AfterLoadClass_ResetsClassesCountTo0() throws FileNotFoundException {
+    public void Reset_AfterLoadingUnitClass_ResetsClassesCount() throws FileNotFoundException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = context.getClassesCount();
         context.prependClassPath(classPath);
@@ -64,7 +63,18 @@ public class SootContextIntegrationTest {
         final QualifiedName unitName = new QualifiedName("byteback", "dummy", "java8", "Unit");
         context.loadClass(unitName);
         final int newCount = context.getClassesCount();
-        assertTrue(oldCount == newCount - 1);
+        assertEquals(oldCount, newCount - 1);
+    }
+
+    @Test
+    public void LoadClassAndSupport_OnSupportedClass_IncreasesClassesCountBy2() throws FileNotFoundException {
+        final Path classPath = ResourcesUtil.getJarPath("java8");
+        final int oldCount = context.getClassesCount();
+        context.prependClassPath(classPath);
+        final QualifiedName supportedName = new QualifiedName("byteback", "dummy", "java8", "Supported");
+        context.loadClassAndSupport(supportedName);
+        final int newCount = context.getClassesCount();
+        assertEquals(oldCount, newCount - 2);
     }
 
 }

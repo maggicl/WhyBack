@@ -14,9 +14,8 @@ public class QualifiedName {
      * @return {@code true} if the name is valid.
      */
     private static boolean validatePart(String part) {
-        return part.length() > 0
-            && Character.isJavaIdentifierStart(part.charAt(0))
-            && part.chars().allMatch(Character::isJavaIdentifierPart);
+        return part.length() > 0 && Character.isJavaIdentifierStart(part.charAt(0))
+                && part.chars().allMatch(Character::isJavaIdentifierPart);
     }
 
     /**
@@ -64,4 +63,3 @@ public class QualifiedName {
     }
 
 }
-

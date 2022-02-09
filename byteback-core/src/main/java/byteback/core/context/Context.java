@@ -11,7 +11,7 @@ public interface Context {
      * @param className The qualified name of the class.
      * @throws ClassLoadException If the class could not be loaded into the context.
      */
-    public void loadClass(final QualifiedName className) throws ClassLoadException;
+    public void loadClass(QualifiedName className) throws ClassLoadException;
 
     /**
      * Loads a new class based on the canonical name along with its supporting
@@ -19,7 +19,7 @@ public interface Context {
      *
      * @see #loadClass(QualifiedName)
      */
-    public void loadClassAndSupport(final QualifiedName className) throws ClassLoadException;
+    public void loadClassAndSupport(QualifiedName className) throws ClassLoadException;
 
     /**
      * Computes the total number of classes.

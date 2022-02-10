@@ -42,7 +42,7 @@ public class SootContext implements Context<SootClassRepresentation> {
     /**
      * Singleton accessor.
      *
-     * @return Singleton instance.
+     * @return Singleton context instance.
      */
     public static SootContext instance() {
         return instance;

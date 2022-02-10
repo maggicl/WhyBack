@@ -4,10 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import byteback.core.identifier.ClassName;
 import org.junit.Test;
 
 public class ClassNameTest {
+
+    @Test
+    public void StringConstructor_OnValidName_ReturnsValidClassName() {
+        final ClassName className = new ClassName("soot.SootClass");
+        assertTrue(className.isPrefixedBy("soot", "SootClass"));
+        assertEquals(className.toString(), "soot.SootClass");
+    }
 
     @Test
     public void ToString_OnSimpleQualifiedName_ReturnsCorrectPackageName() {
@@ -43,6 +49,13 @@ public class ClassNameTest {
         assertTrue(className.validate());
         className = new ClassName("more", "complex42", "Name");
         assertTrue(className.validate());
+    }
+
+    @Test
+    public void IsPrefixedBy_OnPrefixPattern_ReturnsTrue() {
+        ClassName className;
+        className = new ClassName("simple", "prefix");
+        assertTrue(className.isPrefixedBy("simple", "prefix"));
     }
 
 }

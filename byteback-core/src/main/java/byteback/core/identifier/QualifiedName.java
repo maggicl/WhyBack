@@ -46,4 +46,24 @@ public class QualifiedName {
         return parts.stream().allMatch(QualifiedName::validatePart);
     }
 
+    /**
+     * Verifies if the name matches the pattern in its prefix.
+     *
+     * @param pattern Pattern to match against.
+     * @return {@code true} if pattern is matched.
+     */
+    public boolean isPrefixedBy(String... pattern) {
+        if (pattern.length > parts.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < pattern.length; ++i) {
+            if (!pattern[i].equals(parts.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }

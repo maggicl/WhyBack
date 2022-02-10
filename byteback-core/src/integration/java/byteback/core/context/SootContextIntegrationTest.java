@@ -1,12 +1,17 @@
 package byteback.core.context;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import byteback.core.identifier.ClassName;
+import byteback.core.representation.SootClassRepresentation;
+
 import org.junit.After;
 import org.junit.Test;
 
@@ -22,7 +27,7 @@ public class SootContextIntegrationTest {
     }
 
     @Test
-    public void PrependClasspath_ModifiesSootClasspath() {
+    public void PrependClasspath_GivenDefaultSootClassPath_ModifiesSootClasspath() {
         final Path classPath = Paths.get("test", "class", "path");
         context.prependClassPath(classPath);
         final Path prependedPath = context.getClassPath().get(0);
@@ -38,7 +43,7 @@ public class SootContextIntegrationTest {
     }
 
     @Test
-    public void PrependClasspath_WithRelativePath_ModifiesSootClasspath() {
+    public void PrependClasspath_WithCurrentDirectoryPath_ModifiesSootClasspath() {
         final Path classPath = Paths.get(".");
         context.prependClassPath(classPath);
         final Path prependedPath = context.getClassPath().get(0);
@@ -95,6 +100,21 @@ public class SootContextIntegrationTest {
         context.prependClassPath(classPath);
         final ClassName nonExistentName = new ClassName("byteback", "dummy", "java8", "AAAAA");
         context.loadClassAndSupport(nonExistentName);
+    }
+
+    @Test
+    public void Classes_OnUnloadedState_ReturnsNonEmptyStream() {
+        assertTrue(context.classes().findAny().isPresent());
+    }
+
+    @Test
+    public void Classes_OnUnloadedState_ReturnsBasicClassesStream() {
+        assertTrue(context.classes().allMatch(SootClassRepresentation::isBasicClass));
+    }
+
+    @Test
+    public void Classes_OnUnloadedState_ReturnsConcreteClassesStream() {
+        assertTrue(context.classes().allMatch((clazz) -> !clazz.isPhantomClass()));
     }
 
 }

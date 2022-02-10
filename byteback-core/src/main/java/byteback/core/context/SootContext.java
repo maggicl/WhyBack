@@ -161,7 +161,7 @@ public class SootContext implements Context<SootClassRepresentation> {
      * @return Total number of classes in the Soot scene.
      */
     @Override
-    public Stream<SootClassRepresentation> stream() {
+    public Stream<SootClassRepresentation> classes() {
         return scene().getClasses().stream().map(SootClassRepresentation::new);
     }
 

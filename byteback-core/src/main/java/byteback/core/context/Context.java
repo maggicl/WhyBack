@@ -40,6 +40,6 @@ public interface Context<T extends ClassRepresentation> {
      *
      * @return The stream of class representations supported by the context.
      */
-    Stream<T> stream();
+    Stream<T> classes();
 
 }

@@ -7,8 +7,6 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import byteback.core.identifier.ClassName;
 import byteback.core.representation.SootClassRepresentation;
 

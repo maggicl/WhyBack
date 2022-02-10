@@ -49,7 +49,7 @@ public class SootContext implements Context<SootClassRepresentation> {
     }
 
     /**
-     * Simple function yielding the soot.Scene singleton.
+     * Yields the soot.Scene singleton.
      *
      * @return Soot's {@code Scene} singleton.
      */
@@ -58,7 +58,7 @@ public class SootContext implements Context<SootClassRepresentation> {
     }
 
     /**
-     * Simple function yielding the soot.Options singleton.
+     * Yields the soot.Options singleton.
      *
      * @return Soot's {@code Options} singleton.
      */

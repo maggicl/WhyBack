@@ -156,9 +156,10 @@ public class SootContext implements Context<SootClassRepresentation> {
     }
 
     /**
-     * Computes the number of classes loaded in the Soot scene.
+     * Computes the soot class representation for every soot class loaded in the
+     * Scene.
      *
-     * @return Total number of classes in the Soot scene.
+     * @return The stream of loaded classes in the current context.
      */
     @Override
     public Stream<SootClassRepresentation> classes() {

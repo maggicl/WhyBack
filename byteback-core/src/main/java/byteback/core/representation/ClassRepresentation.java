@@ -1,6 +1,5 @@
 package byteback.core.representation;
 
-import java.util.Collection;
 import java.util.stream.Stream;
 
 import byteback.core.identifier.ClassName;

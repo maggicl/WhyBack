@@ -6,9 +6,9 @@ import byteback.core.identifier.ClassName;
 import soot.SootClass;
 
 /**
- * Represents a {@code SootClass} intermediate representation.
+ * Wraps a {@code SootClass} intermediate representation.
  */
-public class SootClassRepresentation implements ClassRepresentation<MethodRepresentation, FieldRepresentation> {
+public class SootClassRepresentation implements ClassRepresentation<SootMethodRepresentation, FieldRepresentation> {
 
     private final SootClass sootClass;
 
@@ -59,16 +59,24 @@ public class SootClassRepresentation implements ClassRepresentation<MethodRepres
         return name;
     }
 
+    /**
+     * Computes the method representation from the soot methods present in the
+     * class.
+     *
+     * @return The stream of method representations.
+     */
     @Override
-    public Stream<MethodRepresentation> methods() {
+    public Stream<SootMethodRepresentation> methods() {
         assert !isPhantomClass();
-        return null;
+
+        return sootClass.getMethods().stream().map(SootMethodRepresentation::new);
     }
 
     @Override
     public Stream<FieldRepresentation> fields() {
         assert !isPhantomClass();
-        return null;
+
+        throw new UnsupportedOperationException();
     }
 
 }

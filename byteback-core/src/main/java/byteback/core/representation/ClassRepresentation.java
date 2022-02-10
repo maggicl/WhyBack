@@ -1,24 +1,25 @@
 package byteback.core.representation;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import byteback.core.identifier.ClassName;
 
-public interface ClassRepresentation {
+public interface ClassRepresentation<T extends MethodRepresentation, D extends FieldRepresentation> {
 
     /**
-     * @return The name of the class.
+     * @return The qualified name of the class.
      */
     ClassName getName();
 
     /**
-     * @return The methods of the class.
+     * @return The methods stream of the class.
      */
-    Collection<MethodRepresentation> getMethods();
+    Stream<T> methods();
 
     /**
      * @return The fields of the class.
      */
-    Collection<FieldRepresentation> getFields();
+    Stream<D> fields();
 
 }

@@ -2,15 +2,15 @@ package byteback.core.context;
 
 import java.util.stream.Stream;
 
-import byteback.core.identifier.ClassName;
+import byteback.core.identifier.QualifiedName;
 import byteback.core.representation.ClassRepresentation;
 
 /**
- * A context used to keep track of the classes to be analyzed.
+ * Represents a context keeping track of the classes to be analyzed.
  *
  * @param <T> The type of class representation provided by the context.
  */
-public interface Context<T extends ClassRepresentation> {
+public interface Context<T extends ClassRepresentation<?, ?>> {
 
     /**
      * Loads a new class based on the canonical name.
@@ -18,15 +18,17 @@ public interface Context<T extends ClassRepresentation> {
      * @param className The qualified name of the class.
      * @throws ClassLoadException If the class could not be loaded into the context.
      */
-    void loadClass(ClassName className) throws ClassLoadException;
+    void loadClass(QualifiedName className) throws ClassLoadException;
 
     /**
      * Loads a new class based on the canonical name along with its supporting
      * classes.
-     *
-     * @see #loadClass(ClassName)
+     * 
+     * @param className The qualified name of the root class.
+     * @throws ClassLoadException If the class, or one of its supporting classes
+     *                            could not be loaded into the context.
      */
-    void loadClassAndSupport(ClassName className) throws ClassLoadException;
+    void loadClassAndSupport(QualifiedName className) throws ClassLoadException;
 
     /**
      * Computes the total number of classes.
@@ -36,10 +38,17 @@ public interface Context<T extends ClassRepresentation> {
     int getClassesCount();
 
     /**
-     * Streams all of the loaded classes.
+     * Streams all the class representations loaded into the context.
      *
      * @return The stream of class representations supported by the context.
      */
     Stream<T> classes();
+
+    /**
+     * Function returning the name of the context.
+     *
+     * @return The name string of the context.
+     */
+    String getName();
 
 }

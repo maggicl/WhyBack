@@ -21,6 +21,22 @@ public class QualifiedName {
 
         return QualifiedName.get(name);
     }
+
+    /**
+     * Constructs a qualified name from a string.
+     *
+     * @param name A string representing the qualified name.
+     * @return The {@code QualifiedName} instance.
+     * @throws IllegalArgumentException if the name is not valid.
+     */
+    public static QualifiedName get(final String name) {
+        final QualifiedName instance = new QualifiedName(name);
+
+        if (!instance.validate()) {
+            throw new IllegalArgumentException("Invalid name " + instance.name);
+        }
+
+        return instance;
     }
 
     /**
@@ -28,39 +44,48 @@ public class QualifiedName {
      *
      * @param name String representing the qualified path.
      */
-    public ClassName(String name) {
-        super(name);
+    private QualifiedName(final String name) {
+        this.name = name;
     }
 
     /**
-     * Validates the classname.
+     * Checks if the qualified name is valid using the {@link SourceVersion} utility
+     * class.
      *
-     * @return {@code true} if the classname could be validated.
+     * @return {@code true} if the name is valid.
      */
-    @Override
-    public boolean validate() {
-        if (!super.validate()) {
-            return false;
-        }
-        
-        boolean classEncountered = false;
-
-        for (String part : parts) {
-            final boolean isClass = Character.isUpperCase(part.charAt(0));
-
-            if (isClass) {
-                classEncountered = true;
-            } else if (classEncountered) {
-                return false;
-            }
-        }
-
-        return classEncountered;
+    private boolean validate() {
+        return SourceVersion.isName(name);
     }
 
+    /**
+     * Checks if the qualified name starts with the given name.
+     *
+     * @param qualifiedName The given qualified name.
+     * @return {@code true} if this name is prefixed by the given qualified name.
+     */
+    public boolean startsWith(final QualifiedName qualifiedName) {
+        return startsWith(qualifiedName.toString());
+    }
+
+    /**
+     * Checks if the qualified name starts with the given string.
+     *
+     * @param name The given name string.
+     * @return {@code true} if this name is prefixed by the given name.
+     */
+    public boolean startsWith(final String name) {
+        return this.name.startsWith(name);
+    }
+
+    /**
+     * Getter for the string representation of the qualified name.
+     *
+     * @return The string representation of the qualified name.
+     */
     @Override
     public String toString() {
-        return String.join(".", parts);
+        return name;
     }
 
 }

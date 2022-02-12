@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import byteback.core.identifier.ClassName;
+import byteback.core.identifier.QualifiedName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,12 +35,12 @@ public class SootContext implements Context<SootClassRepresentation> {
     private static Logger log = LoggerFactory.getLogger(SootContext.class);
 
     /**
-     * Singleton value.
+     * Singleton instance.
      */
     private static final SootContext instance = new SootContext();
 
     /**
-     * Singleton accessor.
+     * Accessor for the singleton instance.
      *
      * @return Singleton context instance.
      */
@@ -51,7 +51,7 @@ public class SootContext implements Context<SootClassRepresentation> {
     /**
      * Yields the soot.Scene singleton.
      *
-     * @return Soot's {@code Scene} singleton.
+     * @return Soot's {@link Scene} singleton.
      */
     private static Scene scene() {
         return Scene.v();
@@ -60,7 +60,7 @@ public class SootContext implements Context<SootClassRepresentation> {
     /**
      * Yields the soot.Options singleton.
      *
-     * @return Soot's {@code Options} singleton.
+     * @return Soot's {@link Options} singleton.
      */
     private static Options options() {
         return Options.v();
@@ -92,34 +92,35 @@ public class SootContext implements Context<SootClassRepresentation> {
     }
 
     /**
-     * Prepends the classpath of the Soot scene.
+     * Setter that prepends the classpath of the {@link Scene}.
      *
      * @param path Path to be prepended to the classpath.
      */
     public void prependClassPath(final Path path) {
+        assert options().prepend_classpath();
+        
         final String classPath = scene().getSootClassPath();
         scene().setSootClassPath(path.toAbsolutePath().toString() + ":" + classPath);
     }
 
     /**
-     * Returns the classpath of the Soot scene.
+     * Getter for the classpath loaded in the {@link Scene}.
      *
      * @return Current classpath loaded in the scene.
      */
     public List<Path> getClassPath() {
         final String[] parts = scene().getSootClassPath().split(":");
 
-        return Arrays.stream(parts).map((part) -> Paths.get(part)).collect(Collectors.toList());
+        return Arrays.stream(parts).map(Paths::get).collect(Collectors.toList());
     }
 
     /**
-     * Loads a class in the Soot scene.
+     * Loads a class in the {@link Scene}.
      *
-     * @param className Qualified name of a class present in the classpath.
-     * @throws ClassLoadException If the class could not be loaded into the context.
+     * @param className Qualified name of a class present in the Soot's classpath.
      */
     @Override
-    public void loadClass(final ClassName className) throws ClassLoadException {
+    public void loadClass(final QualifiedName className) throws ClassLoadException {
         try {
             scene().loadClass(className.toString(), SootClass.BODIES);
             log.info("Loaded {} in context", className);
@@ -132,10 +133,11 @@ public class SootContext implements Context<SootClassRepresentation> {
     /**
      * Loads a root class and its supporting classes in the Soot scene.
      *
-     * @see #loadClass(ClassName)
+     * @param className Qualified name of the root class present in the Soot's
+     *                  classpath.
      */
     @Override
-    public void loadClassAndSupport(final ClassName className) throws ClassLoadException {
+    public void loadClassAndSupport(final QualifiedName className) throws ClassLoadException {
         try {
             scene().loadClassAndSupport(className.toString());
             log.info("Loaded {} and support classes in context", className);
@@ -146,7 +148,7 @@ public class SootContext implements Context<SootClassRepresentation> {
     }
 
     /**
-     * Computes the number of classes loaded in the Soot scene.
+     * Getter for the number of classes loaded in the {@link Scene}.
      *
      * @return Total number of classes in the Soot scene.
      */
@@ -156,14 +158,23 @@ public class SootContext implements Context<SootClassRepresentation> {
     }
 
     /**
-     * Computes the soot class representation for every soot class loaded in the
-     * Scene.
+     * Getter for the stream of Soot representations loaded in the context.
      *
      * @return The stream of loaded classes in the current context.
      */
     @Override
     public Stream<SootClassRepresentation> classes() {
         return scene().getClasses().stream().map(SootClassRepresentation::new);
+    }
+
+    /**
+     * Getter for the predefined identifier of this context.
+     *
+     * @return The {@link SootContext} identifier.
+     */
+    @Override
+    public String getName() {
+        return "SOOT_CONTEXT";
     }
 
 }

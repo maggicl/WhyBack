@@ -7,17 +7,16 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import byteback.core.identifier.ClassName;
-import byteback.core.representation.SootClassRepresentation;
-
 import org.junit.After;
 import org.junit.Test;
 
+import byteback.core.identifier.QualifiedName;
+import byteback.core.representation.SootClassRepresentation;
 import byteback.core.ResourcesUtil;
 
 public class SootContextIntegrationTest {
 
-    final SootContext context = SootContext.instance();
+    private final SootContext context = SootContext.instance();
 
     @After
     public void resetContext() {
@@ -25,7 +24,7 @@ public class SootContextIntegrationTest {
     }
 
     @Test
-    public void PrependClasspath_GivenDefaultSootClassPath_ModifiesSootClasspath() {
+    public void PrependClasspath_WithValidClasspath_ModifiesSootClasspath() {
         final Path classPath = Paths.get("test", "class", "path");
         context.prependClassPath(classPath);
         final Path prependedPath = context.getClassPath().get(0);
@@ -101,18 +100,30 @@ public class SootContextIntegrationTest {
     }
 
     @Test
-    public void Classes_OnUnloadedState_ReturnsNonEmptyStream() {
+    public void Classes_GivenUnloadedScene_ReturnsNonEmptyStream() {
         assertTrue(context.classes().findAny().isPresent());
     }
 
     @Test
-    public void Classes_OnUnloadedState_ReturnsBasicClassesStream() {
+    public void Classes_GivenUnloadedScene_ReturnsBasicClassesStream() {
         assertTrue(context.classes().allMatch(SootClassRepresentation::isBasicClass));
     }
 
     @Test
-    public void Classes_OnUnloadedState_ReturnsConcreteClassesStream() {
+    public void Classes_GivenUnloadedScene_ReturnsConcreteClassesStream() {
         assertTrue(context.classes().allMatch((clazz) -> !clazz.isPhantomClass()));
+    }
+
+    @Test
+    public void Classes_AfterLoadingUnitClass_ReturnsStreamContainingUnitClass()
+            throws FileNotFoundException, ClassLoadException {
+        final Path classPath = ResourcesUtil.getJarPath("java8");
+        context.prependClassPath(classPath);
+        final QualifiedName unitName = QualifiedName.get("byteback", "dummy", "java8", "Unit");
+        context.loadClass(unitName);
+        assertTrue(context.classes().anyMatch((clazz) -> {
+            return clazz.getQualifiedName().toString().equals(unitName.toString());
+        }));
     }
 
 }

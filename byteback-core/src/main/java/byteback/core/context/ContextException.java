@@ -1,7 +1,7 @@
 package byteback.core.context;
 
 /**
- * Represents any exception that may concern the services provided by a
+ * Represents any possible exception that may concern the services provided by a
  * {@link Context} class.
  */
 public abstract class ContextException extends Exception {
@@ -13,7 +13,7 @@ public abstract class ContextException extends Exception {
      * @param message The message of the exception.
      */
     public ContextException(Context<?> context, String message) {
-        super(context.toString() + " : " + message);
+        super(context.getName() + " : " + message);
     }
 
 }

@@ -1,6 +1,6 @@
 package byteback.core.context;
 
-import byteback.core.identifier.ClassName;
+import byteback.core.identifier.QualifiedName;
 
 /**
  * Represents a failure in loading a class into the {@link Context}.
@@ -8,10 +8,12 @@ import byteback.core.identifier.ClassName;
 public class ClassLoadException extends ContextException {
 
     /**
-     * @param context The context that could not load the class.
+     * Constructs a {@link ClassLoadException}.
+     *
+     * @param context   The context that could not load the class.
      * @param className The name of the class that could not be loaded.
      */
-    public ClassLoadException(Context<?> context, ClassName className) {
+    public ClassLoadException(Context<?> context, QualifiedName className) {
         super(context, "Could not load class " + className.toString());
     }
 

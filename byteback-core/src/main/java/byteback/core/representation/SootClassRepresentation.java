@@ -2,7 +2,7 @@ package byteback.core.representation;
 
 import java.util.stream.Stream;
 
-import byteback.core.identifier.ClassName;
+import byteback.core.identifier.QualifiedName;
 import soot.SootClass;
 
 /**
@@ -12,17 +12,21 @@ public class SootClassRepresentation implements ClassRepresentation<SootMethodRe
 
     private final SootClass sootClass;
 
-    private final ClassName name;
+    private final QualifiedName qualifiedName;
 
     /**
-     * @param sootClass The wrapped {@code SootClass} class.
+     * Constructs the Soot class representation wrapper.
+     *
+     * @param sootClass The wrapped {@link SootClass} class.
      */
     public SootClassRepresentation(final SootClass sootClass) {
         this.sootClass = sootClass;
-        this.name = new ClassName(sootClass.getName());
+        this.qualifiedName = QualifiedName.get(sootClass.getName());
     }
 
     /**
+     * Checks if this class is a library class.
+     *
      * @return {@code true} if the class refers to a basic class.
      */
     public boolean isLibraryClass() {
@@ -38,7 +42,7 @@ public class SootClassRepresentation implements ClassRepresentation<SootMethodRe
      * @return {@code true} if the instance refers to a basic class.
      */
     public boolean isBasicClass() {
-        return sootClass.isJavaLibraryClass() || name.isPrefixedBy("jdk");
+        return sootClass.isJavaLibraryClass() || qualifiedName.startsWith("jdk");
     }
 
     /**
@@ -52,16 +56,17 @@ public class SootClassRepresentation implements ClassRepresentation<SootMethodRe
     }
 
     /**
+     * Getter for the qualified name of the class.
+     *
      * @return The qualified name of the class.
      */
     @Override
-    public ClassName getName() {
-        return name;
+    public QualifiedName getQualifiedName() {
+        return qualifiedName;
     }
 
     /**
-     * Computes the method representation from the soot methods present in the
-     * class.
+     * Yields the stream of Soot methods present in the class.
      *
      * @return The stream of method representations.
      */
@@ -72,6 +77,11 @@ public class SootClassRepresentation implements ClassRepresentation<SootMethodRe
         return sootClass.getMethods().stream().map(SootMethodRepresentation::new);
     }
 
+    /**
+     * Yields the stream of Soot fields present in the class.
+     *
+     * @return The stream of field representations.
+     */
     @Override
     public Stream<FieldRepresentation> fields() {
         assert !isPhantomClass();

@@ -1,4 +1,4 @@
-package byteback.core.context;
+package byteback.core.context.soot;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import byteback.core.context.ClassLoadException;
+import byteback.core.context.Context;
 import byteback.core.identifier.QualifiedName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import byteback.core.representation.SootClassRepresentation;
+import byteback.core.representation.soot.SootClassRepresentation;
 import soot.G;
 import soot.Scene;
 import soot.SootClass;
@@ -32,7 +34,7 @@ import soot.options.Options;
  */
 public class SootContext implements Context<SootClassRepresentation> {
 
-    private static Logger log = LoggerFactory.getLogger(SootContext.class);
+    private static final Logger log = LoggerFactory.getLogger(SootContext.class);
 
     /**
      * Singleton instance.

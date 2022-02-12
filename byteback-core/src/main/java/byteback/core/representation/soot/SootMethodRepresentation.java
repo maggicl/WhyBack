@@ -1,5 +1,6 @@
-package byteback.core.representation;
+package byteback.core.representation.soot;
 
+import byteback.core.representation.MethodRepresentation;
 import soot.SootMethod;
 
 public class SootMethodRepresentation implements MethodRepresentation {

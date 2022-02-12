@@ -1,8 +1,10 @@
-package byteback.core.representation;
+package byteback.core.representation.soot;
 
 import java.util.stream.Stream;
 
 import byteback.core.identifier.QualifiedName;
+import byteback.core.representation.ClassRepresentation;
+import byteback.core.representation.FieldRepresentation;
 import soot.SootClass;
 
 /**

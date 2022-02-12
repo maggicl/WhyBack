@@ -7,11 +7,12 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import byteback.core.context.soot.SootContext;
 import org.junit.After;
 import org.junit.Test;
 
 import byteback.core.identifier.QualifiedName;
-import byteback.core.representation.SootClassRepresentation;
+import byteback.core.representation.soot.SootClassRepresentation;
 import byteback.core.ResourcesUtil;
 
 public class SootContextIntegrationTest {

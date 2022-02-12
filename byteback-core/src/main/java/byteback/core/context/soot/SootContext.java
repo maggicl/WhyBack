@@ -21,7 +21,7 @@ import soot.options.Options;
 
 /**
  * Instance encapsulating the state of the Soot program analysis framework.
- * <p>
+ *
  * This class is intended to be a complete wrapper for every singleton managed
  * by the Soot framework.
  * <p>

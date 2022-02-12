@@ -99,8 +99,6 @@ public class SootContext implements Context<SootClassRepresentation> {
      * @param path Path to be prepended to the classpath.
      */
     public void prependClassPath(final Path path) {
-        assert options().prepend_classpath();
-        
         final String classPath = scene().getSootClassPath();
         scene().setSootClassPath(path.toAbsolutePath().toString() + ":" + classPath);
     }

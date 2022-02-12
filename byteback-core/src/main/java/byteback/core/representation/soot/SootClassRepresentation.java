@@ -8,7 +8,7 @@ import byteback.core.representation.FieldRepresentation;
 import soot.SootClass;
 
 /**
- * Wraps a {@code SootClass} intermediate representation.
+ * Wraps a {@link SootClass} intermediate representation.
  */
 public class SootClassRepresentation implements ClassRepresentation<SootMethodRepresentation, FieldRepresentation> {
 

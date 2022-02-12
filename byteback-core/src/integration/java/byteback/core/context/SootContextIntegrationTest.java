@@ -33,16 +33,16 @@ public class SootContextIntegrationTest {
     }
 
     @Test
-    public void PrependClasspath_WithEmptyPath_ModifiesSootClasspath() {
-        final Path classPath = Paths.get("");
+    public void PrependClasspath_WithCurrentDirectoryPath_AppendsCurrentDirectoryToSootClasspath() {
+        final Path classPath = Paths.get(".");
         context.prependClassPath(classPath);
         final Path prependedPath = context.getClassPath().get(0);
         assertEquals(classPath.toAbsolutePath(), prependedPath);
     }
 
     @Test
-    public void PrependClasspath_WithCurrentDirectoryPath_ModifiesSootClasspath() {
-        final Path classPath = Paths.get(".");
+    public void PrependClasspath_WithEmptyPath_AppendsCurrentDirectoryToSootClasspath() {
+        final Path classPath = Paths.get("");
         context.prependClassPath(classPath);
         final Path prependedPath = context.getClassPath().get(0);
         assertEquals(classPath.toAbsolutePath(), prependedPath);
@@ -53,7 +53,7 @@ public class SootContextIntegrationTest {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = context.getClassesCount();
         context.prependClassPath(classPath);
-        final ClassName unitName = new ClassName("byteback", "dummy", "java8", "Unit");
+        final QualifiedName unitName = QualifiedName.get("byteback", "dummy", "java8", "Unit");
         context.loadClass(unitName);
         context.reset();
         assertEquals(oldCount, context.getClassesCount());
@@ -64,7 +64,7 @@ public class SootContextIntegrationTest {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = context.getClassesCount();
         context.prependClassPath(classPath);
-        final ClassName unitName = new ClassName("byteback", "dummy", "java8", "Unit");
+        final QualifiedName unitName = QualifiedName.get("byteback", "dummy", "java8", "Unit");
         context.loadClass(unitName);
         final int newCount = context.getClassesCount();
         assertEquals(oldCount, newCount - 1);
@@ -75,7 +75,7 @@ public class SootContextIntegrationTest {
             throws FileNotFoundException, ClassLoadException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         context.prependClassPath(classPath);
-        final ClassName nonExistentName = new ClassName("byteback", "dummy", "java8", "AAAAA");
+        final QualifiedName nonExistentName = QualifiedName.get("byteback", "dummy", "java8", "AAAAA");
         context.loadClass(nonExistentName);
     }
 
@@ -85,7 +85,7 @@ public class SootContextIntegrationTest {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = context.getClassesCount();
         context.prependClassPath(classPath);
-        final ClassName supportedName = new ClassName("byteback", "dummy", "java8", "Supported");
+        final QualifiedName supportedName = QualifiedName.get("byteback", "dummy", "java8", "Supported");
         context.loadClassAndSupport(supportedName);
         final int newCount = context.getClassesCount();
         assertEquals(oldCount, newCount - 2);
@@ -96,7 +96,7 @@ public class SootContextIntegrationTest {
             throws FileNotFoundException, ClassLoadException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         context.prependClassPath(classPath);
-        final ClassName nonExistentName = new ClassName("byteback", "dummy", "java8", "AAAAA");
+        final QualifiedName nonExistentName = QualifiedName.get("byteback", "dummy", "java8", "AAAAA");
         context.loadClassAndSupport(nonExistentName);
     }
 

@@ -1,69 +1,66 @@
 package byteback.core.identifier;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.lang.model.SourceVersion;
 
+/**
+ * Represents the qualified name of a class.
+ */
 public class QualifiedName {
 
+    private final String name;
+
     /**
-     * Validates a single name.
+     * Constructs a qualified name from its parts.
      *
-     * @return {@code true} if the name is valid.
+     * @param parts The parts of the name.
+     * @return The {@code QualifiedName} instance.
+     * @throws IllegalArgumentException if the name is not valid.
      */
-    private static boolean validatePart(String part) {
-        return part.length() > 0 && Character.isJavaIdentifierStart(part.charAt(0))
-                && part.chars().allMatch(Character::isJavaIdentifierPart);
+    public static QualifiedName get(final String... parts) {
+        final String name = String.join(".", parts);
+
+        return QualifiedName.get(name);
+    }
     }
 
     /**
-     * Parts of the qualified name.
-     */
-    protected final List<String> parts;
-
-    /**
-     * Constructs a qualified name.
+     * Constructs a classname from its parts.
      *
-     * @param parts The parts of the qualified name.
+     * @param name String representing the qualified path.
      */
-    public QualifiedName(String... parts) {
-        this.parts = List.of(parts);
+    public ClassName(String name) {
+        super(name);
     }
 
     /**
-     * @param name The string representation of the qualified name.
-     * @see #QualifiedName(String...)
-     */
-    public QualifiedName(String name) {
-        this.parts = Arrays.asList(name.split("\\."));
-    }
-
-    /**
-     * Validates the qualified name.
+     * Validates the classname.
      *
-     * @return {@code true} if the qualified name follows a valid form.
+     * @return {@code true} if the classname could be validated.
      */
+    @Override
     public boolean validate() {
-        return parts.stream().allMatch(QualifiedName::validatePart);
-    }
-
-    /**
-     * Verifies if the name matches the pattern in its prefix.
-     *
-     * @param pattern Pattern to match against.
-     * @return {@code true} if pattern is matched.
-     */
-    public boolean isPrefixedBy(String... pattern) {
-        if (pattern.length > parts.size()) {
+        if (!super.validate()) {
             return false;
         }
+        
+        boolean classEncountered = false;
 
-        for (int i = 0; i < pattern.length; ++i) {
-            if (!pattern[i].equals(parts.get(i))) {
+        for (String part : parts) {
+            final boolean isClass = Character.isUpperCase(part.charAt(0));
+
+            if (isClass) {
+                classEncountered = true;
+            } else if (classEncountered) {
                 return false;
             }
         }
 
-        return true;
+        return classEncountered;
+    }
+
+    @Override
+    public String toString() {
+        return String.join(".", parts);
     }
 
 }

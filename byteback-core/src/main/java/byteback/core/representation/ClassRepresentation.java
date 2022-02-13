@@ -27,4 +27,25 @@ public interface ClassRepresentation<T extends MethodRepresentation, D extends F
      */
     Stream<D> fields();
 
+    /**
+     * Checks that the class referred by this representation is final.
+     *
+     * @return {@code true} if the method is final.
+     */
+    boolean isFinal();
+
+    /**
+     * Checks that the class referred by this representation is final.
+     *
+     * @return {@code true} if the method is final.
+     */
+    boolean isStatic();
+
+    /**
+     * Checks that the class referred by this representation is final.
+     *
+     * @return {@code true} if the method is final.
+     */
+    boolean isAbstract();
+
 }

@@ -91,4 +91,19 @@ public class SootClassRepresentation implements ClassRepresentation<SootMethodRe
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public boolean isFinal() {
+        return sootClass.isFinal();
+    }
+
+    @Override
+    public boolean isStatic() {
+        return sootClass.isStatic();
+    }
+
+    @Override
+    public boolean isAbstract() {
+        return sootClass.isAbstract();
+    }
+
 }

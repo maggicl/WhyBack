@@ -16,13 +16,34 @@ public class SootMethodRepresentation implements MethodRepresentation {
         this.sootMethod = sootMethod;
     }
 
-    /**
-     * Gets the name of the method.
-     *
-     * @return The string name of the method.
-     */
+    @Override
     public String getName() {
         return sootMethod.getName();
+    }
+
+    @Override
+    public boolean isPrivate() {
+        return sootMethod.isPrivate();
+    }
+
+    @Override
+    public boolean isProtected() {
+        return sootMethod.isProtected();
+    }
+
+    @Override
+    public boolean isPublic() {
+        return sootMethod.isPublic();
+    }
+
+    @Override
+    public boolean isStatic() {
+        return sootMethod.isStatic();
+    }
+
+    @Override
+    public boolean isAbstract() {
+        return sootMethod.isAbstract();
     }
 
 }

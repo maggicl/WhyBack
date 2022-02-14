@@ -11,7 +11,7 @@ public class SootMethodIR implements MethodRepresentation {
     private final Name relativeName;
 
     /**
-     * Constructor for the
+     * Constructor for the Soot method intermediate representation.
      *
      * @param sootMethod The wrapped {@code SootMethod} instance.
      */

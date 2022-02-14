@@ -17,7 +17,7 @@ public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepre
     private final Name name;
 
     /**
-     * Constructs the Soot class representation wrapper.
+     * Constructor the Soot class representation wrapper.
      *
      * @param sootClass The wrapped {@link SootClass} class.
      */

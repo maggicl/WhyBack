@@ -69,7 +69,17 @@ public class SootContextIntegrationTest extends SootContextFixture {
         getContext().prependClassPath(classPath);
         final QualifiedName unitName = QualifiedName.get("byteback", "dummy", "java8", "Unit");
         final SootClassIR sootClass = getContext().loadClass(unitName);
-        assertEquals(sootClass.getQualifiedName(), unitName);
+        assertEquals(sootClass.getQualifiedName().toString(), unitName.toString());
+    }
+
+    @Test
+    public void LoadClassAndSupport_OnUnitClass_ReturnUnitClassRepresentation()
+            throws FileNotFoundException, ClassLoadException {
+        final Path classPath = ResourcesUtil.getJarPath("java8");
+        getContext().prependClassPath(classPath);
+        final QualifiedName unitName = QualifiedName.get("byteback", "dummy", "java8", "Unit");
+        final SootClassIR sootClass = getContext().loadClassAndSupport(unitName);
+        assertEquals(sootClass.getQualifiedName().toString(), unitName.toString());
     }
 
     @Test(expected = ClassLoadException.class)

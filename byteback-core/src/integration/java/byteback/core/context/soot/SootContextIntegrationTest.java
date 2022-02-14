@@ -1,4 +1,4 @@
-package byteback.core.context;
+package byteback.core.context.soot;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import byteback.core.context.ClassLoadException;
 import byteback.core.context.soot.SootContext;
 import org.junit.After;
 import org.junit.Test;

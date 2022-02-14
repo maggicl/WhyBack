@@ -33,7 +33,6 @@ public class RelativeName extends QualifiedName {
      */
     @Override
     boolean validate() {
-        Type
         return toString().split("\\.").length == 1 && super.validate();
     }
 

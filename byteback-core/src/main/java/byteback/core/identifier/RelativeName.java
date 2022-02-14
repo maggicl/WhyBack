@@ -1,7 +1,5 @@
 package byteback.core.identifier;
 
-import soot.Type;
-
 /**
  * Represents a simple relative name, taken outside the context of any
  * namespace.

@@ -10,7 +10,7 @@ import soot.SootClass;
 /**
  * Wraps a {@link SootClass} intermediate representation.
  */
-public class SootClassRepresentation implements ClassRepresentation<SootMethodRepresentation, FieldRepresentation> {
+public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepresentation> {
 
     private final SootClass sootClass;
 
@@ -21,7 +21,7 @@ public class SootClassRepresentation implements ClassRepresentation<SootMethodRe
      *
      * @param sootClass The wrapped {@link SootClass} class.
      */
-    public SootClassRepresentation(final SootClass sootClass) {
+    public SootClassIR(final SootClass sootClass) {
         this.sootClass = sootClass;
         this.qualifiedName = QualifiedName.get(sootClass.getName());
     }
@@ -73,10 +73,10 @@ public class SootClassRepresentation implements ClassRepresentation<SootMethodRe
      * @return The stream of method representations.
      */
     @Override
-    public Stream<SootMethodRepresentation> methods() {
+    public Stream<SootMethodIR> methods() {
         assert !isPhantomClass();
 
-        return sootClass.getMethods().stream().map(SootMethodRepresentation::new);
+        return sootClass.getMethods().stream().map(SootMethodIR::new);
     }
 
     /**

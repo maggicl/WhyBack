@@ -12,7 +12,7 @@ import org.junit.After;
 import org.junit.Test;
 
 import byteback.core.identifier.QualifiedName;
-import byteback.core.representation.soot.SootClassRepresentation;
+import byteback.core.representation.soot.SootClassIR;
 import byteback.core.ResourcesUtil;
 
 public class SootContextIntegrationTest {
@@ -107,7 +107,7 @@ public class SootContextIntegrationTest {
 
     @Test
     public void Classes_GivenUnloadedScene_ReturnsBasicClassesStream() {
-        assertTrue(context.classes().allMatch(SootClassRepresentation::isBasicClass));
+        assertTrue(context.classes().allMatch(SootClassIR::isBasicClass));
     }
 
     @Test

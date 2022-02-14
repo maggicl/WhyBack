@@ -13,7 +13,7 @@ import byteback.core.identifier.QualifiedName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import byteback.core.representation.soot.SootClassRepresentation;
+import byteback.core.representation.soot.SootClassIR;
 import soot.G;
 import soot.Scene;
 import soot.SootClass;
@@ -32,7 +32,7 @@ import soot.options.Options;
  * principle also allow us to keep multiple Soot contexts at the same time,
  * without being constrained to the singleton pattern.
  */
-public class SootContext implements Context<SootClassRepresentation> {
+public class SootContext implements Context<SootClassIR> {
 
     private static final Logger log = LoggerFactory.getLogger(SootContext.class);
 
@@ -163,8 +163,8 @@ public class SootContext implements Context<SootClassRepresentation> {
      * @return The stream of loaded classes in the current context.
      */
     @Override
-    public Stream<SootClassRepresentation> classes() {
-        return scene().getClasses().stream().map(SootClassRepresentation::new);
+    public Stream<SootClassIR> classes() {
+        return scene().getClasses().stream().map(SootClassIR::new);
     }
 
     /**

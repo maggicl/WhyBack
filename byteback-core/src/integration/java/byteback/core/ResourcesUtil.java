@@ -27,8 +27,8 @@ public class ResourcesUtil {
      * @return The path to the dummy project.
      * @throws FileNotFoundException If the resource could not be located.
      */
-    public static Path getJarPath(final String resourceName) throws FileNotFoundException {
-        final Path jarPath = compiledPath.resolve(Paths.get(resourceName, resourceName + ".jar"));
+    public static Path getJarPath(final String jarName) throws FileNotFoundException {
+        final Path jarPath = compiledPath.resolve(Paths.get(jarName, jarName + ".jar"));
 
         if (Files.exists(jarPath)) {
             return jarPath;

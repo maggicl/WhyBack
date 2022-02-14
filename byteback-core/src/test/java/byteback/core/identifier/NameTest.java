@@ -4,55 +4,55 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class QualifiedNameTest {
+public class NameTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void Get_OnEmptyName_ThrowsIllegalArgumentException() {
-        QualifiedName.get("");
+        Name.get("");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void Get_OnNameStartingWithNumber_ThrowsIllegalArgumentException() {
-        QualifiedName.get("666", "test");
+        Name.get("666", "test");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void Get_OnNameStartingWithMinus_ThrowsIllegalArgumentException() {
-        QualifiedName.get("-simple", "test");
+        Name.get("-simple", "test");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void Get_OnNameEndingWithMinus_ThrowsIllegalArgumentException() {
-        QualifiedName.get("simple", "test-");
+        Name.get("simple", "test-");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void Get_OnNameContainingTrue_ThrowsIllegalArgumentException() {
-        QualifiedName.get("simple", "true");
+        Name.get("simple", "true");
     }
 
     @Test
     public void Get_OnValidQualifiedName_DoesNotThrowException() {
-        QualifiedName.get("simple", "Name");
+        Name.get("simple", "Name");
     }
 
     @Test
     public void Get_OnQualifiedNameEndingWithNumber_DoesNotThrowExceptions() {
-        QualifiedName.get("more", "complex42", "Name");
+        Name.get("more", "complex42", "Name");
     }
 
     @Test
     public void StartsWith_OnNamePrefix_ReturnsTrue() {
-        final QualifiedName qualifiedName = QualifiedName.get("soot.SootClass");
-        final QualifiedName prefix = QualifiedName.get("soot");
+        final Name name = Name.get("soot.SootClass");
+        final Name prefix = Name.get("soot");
 
-        assertTrue(qualifiedName.startsWith(prefix));
+        assertTrue(name.startsWith(prefix));
     }
 
     @Test
     public void ToString_OnSimpleQualifiedName_ReturnsCorrectPackageName() {
-        final QualifiedName qualifiedName = QualifiedName.get("simple", "Name");
-        assertEquals(qualifiedName.toString(), "simple.Name");
+        final Name name = Name.get("simple", "Name");
+        assertEquals(name.toString(), "simple.Name");
     }
 
 }

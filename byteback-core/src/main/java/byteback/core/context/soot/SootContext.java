@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import byteback.core.context.ClassLoadException;
 import byteback.core.context.Context;
-import byteback.core.identifier.QualifiedName;
+import byteback.core.identifier.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +69,15 @@ public class SootContext implements Context<SootClassIR> {
     }
 
     /**
+     * Yields the soot.G singleton.
+     *
+     * @return Soot's {@link G} singleton.
+     */
+    private static G globals() {
+        return G.v();
+    }
+
+    /**
      * Initializes fields with the singletons and sets the global Soot options.
      */
     private SootContext() {
@@ -89,7 +98,7 @@ public class SootContext implements Context<SootClassIR> {
      * Resets Soot's globals.
      */
     public void reset() {
-        G.reset();
+        globals().reset();
         configure();
     }
 
@@ -121,10 +130,11 @@ public class SootContext implements Context<SootClassIR> {
      * @return The Soot intermediate representation of the loaded class.
      */
     @Override
-    public SootClassIR loadClass(final QualifiedName className) throws ClassLoadException {
+    public SootClassIR loadClass(final Name className) throws ClassLoadException {
         try {
             final SootClass sootClass = scene().loadClass(className.toString(), SootClass.BODIES);
             log.info("Loaded {} in context", className);
+
             return new SootClassIR(sootClass);
         } catch (AssertionError exception) {
             log.error("Failed to load {}", className);
@@ -140,10 +150,11 @@ public class SootContext implements Context<SootClassIR> {
      * @return The Soot intermediate representation of the loaded root class. 
      */
     @Override
-    public SootClassIR loadClassAndSupport(final QualifiedName className) throws ClassLoadException {
+    public SootClassIR loadClassAndSupport(final Name className) throws ClassLoadException {
         try {
             final SootClass sootClass = scene().loadClassAndSupport(className.toString());
             log.info("Loaded {} and support classes in context", className);
+
             return new SootClassIR(sootClass);
         } catch (AssertionError exception) {
             log.error("Failed to load {}", className);

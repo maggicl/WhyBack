@@ -1,11 +1,14 @@
 package byteback.core.representation.soot;
 
+import byteback.core.identifier.Name;
 import byteback.core.representation.MethodRepresentation;
 import soot.SootMethod;
 
 public class SootMethodIR implements MethodRepresentation {
 
     private final SootMethod sootMethod;
+
+    private final Name relativeName;
 
     /**
      * Constructor for the
@@ -14,11 +17,12 @@ public class SootMethodIR implements MethodRepresentation {
      */
     public SootMethodIR(final SootMethod sootMethod) {
         this.sootMethod = sootMethod;
+        this.relativeName = Name.get(sootMethod.getName());
     }
 
     @Override
-    public String getName() {
-        return sootMethod.getName();
+    public Name getName() {
+        return relativeName;
     }
 
     @Override

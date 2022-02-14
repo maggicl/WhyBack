@@ -2,7 +2,7 @@ package byteback.core.representation.soot;
 
 import java.util.stream.Stream;
 
-import byteback.core.identifier.QualifiedName;
+import byteback.core.identifier.Name;
 import byteback.core.representation.ClassRepresentation;
 import byteback.core.representation.FieldRepresentation;
 import soot.SootClass;
@@ -14,7 +14,7 @@ public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepre
 
     private final SootClass sootClass;
 
-    private final QualifiedName qualifiedName;
+    private final Name name;
 
     /**
      * Constructs the Soot class representation wrapper.
@@ -23,7 +23,7 @@ public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepre
      */
     public SootClassIR(final SootClass sootClass) {
         this.sootClass = sootClass;
-        this.qualifiedName = QualifiedName.get(sootClass.getName());
+        this.name = Name.get(sootClass.getName());
     }
 
     /**
@@ -44,7 +44,7 @@ public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepre
      * @return {@code true} if the instance refers to a basic class.
      */
     public boolean isBasicClass() {
-        return sootClass.isJavaLibraryClass() || qualifiedName.startsWith("jdk");
+        return sootClass.isJavaLibraryClass() || name.startsWith("jdk");
     }
 
     /**
@@ -63,8 +63,8 @@ public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepre
      * @return The qualified name of the class.
      */
     @Override
-    public QualifiedName getQualifiedName() {
-        return qualifiedName;
+    public Name getQualifiedName() {
+        return name;
     }
 
     /**

@@ -2,7 +2,7 @@ package byteback.core.representation;
 
 import java.util.stream.Stream;
 
-import byteback.core.identifier.QualifiedName;
+import byteback.core.identifier.Name;
 
 public interface ClassRepresentation<T extends MethodRepresentation, D extends FieldRepresentation> {
 
@@ -11,7 +11,7 @@ public interface ClassRepresentation<T extends MethodRepresentation, D extends F
      *
      * @return The qualified name of the class.
      */
-    QualifiedName getQualifiedName();
+    Name getQualifiedName();
 
     /**
      * Getter for the stream of method representations.

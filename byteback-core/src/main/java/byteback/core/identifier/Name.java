@@ -5,7 +5,7 @@ import javax.lang.model.SourceVersion;
 /**
  * Represents the qualified name of an entity.
  */
-public class QualifiedName {
+public class Name {
 
     private final String name;
 
@@ -16,10 +16,10 @@ public class QualifiedName {
      * @return The {@code QualifiedName} instance.
      * @throws IllegalArgumentException if the name is not valid.
      */
-    public static QualifiedName get(final String... parts) {
+    public static Name get(final String... parts) {
         final String name = String.join(".", parts);
 
-        return QualifiedName.get(name);
+        return Name.get(name);
     }
 
     /**
@@ -29,8 +29,8 @@ public class QualifiedName {
      * @return The {@code QualifiedName} instance.
      * @throws IllegalArgumentException if the name is not valid.
      */
-    public static QualifiedName get(final String name) {
-        final QualifiedName instance = new QualifiedName(name);
+    public static Name get(final String name) {
+        final Name instance = new Name(name);
 
         if (!instance.validate()) {
             throw new IllegalArgumentException("Invalid qualified name " + instance.name);
@@ -44,7 +44,7 @@ public class QualifiedName {
      *
      * @param name String representing the qualified path.
      */
-    QualifiedName(final String name) {
+    Name(final String name) {
         this.name = name;
     }
 
@@ -61,11 +61,11 @@ public class QualifiedName {
     /**
      * Checks if the qualified name starts with the given name.
      *
-     * @param qualifiedName The given qualified name.
+     * @param name The given qualified name.
      * @return {@code true} if this name is prefixed by the given qualified name.
      */
-    public boolean startsWith(final QualifiedName qualifiedName) {
-        return startsWith(qualifiedName.toString());
+    public boolean startsWith(final Name name) {
+        return startsWith(name.toString());
     }
 
     /**

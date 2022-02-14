@@ -1,5 +1,7 @@
 package byteback.core.representation;
 
+import byteback.core.identifier.Name;
+
 public interface MethodRepresentation {
 
     /**
@@ -7,7 +9,7 @@ public interface MethodRepresentation {
      *
      * @return The name of the method.
      */
-    String getName();
+    Name getName();
 
     /**
      * Checks that the method referred by this representation is private.

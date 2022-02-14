@@ -16,5 +16,5 @@ public class RelativeNameTest {
         final RelativeName relativeName = RelativeName.get("simple");
         assertEquals(relativeName.toString(), "simple");
     }
-    
+
 }

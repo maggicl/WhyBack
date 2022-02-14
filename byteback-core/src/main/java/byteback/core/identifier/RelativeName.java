@@ -1,5 +1,7 @@
 package byteback.core.identifier;
 
+import soot.Type;
+
 /**
  * Represents a simple relative name, taken outside the context of any
  * namespace.
@@ -31,6 +33,7 @@ public class RelativeName extends QualifiedName {
      */
     @Override
     boolean validate() {
+        Type
         return toString().split("\\.").length == 1 && super.validate();
     }
 

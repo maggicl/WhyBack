@@ -63,7 +63,7 @@ public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepre
      * @return The qualified name of the class.
      */
     @Override
-    public Name getQualifiedName() {
+    public Name getName() {
         return name;
     }
 

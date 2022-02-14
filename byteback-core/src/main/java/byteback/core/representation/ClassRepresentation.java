@@ -11,7 +11,7 @@ public interface ClassRepresentation<T extends MethodRepresentation, D extends F
      *
      * @return The qualified name of the class.
      */
-    Name getQualifiedName();
+    Name getName();
 
     /**
      * Getter for the stream of method representations.

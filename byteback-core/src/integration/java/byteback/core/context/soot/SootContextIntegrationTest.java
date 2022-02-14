@@ -68,7 +68,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
         getContext().prependClassPath(classPath);
         final Name unitName = Name.get("byteback", "dummy", "java8", "Unit");
         final SootClassIR sootClass = getContext().loadClass(unitName);
-        assertEquals(sootClass.getQualifiedName().toString(), unitName.toString());
+        assertEquals(sootClass.getName().toString(), unitName.toString());
     }
 
     @Test
@@ -78,7 +78,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
         getContext().prependClassPath(classPath);
         final Name unitName = Name.get("byteback", "dummy", "java8", "Unit");
         final SootClassIR sootClass = getContext().loadClassAndSupport(unitName);
-        assertEquals(sootClass.getQualifiedName().toString(), unitName.toString());
+        assertEquals(sootClass.getName().toString(), unitName.toString());
     }
 
     @Test(expected = ClassLoadException.class)
@@ -134,7 +134,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
         final Name unitName = Name.get("byteback", "dummy", "java8", "Unit");
         getContext().loadClass(unitName);
         assertTrue(getContext().classes().anyMatch((clazz) -> {
-            return clazz.getQualifiedName().toString().equals(unitName.toString());
+            return clazz.getName().toString().equals(unitName.toString());
         }));
     }
 

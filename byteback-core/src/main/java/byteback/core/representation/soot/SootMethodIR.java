@@ -8,7 +8,7 @@ public class SootMethodIR implements MethodRepresentation {
 
     private final SootMethod sootMethod;
 
-    private final Name relativeName;
+    private final Name name;
 
     /**
      * Constructor for the Soot method intermediate representation.
@@ -17,12 +17,12 @@ public class SootMethodIR implements MethodRepresentation {
      */
     public SootMethodIR(final SootMethod sootMethod) {
         this.sootMethod = sootMethod;
-        this.relativeName = Name.get(sootMethod.getName());
+        this.name = Name.get(sootMethod.getName());
     }
 
     @Override
     public Name getName() {
-        return relativeName;
+        return name;
     }
 
     @Override

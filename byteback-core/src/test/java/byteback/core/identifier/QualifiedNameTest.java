@@ -7,17 +7,17 @@ import static org.junit.Assert.*;
 public class QualifiedNameTest {
 
     @Test
-    public void StringConstructor_OnValidName_ReturnsValidClassName() {
-        final QualifiedName className = QualifiedName.get("soot.SootClass");
-        final QualifiedName prefix = QualifiedName.get("soot");
-
-        assertTrue(className.startsWith(prefix));
+    public void ToString_OnSimpleQualifiedName_ReturnsCorrectPackageName() {
+        final QualifiedName qualifiedName = QualifiedName.get("simple", "Name");
+        assertEquals(qualifiedName.toString(), "simple.Name");
     }
 
     @Test
-    public void ToString_OnSimpleQualifiedName_ReturnsCorrectPackageName() {
-        final QualifiedName className = QualifiedName.get("simple", "Name");
-        assertEquals(className.toString(), "simple.Name");
+    public void StartsWith_OnNamePrefix_ReturnsTrue() {
+        final QualifiedName qualifiedName = QualifiedName.get("soot.SootClass");
+        final QualifiedName prefix = QualifiedName.get("soot");
+
+        assertTrue(qualifiedName.startsWith(prefix));
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -3,7 +3,7 @@ package byteback.core.identifier;
 import javax.lang.model.SourceVersion;
 
 /**
- * Represents the qualified name of a class.
+ * Represents the qualified name of an entity.
  */
 public class QualifiedName {
 
@@ -33,18 +33,18 @@ public class QualifiedName {
         final QualifiedName instance = new QualifiedName(name);
 
         if (!instance.validate()) {
-            throw new IllegalArgumentException("Invalid name " + instance.name);
+            throw new IllegalArgumentException("Invalid qualified name " + instance.name);
         }
 
         return instance;
     }
 
     /**
-     * Constructs a classname from its parts.
+     * Constructs a classname from its string representation.
      *
      * @param name String representing the qualified path.
      */
-    private QualifiedName(final String name) {
+    QualifiedName(final String name) {
         this.name = name;
     }
 
@@ -54,7 +54,7 @@ public class QualifiedName {
      *
      * @return {@code true} if the name is valid.
      */
-    private boolean validate() {
+    boolean validate() {
         return SourceVersion.isName(name);
     }
 

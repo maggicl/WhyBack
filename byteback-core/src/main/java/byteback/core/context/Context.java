@@ -16,19 +16,21 @@ public interface Context<T extends ClassRepresentation<?, ?>> {
      * Loads a new class based on the canonical name.
      *
      * @param className The qualified name of the class.
+     * @return The loaded intermediate representation of the class.
      * @throws ClassLoadException If the class could not be loaded into the context.
      */
-    void loadClass(QualifiedName className) throws ClassLoadException;
+    T loadClass(QualifiedName className) throws ClassLoadException;
 
     /**
      * Loads a new class based on the canonical name along with its supporting
      * classes.
      * 
      * @param className The qualified name of the root class.
+     * @return The loaded intermediate representation of the root class.
      * @throws ClassLoadException If the class, or one of its supporting classes
      *                            could not be loaded into the context.
      */
-    void loadClassAndSupport(QualifiedName className) throws ClassLoadException;
+    T loadClassAndSupport(QualifiedName className) throws ClassLoadException;
 
     /**
      * Computes the total number of classes.

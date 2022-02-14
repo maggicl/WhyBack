@@ -118,12 +118,14 @@ public class SootContext implements Context<SootClassIR> {
      * Loads a class in the {@link Scene}.
      *
      * @param className Qualified name of a class present in the Soot's classpath.
+     * @return The Soot intermediate representation of the loaded class.
      */
     @Override
-    public void loadClass(final QualifiedName className) throws ClassLoadException {
+    public SootClassIR loadClass(final QualifiedName className) throws ClassLoadException {
         try {
-            scene().loadClass(className.toString(), SootClass.BODIES);
+            final SootClass sootClass = scene().loadClass(className.toString(), SootClass.BODIES);
             log.info("Loaded {} in context", className);
+            return new SootClassIR(sootClass);
         } catch (AssertionError exception) {
             log.error("Failed to load {}", className);
             throw new ClassLoadException(this, className);
@@ -131,16 +133,18 @@ public class SootContext implements Context<SootClassIR> {
     }
 
     /**
-     * Loads a root class and its supporting classes in the Soot scene.
+     * Loads a root class and its supporting classes in the {@link Scene}.
      *
      * @param className Qualified name of the root class present in the Soot's
      *                  classpath.
+     * @return The Soot intermediate representation of the loaded root class. 
      */
     @Override
-    public void loadClassAndSupport(final QualifiedName className) throws ClassLoadException {
+    public SootClassIR loadClassAndSupport(final QualifiedName className) throws ClassLoadException {
         try {
-            scene().loadClassAndSupport(className.toString());
+            final SootClass sootClass = scene().loadClassAndSupport(className.toString());
             log.info("Loaded {} and support classes in context", className);
+            return new SootClassIR(sootClass);
         } catch (AssertionError exception) {
             log.error("Failed to load {}", className);
             throw new ClassLoadException(this, className);

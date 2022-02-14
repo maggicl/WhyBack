@@ -25,9 +25,9 @@ The structure of ~byteback-dummy~ as for now will be divided based on the target
 **** Add method to access type parameters.
 **** Add method to access annotations.
 ** Create type abstraction
-*** Structure primitive types
-*** Structure reference types
-*** Structure parametric types
+*** TODO Structure primitive types
+*** TODO Structure reference types
+*** TODO Structure parametric types
 ** Create enhanced visitor interface for traversing Jimple's units
-*** Map Soot types to Byteback types
-*** Map Soot entities to wrapped Byteback entities
+*** TODO Map Soot types to Byteback types
+*** TODO Map Soot entities to wrapped Byteback entities

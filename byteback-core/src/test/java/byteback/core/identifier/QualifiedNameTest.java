@@ -6,20 +6,6 @@ import static org.junit.Assert.*;
 
 public class QualifiedNameTest {
 
-    @Test
-    public void ToString_OnSimpleQualifiedName_ReturnsCorrectPackageName() {
-        final QualifiedName qualifiedName = QualifiedName.get("simple", "Name");
-        assertEquals(qualifiedName.toString(), "simple.Name");
-    }
-
-    @Test
-    public void StartsWith_OnNamePrefix_ReturnsTrue() {
-        final QualifiedName qualifiedName = QualifiedName.get("soot.SootClass");
-        final QualifiedName prefix = QualifiedName.get("soot");
-
-        assertTrue(qualifiedName.startsWith(prefix));
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void Get_OnEmptyName_ThrowsIllegalArgumentException() {
         QualifiedName.get("");
@@ -56,10 +42,17 @@ public class QualifiedNameTest {
     }
 
     @Test
-    public void IsPrefixedBy_OnPrefixPattern_ReturnsTrue() {
-        QualifiedName qualifiedName = QualifiedName.get("simple", "prefix");
-        assertTrue(qualifiedName.startsWith("simple"));
-        assertTrue(qualifiedName.startsWith(QualifiedName.get("simple")));
+    public void StartsWith_OnNamePrefix_ReturnsTrue() {
+        final QualifiedName qualifiedName = QualifiedName.get("soot.SootClass");
+        final QualifiedName prefix = QualifiedName.get("soot");
+
+        assertTrue(qualifiedName.startsWith(prefix));
+    }
+
+    @Test
+    public void ToString_OnSimpleQualifiedName_ReturnsCorrectPackageName() {
+        final QualifiedName qualifiedName = QualifiedName.get("simple", "Name");
+        assertEquals(qualifiedName.toString(), "simple.Name");
     }
 
 }

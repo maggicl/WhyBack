@@ -1,4 +1,4 @@
-package byteback.core.identifier;
+package byteback.core.type;
 
 import javax.lang.model.SourceVersion;
 

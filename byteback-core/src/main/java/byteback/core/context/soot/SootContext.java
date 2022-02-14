@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import byteback.core.context.ClassLoadException;
 import byteback.core.context.Context;
-import byteback.core.identifier.Name;
+import byteback.core.type.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

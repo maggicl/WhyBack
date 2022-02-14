@@ -2,7 +2,7 @@ package byteback.core.representation.soot;
 
 import java.util.stream.Stream;
 
-import byteback.core.identifier.Name;
+import byteback.core.type.Name;
 import byteback.core.representation.ClassRepresentation;
 import byteback.core.representation.FieldRepresentation;
 import soot.SootClass;

@@ -2,7 +2,7 @@ package byteback.core.representation.soot;
 
 import byteback.core.ResourcesUtil;
 import byteback.core.context.soot.SootContextFixture;
-import byteback.core.identifier.Name;
+import byteback.core.type.Name;
 
 public class SootClassIRFixture extends SootContextFixture {
 

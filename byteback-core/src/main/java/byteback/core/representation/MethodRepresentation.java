@@ -1,6 +1,6 @@
 package byteback.core.representation;
 
-import byteback.core.identifier.Name;
+import byteback.core.type.Name;
 
 public interface MethodRepresentation {
 

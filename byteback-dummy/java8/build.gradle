@@ -1,6 +1,5 @@
 plugins {
     id 'byteback.java-common-conventions'
-    id 'byteback.java-dummy-conventions'
 }
 
 java {

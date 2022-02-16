@@ -1,4 +1,4 @@
-package byteback.dummy.java8;
+package byteback.dummy;
 
 public class Supported {
 

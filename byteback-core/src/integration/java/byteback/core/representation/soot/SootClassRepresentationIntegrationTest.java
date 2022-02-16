@@ -13,18 +13,18 @@ public class SootClassRepresentationIntegrationTest extends SootClassRepresentat
 
     @Test
     public void GetName_GivenUnitClass_ReturnsCorrectName() {
-        final Name unitName = Name.get("byteback", "dummy", "java8", "Unit");
+        final Name unitName = Name.get("byteback", "dummy", "Unit");
         final SootClassRepresentation classRepresentation = getClass("java8", unitName);
         assertEquals(classRepresentation.getName(), unitName);
     }
 
     @Test
     public void GetType_GivenUnitClass_ReturnsCorrectSootType() {
-        final Name unitName = Name.get("byteback", "dummy", "java8", "Unit");
+        final Name unitName = Name.get("byteback", "dummy", "Unit");
         final SootClassRepresentation classRepresentation = getClass("java8", unitName);
         final SootTypeVisitor visitor = mock(SootTypeVisitor.class);
         classRepresentation.getType().apply(visitor);
-        verify(visitor).caseRefType(RefType.v("byteback.dummy.java8.Unit"));
+        verify(visitor).caseRefType(RefType.v("byteback.dummy.Unit"));
     }
 
 }

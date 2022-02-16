@@ -1,8 +1,9 @@
 package byteback.core.representation;
 
 import byteback.core.type.Name;
+import byteback.core.type.Type;
 
-public interface MethodRepresentation {
+public interface MethodRepresentation<T extends Type<?>> {
 
     /**
      * Getter for the name of the method.
@@ -10,6 +11,13 @@ public interface MethodRepresentation {
      * @return The name of the method.
      */
     Name getName();
+
+    /**
+     * Getter for the return type of the method.
+     *
+     * @return The return type of the method.
+     */
+    T getReturnType();
 
     /**
      * Checks that the method referred by this representation is private.

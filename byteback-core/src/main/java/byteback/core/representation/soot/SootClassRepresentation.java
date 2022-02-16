@@ -4,13 +4,13 @@ import java.util.stream.Stream;
 
 import byteback.core.type.Name;
 import byteback.core.representation.ClassRepresentation;
-import byteback.core.representation.FieldRepresentation;
+import byteback.core.type.soot.SootType;
 import soot.SootClass;
 
 /**
  * Wraps a {@link SootClass} intermediate representation.
  */
-public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepresentation> {
+public class SootClassRepresentation implements ClassRepresentation<SootMethodRepresentation, SootFieldRepresentation, SootType> {
 
     private final SootClass sootClass;
 
@@ -21,7 +21,7 @@ public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepre
      *
      * @param sootClass The wrapped {@link SootClass} class.
      */
-    public SootClassIR(final SootClass sootClass) {
+    public SootClassRepresentation(final SootClass sootClass) {
         this.sootClass = sootClass;
         this.name = Name.get(sootClass.getName());
     }
@@ -29,7 +29,7 @@ public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepre
     /**
      * Checks if this class is a library class.
      *
-     * @return {@code true} if the class refers to a basic class.
+     * @return {@code true} if the class refers to a library class.
      */
     public boolean isLibraryClass() {
         return sootClass.isLibraryClass();
@@ -68,15 +68,25 @@ public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepre
     }
 
     /**
+     * Getter for the type corresponding to this class.
+     *
+     * @return The type corresponding to the {@link SootClass}.
+     */
+    @Override
+    public SootType getType() {
+        return new SootType(sootClass.getType());
+    }
+
+    /**
      * Yields the stream of Soot methods present in the class.
      *
      * @return The stream of method representations.
      */
     @Override
-    public Stream<SootMethodIR> methods() {
+    public Stream<SootMethodRepresentation> methods() {
         assert !isPhantomClass();
 
-        return sootClass.getMethods().stream().map(SootMethodIR::new);
+        return sootClass.getMethods().stream().map(SootMethodRepresentation::new);
     }
 
     /**
@@ -85,7 +95,7 @@ public class SootClassIR implements ClassRepresentation<SootMethodIR, FieldRepre
      * @return The stream of field representations.
      */
     @Override
-    public Stream<FieldRepresentation> fields() {
+    public Stream<SootFieldRepresentation> fields() {
         assert !isPhantomClass();
 
         throw new UnsupportedOperationException();

@@ -7,11 +7,6 @@ public class SootContextFixture {
 
     private static final SootContext context = SootContext.instance();
 
-    @BeforeClass
-    public static void initialize() {
-        context.reset();
-    }
-
     @After
     public void resetContext() {
         context.reset();

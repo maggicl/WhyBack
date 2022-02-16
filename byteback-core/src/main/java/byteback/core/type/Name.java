@@ -88,4 +88,9 @@ public class Name {
         return name;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        return object instanceof Name && ((Name)object).toString().equals(name);
+    }
+
 }

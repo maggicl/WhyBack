@@ -10,7 +10,7 @@ import byteback.core.representation.ClassRepresentation;
  *
  * @param <T> The type of class representation provided by the context.
  */
-public interface Context<T extends ClassRepresentation<?, ?>> {
+public interface Context<T extends ClassRepresentation<?, ?, ?>> {
 
     /**
      * Loads a new class based on the canonical name.

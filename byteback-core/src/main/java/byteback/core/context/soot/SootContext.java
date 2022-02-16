@@ -13,7 +13,7 @@ import byteback.core.type.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import byteback.core.representation.soot.SootClassIR;
+import byteback.core.representation.soot.SootClassRepresentation;
 import soot.G;
 import soot.Scene;
 import soot.SootClass;
@@ -32,7 +32,7 @@ import soot.options.Options;
  * principle also allow us to keep multiple Soot contexts at the same time,
  * without being constrained to the singleton pattern.
  */
-public class SootContext implements Context<SootClassIR> {
+public class SootContext implements Context<SootClassRepresentation> {
 
     private static final Logger log = LoggerFactory.getLogger(SootContext.class);
 
@@ -130,12 +130,12 @@ public class SootContext implements Context<SootClassIR> {
      * @return The Soot intermediate representation of the loaded class.
      */
     @Override
-    public SootClassIR loadClass(final Name className) throws ClassLoadException {
+    public SootClassRepresentation loadClass(final Name className) throws ClassLoadException {
         try {
             final SootClass sootClass = scene().loadClass(className.toString(), SootClass.BODIES);
             log.info("Loaded {} in context", className);
 
-            return new SootClassIR(sootClass);
+            return new SootClassRepresentation(sootClass);
         } catch (AssertionError exception) {
             log.error("Failed to load {}", className);
             throw new ClassLoadException(this, className);
@@ -150,12 +150,12 @@ public class SootContext implements Context<SootClassIR> {
      * @return The Soot intermediate representation of the loaded root class. 
      */
     @Override
-    public SootClassIR loadClassAndSupport(final Name className) throws ClassLoadException {
+    public SootClassRepresentation loadClassAndSupport(final Name className) throws ClassLoadException {
         try {
             final SootClass sootClass = scene().loadClassAndSupport(className.toString());
             log.info("Loaded {} and support classes in context", className);
 
-            return new SootClassIR(sootClass);
+            return new SootClassRepresentation(sootClass);
         } catch (AssertionError exception) {
             log.error("Failed to load {}", className);
             throw new ClassLoadException(this, className);
@@ -178,8 +178,8 @@ public class SootContext implements Context<SootClassIR> {
      * @return The stream of loaded classes in the current context.
      */
     @Override
-    public Stream<SootClassIR> classes() {
-        return scene().getClasses().stream().map(SootClassIR::new);
+    public Stream<SootClassRepresentation> classes() {
+        return scene().getClasses().stream().map(SootClassRepresentation::new);
     }
 
     /**

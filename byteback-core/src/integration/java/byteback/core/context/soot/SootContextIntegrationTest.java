@@ -11,7 +11,7 @@ import byteback.core.context.ClassLoadException;
 import org.junit.Test;
 
 import byteback.core.type.Name;
-import byteback.core.representation.soot.SootClassIR;
+import byteback.core.representation.soot.SootClassRepresentation;
 import byteback.core.ResourcesUtil;
 
 public class SootContextIntegrationTest extends SootContextFixture {
@@ -67,7 +67,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         getContext().prependClassPath(classPath);
         final Name unitName = Name.get("byteback", "dummy", "java8", "Unit");
-        final SootClassIR sootClass = getContext().loadClass(unitName);
+        final SootClassRepresentation sootClass = getContext().loadClass(unitName);
         assertEquals(sootClass.getName().toString(), unitName.toString());
     }
 
@@ -77,7 +77,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         getContext().prependClassPath(classPath);
         final Name unitName = Name.get("byteback", "dummy", "java8", "Unit");
-        final SootClassIR sootClass = getContext().loadClassAndSupport(unitName);
+        final SootClassRepresentation sootClass = getContext().loadClassAndSupport(unitName);
         assertEquals(sootClass.getName().toString(), unitName.toString());
     }
 
@@ -118,7 +118,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
 
     @Test
     public void Classes_GivenUnloadedScene_ReturnsBasicClassesStream() {
-        assertTrue(getContext().classes().allMatch(SootClassIR::isBasicClass));
+        assertTrue(getContext().classes().allMatch(SootClassRepresentation::isBasicClass));
     }
 
     @Test

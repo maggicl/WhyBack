@@ -9,7 +9,8 @@ import java.util.stream.Stream;
 
 import byteback.core.context.ClassLoadException;
 import byteback.core.context.Context;
-import byteback.core.Name;
+import byteback.core.identifier.ClassName;
+import byteback.core.identifier.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,7 +122,7 @@ public class SootContext implements Context<SootClassRepresentation> {
      * @return The Soot intermediate representation of the loaded class.
      */
     @Override
-    public SootClassRepresentation loadClass(final Name className) throws ClassLoadException {
+    public SootClassRepresentation loadClass(final ClassName className) throws ClassLoadException {
         try {
             final SootClass sootClass = scene().loadClass(className.toString(), SootClass.BODIES);
             log.info("Loaded {} in context", className);
@@ -141,7 +142,7 @@ public class SootContext implements Context<SootClassRepresentation> {
      * @return The Soot intermediate representation of the loaded root class.
      */
     @Override
-    public SootClassRepresentation loadClassAndSupport(final Name className) throws ClassLoadException {
+    public SootClassRepresentation loadClassAndSupport(final ClassName className) throws ClassLoadException {
         try {
             final SootClass sootClass = scene().loadClassAndSupport(className.toString());
             log.info("Loaded {} and support classes in context", className);

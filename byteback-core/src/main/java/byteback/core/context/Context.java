@@ -2,7 +2,8 @@ package byteback.core.context;
 
 import java.util.stream.Stream;
 
-import byteback.core.Name;
+import byteback.core.identifier.ClassName;
+import byteback.core.identifier.Name;
 import byteback.core.representation.ClassRepresentation;
 
 /**
@@ -19,7 +20,7 @@ public interface Context<T extends ClassRepresentation<?, ?, ?>> {
      * @return The loaded intermediate representation of the class.
      * @throws ClassLoadException If the class could not be loaded into the context.
      */
-    T loadClass(Name className) throws ClassLoadException;
+    T loadClass(ClassName className) throws ClassLoadException;
 
     /**
      * Loads a new class based on the canonical name along with its supporting
@@ -30,7 +31,7 @@ public interface Context<T extends ClassRepresentation<?, ?, ?>> {
      * @throws ClassLoadException If the class, or one of its supporting classes
      *                            could not be loaded into the context.
      */
-    T loadClassAndSupport(Name className) throws ClassLoadException;
+    T loadClassAndSupport(ClassName className) throws ClassLoadException;
 
     /**
      * Computes the total number of classes.

@@ -1,7 +1,7 @@
 package byteback.core.representation.soot;
 
 import byteback.core.representation.FieldRepresentation;
-import byteback.core.Name;
+import byteback.core.identifier.Name;
 import byteback.core.type.soot.SootType;
 import soot.SootField;
 
@@ -13,7 +13,7 @@ public class SootFieldRepresentation implements FieldRepresentation<SootType> {
 
     public SootFieldRepresentation(final SootField sootField) {
         this.sootField = sootField;
-        this.name = Name.get(sootField.getName());
+        this.name = new Name(sootField.getName());
     }
 
     @Override

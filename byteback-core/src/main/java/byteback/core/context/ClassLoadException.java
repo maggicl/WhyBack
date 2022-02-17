@@ -1,6 +1,6 @@
 package byteback.core.context;
 
-import byteback.core.Name;
+import byteback.core.identifier.Name;
 
 /**
  * Represents a failure in loading a class into the {@link Context}.

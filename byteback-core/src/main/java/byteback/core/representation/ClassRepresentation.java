@@ -2,7 +2,7 @@ package byteback.core.representation;
 
 import java.util.stream.Stream;
 
-import byteback.core.Name;
+import byteback.core.identifier.Name;
 import byteback.core.type.Type;
 
 public interface ClassRepresentation<T extends Type<?>, F extends FieldRepresentation<T>, M extends MethodRepresentation<T>> {

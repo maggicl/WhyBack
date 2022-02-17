@@ -1,6 +1,6 @@
 package byteback.core.representation.soot;
 
-import byteback.core.Name;
+import byteback.core.identifier.MethodName;
 import byteback.core.representation.MethodRepresentation;
 import byteback.core.type.soot.SootType;
 import soot.SootMethod;
@@ -9,7 +9,7 @@ public class SootMethodRepresentation implements MethodRepresentation<SootType> 
 
     private final SootMethod sootMethod;
 
-    private final Name name;
+    private final MethodName name;
 
     /**
      * Constructor for the Soot method intermediate representation.
@@ -18,11 +18,11 @@ public class SootMethodRepresentation implements MethodRepresentation<SootType> 
      */
     public SootMethodRepresentation(final SootMethod sootMethod) {
         this.sootMethod = sootMethod;
-        this.name = Name.get(sootMethod.getName());
+        this.name = new MethodName(sootMethod.getName());
     }
 
     @Override
-    public Name getName() {
+    public MethodName getName() {
         return name;
     }
 

@@ -2,7 +2,7 @@ package byteback.core.representation.soot;
 
 import java.util.stream.Stream;
 
-import byteback.core.Name;
+import byteback.core.identifier.Name;
 import byteback.core.representation.ClassRepresentation;
 import byteback.core.type.soot.SootType;
 import soot.SootClass;
@@ -23,7 +23,7 @@ public class SootClassRepresentation implements ClassRepresentation<SootType, So
      */
     public SootClassRepresentation(final SootClass sootClass) {
         this.sootClass = sootClass;
-        this.name = Name.get(sootClass.getName());
+        this.name = new Name(sootClass.getName());
     }
 
     /**

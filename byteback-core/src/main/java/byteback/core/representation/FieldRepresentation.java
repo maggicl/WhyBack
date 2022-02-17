@@ -1,6 +1,6 @@
 package byteback.core.representation;
 
-import byteback.core.Name;
+import byteback.core.identifier.Name;
 import byteback.core.type.Type;
 
 public interface FieldRepresentation<T extends Type<?>> {

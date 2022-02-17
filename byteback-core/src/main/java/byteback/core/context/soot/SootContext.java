@@ -138,7 +138,7 @@ public class SootContext implements Context<SootClassRepresentation> {
      *
      * @param className Qualified name of the root class present in the Soot's
      *                  classpath.
-     * @return The Soot intermediate representation of the loaded root class. 
+     * @return The Soot intermediate representation of the loaded root class.
      */
     @Override
     public SootClassRepresentation loadClassAndSupport(final Name className) throws ClassLoadException {

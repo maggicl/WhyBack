@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import byteback.core.context.ClassLoadException;
 import byteback.core.context.Context;
-import byteback.core.type.Name;
+import byteback.core.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,15 +69,6 @@ public class SootContext implements Context<SootClassRepresentation> {
     }
 
     /**
-     * Yields the soot.G singleton.
-     *
-     * @return Soot's {@link G} singleton.
-     */
-    private static G globals() {
-        return G.v();
-    }
-
-    /**
      * Initializes fields with the singletons and sets the global Soot options.
      */
     private SootContext() {
@@ -98,7 +89,7 @@ public class SootContext implements Context<SootClassRepresentation> {
      * Resets Soot's globals.
      */
     public void reset() {
-        globals().reset();
+        G.reset();
         configure();
     }
 

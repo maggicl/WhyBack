@@ -1,7 +1,6 @@
 package byteback.core.context.soot;
 
 import org.junit.After;
-import org.junit.BeforeClass;
 
 public class SootContextFixture {
 

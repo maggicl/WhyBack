@@ -2,7 +2,7 @@ package byteback.core.representation.soot;
 
 import java.util.stream.Stream;
 
-import byteback.core.type.Name;
+import byteback.core.Name;
 import byteback.core.representation.ClassRepresentation;
 import byteback.core.type.soot.SootType;
 import soot.SootClass;
@@ -10,7 +10,7 @@ import soot.SootClass;
 /**
  * Wraps a {@link SootClass} intermediate representation.
  */
-public class SootClassRepresentation implements ClassRepresentation<SootMethodRepresentation, SootFieldRepresentation, SootType> {
+public class SootClassRepresentation implements ClassRepresentation<SootType, SootFieldRepresentation, SootMethodRepresentation> {
 
     private final SootClass sootClass;
 

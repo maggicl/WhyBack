@@ -1,7 +1,7 @@
 package byteback.core.representation.soot;
 
 import byteback.core.representation.FieldRepresentation;
-import byteback.core.type.Name;
+import byteback.core.Name;
 import byteback.core.type.soot.SootType;
 import soot.SootField;
 

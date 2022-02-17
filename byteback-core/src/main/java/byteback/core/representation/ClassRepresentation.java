@@ -2,11 +2,10 @@ package byteback.core.representation;
 
 import java.util.stream.Stream;
 
-import byteback.core.Visitor;
-import byteback.core.type.Name;
+import byteback.core.Name;
 import byteback.core.type.Type;
 
-public interface ClassRepresentation<T extends MethodRepresentation<E>, D extends FieldRepresentation<E>, E extends Type<?>> {
+public interface ClassRepresentation<T extends Type<?>, F extends FieldRepresentation<T>, M extends MethodRepresentation<T>> {
 
     /**
      * Getter for the qualified name of the class.
@@ -20,21 +19,21 @@ public interface ClassRepresentation<T extends MethodRepresentation<E>, D extend
      *
      * @return The type corresponding to the class.
      */
-    E getType();
+    T getType();
 
     /**
      * Getter for the stream of method representations.
      *
      * @return The methods stream of the class.
      */
-    Stream<T> methods();
+    Stream<M> methods();
 
     /**
      * Getter for the stream of field representations.
      *
      * @return The fields of the class.
      */
-    Stream<D> fields();
+    Stream<F> fields();
 
     /**
      * Checks that the class referred by this representation is final.

@@ -2,7 +2,7 @@ package byteback.core.context;
 
 import java.util.stream.Stream;
 
-import byteback.core.type.Name;
+import byteback.core.Name;
 import byteback.core.representation.ClassRepresentation;
 
 /**

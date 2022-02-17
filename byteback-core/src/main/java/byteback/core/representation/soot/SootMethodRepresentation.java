@@ -1,6 +1,6 @@
 package byteback.core.representation.soot;
 
-import byteback.core.type.Name;
+import byteback.core.Name;
 import byteback.core.representation.MethodRepresentation;
 import byteback.core.type.soot.SootType;
 import soot.SootMethod;

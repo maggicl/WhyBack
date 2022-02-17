@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import byteback.core.context.ClassLoadException;
 import org.junit.Test;
 
-import byteback.core.type.Name;
+import byteback.core.Name;
 import byteback.core.representation.soot.SootClassRepresentation;
 import byteback.core.ResourcesUtil;
 

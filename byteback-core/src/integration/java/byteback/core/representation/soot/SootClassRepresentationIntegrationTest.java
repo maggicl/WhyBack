@@ -1,6 +1,6 @@
 package byteback.core.representation.soot;
 
-import byteback.core.type.Name;
+import byteback.core.Name;
 import byteback.core.type.soot.SootTypeVisitor;
 import org.junit.Test;
 

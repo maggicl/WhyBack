@@ -1,5 +1,6 @@
 package byteback.core.type;
 
+import byteback.core.Name;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -2,7 +2,7 @@ package byteback.core.representation;
 
 import java.util.stream.Stream;
 
-import byteback.core.identifier.ClassName;
+import byteback.core.identifier.Name;
 import byteback.core.type.Type;
 
 public interface ClassRepresentation<T extends Type<?>, F extends FieldRepresentation<T>, M extends MethodRepresentation<T>> {
@@ -12,7 +12,7 @@ public interface ClassRepresentation<T extends Type<?>, F extends FieldRepresent
      *
      * @return The qualified name of the class.
      */
-    ClassName getName();
+    Name getName();
 
     /**
      * Getter for the type corresponding to the class.
@@ -34,26 +34,5 @@ public interface ClassRepresentation<T extends Type<?>, F extends FieldRepresent
      * @return The fields of the class.
      */
     Stream<F> fields();
-
-    /**
-     * Checks that the class referred by this representation is final.
-     *
-     * @return {@code true} if the method is final.
-     */
-    boolean isFinal();
-
-    /**
-     * Checks that the class referred by this representation is final.
-     *
-     * @return {@code true} if the method is final.
-     */
-    boolean isStatic();
-
-    /**
-     * Checks that the class referred by this representation is final.
-     *
-     * @return {@code true} if the method is final.
-     */
-    boolean isAbstract();
 
 }

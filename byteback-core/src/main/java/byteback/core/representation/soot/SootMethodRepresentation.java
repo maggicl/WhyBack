@@ -31,30 +31,5 @@ public class SootMethodRepresentation implements MethodRepresentation<SootType> 
         return new SootType(sootMethod.getReturnType());
     }
 
-    @Override
-    public boolean isPrivate() {
-        return sootMethod.isPrivate();
-    }
-
-    @Override
-    public boolean isPublic() {
-        return sootMethod.isPublic();
-    }
-
-    @Override
-    public boolean isProtected() {
-        return sootMethod.isProtected();
-    }
-
-    @Override
-    public boolean isStatic() {
-        return sootMethod.isStatic();
-    }
-
-    @Override
-    public boolean isAbstract() {
-        return sootMethod.isAbstract();
-    }
-
 }
  

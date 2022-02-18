@@ -2,7 +2,7 @@ package byteback.core.representation.soot;
 
 import java.util.stream.Stream;
 
-import byteback.core.identifier.ClassName;
+import byteback.core.identifier.Name;
 import byteback.core.representation.ClassRepresentation;
 import byteback.core.type.soot.SootType;
 import soot.SootClass;
@@ -14,7 +14,7 @@ public class SootClassRepresentation implements ClassRepresentation<SootType, So
 
     private final SootClass sootClass;
 
-    private final ClassName name;
+    private final Name name;
 
     /**
      * Constructor the Soot class representation wrapper.
@@ -23,7 +23,7 @@ public class SootClassRepresentation implements ClassRepresentation<SootType, So
      */
     public SootClassRepresentation(final SootClass sootClass) {
         this.sootClass = sootClass;
-        this.name = new ClassName(sootClass.getName());
+        this.name = new Name(sootClass.getName());
     }
 
     /**
@@ -63,7 +63,7 @@ public class SootClassRepresentation implements ClassRepresentation<SootType, So
      * @return The qualified name of the class.
      */
     @Override
-    public ClassName getName() {
+    public Name getName() {
         return name;
     }
 
@@ -99,21 +99,6 @@ public class SootClassRepresentation implements ClassRepresentation<SootType, So
         assert !isPhantomClass();
 
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isFinal() {
-        return sootClass.isFinal();
-    }
-
-    @Override
-    public boolean isStatic() {
-        return sootClass.isStatic();
-    }
-
-    @Override
-    public boolean isAbstract() {
-        return sootClass.isAbstract();
     }
 
 }

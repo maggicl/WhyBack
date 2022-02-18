@@ -1,0 +1,28 @@
+plugins {
+    id 'byteback.java-common-conventions'
+    id 'org.jastadd' version '1.13.0'
+}
+
+jastadd {
+    configureModuleBuild()
+
+    modules "modules"
+    module = "boogie"
+
+    astPackage = "ast"
+    parser.name = "BoogieParser"
+}
+
+dependencies {
+    implementation 'net.sf.beaver:beaver-rt:0.9.11'
+}
+
+test {
+    include 'tests/**'
+    testLogging {
+        events 'passed', 'failed'
+        showExceptions = true
+        showStackTraces = true
+        exceptionFormat = 'full'
+    }
+}

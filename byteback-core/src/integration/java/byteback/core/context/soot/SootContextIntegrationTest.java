@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import byteback.core.context.ClassLoadException;
-import byteback.core.identifier.ClassName;
 import org.junit.Test;
 
 import byteback.core.identifier.Name;
@@ -46,7 +45,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = getContext().getClassesCount();
         getContext().prependClassPath(classPath);
-        final ClassName unitName = new ClassName("byteback.dummy.Unit");
+        final Name unitName = new Name("byteback.dummy.Unit");
         getContext().loadClass(unitName);
         getContext().reset();
         assertEquals(oldCount, getContext().getClassesCount());
@@ -57,7 +56,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = getContext().getClassesCount();
         getContext().prependClassPath(classPath);
-        final ClassName unitName = new ClassName("byteback.dummy.Unit");
+        final Name unitName = new Name("byteback.dummy.Unit");
         getContext().loadClass(unitName);
         final int newCount = getContext().getClassesCount();
         assertEquals(oldCount, newCount - 1);
@@ -67,7 +66,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
     public void LoadClass_OnUnitClass_ReturnUnitClassRepresentation() throws FileNotFoundException, ClassLoadException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         getContext().prependClassPath(classPath);
-        final ClassName unitName = new ClassName("byteback.dummy.Unit");
+        final Name unitName = new Name("byteback.dummy.Unit");
         final SootClassRepresentation sootClass = getContext().loadClass(unitName);
         assertEquals(sootClass.getName().toString(), unitName.toString());
     }
@@ -77,7 +76,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
             throws FileNotFoundException, ClassLoadException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         getContext().prependClassPath(classPath);
-        final ClassName unitName = new ClassName("byteback.dummy.Unit");
+        final Name unitName = new Name("byteback.dummy.Unit");
         final SootClassRepresentation sootClass = getContext().loadClassAndSupport(unitName);
         assertEquals(sootClass.getName().toString(), unitName.toString());
     }
@@ -87,7 +86,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
             throws FileNotFoundException, ClassLoadException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         getContext().prependClassPath(classPath);
-        final ClassName nonExistentName = new ClassName("byteback.dummy.AAAAA");
+        final Name nonExistentName = new Name("byteback.dummy.AAAAA");
         getContext().loadClass(nonExistentName);
     }
 
@@ -97,7 +96,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final int oldCount = getContext().getClassesCount();
         getContext().prependClassPath(classPath);
-        final ClassName supportedName = new ClassName("byteback.dummy.Supported");
+        final Name supportedName = new Name("byteback.dummy.Supported");
         getContext().loadClassAndSupport(supportedName);
         final int newCount = getContext().getClassesCount();
         assertEquals(oldCount, newCount - 2);
@@ -108,7 +107,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
             throws FileNotFoundException, ClassLoadException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         getContext().prependClassPath(classPath);
-        final ClassName nonExistentName = new ClassName("byteback.dummy.AAAAA");
+        final Name nonExistentName = new Name("byteback.dummy.AAAAA");
         getContext().loadClassAndSupport(nonExistentName);
     }
 
@@ -132,7 +131,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
             throws FileNotFoundException, ClassLoadException {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         getContext().prependClassPath(classPath);
-        final ClassName unitName = new ClassName("byteback.dummy.StaticInitializer");
+        final Name unitName = new Name("byteback.dummy.StaticInitializer");
         getContext().loadClass(unitName);
         assertTrue(getContext().classes().anyMatch((clazz) -> clazz.getName().equals(unitName)));
     }

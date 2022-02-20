@@ -32,6 +32,9 @@ Argument ::= Name:Identifier Type;
 
 FunctionArgument : Argument;
 
+// Axiom declaration 
+AxiomDeclaration ::= Expression;
+
 // Expressions
 abstract Expression;
 
@@ -39,7 +42,7 @@ abstract BinaryExpression : Expression ::= LeftOperand:Expression RightOperand:E
 
 abstract UnaryExpression: Expression ::= Operand:Expression;
 
-// Boolean Expressions
+// Boolean expressions
 EquivalenceOperation : BinaryExpression;
 
 ImplicationOperation : BinaryExpression;
@@ -50,7 +53,7 @@ AndOperation : BinaryExpression;
 
 NegationOperation : UnaryExpression;
 
-// Relational Expressions
+// Relational expressions
 EqualsOperation : BinaryExpression;
 
 NotEqualsOperation : BinaryExpression;
@@ -65,7 +68,7 @@ GreaterThanEqualsOperation : BinaryExpression;
 
 PartialOrderOperation : BinaryExpression;
 
-// Arithmetic Expressions
+// Arithmetic expressions
 AdditionOperation : BinaryExpression;
 
 SubtractionOperation : BinaryExpression;
@@ -78,17 +81,17 @@ ModuloOperation : BinaryExpression;
 
 MinusOperation : UnaryExpression;
 
-// Vector Operations
+// Vector expressions
 ConcatenationOperation : BinaryExpression;
 
-// Map Operations
+// Map expressions
 MapAccessOperation : UnaryExpression ::= Indexes:Expression*;
 
 MapRangedAccessOperation : UnaryExpression ::= <RangeStart:Integer> <RangeEnd:Integer>;
 
 MapUpdateOperation : MapAccessOperation ::= Update:Expression;
 
-// Quantifier Expressions
+// Quantifier expressions
 abstract QuantifierExpression : UnaryExpression ::= TypeArguments:TypeArgument* Parameters:QuantifierArgument* Triggers:Expression*;
 
 QuantifierArgument : Argument;
@@ -97,7 +100,10 @@ UniversalQuantifier : QuantifierExpression;
 
 ExistentialQuantifier : QuantifierExpression;
 
-// Literal Expressions
+// Function call
+FunctionCall : Expression ::= Name:Identifier Arguments:Expression*;
+
+// Literal expressions
 abstract Literal : Expression;
 
 NumberLiteral : Literal ::= <Value:Integer>;

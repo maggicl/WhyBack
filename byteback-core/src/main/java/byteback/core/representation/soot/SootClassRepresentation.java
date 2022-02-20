@@ -27,15 +27,6 @@ public class SootClassRepresentation implements ClassRepresentation<SootType, So
     }
 
     /**
-     * Checks if this class is a library class.
-     *
-     * @return {@code true} if the class refers to a library class.
-     */
-    public boolean isLibraryClass() {
-        return sootClass.isLibraryClass();
-    }
-
-    /**
      * Verifies if the class is part of the basic classes set.
      *
      * The original Soot implementation performs simple checks on the prefix of the

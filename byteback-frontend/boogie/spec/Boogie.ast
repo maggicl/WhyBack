@@ -1,0 +1,29 @@
+Program ::= Declaration*;
+
+abstract Declaration ::= Attributes:Attribute*;
+
+abstract TypeDeclaration : Declaration ::= Identifiers:Identifier*;
+
+TypeConstructor : TypeDeclaration ::= <Finite:Boolean>;
+
+TypeSynonym : TypeDeclaration ::= Alias:Type;
+
+Attribute ::= <Label:String> [Argument:Expression];
+
+Identifier ::= <Label:String>;
+
+abstract Type;
+
+BoolType : Type;
+
+IntegerType : Type;
+
+BitVector : Type ::= <Size:Integer>;
+
+ConstructedType : Type ::= Name:Identifier Arguments:Type*;
+
+MapType : Type ::= Arguments:TypeArgument* KeyTypes:Type* ValueType:Type;
+
+TypeArgument ::= Identifier;
+
+abstract Expression;

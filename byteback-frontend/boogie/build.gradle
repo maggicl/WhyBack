@@ -1,28 +1,22 @@
 plugins {
-    id 'byteback.java-common-conventions'
-    id 'org.jastadd' version '1.13.0'
+    id 'java'
+    id 'org.jastadd' version '1.14.5'
+}
+
+repositories {
+    flatDir {
+        dirs 'dist'
+    }
 }
 
 jastadd {
     configureModuleBuild()
-
     modules "modules"
     module = "boogie"
-
-    astPackage = "ast"
+    astPackage = "byteback.frontend.boogie.ast"
     parser.name = "BoogieParser"
-}
 
-dependencies {
-    implementation 'net.sf.beaver:beaver-rt:0.9.11'
-}
-
-test {
-    include 'tests/**'
-    testLogging {
-        events 'passed', 'failed'
-        showExceptions = true
-        showStackTraces = true
-        exceptionFormat = 'full'
-    }
+    genDir = "src/generated"
+    parser.genDir = "src/generated"
+    scanner.genDir = "src/generated/byteback/frontend/boogie/scanner"
 }

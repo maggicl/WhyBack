@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:92
- * @astdecl BitVector : Literal ::= <Value:Integer> <Length:Integer>;
- * @production BitVector : {@link Literal} ::= <span class="component">&lt;Value:Integer&gt;</span> <span class="component">&lt;Length:Integer&gt;</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:111
+ * @astdecl RealLiteral : Literal ::= <Value:String>;
+ * @production RealLiteral : {@link Literal} ::= <span class="component">&lt;Value:String&gt;</span>;
 
  */
-public class BitVector extends Literal implements Cloneable {
+public class RealLiteral extends Literal implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public BitVector() {
+  public RealLiteral() {
     super();
   }
   /**
@@ -27,52 +27,51 @@ public class BitVector extends Literal implements Cloneable {
    * @declaredat ASTNode:12
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Value", "Length"},
-    type = {"Integer", "Integer"},
-    kind = {"Token", "Token"}
+    name = {"Value"},
+    type = {"String"},
+    kind = {"Token"}
   )
-  public BitVector(Integer p0, Integer p1) {
+  public RealLiteral(String p0) {
     setValue(p0);
-    setLength(p1);
   }
   /** @apilevel low-level 
-   * @declaredat ASTNode:22
+   * @declaredat ASTNode:21
    */
   protected int numChildren() {
     return 0;
   }
   /**
    * @apilevel internal
-   * @declaredat ASTNode:28
+   * @declaredat ASTNode:27
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:32
+   * @declaredat ASTNode:31
    */
   public void flushAttrCache() {
     super.flushAttrCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:36
+   * @declaredat ASTNode:35
    */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:40
+   * @declaredat ASTNode:39
    */
-  public BitVector clone() throws CloneNotSupportedException {
-    BitVector node = (BitVector) super.clone();
+  public RealLiteral clone() throws CloneNotSupportedException {
+    RealLiteral node = (RealLiteral) super.clone();
     return node;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:45
+   * @declaredat ASTNode:44
    */
-  public BitVector copy() {
+  public RealLiteral copy() {
     try {
-      BitVector node = (BitVector) clone();
+      RealLiteral node = (RealLiteral) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -88,10 +87,10 @@ public class BitVector extends Literal implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:64
+   * @declaredat ASTNode:63
    */
   @Deprecated
-  public BitVector fullCopy() {
+  public RealLiteral fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -99,10 +98,10 @@ public class BitVector extends Literal implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:74
+   * @declaredat ASTNode:73
    */
-  public BitVector treeCopyNoTransform() {
-    BitVector tree = (BitVector) copy();
+  public RealLiteral treeCopyNoTransform() {
+    RealLiteral tree = (RealLiteral) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -120,10 +119,10 @@ public class BitVector extends Literal implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:94
+   * @declaredat ASTNode:93
    */
-  public BitVector treeCopy() {
-    BitVector tree = (BitVector) copy();
+  public RealLiteral treeCopy() {
+    RealLiteral tree = (RealLiteral) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -136,50 +135,30 @@ public class BitVector extends Literal implements Cloneable {
     return tree;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:108
+   * @declaredat ASTNode:107
    */
   protected boolean is$Equal(ASTNode node) {
-    return super.is$Equal(node) && (tokenInteger_Value == ((BitVector) node).tokenInteger_Value) && (tokenInteger_Length == ((BitVector) node).tokenInteger_Length);    
+    return super.is$Equal(node) && (tokenString_Value == ((RealLiteral) node).tokenString_Value);    
   }
   /**
    * Replaces the lexeme Value.
    * @param value The new value for the lexeme Value.
    * @apilevel high-level
    */
-  public void setValue(Integer value) {
-    tokenInteger_Value = value;
+  public void setValue(String value) {
+    tokenString_Value = value;
   }
   /** @apilevel internal 
    */
-  protected Integer tokenInteger_Value;
+  protected String tokenString_Value;
   /**
    * Retrieves the value for the lexeme Value.
    * @return The value for the lexeme Value.
    * @apilevel high-level
    */
   @ASTNodeAnnotation.Token(name="Value")
-  public Integer getValue() {
-    return tokenInteger_Value;
-  }
-  /**
-   * Replaces the lexeme Length.
-   * @param value The new value for the lexeme Length.
-   * @apilevel high-level
-   */
-  public void setLength(Integer value) {
-    tokenInteger_Length = value;
-  }
-  /** @apilevel internal 
-   */
-  protected Integer tokenInteger_Length;
-  /**
-   * Retrieves the value for the lexeme Length.
-   * @return The value for the lexeme Length.
-   * @apilevel high-level
-   */
-  @ASTNodeAnnotation.Token(name="Length")
-  public Integer getLength() {
-    return tokenInteger_Length;
+  public String getValue() {
+    return tokenString_Value != null ? tokenString_Value : "";
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

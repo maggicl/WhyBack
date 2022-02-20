@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:84
- * @astdecl MapAccess : MapExpression ::= Indexes:Expression*;
- * @production MapAccess : {@link MapExpression} ::= <span class="component">Indexes:{@link Expression}*</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:89
+ * @astdecl MapUpdateOperation : MapAccessOperation ::= Operand:Expression Indexes:Expression* Update:Expression;
+ * @production MapUpdateOperation : {@link MapAccessOperation} ::= <span class="component">Update:{@link Expression}</span>;
 
  */
-public class MapAccess extends MapExpression implements Cloneable {
+public class MapUpdateOperation extends MapAccessOperation implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public MapAccess() {
+  public MapUpdateOperation() {
     super();
   }
   /**
@@ -22,58 +22,60 @@ public class MapAccess extends MapExpression implements Cloneable {
    * @declaredat ASTNode:10
    */
   public void init$Children() {
-    children = new ASTNode[1];
-    setChild(new List(), 0);
+    children = new ASTNode[3];
+    setChild(new List(), 1);
   }
   /**
    * @declaredat ASTNode:14
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Indexes"},
-    type = {"List<Expression>"},
-    kind = {"List"}
+    name = {"Operand", "Indexes", "Update"},
+    type = {"Expression", "List<Expression>", "Expression"},
+    kind = {"Child", "List", "Child"}
   )
-  public MapAccess(List<Expression> p0) {
+  public MapUpdateOperation(Expression p0, List<Expression> p1, Expression p2) {
     setChild(p0, 0);
+    setChild(p1, 1);
+    setChild(p2, 2);
   }
   /** @apilevel low-level 
-   * @declaredat ASTNode:23
+   * @declaredat ASTNode:25
    */
   protected int numChildren() {
-    return 1;
+    return 3;
   }
   /**
    * @apilevel internal
-   * @declaredat ASTNode:29
+   * @declaredat ASTNode:31
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:33
+   * @declaredat ASTNode:35
    */
   public void flushAttrCache() {
     super.flushAttrCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:37
+   * @declaredat ASTNode:39
    */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:41
+   * @declaredat ASTNode:43
    */
-  public MapAccess clone() throws CloneNotSupportedException {
-    MapAccess node = (MapAccess) super.clone();
+  public MapUpdateOperation clone() throws CloneNotSupportedException {
+    MapUpdateOperation node = (MapUpdateOperation) super.clone();
     return node;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:46
+   * @declaredat ASTNode:48
    */
-  public MapAccess copy() {
+  public MapUpdateOperation copy() {
     try {
-      MapAccess node = (MapAccess) clone();
+      MapUpdateOperation node = (MapUpdateOperation) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -89,10 +91,10 @@ public class MapAccess extends MapExpression implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:65
+   * @declaredat ASTNode:67
    */
   @Deprecated
-  public MapAccess fullCopy() {
+  public MapUpdateOperation fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -100,10 +102,10 @@ public class MapAccess extends MapExpression implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:75
+   * @declaredat ASTNode:77
    */
-  public MapAccess treeCopyNoTransform() {
-    MapAccess tree = (MapAccess) copy();
+  public MapUpdateOperation treeCopyNoTransform() {
+    MapUpdateOperation tree = (MapUpdateOperation) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -121,10 +123,10 @@ public class MapAccess extends MapExpression implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:95
+   * @declaredat ASTNode:97
    */
-  public MapAccess treeCopy() {
-    MapAccess tree = (MapAccess) copy();
+  public MapUpdateOperation treeCopy() {
+    MapUpdateOperation tree = (MapUpdateOperation) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -137,10 +139,36 @@ public class MapAccess extends MapExpression implements Cloneable {
     return tree;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:109
+   * @declaredat ASTNode:111
    */
   protected boolean is$Equal(ASTNode node) {
     return super.is$Equal(node);    
+  }
+  /**
+   * Replaces the Operand child.
+   * @param node The new node to replace the Operand child.
+   * @apilevel high-level
+   */
+  public void setOperand(Expression node) {
+    setChild(node, 0);
+  }
+  /**
+   * Retrieves the Operand child.
+   * @return The current node used as the Operand child.
+   * @apilevel high-level
+   */
+  @ASTNodeAnnotation.Child(name="Operand")
+  public Expression getOperand() {
+    return (Expression) getChild(0);
+  }
+  /**
+   * Retrieves the Operand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Operand child.
+   * @apilevel low-level
+   */
+  public Expression getOperandNoTransform() {
+    return (Expression) getChildNoTransform(0);
   }
   /**
    * Replaces the Indexes list.
@@ -148,7 +176,7 @@ public class MapAccess extends MapExpression implements Cloneable {
    * @apilevel high-level
    */
   public void setIndexesList(List<Expression> list) {
-    setChild(list, 0);
+    setChild(list, 1);
   }
   /**
    * Retrieves the number of children in the Indexes list.
@@ -216,7 +244,7 @@ public class MapAccess extends MapExpression implements Cloneable {
    */
   @ASTNodeAnnotation.ListChild(name="Indexes")
   public List<Expression> getIndexesList() {
-    List<Expression> list = (List<Expression>) getChild(0);
+    List<Expression> list = (List<Expression>) getChild(1);
     return list;
   }
   /**
@@ -226,7 +254,7 @@ public class MapAccess extends MapExpression implements Cloneable {
    * @apilevel low-level
    */
   public List<Expression> getIndexesListNoTransform() {
-    return (List<Expression>) getChildNoTransform(0);
+    return (List<Expression>) getChildNoTransform(1);
   }
   /**
    * @return the element at index {@code i} in the Indexes list without
@@ -251,6 +279,32 @@ public class MapAccess extends MapExpression implements Cloneable {
    */
   public List<Expression> getIndexessNoTransform() {
     return getIndexesListNoTransform();
+  }
+  /**
+   * Replaces the Update child.
+   * @param node The new node to replace the Update child.
+   * @apilevel high-level
+   */
+  public void setUpdate(Expression node) {
+    setChild(node, 2);
+  }
+  /**
+   * Retrieves the Update child.
+   * @return The current node used as the Update child.
+   * @apilevel high-level
+   */
+  @ASTNodeAnnotation.Child(name="Update")
+  public Expression getUpdate() {
+    return (Expression) getChild(2);
+  }
+  /**
+   * Retrieves the Update child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Update child.
+   * @apilevel low-level
+   */
+  public Expression getUpdateNoTransform() {
+    return (Expression) getChildNoTransform(2);
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

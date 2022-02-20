@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:128
- * @astdecl TypeArgument : ASTNode ::= Identifier;
- * @production TypeArgument : {@link ASTNode} ::= <span class="component">{@link Identifier}</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:107
+ * @astdecl StringLiteral : Literal ::= <Value:String>;
+ * @production StringLiteral : {@link Literal} ::= <span class="component">&lt;Value:String&gt;</span>;
 
  */
-public class TypeArgument extends ASTNode<ASTNode> implements Cloneable {
+public class StringLiteral extends Literal implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public TypeArgument() {
+  public StringLiteral() {
     super();
   }
   /**
@@ -22,57 +22,56 @@ public class TypeArgument extends ASTNode<ASTNode> implements Cloneable {
    * @declaredat ASTNode:10
    */
   public void init$Children() {
-    children = new ASTNode[1];
   }
   /**
-   * @declaredat ASTNode:13
+   * @declaredat ASTNode:12
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Identifier"},
-    type = {"Identifier"},
-    kind = {"Child"}
+    name = {"Value"},
+    type = {"String"},
+    kind = {"Token"}
   )
-  public TypeArgument(Identifier p0) {
-    setChild(p0, 0);
+  public StringLiteral(String p0) {
+    setValue(p0);
   }
   /** @apilevel low-level 
-   * @declaredat ASTNode:22
+   * @declaredat ASTNode:21
    */
   protected int numChildren() {
-    return 1;
+    return 0;
   }
   /**
    * @apilevel internal
-   * @declaredat ASTNode:28
+   * @declaredat ASTNode:27
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:32
+   * @declaredat ASTNode:31
    */
   public void flushAttrCache() {
     super.flushAttrCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:36
+   * @declaredat ASTNode:35
    */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:40
+   * @declaredat ASTNode:39
    */
-  public TypeArgument clone() throws CloneNotSupportedException {
-    TypeArgument node = (TypeArgument) super.clone();
+  public StringLiteral clone() throws CloneNotSupportedException {
+    StringLiteral node = (StringLiteral) super.clone();
     return node;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:45
+   * @declaredat ASTNode:44
    */
-  public TypeArgument copy() {
+  public StringLiteral copy() {
     try {
-      TypeArgument node = (TypeArgument) clone();
+      StringLiteral node = (StringLiteral) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -88,10 +87,10 @@ public class TypeArgument extends ASTNode<ASTNode> implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:64
+   * @declaredat ASTNode:63
    */
   @Deprecated
-  public TypeArgument fullCopy() {
+  public StringLiteral fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -99,10 +98,10 @@ public class TypeArgument extends ASTNode<ASTNode> implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:74
+   * @declaredat ASTNode:73
    */
-  public TypeArgument treeCopyNoTransform() {
-    TypeArgument tree = (TypeArgument) copy();
+  public StringLiteral treeCopyNoTransform() {
+    StringLiteral tree = (StringLiteral) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -120,10 +119,10 @@ public class TypeArgument extends ASTNode<ASTNode> implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:94
+   * @declaredat ASTNode:93
    */
-  public TypeArgument treeCopy() {
-    TypeArgument tree = (TypeArgument) copy();
+  public StringLiteral treeCopy() {
+    StringLiteral tree = (StringLiteral) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -136,36 +135,30 @@ public class TypeArgument extends ASTNode<ASTNode> implements Cloneable {
     return tree;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:108
+   * @declaredat ASTNode:107
    */
   protected boolean is$Equal(ASTNode node) {
-    return super.is$Equal(node);    
+    return super.is$Equal(node) && (tokenString_Value == ((StringLiteral) node).tokenString_Value);    
   }
   /**
-   * Replaces the Identifier child.
-   * @param node The new node to replace the Identifier child.
+   * Replaces the lexeme Value.
+   * @param value The new value for the lexeme Value.
    * @apilevel high-level
    */
-  public void setIdentifier(Identifier node) {
-    setChild(node, 0);
+  public void setValue(String value) {
+    tokenString_Value = value;
   }
+  /** @apilevel internal 
+   */
+  protected String tokenString_Value;
   /**
-   * Retrieves the Identifier child.
-   * @return The current node used as the Identifier child.
+   * Retrieves the value for the lexeme Value.
+   * @return The value for the lexeme Value.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Child(name="Identifier")
-  public Identifier getIdentifier() {
-    return (Identifier) getChild(0);
-  }
-  /**
-   * Retrieves the Identifier child.
-   * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the Identifier child.
-   * @apilevel low-level
-   */
-  public Identifier getIdentifierNoTransform() {
-    return (Identifier) getChildNoTransform(0);
+  @ASTNodeAnnotation.Token(name="Value")
+  public String getValue() {
+    return tokenString_Value != null ? tokenString_Value : "";
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

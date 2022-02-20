@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:64
- * @astdecl ArithmeticExpression : BinaryExpression ::= LeftOperand:Expression RightOperand:Expression;
- * @production ArithmeticExpression : {@link BinaryExpression};
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:82
+ * @astdecl ConcatenationOperation : BinaryExpression ::= LeftOperand:Expression RightOperand:Expression;
+ * @production ConcatenationOperation : {@link BinaryExpression};
 
  */
-public abstract class ArithmeticExpression extends BinaryExpression implements Cloneable {
+public class ConcatenationOperation extends BinaryExpression implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public ArithmeticExpression() {
+  public ConcatenationOperation() {
     super();
   }
   /**
@@ -32,7 +32,7 @@ public abstract class ArithmeticExpression extends BinaryExpression implements C
     type = {"Expression", "Expression"},
     kind = {"Child", "Child"}
   )
-  public ArithmeticExpression(Expression p0, Expression p1) {
+  public ConcatenationOperation(Expression p0, Expression p1) {
     setChild(p0, 0);
     setChild(p1, 1);
   }
@@ -64,9 +64,24 @@ public abstract class ArithmeticExpression extends BinaryExpression implements C
   /** @apilevel internal 
    * @declaredat ASTNode:41
    */
-  public ArithmeticExpression clone() throws CloneNotSupportedException {
-    ArithmeticExpression node = (ArithmeticExpression) super.clone();
+  public ConcatenationOperation clone() throws CloneNotSupportedException {
+    ConcatenationOperation node = (ConcatenationOperation) super.clone();
     return node;
+  }
+  /** @apilevel internal 
+   * @declaredat ASTNode:46
+   */
+  public ConcatenationOperation copy() {
+    try {
+      ConcatenationOperation node = (ConcatenationOperation) clone();
+      node.parent = null;
+      if (children != null) {
+        node.children = (ASTNode[]) children.clone();
+      }
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " + getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -74,27 +89,59 @@ public abstract class ArithmeticExpression extends BinaryExpression implements C
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:52
+   * @declaredat ASTNode:65
    */
   @Deprecated
-  public abstract ArithmeticExpression fullCopy();
+  public ConcatenationOperation fullCopy() {
+    return treeCopyNoTransform();
+  }
   /**
    * Create a deep copy of the AST subtree at this node.
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:60
+   * @declaredat ASTNode:75
    */
-  public abstract ArithmeticExpression treeCopyNoTransform();
+  public ConcatenationOperation treeCopyNoTransform() {
+    ConcatenationOperation tree = (ConcatenationOperation) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if (child != null) {
+          child = child.treeCopyNoTransform();
+          tree.setChild(child, i);
+        }
+      }
+    }
+    return tree;
+  }
   /**
    * Create a deep copy of the AST subtree at this node.
    * The subtree of this node is traversed to trigger rewrites before copy.
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:68
+   * @declaredat ASTNode:95
    */
-  public abstract ArithmeticExpression treeCopy();
+  public ConcatenationOperation treeCopy() {
+    ConcatenationOperation tree = (ConcatenationOperation) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) getChild(i);
+        if (child != null) {
+          child = child.treeCopy();
+          tree.setChild(child, i);
+        }
+      }
+    }
+    return tree;
+  }
+  /** @apilevel internal 
+   * @declaredat ASTNode:109
+   */
+  protected boolean is$Equal(ASTNode node) {
+    return super.is$Equal(node);    
+  }
   /**
    * Replaces the LeftOperand child.
    * @param node The new node to replace the LeftOperand child.

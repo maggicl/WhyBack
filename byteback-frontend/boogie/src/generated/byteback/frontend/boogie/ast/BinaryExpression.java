@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:36
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:38
  * @astdecl BinaryExpression : Expression ::= LeftOperand:Expression RightOperand:Expression;
  * @production BinaryExpression : {@link Expression} ::= <span class="component">LeftOperand:{@link Expression}</span> <span class="component">RightOperand:{@link Expression}</span>;
 

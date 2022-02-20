@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:82
- * @astdecl MapExpression : Expression;
- * @production MapExpression : {@link Expression};
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:120
+ * @astdecl RealType : Type;
+ * @production RealType : {@link Type};
 
  */
-public abstract class MapExpression extends Expression implements Cloneable {
+public class RealType extends Type implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public MapExpression() {
+  public RealType() {
     super();
   }
   /**
@@ -51,9 +51,24 @@ public abstract class MapExpression extends Expression implements Cloneable {
   /** @apilevel internal 
    * @declaredat ASTNode:31
    */
-  public MapExpression clone() throws CloneNotSupportedException {
-    MapExpression node = (MapExpression) super.clone();
+  public RealType clone() throws CloneNotSupportedException {
+    RealType node = (RealType) super.clone();
     return node;
+  }
+  /** @apilevel internal 
+   * @declaredat ASTNode:36
+   */
+  public RealType copy() {
+    try {
+      RealType node = (RealType) clone();
+      node.parent = null;
+      if (children != null) {
+        node.children = (ASTNode[]) children.clone();
+      }
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " + getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -61,27 +76,59 @@ public abstract class MapExpression extends Expression implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:42
+   * @declaredat ASTNode:55
    */
   @Deprecated
-  public abstract MapExpression fullCopy();
+  public RealType fullCopy() {
+    return treeCopyNoTransform();
+  }
   /**
    * Create a deep copy of the AST subtree at this node.
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:50
+   * @declaredat ASTNode:65
    */
-  public abstract MapExpression treeCopyNoTransform();
+  public RealType treeCopyNoTransform() {
+    RealType tree = (RealType) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if (child != null) {
+          child = child.treeCopyNoTransform();
+          tree.setChild(child, i);
+        }
+      }
+    }
+    return tree;
+  }
   /**
    * Create a deep copy of the AST subtree at this node.
    * The subtree of this node is traversed to trigger rewrites before copy.
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:58
+   * @declaredat ASTNode:85
    */
-  public abstract MapExpression treeCopy();
+  public RealType treeCopy() {
+    RealType tree = (RealType) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) getChild(i);
+        if (child != null) {
+          child = child.treeCopy();
+          tree.setChild(child, i);
+        }
+      }
+    }
+    return tree;
+  }
+  /** @apilevel internal 
+   * @declaredat ASTNode:99
+   */
+  protected boolean is$Equal(ASTNode node) {
+    return super.is$Equal(node);    
+  }
   /** @apilevel internal */
   public ASTNode rewriteTo() {
     return super.rewriteTo();

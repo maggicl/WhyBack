@@ -2,12 +2,12 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:68
- * @astdecl SubtractionOperation : ArithmeticExpression ::= LeftOperand:Expression RightOperand:Expression;
- * @production SubtractionOperation : {@link ArithmeticExpression};
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:71
+ * @astdecl SubtractionOperation : BinaryExpression ::= LeftOperand:Expression RightOperand:Expression;
+ * @production SubtractionOperation : {@link BinaryExpression};
 
  */
-public class SubtractionOperation extends ArithmeticExpression implements Cloneable {
+public class SubtractionOperation extends BinaryExpression implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */

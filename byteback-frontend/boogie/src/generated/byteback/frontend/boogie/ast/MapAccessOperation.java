@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:124
- * @astdecl ConstructedType : Type ::= Name:Identifier Arguments:Type*;
- * @production ConstructedType : {@link Type} ::= <span class="component">Name:{@link Identifier}</span> <span class="component">Arguments:{@link Type}*</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:85
+ * @astdecl MapAccessOperation : UnaryExpression ::= Operand:Expression Indexes:Expression*;
+ * @production MapAccessOperation : {@link UnaryExpression} ::= <span class="component">Indexes:{@link Expression}*</span>;
 
  */
-public class ConstructedType extends Type implements Cloneable {
+public class MapAccessOperation extends UnaryExpression implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public ConstructedType() {
+  public MapAccessOperation() {
     super();
   }
   /**
@@ -29,11 +29,11 @@ public class ConstructedType extends Type implements Cloneable {
    * @declaredat ASTNode:14
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Name", "Arguments"},
-    type = {"Identifier", "List<Type>"},
+    name = {"Operand", "Indexes"},
+    type = {"Expression", "List<Expression>"},
     kind = {"Child", "List"}
   )
-  public ConstructedType(Identifier p0, List<Type> p1) {
+  public MapAccessOperation(Expression p0, List<Expression> p1) {
     setChild(p0, 0);
     setChild(p1, 1);
   }
@@ -65,16 +65,16 @@ public class ConstructedType extends Type implements Cloneable {
   /** @apilevel internal 
    * @declaredat ASTNode:42
    */
-  public ConstructedType clone() throws CloneNotSupportedException {
-    ConstructedType node = (ConstructedType) super.clone();
+  public MapAccessOperation clone() throws CloneNotSupportedException {
+    MapAccessOperation node = (MapAccessOperation) super.clone();
     return node;
   }
   /** @apilevel internal 
    * @declaredat ASTNode:47
    */
-  public ConstructedType copy() {
+  public MapAccessOperation copy() {
     try {
-      ConstructedType node = (ConstructedType) clone();
+      MapAccessOperation node = (MapAccessOperation) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -93,7 +93,7 @@ public class ConstructedType extends Type implements Cloneable {
    * @declaredat ASTNode:66
    */
   @Deprecated
-  public ConstructedType fullCopy() {
+  public MapAccessOperation fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -103,8 +103,8 @@ public class ConstructedType extends Type implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:76
    */
-  public ConstructedType treeCopyNoTransform() {
-    ConstructedType tree = (ConstructedType) copy();
+  public MapAccessOperation treeCopyNoTransform() {
+    MapAccessOperation tree = (MapAccessOperation) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -124,8 +124,8 @@ public class ConstructedType extends Type implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:96
    */
-  public ConstructedType treeCopy() {
-    ConstructedType tree = (ConstructedType) copy();
+  public MapAccessOperation treeCopy() {
+    MapAccessOperation tree = (MapAccessOperation) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -144,140 +144,140 @@ public class ConstructedType extends Type implements Cloneable {
     return super.is$Equal(node);    
   }
   /**
-   * Replaces the Name child.
-   * @param node The new node to replace the Name child.
+   * Replaces the Operand child.
+   * @param node The new node to replace the Operand child.
    * @apilevel high-level
    */
-  public void setName(Identifier node) {
+  public void setOperand(Expression node) {
     setChild(node, 0);
   }
   /**
-   * Retrieves the Name child.
-   * @return The current node used as the Name child.
+   * Retrieves the Operand child.
+   * @return The current node used as the Operand child.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Child(name="Name")
-  public Identifier getName() {
-    return (Identifier) getChild(0);
+  @ASTNodeAnnotation.Child(name="Operand")
+  public Expression getOperand() {
+    return (Expression) getChild(0);
   }
   /**
-   * Retrieves the Name child.
+   * Retrieves the Operand child.
    * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the Name child.
+   * @return The current node used as the Operand child.
    * @apilevel low-level
    */
-  public Identifier getNameNoTransform() {
-    return (Identifier) getChildNoTransform(0);
+  public Expression getOperandNoTransform() {
+    return (Expression) getChildNoTransform(0);
   }
   /**
-   * Replaces the Arguments list.
-   * @param list The new list node to be used as the Arguments list.
+   * Replaces the Indexes list.
+   * @param list The new list node to be used as the Indexes list.
    * @apilevel high-level
    */
-  public void setArgumentsList(List<Type> list) {
+  public void setIndexesList(List<Expression> list) {
     setChild(list, 1);
   }
   /**
-   * Retrieves the number of children in the Arguments list.
-   * @return Number of children in the Arguments list.
+   * Retrieves the number of children in the Indexes list.
+   * @return Number of children in the Indexes list.
    * @apilevel high-level
    */
-  public int getNumArguments() {
-    return getArgumentsList().getNumChild();
+  public int getNumIndexes() {
+    return getIndexesList().getNumChild();
   }
   /**
-   * Retrieves the number of children in the Arguments list.
+   * Retrieves the number of children in the Indexes list.
    * Calling this method will not trigger rewrites.
-   * @return Number of children in the Arguments list.
+   * @return Number of children in the Indexes list.
    * @apilevel low-level
    */
-  public int getNumArgumentsNoTransform() {
-    return getArgumentsListNoTransform().getNumChildNoTransform();
+  public int getNumIndexesNoTransform() {
+    return getIndexesListNoTransform().getNumChildNoTransform();
   }
   /**
-   * Retrieves the element at index {@code i} in the Arguments list.
+   * Retrieves the element at index {@code i} in the Indexes list.
    * @param i Index of the element to return.
-   * @return The element at position {@code i} in the Arguments list.
+   * @return The element at position {@code i} in the Indexes list.
    * @apilevel high-level
    */
-  public Type getArguments(int i) {
-    return (Type) getArgumentsList().getChild(i);
+  public Expression getIndexes(int i) {
+    return (Expression) getIndexesList().getChild(i);
   }
   /**
-   * Check whether the Arguments list has any children.
+   * Check whether the Indexes list has any children.
    * @return {@code true} if it has at least one child, {@code false} otherwise.
    * @apilevel high-level
    */
-  public boolean hasArguments() {
-    return getArgumentsList().getNumChild() != 0;
+  public boolean hasIndexes() {
+    return getIndexesList().getNumChild() != 0;
   }
   /**
-   * Append an element to the Arguments list.
-   * @param node The element to append to the Arguments list.
+   * Append an element to the Indexes list.
+   * @param node The element to append to the Indexes list.
    * @apilevel high-level
    */
-  public void addArguments(Type node) {
-    List<Type> list = (parent == null) ? getArgumentsListNoTransform() : getArgumentsList();
+  public void addIndexes(Expression node) {
+    List<Expression> list = (parent == null) ? getIndexesListNoTransform() : getIndexesList();
     list.addChild(node);
   }
   /** @apilevel low-level 
    */
-  public void addArgumentsNoTransform(Type node) {
-    List<Type> list = getArgumentsListNoTransform();
+  public void addIndexesNoTransform(Expression node) {
+    List<Expression> list = getIndexesListNoTransform();
     list.addChild(node);
   }
   /**
-   * Replaces the Arguments list element at index {@code i} with the new node {@code node}.
+   * Replaces the Indexes list element at index {@code i} with the new node {@code node}.
    * @param node The new node to replace the old list element.
    * @param i The list index of the node to be replaced.
    * @apilevel high-level
    */
-  public void setArguments(Type node, int i) {
-    List<Type> list = getArgumentsList();
+  public void setIndexes(Expression node, int i) {
+    List<Expression> list = getIndexesList();
     list.setChild(node, i);
   }
   /**
-   * Retrieves the Arguments list.
-   * @return The node representing the Arguments list.
+   * Retrieves the Indexes list.
+   * @return The node representing the Indexes list.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.ListChild(name="Arguments")
-  public List<Type> getArgumentsList() {
-    List<Type> list = (List<Type>) getChild(1);
+  @ASTNodeAnnotation.ListChild(name="Indexes")
+  public List<Expression> getIndexesList() {
+    List<Expression> list = (List<Expression>) getChild(1);
     return list;
   }
   /**
-   * Retrieves the Arguments list.
+   * Retrieves the Indexes list.
    * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The node representing the Arguments list.
+   * @return The node representing the Indexes list.
    * @apilevel low-level
    */
-  public List<Type> getArgumentsListNoTransform() {
-    return (List<Type>) getChildNoTransform(1);
+  public List<Expression> getIndexesListNoTransform() {
+    return (List<Expression>) getChildNoTransform(1);
   }
   /**
-   * @return the element at index {@code i} in the Arguments list without
+   * @return the element at index {@code i} in the Indexes list without
    * triggering rewrites.
    */
-  public Type getArgumentsNoTransform(int i) {
-    return (Type) getArgumentsListNoTransform().getChildNoTransform(i);
+  public Expression getIndexesNoTransform(int i) {
+    return (Expression) getIndexesListNoTransform().getChildNoTransform(i);
   }
   /**
-   * Retrieves the Arguments list.
-   * @return The node representing the Arguments list.
+   * Retrieves the Indexes list.
+   * @return The node representing the Indexes list.
    * @apilevel high-level
    */
-  public List<Type> getArgumentss() {
-    return getArgumentsList();
+  public List<Expression> getIndexess() {
+    return getIndexesList();
   }
   /**
-   * Retrieves the Arguments list.
+   * Retrieves the Indexes list.
    * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The node representing the Arguments list.
+   * @return The node representing the Indexes list.
    * @apilevel low-level
    */
-  public List<Type> getArgumentssNoTransform() {
-    return getArgumentsListNoTransform();
+  public List<Expression> getIndexessNoTransform() {
+    return getIndexesListNoTransform();
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

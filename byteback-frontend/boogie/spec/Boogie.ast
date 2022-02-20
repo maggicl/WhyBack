@@ -28,78 +28,87 @@ FunctionDeclaration ::= FunctionSignature;
 
 FunctionSignature ::= TypeArguments:TypeArgument* FunctionArguments:FunctionArgument* ReturnArgument:FunctionArgument;
 
-FunctionArgument ::= Name:Identifier Type;
+Argument ::= Name:Identifier Type;
+
+FunctionArgument : Argument;
 
 // Expressions
 abstract Expression;
 
 abstract BinaryExpression : Expression ::= LeftOperand:Expression RightOperand:Expression;
 
-abstract BooleanExpression : BinaryExpression;
-
-EquivalenceOperation : BooleanExpression;
-
-ImplicationOperation : BooleanExpression;
-
-OrOperation : BooleanExpression;
-
-AndOperation : BooleanExpression;
-
-abstract RelationalExpression : BinaryExpression;
-
-EqualsOperation : RelationalExpression;
-
-NotEqualsOperation : RelationalExpression;
-
-LessThanOperation : RelationalExpression;
-
-GreaterThanOperation : RelationalExpression;
-
-LessThanEqualsOperation : RelationalExpression;
-
-GreaterThanEqualsOperation : RelationalExpression;
-
-PartialOrderOperation : RelationalExpression;
-
-abstract ArithmeticExpression : BinaryExpression;
-
-AdditionOperation : ArithmeticExpression;
-
-SubtractionOperation : ArithmeticExpression;
-
-MultiplicationOperation : ArithmeticExpression;
-
-DivisionOperation : ArithmeticExpression;
-
-ModuloOperation : ArithmeticExpression;
-
-abstract VectorExpression : BinaryExpression;
-
-ConcatenationOperation : VectorExpression;
-
 abstract UnaryExpression: Expression ::= Operand:Expression;
+
+// Boolean Expressions
+EquivalenceOperation : BinaryExpression;
+
+ImplicationOperation : BinaryExpression;
+
+OrOperation : BinaryExpression;
+
+AndOperation : BinaryExpression;
 
 NegationOperation : UnaryExpression;
 
+// Relational Expressions
+EqualsOperation : BinaryExpression;
+
+NotEqualsOperation : BinaryExpression;
+
+LessThanOperation : BinaryExpression;
+
+GreaterThanOperation : BinaryExpression;
+
+LessThanEqualsOperation : BinaryExpression;
+
+GreaterThanEqualsOperation : BinaryExpression;
+
+PartialOrderOperation : BinaryExpression;
+
+// Arithmetic Expressions
+AdditionOperation : BinaryExpression;
+
+SubtractionOperation : BinaryExpression;
+
+MultiplicationOperation : BinaryExpression;
+
+DivisionOperation : BinaryExpression;
+
+ModuloOperation : BinaryExpression;
+
 MinusOperation : UnaryExpression;
 
-abstract MapExpression : UnaryExpression;
+// Vector Operations
+ConcatenationOperation : BinaryExpression;
 
-MapUpdate : MapExpression ::= Location:MapAccess Update:Expression
+// Map Operations
+MapAccessOperation : UnaryExpression ::= Indexes:Expression*;
 
-MapAccess : MapExpression ::= Indexes:Expression*;
+MapRangedAccessOperation : UnaryExpression ::= <RangeStart:Integer> <RangeEnd:Integer>;
 
-MapRangeAccess : MapExpression ::= RangeStart:Number RangeEnd:Number;
+MapUpdateOperation : MapAccessOperation ::= Update:Expression;
 
-// TODO: Quantified expressions
-abstract QuantifierExpression : Expression;
+// Quantifier Expressions
+abstract QuantifierExpression : UnaryExpression ::= TypeArguments:TypeArgument* Parameters:QuantifierArgument* Triggers:Expression*;
 
+QuantifierArgument : Argument;
+
+UniversalQuantifier : QuantifierExpression;
+
+ExistentialQuantifier : QuantifierExpression;
+
+// Literal Expressions
 abstract Literal : Expression;
 
-Number : Literal ::= <Value:Integer>;
+NumberLiteral : Literal ::= <Value:Integer>;
 
-BitVector : Literal ::= <Value:Integer> <Length:Integer>;
+BitVectorLiteral : Literal ::= <Value:Integer> <Size:Integer>;
 
+StringLiteral : Literal ::= <Value:String>;
+
+BoolLiteral : Literal ::= <Value:Boolean>;
+
+RealLiteral : Literal ::= <Value:String>;
 
 // Types
 abstract Type;
@@ -107,6 +116,8 @@ abstract Type;
 BoolType : Type;
 
 IntegerType : Type;
+
+RealType : Type;
 
 BitVectorType : Type ::= <Size:Integer>;
 

@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:86
- * @astdecl MapRange : MapExpression ::= RangeStart:Number RangeEnd:Number;
- * @production MapRange : {@link MapExpression} ::= <span class="component">RangeStart:{@link Number}</span> <span class="component">RangeEnd:{@link Number}</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:105
+ * @astdecl BitVectorLiteral : Literal ::= <Value:Integer> <Size:Integer>;
+ * @production BitVectorLiteral : {@link Literal} ::= <span class="component">&lt;Value:Integer&gt;</span> <span class="component">&lt;Size:Integer&gt;</span>;
 
  */
-public class MapRange extends MapExpression implements Cloneable {
+public class BitVectorLiteral extends Literal implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public MapRange() {
+  public BitVectorLiteral() {
     super();
   }
   /**
@@ -22,58 +22,57 @@ public class MapRange extends MapExpression implements Cloneable {
    * @declaredat ASTNode:10
    */
   public void init$Children() {
-    children = new ASTNode[2];
   }
   /**
-   * @declaredat ASTNode:13
+   * @declaredat ASTNode:12
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"RangeStart", "RangeEnd"},
-    type = {"Number", "Number"},
-    kind = {"Child", "Child"}
+    name = {"Value", "Size"},
+    type = {"Integer", "Integer"},
+    kind = {"Token", "Token"}
   )
-  public MapRange(Number p0, Number p1) {
-    setChild(p0, 0);
-    setChild(p1, 1);
+  public BitVectorLiteral(Integer p0, Integer p1) {
+    setValue(p0);
+    setSize(p1);
   }
   /** @apilevel low-level 
-   * @declaredat ASTNode:23
+   * @declaredat ASTNode:22
    */
   protected int numChildren() {
-    return 2;
+    return 0;
   }
   /**
    * @apilevel internal
-   * @declaredat ASTNode:29
+   * @declaredat ASTNode:28
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:33
+   * @declaredat ASTNode:32
    */
   public void flushAttrCache() {
     super.flushAttrCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:37
+   * @declaredat ASTNode:36
    */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:41
+   * @declaredat ASTNode:40
    */
-  public MapRange clone() throws CloneNotSupportedException {
-    MapRange node = (MapRange) super.clone();
+  public BitVectorLiteral clone() throws CloneNotSupportedException {
+    BitVectorLiteral node = (BitVectorLiteral) super.clone();
     return node;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:46
+   * @declaredat ASTNode:45
    */
-  public MapRange copy() {
+  public BitVectorLiteral copy() {
     try {
-      MapRange node = (MapRange) clone();
+      BitVectorLiteral node = (BitVectorLiteral) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -89,10 +88,10 @@ public class MapRange extends MapExpression implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:65
+   * @declaredat ASTNode:64
    */
   @Deprecated
-  public MapRange fullCopy() {
+  public BitVectorLiteral fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -100,10 +99,10 @@ public class MapRange extends MapExpression implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:75
+   * @declaredat ASTNode:74
    */
-  public MapRange treeCopyNoTransform() {
-    MapRange tree = (MapRange) copy();
+  public BitVectorLiteral treeCopyNoTransform() {
+    BitVectorLiteral tree = (BitVectorLiteral) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -121,10 +120,10 @@ public class MapRange extends MapExpression implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:95
+   * @declaredat ASTNode:94
    */
-  public MapRange treeCopy() {
-    MapRange tree = (MapRange) copy();
+  public BitVectorLiteral treeCopy() {
+    BitVectorLiteral tree = (BitVectorLiteral) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -137,62 +136,50 @@ public class MapRange extends MapExpression implements Cloneable {
     return tree;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:109
+   * @declaredat ASTNode:108
    */
   protected boolean is$Equal(ASTNode node) {
-    return super.is$Equal(node);    
+    return super.is$Equal(node) && (tokenInteger_Value == ((BitVectorLiteral) node).tokenInteger_Value) && (tokenInteger_Size == ((BitVectorLiteral) node).tokenInteger_Size);    
   }
   /**
-   * Replaces the RangeStart child.
-   * @param node The new node to replace the RangeStart child.
+   * Replaces the lexeme Value.
+   * @param value The new value for the lexeme Value.
    * @apilevel high-level
    */
-  public void setRangeStart(Number node) {
-    setChild(node, 0);
+  public void setValue(Integer value) {
+    tokenInteger_Value = value;
   }
+  /** @apilevel internal 
+   */
+  protected Integer tokenInteger_Value;
   /**
-   * Retrieves the RangeStart child.
-   * @return The current node used as the RangeStart child.
+   * Retrieves the value for the lexeme Value.
+   * @return The value for the lexeme Value.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Child(name="RangeStart")
-  public Number getRangeStart() {
-    return (Number) getChild(0);
+  @ASTNodeAnnotation.Token(name="Value")
+  public Integer getValue() {
+    return tokenInteger_Value;
   }
   /**
-   * Retrieves the RangeStart child.
-   * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the RangeStart child.
-   * @apilevel low-level
-   */
-  public Number getRangeStartNoTransform() {
-    return (Number) getChildNoTransform(0);
-  }
-  /**
-   * Replaces the RangeEnd child.
-   * @param node The new node to replace the RangeEnd child.
+   * Replaces the lexeme Size.
+   * @param value The new value for the lexeme Size.
    * @apilevel high-level
    */
-  public void setRangeEnd(Number node) {
-    setChild(node, 1);
+  public void setSize(Integer value) {
+    tokenInteger_Size = value;
   }
+  /** @apilevel internal 
+   */
+  protected Integer tokenInteger_Size;
   /**
-   * Retrieves the RangeEnd child.
-   * @return The current node used as the RangeEnd child.
+   * Retrieves the value for the lexeme Size.
+   * @return The value for the lexeme Size.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Child(name="RangeEnd")
-  public Number getRangeEnd() {
-    return (Number) getChild(1);
-  }
-  /**
-   * Retrieves the RangeEnd child.
-   * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the RangeEnd child.
-   * @apilevel low-level
-   */
-  public Number getRangeEndNoTransform() {
-    return (Number) getChildNoTransform(1);
+  @ASTNodeAnnotation.Token(name="Size")
+  public Integer getSize() {
+    return tokenInteger_Size;
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

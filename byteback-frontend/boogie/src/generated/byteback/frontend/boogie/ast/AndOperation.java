@@ -2,12 +2,12 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:46
- * @astdecl AndOperation : BooleanExpression ::= LeftOperand:Expression RightOperand:Expression;
- * @production AndOperation : {@link BooleanExpression};
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:49
+ * @astdecl AndOperation : BinaryExpression ::= LeftOperand:Expression RightOperand:Expression;
+ * @production AndOperation : {@link BinaryExpression};
 
  */
-public class AndOperation extends BooleanExpression implements Cloneable {
+public class AndOperation extends BinaryExpression implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */

@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:79
- * @astdecl MinusOperation : UnaryExpression ::= Operand:Expression;
- * @production MinusOperation : {@link UnaryExpression};
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:87
+ * @astdecl MapRangedAccessOperation : UnaryExpression ::= Operand:Expression <RangeStart:Integer> <RangeEnd:Integer>;
+ * @production MapRangedAccessOperation : {@link UnaryExpression} ::= <span class="component">&lt;RangeStart:Integer&gt;</span> <span class="component">&lt;RangeEnd:Integer&gt;</span>;
 
  */
-public class MinusOperation extends UnaryExpression implements Cloneable {
+public class MapRangedAccessOperation extends UnaryExpression implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public MinusOperation() {
+  public MapRangedAccessOperation() {
     super();
   }
   /**
@@ -28,51 +28,53 @@ public class MinusOperation extends UnaryExpression implements Cloneable {
    * @declaredat ASTNode:13
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Operand"},
-    type = {"Expression"},
-    kind = {"Child"}
+    name = {"Operand", "RangeStart", "RangeEnd"},
+    type = {"Expression", "Integer", "Integer"},
+    kind = {"Child", "Token", "Token"}
   )
-  public MinusOperation(Expression p0) {
+  public MapRangedAccessOperation(Expression p0, Integer p1, Integer p2) {
     setChild(p0, 0);
+    setRangeStart(p1);
+    setRangeEnd(p2);
   }
   /** @apilevel low-level 
-   * @declaredat ASTNode:22
+   * @declaredat ASTNode:24
    */
   protected int numChildren() {
     return 1;
   }
   /**
    * @apilevel internal
-   * @declaredat ASTNode:28
+   * @declaredat ASTNode:30
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:32
+   * @declaredat ASTNode:34
    */
   public void flushAttrCache() {
     super.flushAttrCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:36
+   * @declaredat ASTNode:38
    */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:40
+   * @declaredat ASTNode:42
    */
-  public MinusOperation clone() throws CloneNotSupportedException {
-    MinusOperation node = (MinusOperation) super.clone();
+  public MapRangedAccessOperation clone() throws CloneNotSupportedException {
+    MapRangedAccessOperation node = (MapRangedAccessOperation) super.clone();
     return node;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:45
+   * @declaredat ASTNode:47
    */
-  public MinusOperation copy() {
+  public MapRangedAccessOperation copy() {
     try {
-      MinusOperation node = (MinusOperation) clone();
+      MapRangedAccessOperation node = (MapRangedAccessOperation) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -88,10 +90,10 @@ public class MinusOperation extends UnaryExpression implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:64
+   * @declaredat ASTNode:66
    */
   @Deprecated
-  public MinusOperation fullCopy() {
+  public MapRangedAccessOperation fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -99,10 +101,10 @@ public class MinusOperation extends UnaryExpression implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:74
+   * @declaredat ASTNode:76
    */
-  public MinusOperation treeCopyNoTransform() {
-    MinusOperation tree = (MinusOperation) copy();
+  public MapRangedAccessOperation treeCopyNoTransform() {
+    MapRangedAccessOperation tree = (MapRangedAccessOperation) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -120,10 +122,10 @@ public class MinusOperation extends UnaryExpression implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:94
+   * @declaredat ASTNode:96
    */
-  public MinusOperation treeCopy() {
-    MinusOperation tree = (MinusOperation) copy();
+  public MapRangedAccessOperation treeCopy() {
+    MapRangedAccessOperation tree = (MapRangedAccessOperation) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -136,10 +138,10 @@ public class MinusOperation extends UnaryExpression implements Cloneable {
     return tree;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:108
+   * @declaredat ASTNode:110
    */
   protected boolean is$Equal(ASTNode node) {
-    return super.is$Equal(node);    
+    return super.is$Equal(node) && (tokenInteger_RangeStart == ((MapRangedAccessOperation) node).tokenInteger_RangeStart) && (tokenInteger_RangeEnd == ((MapRangedAccessOperation) node).tokenInteger_RangeEnd);    
   }
   /**
    * Replaces the Operand child.
@@ -166,6 +168,46 @@ public class MinusOperation extends UnaryExpression implements Cloneable {
    */
   public Expression getOperandNoTransform() {
     return (Expression) getChildNoTransform(0);
+  }
+  /**
+   * Replaces the lexeme RangeStart.
+   * @param value The new value for the lexeme RangeStart.
+   * @apilevel high-level
+   */
+  public void setRangeStart(Integer value) {
+    tokenInteger_RangeStart = value;
+  }
+  /** @apilevel internal 
+   */
+  protected Integer tokenInteger_RangeStart;
+  /**
+   * Retrieves the value for the lexeme RangeStart.
+   * @return The value for the lexeme RangeStart.
+   * @apilevel high-level
+   */
+  @ASTNodeAnnotation.Token(name="RangeStart")
+  public Integer getRangeStart() {
+    return tokenInteger_RangeStart;
+  }
+  /**
+   * Replaces the lexeme RangeEnd.
+   * @param value The new value for the lexeme RangeEnd.
+   * @apilevel high-level
+   */
+  public void setRangeEnd(Integer value) {
+    tokenInteger_RangeEnd = value;
+  }
+  /** @apilevel internal 
+   */
+  protected Integer tokenInteger_RangeEnd;
+  /**
+   * Retrieves the value for the lexeme RangeEnd.
+   * @return The value for the lexeme RangeEnd.
+   * @apilevel high-level
+   */
+  @ASTNodeAnnotation.Token(name="RangeEnd")
+  public Integer getRangeEnd() {
+    return tokenInteger_RangeEnd;
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

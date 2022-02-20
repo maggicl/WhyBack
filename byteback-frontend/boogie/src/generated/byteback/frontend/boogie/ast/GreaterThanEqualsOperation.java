@@ -2,12 +2,12 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:60
- * @astdecl GreaterThanEqualsOperation : RelationalExpression ::= LeftOperand:Expression RightOperand:Expression;
- * @production GreaterThanEqualsOperation : {@link RelationalExpression};
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:64
+ * @astdecl GreaterThanEqualsOperation : BinaryExpression ::= LeftOperand:Expression RightOperand:Expression;
+ * @production GreaterThanEqualsOperation : {@link BinaryExpression};
 
  */
-public class GreaterThanEqualsOperation extends RelationalExpression implements Cloneable {
+public class GreaterThanEqualsOperation extends BinaryExpression implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */

@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:103
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:122
  * @astdecl BitVectorType : Type ::= <Size:Integer>;
  * @production BitVectorType : {@link Type} ::= <span class="component">&lt;Size:Integer&gt;</span>;
 

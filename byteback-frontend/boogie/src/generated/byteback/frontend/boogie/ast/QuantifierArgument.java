@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:66
- * @astdecl PartialOrderOperation : BinaryExpression ::= LeftOperand:Expression RightOperand:Expression;
- * @production PartialOrderOperation : {@link BinaryExpression};
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:94
+ * @astdecl QuantifierArgument : Argument ::= Name:Identifier Type;
+ * @production QuantifierArgument : {@link Argument};
 
  */
-public class PartialOrderOperation extends BinaryExpression implements Cloneable {
+public class QuantifierArgument extends Argument implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public PartialOrderOperation() {
+  public QuantifierArgument() {
     super();
   }
   /**
@@ -28,11 +28,11 @@ public class PartialOrderOperation extends BinaryExpression implements Cloneable
    * @declaredat ASTNode:13
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"LeftOperand", "RightOperand"},
-    type = {"Expression", "Expression"},
+    name = {"Name", "Type"},
+    type = {"Identifier", "Type"},
     kind = {"Child", "Child"}
   )
-  public PartialOrderOperation(Expression p0, Expression p1) {
+  public QuantifierArgument(Identifier p0, Type p1) {
     setChild(p0, 0);
     setChild(p1, 1);
   }
@@ -64,16 +64,16 @@ public class PartialOrderOperation extends BinaryExpression implements Cloneable
   /** @apilevel internal 
    * @declaredat ASTNode:41
    */
-  public PartialOrderOperation clone() throws CloneNotSupportedException {
-    PartialOrderOperation node = (PartialOrderOperation) super.clone();
+  public QuantifierArgument clone() throws CloneNotSupportedException {
+    QuantifierArgument node = (QuantifierArgument) super.clone();
     return node;
   }
   /** @apilevel internal 
    * @declaredat ASTNode:46
    */
-  public PartialOrderOperation copy() {
+  public QuantifierArgument copy() {
     try {
-      PartialOrderOperation node = (PartialOrderOperation) clone();
+      QuantifierArgument node = (QuantifierArgument) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -92,7 +92,7 @@ public class PartialOrderOperation extends BinaryExpression implements Cloneable
    * @declaredat ASTNode:65
    */
   @Deprecated
-  public PartialOrderOperation fullCopy() {
+  public QuantifierArgument fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -102,8 +102,8 @@ public class PartialOrderOperation extends BinaryExpression implements Cloneable
    * @apilevel low-level
    * @declaredat ASTNode:75
    */
-  public PartialOrderOperation treeCopyNoTransform() {
-    PartialOrderOperation tree = (PartialOrderOperation) copy();
+  public QuantifierArgument treeCopyNoTransform() {
+    QuantifierArgument tree = (QuantifierArgument) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -123,8 +123,8 @@ public class PartialOrderOperation extends BinaryExpression implements Cloneable
    * @apilevel low-level
    * @declaredat ASTNode:95
    */
-  public PartialOrderOperation treeCopy() {
-    PartialOrderOperation tree = (PartialOrderOperation) copy();
+  public QuantifierArgument treeCopy() {
+    QuantifierArgument tree = (QuantifierArgument) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -143,56 +143,56 @@ public class PartialOrderOperation extends BinaryExpression implements Cloneable
     return super.is$Equal(node);    
   }
   /**
-   * Replaces the LeftOperand child.
-   * @param node The new node to replace the LeftOperand child.
+   * Replaces the Name child.
+   * @param node The new node to replace the Name child.
    * @apilevel high-level
    */
-  public void setLeftOperand(Expression node) {
+  public void setName(Identifier node) {
     setChild(node, 0);
   }
   /**
-   * Retrieves the LeftOperand child.
-   * @return The current node used as the LeftOperand child.
+   * Retrieves the Name child.
+   * @return The current node used as the Name child.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Child(name="LeftOperand")
-  public Expression getLeftOperand() {
-    return (Expression) getChild(0);
+  @ASTNodeAnnotation.Child(name="Name")
+  public Identifier getName() {
+    return (Identifier) getChild(0);
   }
   /**
-   * Retrieves the LeftOperand child.
+   * Retrieves the Name child.
    * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the LeftOperand child.
+   * @return The current node used as the Name child.
    * @apilevel low-level
    */
-  public Expression getLeftOperandNoTransform() {
-    return (Expression) getChildNoTransform(0);
+  public Identifier getNameNoTransform() {
+    return (Identifier) getChildNoTransform(0);
   }
   /**
-   * Replaces the RightOperand child.
-   * @param node The new node to replace the RightOperand child.
+   * Replaces the Type child.
+   * @param node The new node to replace the Type child.
    * @apilevel high-level
    */
-  public void setRightOperand(Expression node) {
+  public void setType(Type node) {
     setChild(node, 1);
   }
   /**
-   * Retrieves the RightOperand child.
-   * @return The current node used as the RightOperand child.
+   * Retrieves the Type child.
+   * @return The current node used as the Type child.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Child(name="RightOperand")
-  public Expression getRightOperand() {
-    return (Expression) getChild(1);
+  @ASTNodeAnnotation.Child(name="Type")
+  public Type getType() {
+    return (Type) getChild(1);
   }
   /**
-   * Retrieves the RightOperand child.
+   * Retrieves the Type child.
    * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the RightOperand child.
+   * @return The current node used as the Type child.
    * @apilevel low-level
    */
-  public Expression getRightOperandNoTransform() {
-    return (Expression) getChildNoTransform(1);
+  public Type getTypeNoTransform() {
+    return (Type) getChildNoTransform(1);
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

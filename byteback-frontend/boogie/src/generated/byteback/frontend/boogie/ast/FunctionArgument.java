@@ -2,12 +2,12 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:31
- * @astdecl FunctionArgument : ASTNode ::= Name:Identifier Type;
- * @production FunctionArgument : {@link ASTNode} ::= <span class="component">Name:{@link Identifier}</span> <span class="component">{@link Type}</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:33
+ * @astdecl FunctionArgument : Argument ::= Name:Identifier Type;
+ * @production FunctionArgument : {@link Argument};
 
  */
-public class FunctionArgument extends ASTNode<ASTNode> implements Cloneable {
+public class FunctionArgument extends Argument implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */

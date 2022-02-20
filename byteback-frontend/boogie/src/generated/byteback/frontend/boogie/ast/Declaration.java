@@ -2,9 +2,9 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:3
- * @astdecl Declaration : ASTNode ::= Attributes:Attribute*;
- * @production Declaration : {@link ASTNode} ::= <span class="component">Attributes:{@link Attribute}*</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:4
+ * @astdecl Declaration : ASTNode ::= Identifier:Identifier Attributes:Attribute*;
+ * @production Declaration : {@link ASTNode} ::= <span class="component">Identifier:{@link Identifier}</span> <span class="component">Attributes:{@link Attribute}*</span>;
 
  */
 public abstract class Declaration extends ASTNode<ASTNode> implements Cloneable {
@@ -22,47 +22,48 @@ public abstract class Declaration extends ASTNode<ASTNode> implements Cloneable 
    * @declaredat ASTNode:10
    */
   public void init$Children() {
-    children = new ASTNode[1];
-    setChild(new List(), 0);
+    children = new ASTNode[2];
+    setChild(new List(), 1);
   }
   /**
    * @declaredat ASTNode:14
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Attributes"},
-    type = {"List<Attribute>"},
-    kind = {"List"}
+    name = {"Identifier", "Attributes"},
+    type = {"Identifier", "List<Attribute>"},
+    kind = {"Child", "List"}
   )
-  public Declaration(List<Attribute> p0) {
+  public Declaration(Identifier p0, List<Attribute> p1) {
     setChild(p0, 0);
+    setChild(p1, 1);
   }
   /** @apilevel low-level 
-   * @declaredat ASTNode:23
+   * @declaredat ASTNode:24
    */
   protected int numChildren() {
-    return 1;
+    return 2;
   }
   /**
    * @apilevel internal
-   * @declaredat ASTNode:29
+   * @declaredat ASTNode:30
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:33
+   * @declaredat ASTNode:34
    */
   public void flushAttrCache() {
     super.flushAttrCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:37
+   * @declaredat ASTNode:38
    */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:41
+   * @declaredat ASTNode:42
    */
   public Declaration clone() throws CloneNotSupportedException {
     Declaration node = (Declaration) super.clone();
@@ -74,7 +75,7 @@ public abstract class Declaration extends ASTNode<ASTNode> implements Cloneable 
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:52
+   * @declaredat ASTNode:53
    */
   @Deprecated
   public abstract Declaration fullCopy();
@@ -83,7 +84,7 @@ public abstract class Declaration extends ASTNode<ASTNode> implements Cloneable 
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:60
+   * @declaredat ASTNode:61
    */
   public abstract Declaration treeCopyNoTransform();
   /**
@@ -92,16 +93,42 @@ public abstract class Declaration extends ASTNode<ASTNode> implements Cloneable 
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:68
+   * @declaredat ASTNode:69
    */
   public abstract Declaration treeCopy();
+  /**
+   * Replaces the Identifier child.
+   * @param node The new node to replace the Identifier child.
+   * @apilevel high-level
+   */
+  public void setIdentifier(Identifier node) {
+    setChild(node, 0);
+  }
+  /**
+   * Retrieves the Identifier child.
+   * @return The current node used as the Identifier child.
+   * @apilevel high-level
+   */
+  @ASTNodeAnnotation.Child(name="Identifier")
+  public Identifier getIdentifier() {
+    return (Identifier) getChild(0);
+  }
+  /**
+   * Retrieves the Identifier child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Identifier child.
+   * @apilevel low-level
+   */
+  public Identifier getIdentifierNoTransform() {
+    return (Identifier) getChildNoTransform(0);
+  }
   /**
    * Replaces the Attributes list.
    * @param list The new list node to be used as the Attributes list.
    * @apilevel high-level
    */
   public void setAttributesList(List<Attribute> list) {
-    setChild(list, 0);
+    setChild(list, 1);
   }
   /**
    * Retrieves the number of children in the Attributes list.
@@ -169,7 +196,7 @@ public abstract class Declaration extends ASTNode<ASTNode> implements Cloneable 
    */
   @ASTNodeAnnotation.ListChild(name="Attributes")
   public List<Attribute> getAttributesList() {
-    List<Attribute> list = (List<Attribute>) getChild(0);
+    List<Attribute> list = (List<Attribute>) getChild(1);
     return list;
   }
   /**
@@ -179,7 +206,7 @@ public abstract class Declaration extends ASTNode<ASTNode> implements Cloneable 
    * @apilevel low-level
    */
   public List<Attribute> getAttributesListNoTransform() {
-    return (List<Attribute>) getChildNoTransform(0);
+    return (List<Attribute>) getChildNoTransform(1);
   }
   /**
    * @return the element at index {@code i} in the Attributes list without

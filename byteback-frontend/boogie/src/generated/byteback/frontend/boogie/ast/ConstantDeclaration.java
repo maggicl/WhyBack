@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:11
- * @astdecl TypeConstructor : TypeDeclaration ::= Identifier:Identifier Attributes:Attribute* Arguments:TypeArgument* <Finite:Boolean>;
- * @production TypeConstructor : {@link TypeDeclaration} ::= <span class="component">&lt;Finite:Boolean&gt;</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:18
+ * @astdecl ConstantDeclaration : Declaration ::= Identifier:Identifier Attributes:Attribute* <Unique:Boolean> OrderSpecification;
+ * @production ConstantDeclaration : {@link Declaration} ::= <span class="component">&lt;Unique:Boolean&gt;</span> <span class="component">{@link OrderSpecification}</span>;
 
  */
-public class TypeConstructor extends TypeDeclaration implements Cloneable {
+public class ConstantDeclaration extends Declaration implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public TypeConstructor() {
+  public ConstantDeclaration() {
     super();
   }
   /**
@@ -24,60 +24,59 @@ public class TypeConstructor extends TypeDeclaration implements Cloneable {
   public void init$Children() {
     children = new ASTNode[3];
     setChild(new List(), 1);
-    setChild(new List(), 2);
   }
   /**
-   * @declaredat ASTNode:15
+   * @declaredat ASTNode:14
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Identifier", "Attributes", "Arguments", "Finite"},
-    type = {"Identifier", "List<Attribute>", "List<TypeArgument>", "Boolean"},
-    kind = {"Child", "List", "List", "Token"}
+    name = {"Identifier", "Attributes", "Unique", "OrderSpecification"},
+    type = {"Identifier", "List<Attribute>", "Boolean", "OrderSpecification"},
+    kind = {"Child", "List", "Token", "Child"}
   )
-  public TypeConstructor(Identifier p0, List<Attribute> p1, List<TypeArgument> p2, Boolean p3) {
+  public ConstantDeclaration(Identifier p0, List<Attribute> p1, Boolean p2, OrderSpecification p3) {
     setChild(p0, 0);
     setChild(p1, 1);
-    setChild(p2, 2);
-    setFinite(p3);
+    setUnique(p2);
+    setChild(p3, 2);
   }
   /** @apilevel low-level 
-   * @declaredat ASTNode:27
+   * @declaredat ASTNode:26
    */
   protected int numChildren() {
     return 3;
   }
   /**
    * @apilevel internal
-   * @declaredat ASTNode:33
+   * @declaredat ASTNode:32
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:37
+   * @declaredat ASTNode:36
    */
   public void flushAttrCache() {
     super.flushAttrCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:41
+   * @declaredat ASTNode:40
    */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:45
+   * @declaredat ASTNode:44
    */
-  public TypeConstructor clone() throws CloneNotSupportedException {
-    TypeConstructor node = (TypeConstructor) super.clone();
+  public ConstantDeclaration clone() throws CloneNotSupportedException {
+    ConstantDeclaration node = (ConstantDeclaration) super.clone();
     return node;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:50
+   * @declaredat ASTNode:49
    */
-  public TypeConstructor copy() {
+  public ConstantDeclaration copy() {
     try {
-      TypeConstructor node = (TypeConstructor) clone();
+      ConstantDeclaration node = (ConstantDeclaration) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -93,10 +92,10 @@ public class TypeConstructor extends TypeDeclaration implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:69
+   * @declaredat ASTNode:68
    */
   @Deprecated
-  public TypeConstructor fullCopy() {
+  public ConstantDeclaration fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -104,10 +103,10 @@ public class TypeConstructor extends TypeDeclaration implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:79
+   * @declaredat ASTNode:78
    */
-  public TypeConstructor treeCopyNoTransform() {
-    TypeConstructor tree = (TypeConstructor) copy();
+  public ConstantDeclaration treeCopyNoTransform() {
+    ConstantDeclaration tree = (ConstantDeclaration) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -125,10 +124,10 @@ public class TypeConstructor extends TypeDeclaration implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:99
+   * @declaredat ASTNode:98
    */
-  public TypeConstructor treeCopy() {
-    TypeConstructor tree = (TypeConstructor) copy();
+  public ConstantDeclaration treeCopy() {
+    ConstantDeclaration tree = (ConstantDeclaration) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -141,10 +140,10 @@ public class TypeConstructor extends TypeDeclaration implements Cloneable {
     return tree;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:113
+   * @declaredat ASTNode:112
    */
   protected boolean is$Equal(ASTNode node) {
-    return super.is$Equal(node) && (tokenBoolean_Finite == ((TypeConstructor) node).tokenBoolean_Finite);    
+    return super.is$Equal(node) && (tokenBoolean_Unique == ((ConstantDeclaration) node).tokenBoolean_Unique);    
   }
   /**
    * Replaces the Identifier child.
@@ -283,134 +282,50 @@ public class TypeConstructor extends TypeDeclaration implements Cloneable {
     return getAttributesListNoTransform();
   }
   /**
-   * Replaces the Arguments list.
-   * @param list The new list node to be used as the Arguments list.
+   * Replaces the lexeme Unique.
+   * @param value The new value for the lexeme Unique.
    * @apilevel high-level
    */
-  public void setArgumentsList(List<TypeArgument> list) {
-    setChild(list, 2);
-  }
-  /**
-   * Retrieves the number of children in the Arguments list.
-   * @return Number of children in the Arguments list.
-   * @apilevel high-level
-   */
-  public int getNumArguments() {
-    return getArgumentsList().getNumChild();
-  }
-  /**
-   * Retrieves the number of children in the Arguments list.
-   * Calling this method will not trigger rewrites.
-   * @return Number of children in the Arguments list.
-   * @apilevel low-level
-   */
-  public int getNumArgumentsNoTransform() {
-    return getArgumentsListNoTransform().getNumChildNoTransform();
-  }
-  /**
-   * Retrieves the element at index {@code i} in the Arguments list.
-   * @param i Index of the element to return.
-   * @return The element at position {@code i} in the Arguments list.
-   * @apilevel high-level
-   */
-  public TypeArgument getArguments(int i) {
-    return (TypeArgument) getArgumentsList().getChild(i);
-  }
-  /**
-   * Check whether the Arguments list has any children.
-   * @return {@code true} if it has at least one child, {@code false} otherwise.
-   * @apilevel high-level
-   */
-  public boolean hasArguments() {
-    return getArgumentsList().getNumChild() != 0;
-  }
-  /**
-   * Append an element to the Arguments list.
-   * @param node The element to append to the Arguments list.
-   * @apilevel high-level
-   */
-  public void addArguments(TypeArgument node) {
-    List<TypeArgument> list = (parent == null) ? getArgumentsListNoTransform() : getArgumentsList();
-    list.addChild(node);
-  }
-  /** @apilevel low-level 
-   */
-  public void addArgumentsNoTransform(TypeArgument node) {
-    List<TypeArgument> list = getArgumentsListNoTransform();
-    list.addChild(node);
-  }
-  /**
-   * Replaces the Arguments list element at index {@code i} with the new node {@code node}.
-   * @param node The new node to replace the old list element.
-   * @param i The list index of the node to be replaced.
-   * @apilevel high-level
-   */
-  public void setArguments(TypeArgument node, int i) {
-    List<TypeArgument> list = getArgumentsList();
-    list.setChild(node, i);
-  }
-  /**
-   * Retrieves the Arguments list.
-   * @return The node representing the Arguments list.
-   * @apilevel high-level
-   */
-  @ASTNodeAnnotation.ListChild(name="Arguments")
-  public List<TypeArgument> getArgumentsList() {
-    List<TypeArgument> list = (List<TypeArgument>) getChild(2);
-    return list;
-  }
-  /**
-   * Retrieves the Arguments list.
-   * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The node representing the Arguments list.
-   * @apilevel low-level
-   */
-  public List<TypeArgument> getArgumentsListNoTransform() {
-    return (List<TypeArgument>) getChildNoTransform(2);
-  }
-  /**
-   * @return the element at index {@code i} in the Arguments list without
-   * triggering rewrites.
-   */
-  public TypeArgument getArgumentsNoTransform(int i) {
-    return (TypeArgument) getArgumentsListNoTransform().getChildNoTransform(i);
-  }
-  /**
-   * Retrieves the Arguments list.
-   * @return The node representing the Arguments list.
-   * @apilevel high-level
-   */
-  public List<TypeArgument> getArgumentss() {
-    return getArgumentsList();
-  }
-  /**
-   * Retrieves the Arguments list.
-   * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The node representing the Arguments list.
-   * @apilevel low-level
-   */
-  public List<TypeArgument> getArgumentssNoTransform() {
-    return getArgumentsListNoTransform();
-  }
-  /**
-   * Replaces the lexeme Finite.
-   * @param value The new value for the lexeme Finite.
-   * @apilevel high-level
-   */
-  public void setFinite(Boolean value) {
-    tokenBoolean_Finite = value;
+  public void setUnique(Boolean value) {
+    tokenBoolean_Unique = value;
   }
   /** @apilevel internal 
    */
-  protected Boolean tokenBoolean_Finite;
+  protected Boolean tokenBoolean_Unique;
   /**
-   * Retrieves the value for the lexeme Finite.
-   * @return The value for the lexeme Finite.
+   * Retrieves the value for the lexeme Unique.
+   * @return The value for the lexeme Unique.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Token(name="Finite")
-  public Boolean getFinite() {
-    return tokenBoolean_Finite;
+  @ASTNodeAnnotation.Token(name="Unique")
+  public Boolean getUnique() {
+    return tokenBoolean_Unique;
+  }
+  /**
+   * Replaces the OrderSpecification child.
+   * @param node The new node to replace the OrderSpecification child.
+   * @apilevel high-level
+   */
+  public void setOrderSpecification(OrderSpecification node) {
+    setChild(node, 2);
+  }
+  /**
+   * Retrieves the OrderSpecification child.
+   * @return The current node used as the OrderSpecification child.
+   * @apilevel high-level
+   */
+  @ASTNodeAnnotation.Child(name="OrderSpecification")
+  public OrderSpecification getOrderSpecification() {
+    return (OrderSpecification) getChild(2);
+  }
+  /**
+   * Retrieves the OrderSpecification child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the OrderSpecification child.
+   * @apilevel low-level
+   */
+  public OrderSpecification getOrderSpecificationNoTransform() {
+    return (OrderSpecification) getChildNoTransform(2);
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

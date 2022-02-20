@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:15
- * @astdecl Identifier : ASTNode ::= <Label:String>;
- * @production Identifier : {@link ASTNode} ::= <span class="component">&lt;Label:String&gt;</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:90
+ * @astdecl Number : Literal ::= <Value:Integer>;
+ * @production Number : {@link Literal} ::= <span class="component">&lt;Value:Integer&gt;</span>;
 
  */
-public class Identifier extends ASTNode<ASTNode> implements Cloneable {
+public class Number extends Literal implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public Identifier() {
+  public Number() {
     super();
   }
   /**
@@ -27,12 +27,12 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @declaredat ASTNode:12
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Label"},
-    type = {"String"},
+    name = {"Value"},
+    type = {"Integer"},
     kind = {"Token"}
   )
-  public Identifier(String p0) {
-    setLabel(p0);
+  public Number(Integer p0) {
+    setValue(p0);
   }
   /** @apilevel low-level 
    * @declaredat ASTNode:21
@@ -62,16 +62,16 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
   /** @apilevel internal 
    * @declaredat ASTNode:39
    */
-  public Identifier clone() throws CloneNotSupportedException {
-    Identifier node = (Identifier) super.clone();
+  public Number clone() throws CloneNotSupportedException {
+    Number node = (Number) super.clone();
     return node;
   }
   /** @apilevel internal 
    * @declaredat ASTNode:44
    */
-  public Identifier copy() {
+  public Number copy() {
     try {
-      Identifier node = (Identifier) clone();
+      Number node = (Number) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -90,7 +90,7 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @declaredat ASTNode:63
    */
   @Deprecated
-  public Identifier fullCopy() {
+  public Number fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -100,8 +100,8 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:73
    */
-  public Identifier treeCopyNoTransform() {
-    Identifier tree = (Identifier) copy();
+  public Number treeCopyNoTransform() {
+    Number tree = (Number) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -121,8 +121,8 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:93
    */
-  public Identifier treeCopy() {
-    Identifier tree = (Identifier) copy();
+  public Number treeCopy() {
+    Number tree = (Number) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -138,27 +138,27 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @declaredat ASTNode:107
    */
   protected boolean is$Equal(ASTNode node) {
-    return super.is$Equal(node) && (tokenString_Label == ((Identifier) node).tokenString_Label);    
+    return super.is$Equal(node) && (tokenInteger_Value == ((Number) node).tokenInteger_Value);    
   }
   /**
-   * Replaces the lexeme Label.
-   * @param value The new value for the lexeme Label.
+   * Replaces the lexeme Value.
+   * @param value The new value for the lexeme Value.
    * @apilevel high-level
    */
-  public void setLabel(String value) {
-    tokenString_Label = value;
+  public void setValue(Integer value) {
+    tokenInteger_Value = value;
   }
   /** @apilevel internal 
    */
-  protected String tokenString_Label;
+  protected Integer tokenInteger_Value;
   /**
-   * Retrieves the value for the lexeme Label.
-   * @return The value for the lexeme Label.
+   * Retrieves the value for the lexeme Value.
+   * @return The value for the lexeme Value.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Token(name="Label")
-  public String getLabel() {
-    return tokenString_Label != null ? tokenString_Label : "";
+  @ASTNodeAnnotation.Token(name="Value")
+  public Integer getValue() {
+    return tokenInteger_Value;
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

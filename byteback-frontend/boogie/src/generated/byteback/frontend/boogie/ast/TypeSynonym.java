@@ -2,8 +2,8 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:9
- * @astdecl TypeSynonym : TypeDeclaration ::= Attributes:Attribute* Identifiers:Identifier* Alias:Type;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:13
+ * @astdecl TypeSynonym : TypeDeclaration ::= Identifier:Identifier Attributes:Attribute* Arguments:TypeArgument* Alias:Type;
  * @production TypeSynonym : {@link TypeDeclaration} ::= <span class="component">Alias:{@link Type}</span>;
 
  */
@@ -22,57 +22,58 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
    * @declaredat ASTNode:10
    */
   public void init$Children() {
-    children = new ASTNode[3];
-    setChild(new List(), 0);
+    children = new ASTNode[4];
     setChild(new List(), 1);
+    setChild(new List(), 2);
   }
   /**
    * @declaredat ASTNode:15
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Attributes", "Identifiers", "Alias"},
-    type = {"List<Attribute>", "List<Identifier>", "Type"},
-    kind = {"List", "List", "Child"}
+    name = {"Identifier", "Attributes", "Arguments", "Alias"},
+    type = {"Identifier", "List<Attribute>", "List<TypeArgument>", "Type"},
+    kind = {"Child", "List", "List", "Child"}
   )
-  public TypeSynonym(List<Attribute> p0, List<Identifier> p1, Type p2) {
+  public TypeSynonym(Identifier p0, List<Attribute> p1, List<TypeArgument> p2, Type p3) {
     setChild(p0, 0);
     setChild(p1, 1);
     setChild(p2, 2);
+    setChild(p3, 3);
   }
   /** @apilevel low-level 
-   * @declaredat ASTNode:26
+   * @declaredat ASTNode:27
    */
   protected int numChildren() {
-    return 3;
+    return 4;
   }
   /**
    * @apilevel internal
-   * @declaredat ASTNode:32
+   * @declaredat ASTNode:33
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:36
+   * @declaredat ASTNode:37
    */
   public void flushAttrCache() {
     super.flushAttrCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:40
+   * @declaredat ASTNode:41
    */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:44
+   * @declaredat ASTNode:45
    */
   public TypeSynonym clone() throws CloneNotSupportedException {
     TypeSynonym node = (TypeSynonym) super.clone();
     return node;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:49
+   * @declaredat ASTNode:50
    */
   public TypeSynonym copy() {
     try {
@@ -92,7 +93,7 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:68
+   * @declaredat ASTNode:69
    */
   @Deprecated
   public TypeSynonym fullCopy() {
@@ -103,7 +104,7 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:78
+   * @declaredat ASTNode:79
    */
   public TypeSynonym treeCopyNoTransform() {
     TypeSynonym tree = (TypeSynonym) copy();
@@ -124,7 +125,7 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:98
+   * @declaredat ASTNode:99
    */
   public TypeSynonym treeCopy() {
     TypeSynonym tree = (TypeSynonym) copy();
@@ -140,10 +141,36 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
     return tree;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:112
+   * @declaredat ASTNode:113
    */
   protected boolean is$Equal(ASTNode node) {
     return super.is$Equal(node);    
+  }
+  /**
+   * Replaces the Identifier child.
+   * @param node The new node to replace the Identifier child.
+   * @apilevel high-level
+   */
+  public void setIdentifier(Identifier node) {
+    setChild(node, 0);
+  }
+  /**
+   * Retrieves the Identifier child.
+   * @return The current node used as the Identifier child.
+   * @apilevel high-level
+   */
+  @ASTNodeAnnotation.Child(name="Identifier")
+  public Identifier getIdentifier() {
+    return (Identifier) getChild(0);
+  }
+  /**
+   * Retrieves the Identifier child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Identifier child.
+   * @apilevel low-level
+   */
+  public Identifier getIdentifierNoTransform() {
+    return (Identifier) getChildNoTransform(0);
   }
   /**
    * Replaces the Attributes list.
@@ -151,7 +178,7 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
    * @apilevel high-level
    */
   public void setAttributesList(List<Attribute> list) {
-    setChild(list, 0);
+    setChild(list, 1);
   }
   /**
    * Retrieves the number of children in the Attributes list.
@@ -219,7 +246,7 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
    */
   @ASTNodeAnnotation.ListChild(name="Attributes")
   public List<Attribute> getAttributesList() {
-    List<Attribute> list = (List<Attribute>) getChild(0);
+    List<Attribute> list = (List<Attribute>) getChild(1);
     return list;
   }
   /**
@@ -229,7 +256,7 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
    * @apilevel low-level
    */
   public List<Attribute> getAttributesListNoTransform() {
-    return (List<Attribute>) getChildNoTransform(0);
+    return (List<Attribute>) getChildNoTransform(1);
   }
   /**
    * @return the element at index {@code i} in the Attributes list without
@@ -256,114 +283,114 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
     return getAttributesListNoTransform();
   }
   /**
-   * Replaces the Identifiers list.
-   * @param list The new list node to be used as the Identifiers list.
+   * Replaces the Arguments list.
+   * @param list The new list node to be used as the Arguments list.
    * @apilevel high-level
    */
-  public void setIdentifiersList(List<Identifier> list) {
-    setChild(list, 1);
+  public void setArgumentsList(List<TypeArgument> list) {
+    setChild(list, 2);
   }
   /**
-   * Retrieves the number of children in the Identifiers list.
-   * @return Number of children in the Identifiers list.
+   * Retrieves the number of children in the Arguments list.
+   * @return Number of children in the Arguments list.
    * @apilevel high-level
    */
-  public int getNumIdentifiers() {
-    return getIdentifiersList().getNumChild();
+  public int getNumArguments() {
+    return getArgumentsList().getNumChild();
   }
   /**
-   * Retrieves the number of children in the Identifiers list.
+   * Retrieves the number of children in the Arguments list.
    * Calling this method will not trigger rewrites.
-   * @return Number of children in the Identifiers list.
+   * @return Number of children in the Arguments list.
    * @apilevel low-level
    */
-  public int getNumIdentifiersNoTransform() {
-    return getIdentifiersListNoTransform().getNumChildNoTransform();
+  public int getNumArgumentsNoTransform() {
+    return getArgumentsListNoTransform().getNumChildNoTransform();
   }
   /**
-   * Retrieves the element at index {@code i} in the Identifiers list.
+   * Retrieves the element at index {@code i} in the Arguments list.
    * @param i Index of the element to return.
-   * @return The element at position {@code i} in the Identifiers list.
+   * @return The element at position {@code i} in the Arguments list.
    * @apilevel high-level
    */
-  public Identifier getIdentifiers(int i) {
-    return (Identifier) getIdentifiersList().getChild(i);
+  public TypeArgument getArguments(int i) {
+    return (TypeArgument) getArgumentsList().getChild(i);
   }
   /**
-   * Check whether the Identifiers list has any children.
+   * Check whether the Arguments list has any children.
    * @return {@code true} if it has at least one child, {@code false} otherwise.
    * @apilevel high-level
    */
-  public boolean hasIdentifiers() {
-    return getIdentifiersList().getNumChild() != 0;
+  public boolean hasArguments() {
+    return getArgumentsList().getNumChild() != 0;
   }
   /**
-   * Append an element to the Identifiers list.
-   * @param node The element to append to the Identifiers list.
+   * Append an element to the Arguments list.
+   * @param node The element to append to the Arguments list.
    * @apilevel high-level
    */
-  public void addIdentifiers(Identifier node) {
-    List<Identifier> list = (parent == null) ? getIdentifiersListNoTransform() : getIdentifiersList();
+  public void addArguments(TypeArgument node) {
+    List<TypeArgument> list = (parent == null) ? getArgumentsListNoTransform() : getArgumentsList();
     list.addChild(node);
   }
   /** @apilevel low-level 
    */
-  public void addIdentifiersNoTransform(Identifier node) {
-    List<Identifier> list = getIdentifiersListNoTransform();
+  public void addArgumentsNoTransform(TypeArgument node) {
+    List<TypeArgument> list = getArgumentsListNoTransform();
     list.addChild(node);
   }
   /**
-   * Replaces the Identifiers list element at index {@code i} with the new node {@code node}.
+   * Replaces the Arguments list element at index {@code i} with the new node {@code node}.
    * @param node The new node to replace the old list element.
    * @param i The list index of the node to be replaced.
    * @apilevel high-level
    */
-  public void setIdentifiers(Identifier node, int i) {
-    List<Identifier> list = getIdentifiersList();
+  public void setArguments(TypeArgument node, int i) {
+    List<TypeArgument> list = getArgumentsList();
     list.setChild(node, i);
   }
   /**
-   * Retrieves the Identifiers list.
-   * @return The node representing the Identifiers list.
+   * Retrieves the Arguments list.
+   * @return The node representing the Arguments list.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.ListChild(name="Identifiers")
-  public List<Identifier> getIdentifiersList() {
-    List<Identifier> list = (List<Identifier>) getChild(1);
+  @ASTNodeAnnotation.ListChild(name="Arguments")
+  public List<TypeArgument> getArgumentsList() {
+    List<TypeArgument> list = (List<TypeArgument>) getChild(2);
     return list;
   }
   /**
-   * Retrieves the Identifiers list.
+   * Retrieves the Arguments list.
    * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The node representing the Identifiers list.
+   * @return The node representing the Arguments list.
    * @apilevel low-level
    */
-  public List<Identifier> getIdentifiersListNoTransform() {
-    return (List<Identifier>) getChildNoTransform(1);
+  public List<TypeArgument> getArgumentsListNoTransform() {
+    return (List<TypeArgument>) getChildNoTransform(2);
   }
   /**
-   * @return the element at index {@code i} in the Identifiers list without
+   * @return the element at index {@code i} in the Arguments list without
    * triggering rewrites.
    */
-  public Identifier getIdentifiersNoTransform(int i) {
-    return (Identifier) getIdentifiersListNoTransform().getChildNoTransform(i);
+  public TypeArgument getArgumentsNoTransform(int i) {
+    return (TypeArgument) getArgumentsListNoTransform().getChildNoTransform(i);
   }
   /**
-   * Retrieves the Identifiers list.
-   * @return The node representing the Identifiers list.
+   * Retrieves the Arguments list.
+   * @return The node representing the Arguments list.
    * @apilevel high-level
    */
-  public List<Identifier> getIdentifierss() {
-    return getIdentifiersList();
+  public List<TypeArgument> getArgumentss() {
+    return getArgumentsList();
   }
   /**
-   * Retrieves the Identifiers list.
+   * Retrieves the Arguments list.
    * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The node representing the Identifiers list.
+   * @return The node representing the Arguments list.
    * @apilevel low-level
    */
-  public List<Identifier> getIdentifierssNoTransform() {
-    return getIdentifiersListNoTransform();
+  public List<TypeArgument> getArgumentssNoTransform() {
+    return getArgumentsListNoTransform();
   }
   /**
    * Replaces the Alias child.
@@ -371,7 +398,7 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
    * @apilevel high-level
    */
   public void setAlias(Type node) {
-    setChild(node, 2);
+    setChild(node, 3);
   }
   /**
    * Retrieves the Alias child.
@@ -380,7 +407,7 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
    */
   @ASTNodeAnnotation.Child(name="Alias")
   public Type getAlias() {
-    return (Type) getChild(2);
+    return (Type) getChild(3);
   }
   /**
    * Retrieves the Alias child.
@@ -389,7 +416,7 @@ public class TypeSynonym extends TypeDeclaration implements Cloneable {
    * @apilevel low-level
    */
   public Type getAliasNoTransform() {
-    return (Type) getChildNoTransform(2);
+    return (Type) getChildNoTransform(3);
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

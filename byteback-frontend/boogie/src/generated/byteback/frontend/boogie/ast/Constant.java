@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:15
- * @astdecl Identifier : ASTNode ::= <Label:String>;
- * @production Identifier : {@link ASTNode} ::= <span class="component">&lt;Label:String&gt;</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:24
+ * @astdecl Constant : ASTNode ::= Identifier;
+ * @production Constant : {@link ASTNode} ::= <span class="component">{@link Identifier}</span>;
 
  */
-public class Identifier extends ASTNode<ASTNode> implements Cloneable {
+public class Constant extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public Identifier() {
+  public Constant() {
     super();
   }
   /**
@@ -22,56 +22,57 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @declaredat ASTNode:10
    */
   public void init$Children() {
+    children = new ASTNode[1];
   }
   /**
-   * @declaredat ASTNode:12
+   * @declaredat ASTNode:13
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Label"},
-    type = {"String"},
-    kind = {"Token"}
+    name = {"Identifier"},
+    type = {"Identifier"},
+    kind = {"Child"}
   )
-  public Identifier(String p0) {
-    setLabel(p0);
+  public Constant(Identifier p0) {
+    setChild(p0, 0);
   }
   /** @apilevel low-level 
-   * @declaredat ASTNode:21
+   * @declaredat ASTNode:22
    */
   protected int numChildren() {
-    return 0;
+    return 1;
   }
   /**
    * @apilevel internal
-   * @declaredat ASTNode:27
+   * @declaredat ASTNode:28
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:31
+   * @declaredat ASTNode:32
    */
   public void flushAttrCache() {
     super.flushAttrCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:35
+   * @declaredat ASTNode:36
    */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:39
+   * @declaredat ASTNode:40
    */
-  public Identifier clone() throws CloneNotSupportedException {
-    Identifier node = (Identifier) super.clone();
+  public Constant clone() throws CloneNotSupportedException {
+    Constant node = (Constant) super.clone();
     return node;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:44
+   * @declaredat ASTNode:45
    */
-  public Identifier copy() {
+  public Constant copy() {
     try {
-      Identifier node = (Identifier) clone();
+      Constant node = (Constant) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -87,10 +88,10 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:63
+   * @declaredat ASTNode:64
    */
   @Deprecated
-  public Identifier fullCopy() {
+  public Constant fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -98,10 +99,10 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:73
+   * @declaredat ASTNode:74
    */
-  public Identifier treeCopyNoTransform() {
-    Identifier tree = (Identifier) copy();
+  public Constant treeCopyNoTransform() {
+    Constant tree = (Constant) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -119,10 +120,10 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:93
+   * @declaredat ASTNode:94
    */
-  public Identifier treeCopy() {
-    Identifier tree = (Identifier) copy();
+  public Constant treeCopy() {
+    Constant tree = (Constant) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -135,30 +136,36 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
     return tree;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:107
+   * @declaredat ASTNode:108
    */
   protected boolean is$Equal(ASTNode node) {
-    return super.is$Equal(node) && (tokenString_Label == ((Identifier) node).tokenString_Label);    
+    return super.is$Equal(node);    
   }
   /**
-   * Replaces the lexeme Label.
-   * @param value The new value for the lexeme Label.
+   * Replaces the Identifier child.
+   * @param node The new node to replace the Identifier child.
    * @apilevel high-level
    */
-  public void setLabel(String value) {
-    tokenString_Label = value;
+  public void setIdentifier(Identifier node) {
+    setChild(node, 0);
   }
-  /** @apilevel internal 
-   */
-  protected String tokenString_Label;
   /**
-   * Retrieves the value for the lexeme Label.
-   * @return The value for the lexeme Label.
+   * Retrieves the Identifier child.
+   * @return The current node used as the Identifier child.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Token(name="Label")
-  public String getLabel() {
-    return tokenString_Label != null ? tokenString_Label : "";
+  @ASTNodeAnnotation.Child(name="Identifier")
+  public Identifier getIdentifier() {
+    return (Identifier) getChild(0);
+  }
+  /**
+   * Retrieves the Identifier child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Identifier child.
+   * @apilevel low-level
+   */
+  public Identifier getIdentifierNoTransform() {
+    return (Identifier) getChildNoTransform(0);
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

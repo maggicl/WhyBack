@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:34
- * @astdecl Expression : ASTNode;
- * @production Expression : {@link ASTNode};
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:88
+ * @astdecl Literal : Expression;
+ * @production Literal : {@link Expression};
 
  */
-public abstract class Expression extends ASTNode<ASTNode> implements Cloneable {
+public abstract class Literal extends Expression implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public Expression() {
+  public Literal() {
     super();
   }
   /**
@@ -51,8 +51,8 @@ public abstract class Expression extends ASTNode<ASTNode> implements Cloneable {
   /** @apilevel internal 
    * @declaredat ASTNode:31
    */
-  public Expression clone() throws CloneNotSupportedException {
-    Expression node = (Expression) super.clone();
+  public Literal clone() throws CloneNotSupportedException {
+    Literal node = (Literal) super.clone();
     return node;
   }
   /**
@@ -64,7 +64,7 @@ public abstract class Expression extends ASTNode<ASTNode> implements Cloneable {
    * @declaredat ASTNode:42
    */
   @Deprecated
-  public abstract Expression fullCopy();
+  public abstract Literal fullCopy();
   /**
    * Create a deep copy of the AST subtree at this node.
    * The copy is dangling, i.e. has no parent.
@@ -72,7 +72,7 @@ public abstract class Expression extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:50
    */
-  public abstract Expression treeCopyNoTransform();
+  public abstract Literal treeCopyNoTransform();
   /**
    * Create a deep copy of the AST subtree at this node.
    * The subtree of this node is traversed to trigger rewrites before copy.
@@ -81,7 +81,7 @@ public abstract class Expression extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:58
    */
-  public abstract Expression treeCopy();
+  public abstract Literal treeCopy();
   /** @apilevel internal */
   public ASTNode rewriteTo() {
     return super.rewriteTo();

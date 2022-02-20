@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:15
- * @astdecl Identifier : ASTNode ::= <Label:String>;
- * @production Identifier : {@link ASTNode} ::= <span class="component">&lt;Label:String&gt;</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:103
+ * @astdecl BitVectorType : Type ::= <Size:Integer>;
+ * @production BitVectorType : {@link Type} ::= <span class="component">&lt;Size:Integer&gt;</span>;
 
  */
-public class Identifier extends ASTNode<ASTNode> implements Cloneable {
+public class BitVectorType extends Type implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public Identifier() {
+  public BitVectorType() {
     super();
   }
   /**
@@ -27,12 +27,12 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @declaredat ASTNode:12
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Label"},
-    type = {"String"},
+    name = {"Size"},
+    type = {"Integer"},
     kind = {"Token"}
   )
-  public Identifier(String p0) {
-    setLabel(p0);
+  public BitVectorType(Integer p0) {
+    setSize(p0);
   }
   /** @apilevel low-level 
    * @declaredat ASTNode:21
@@ -62,16 +62,16 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
   /** @apilevel internal 
    * @declaredat ASTNode:39
    */
-  public Identifier clone() throws CloneNotSupportedException {
-    Identifier node = (Identifier) super.clone();
+  public BitVectorType clone() throws CloneNotSupportedException {
+    BitVectorType node = (BitVectorType) super.clone();
     return node;
   }
   /** @apilevel internal 
    * @declaredat ASTNode:44
    */
-  public Identifier copy() {
+  public BitVectorType copy() {
     try {
-      Identifier node = (Identifier) clone();
+      BitVectorType node = (BitVectorType) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -90,7 +90,7 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @declaredat ASTNode:63
    */
   @Deprecated
-  public Identifier fullCopy() {
+  public BitVectorType fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -100,8 +100,8 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:73
    */
-  public Identifier treeCopyNoTransform() {
-    Identifier tree = (Identifier) copy();
+  public BitVectorType treeCopyNoTransform() {
+    BitVectorType tree = (BitVectorType) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -121,8 +121,8 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:93
    */
-  public Identifier treeCopy() {
-    Identifier tree = (Identifier) copy();
+  public BitVectorType treeCopy() {
+    BitVectorType tree = (BitVectorType) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -138,27 +138,27 @@ public class Identifier extends ASTNode<ASTNode> implements Cloneable {
    * @declaredat ASTNode:107
    */
   protected boolean is$Equal(ASTNode node) {
-    return super.is$Equal(node) && (tokenString_Label == ((Identifier) node).tokenString_Label);    
+    return super.is$Equal(node) && (tokenInteger_Size == ((BitVectorType) node).tokenInteger_Size);    
   }
   /**
-   * Replaces the lexeme Label.
-   * @param value The new value for the lexeme Label.
+   * Replaces the lexeme Size.
+   * @param value The new value for the lexeme Size.
    * @apilevel high-level
    */
-  public void setLabel(String value) {
-    tokenString_Label = value;
+  public void setSize(Integer value) {
+    tokenInteger_Size = value;
   }
   /** @apilevel internal 
    */
-  protected String tokenString_Label;
+  protected Integer tokenInteger_Size;
   /**
-   * Retrieves the value for the lexeme Label.
-   * @return The value for the lexeme Label.
+   * Retrieves the value for the lexeme Size.
+   * @return The value for the lexeme Size.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Token(name="Label")
-  public String getLabel() {
-    return tokenString_Label != null ? tokenString_Label : "";
+  @ASTNodeAnnotation.Token(name="Size")
+  public Integer getSize() {
+    return tokenInteger_Size;
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

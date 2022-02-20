@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:92
- * @astdecl BitVector : Literal ::= <Value:Integer> <Length:Integer>;
- * @production BitVector : {@link Literal} ::= <span class="component">&lt;Value:Integer&gt;</span> <span class="component">&lt;Length:Integer&gt;</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:52
+ * @astdecl NotEqualsOperation : RelationalExpression ::= LeftOperand:Expression RightOperand:Expression;
+ * @production NotEqualsOperation : {@link RelationalExpression};
 
  */
-public class BitVector extends Literal implements Cloneable {
+public class NotEqualsOperation extends RelationalExpression implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public BitVector() {
+  public NotEqualsOperation() {
     super();
   }
   /**
@@ -22,57 +22,58 @@ public class BitVector extends Literal implements Cloneable {
    * @declaredat ASTNode:10
    */
   public void init$Children() {
+    children = new ASTNode[2];
   }
   /**
-   * @declaredat ASTNode:12
+   * @declaredat ASTNode:13
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Value", "Length"},
-    type = {"Integer", "Integer"},
-    kind = {"Token", "Token"}
+    name = {"LeftOperand", "RightOperand"},
+    type = {"Expression", "Expression"},
+    kind = {"Child", "Child"}
   )
-  public BitVector(Integer p0, Integer p1) {
-    setValue(p0);
-    setLength(p1);
+  public NotEqualsOperation(Expression p0, Expression p1) {
+    setChild(p0, 0);
+    setChild(p1, 1);
   }
   /** @apilevel low-level 
-   * @declaredat ASTNode:22
+   * @declaredat ASTNode:23
    */
   protected int numChildren() {
-    return 0;
+    return 2;
   }
   /**
    * @apilevel internal
-   * @declaredat ASTNode:28
+   * @declaredat ASTNode:29
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:32
+   * @declaredat ASTNode:33
    */
   public void flushAttrCache() {
     super.flushAttrCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:36
+   * @declaredat ASTNode:37
    */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:40
+   * @declaredat ASTNode:41
    */
-  public BitVector clone() throws CloneNotSupportedException {
-    BitVector node = (BitVector) super.clone();
+  public NotEqualsOperation clone() throws CloneNotSupportedException {
+    NotEqualsOperation node = (NotEqualsOperation) super.clone();
     return node;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:45
+   * @declaredat ASTNode:46
    */
-  public BitVector copy() {
+  public NotEqualsOperation copy() {
     try {
-      BitVector node = (BitVector) clone();
+      NotEqualsOperation node = (NotEqualsOperation) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -88,10 +89,10 @@ public class BitVector extends Literal implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:64
+   * @declaredat ASTNode:65
    */
   @Deprecated
-  public BitVector fullCopy() {
+  public NotEqualsOperation fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -99,10 +100,10 @@ public class BitVector extends Literal implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:74
+   * @declaredat ASTNode:75
    */
-  public BitVector treeCopyNoTransform() {
-    BitVector tree = (BitVector) copy();
+  public NotEqualsOperation treeCopyNoTransform() {
+    NotEqualsOperation tree = (NotEqualsOperation) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -120,10 +121,10 @@ public class BitVector extends Literal implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:94
+   * @declaredat ASTNode:95
    */
-  public BitVector treeCopy() {
-    BitVector tree = (BitVector) copy();
+  public NotEqualsOperation treeCopy() {
+    NotEqualsOperation tree = (NotEqualsOperation) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -136,50 +137,62 @@ public class BitVector extends Literal implements Cloneable {
     return tree;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:108
+   * @declaredat ASTNode:109
    */
   protected boolean is$Equal(ASTNode node) {
-    return super.is$Equal(node) && (tokenInteger_Value == ((BitVector) node).tokenInteger_Value) && (tokenInteger_Length == ((BitVector) node).tokenInteger_Length);    
+    return super.is$Equal(node);    
   }
   /**
-   * Replaces the lexeme Value.
-   * @param value The new value for the lexeme Value.
+   * Replaces the LeftOperand child.
+   * @param node The new node to replace the LeftOperand child.
    * @apilevel high-level
    */
-  public void setValue(Integer value) {
-    tokenInteger_Value = value;
-  }
-  /** @apilevel internal 
-   */
-  protected Integer tokenInteger_Value;
-  /**
-   * Retrieves the value for the lexeme Value.
-   * @return The value for the lexeme Value.
-   * @apilevel high-level
-   */
-  @ASTNodeAnnotation.Token(name="Value")
-  public Integer getValue() {
-    return tokenInteger_Value;
+  public void setLeftOperand(Expression node) {
+    setChild(node, 0);
   }
   /**
-   * Replaces the lexeme Length.
-   * @param value The new value for the lexeme Length.
+   * Retrieves the LeftOperand child.
+   * @return The current node used as the LeftOperand child.
    * @apilevel high-level
    */
-  public void setLength(Integer value) {
-    tokenInteger_Length = value;
+  @ASTNodeAnnotation.Child(name="LeftOperand")
+  public Expression getLeftOperand() {
+    return (Expression) getChild(0);
   }
-  /** @apilevel internal 
-   */
-  protected Integer tokenInteger_Length;
   /**
-   * Retrieves the value for the lexeme Length.
-   * @return The value for the lexeme Length.
+   * Retrieves the LeftOperand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the LeftOperand child.
+   * @apilevel low-level
+   */
+  public Expression getLeftOperandNoTransform() {
+    return (Expression) getChildNoTransform(0);
+  }
+  /**
+   * Replaces the RightOperand child.
+   * @param node The new node to replace the RightOperand child.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Token(name="Length")
-  public Integer getLength() {
-    return tokenInteger_Length;
+  public void setRightOperand(Expression node) {
+    setChild(node, 1);
+  }
+  /**
+   * Retrieves the RightOperand child.
+   * @return The current node used as the RightOperand child.
+   * @apilevel high-level
+   */
+  @ASTNodeAnnotation.Child(name="RightOperand")
+  public Expression getRightOperand() {
+    return (Expression) getChild(1);
+  }
+  /**
+   * Retrieves the RightOperand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the RightOperand child.
+   * @apilevel low-level
+   */
+  public Expression getRightOperandNoTransform() {
+    return (Expression) getChildNoTransform(1);
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

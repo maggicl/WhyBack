@@ -1,29 +1,117 @@
 Program ::= Declaration*;
 
-abstract Declaration ::= Attributes:Attribute*;
+// Declaration
+abstract Declaration ::= Identifier:Identifier Attributes:Attribute*;
 
-abstract TypeDeclaration : Declaration ::= Identifiers:Identifier*;
+Attribute ::= <Label:String> [Argument:Expression];
+
+// Type declaration
+abstract TypeDeclaration : Declaration ::= Arguments:TypeArgument*;
 
 TypeConstructor : TypeDeclaration ::= <Finite:Boolean>;
 
 TypeSynonym : TypeDeclaration ::= Alias:Type;
 
-Attribute ::= <Label:String> [Argument:Expression];
-
 Identifier ::= <Label:String>;
 
+// Constant declaration
+ConstantDeclaration : Declaration ::= <Unique:Boolean> OrderSpecification;
+
+OrderSpecification ::= Edges:ParentEdge* <Complete:Boolean>;
+
+ParentEdge ::= <Unique:Boolean> Parent:Constant;
+
+Constant ::= Identifier;
+
+// Function declaration
+FunctionDeclaration ::= FunctionSignature;
+
+FunctionSignature ::= TypeArguments:TypeArgument* FunctionArguments:FunctionArgument* ReturnArgument:FunctionArgument;
+
+FunctionArgument ::= Name:Identifier Type;
+
+// Expressions
+abstract Expression;
+
+abstract BinaryExpression : Expression ::= LeftOperand:Expression RightOperand:Expression;
+
+abstract BooleanExpression : BinaryExpression;
+
+EquivalenceOperation : BooleanExpression;
+
+ImplicationOperation : BooleanExpression;
+
+OrOperation : BooleanExpression;
+
+AndOperation : BooleanExpression;
+
+abstract RelationalExpression : BinaryExpression;
+
+EqualsOperation : RelationalExpression;
+
+NotEqualsOperation : RelationalExpression;
+
+LessThanOperation : RelationalExpression;
+
+GreaterThanOperation : RelationalExpression;
+
+LessThanEqualsOperation : RelationalExpression;
+
+GreaterThanEqualsOperation : RelationalExpression;
+
+PartialOrderOperation : RelationalExpression;
+
+abstract ArithmeticExpression : BinaryExpression;
+
+AdditionOperation : ArithmeticExpression;
+
+SubtractionOperation : ArithmeticExpression;
+
+MultiplicationOperation : ArithmeticExpression;
+
+DivisionOperation : ArithmeticExpression;
+
+ModuloOperation : ArithmeticExpression;
+
+abstract VectorExpression : BinaryExpression;
+
+ConcatenationOperation : VectorExpression;
+
+abstract UnaryExpression: Expression ::= Operand:Expression;
+
+NegationOperation : UnaryExpression;
+
+MinusOperation : UnaryExpression;
+
+abstract MapExpression : UnaryExpression;
+
+MapUpdate : MapExpression ::= Location:MapAccess Update:Expression
+
+MapAccess : MapExpression ::= Indexes:Expression*;
+
+MapRangeAccess : MapExpression ::= RangeStart:Number RangeEnd:Number;
+
+// TODO: Quantified expressions
+abstract QuantifierExpression : Expression;
+
+abstract Literal : Expression;
+
+Number : Literal ::= <Value:Integer>;
+
+BitVector : Literal ::= <Value:Integer> <Length:Integer>;
+
+
+// Types
 abstract Type;
 
 BoolType : Type;
 
 IntegerType : Type;
 
-BitVector : Type ::= <Size:Integer>;
+BitVectorType : Type ::= <Size:Integer>;
 
 ConstructedType : Type ::= Name:Identifier Arguments:Type*;
 
 MapType : Type ::= Arguments:TypeArgument* KeyTypes:Type* ValueType:Type;
 
 TypeArgument ::= Identifier;
-
-abstract Expression;

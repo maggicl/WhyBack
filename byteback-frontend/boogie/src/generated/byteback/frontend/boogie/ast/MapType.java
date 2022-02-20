@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:25
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:107
  * @astdecl MapType : Type ::= Arguments:TypeArgument* KeyTypes:Type* ValueType:Type;
  * @production MapType : {@link Type} ::= <span class="component">Arguments:{@link TypeArgument}*</span> <span class="component">KeyTypes:{@link Type}*</span> <span class="component">ValueType:{@link Type}</span>;
 

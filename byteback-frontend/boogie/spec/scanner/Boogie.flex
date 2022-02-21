@@ -67,7 +67,7 @@ BvType = "bv" {DecIntegerLiteral};
 //    "implementation" { return symbol(Terminals.IMPLEMENTATION); }
 //
 //    "async" { return symbol(Terminals.ASYNC); }
-//    "finite" { return symbol(Terminals.FINITE); }
+    "finite" { return symbol(Terminals.FINITE); }
 //    "unique" { return symbol(Terminals.UNIQUE); }
 //    "complete" { return symbol(Terminals.COMPLETE); }
 //    "returns" { return symbol(Terminals.RETURNS); }
@@ -155,7 +155,7 @@ BvType = "bv" {DecIntegerLiteral};
 //    {BvType} { return symbol(Terminals.BVTYPE, yytext().intern()); }
 //
 //    /* identifiers */ 
-//    {Identifier} { return symbol(Terminals.ID, yytext().intern()); }
+    {Identifier} { return symbol(Terminals.IDENTIFIER, yytext().intern()); }
 // 
 //    /* literals */
 //    {BvIntegerLiteral} { return symbol(Terminals.BITVECTOR, yytext().intern()); }

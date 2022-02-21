@@ -36,8 +36,8 @@ TypeDeclaration type_definition
     ;
 
 TypeConstructor finite_type_constructor_definition
-    = FINITE type_constructor_definition.tc
-      {: tc.setFinite(true); return tc; :}
+    = FINITE type_constructor_definition.tcd
+      {: tcd.setFinite(true); :}
     ;
 
 TypeConstructor type_constructor_definition

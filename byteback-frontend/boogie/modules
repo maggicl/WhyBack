@@ -1,8 +1,7 @@
 module("boogie") {
     java {
-        basedir "src/"
-        include "main/**/*.java"
-        include "generated/**/*.java"
+        basedir "build/generated-src"
+        include "**/*.java"
     }
 
     jastadd {

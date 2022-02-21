@@ -1,5 +1,6 @@
 plugins {
     id 'byteback.java-common-conventions'
+    id 'byteback.java-integration-conventions'
     id 'org.jastadd' version '1.14.5'
 }
 
@@ -13,8 +14,21 @@ jastadd {
     module = "boogie"
     astPackage = "byteback.frontend.boogie.ast"
     parser.name = "BoogieParser"
+    genDir = "build/generated-src/main/java"
+    parser.genDir = "build/generated-src/main/java/byteback/frontend/boogie/parser"
+    scanner.genDir = "build/generated-src/main/java/byteback/frontend/boogie/scanner"
+}
 
-    genDir = "src/generated/java"
-    parser.genDir = "src/generated/java/byteback/frontend/boogie/parser"
-    scanner.genDir = "src/generated/java/byteback/frontend/boogie/scanner"
+/* Funnily enough, it is not necessary to add the generated source
+from jastadd to the source sets in order for the tests to run, but if
+the source set is not also manually added the Intellij and Buildship
+ will not even know that these classes exist. */
+java {
+    sourceSets {
+        main {
+            java {
+                srcDirs 'build/generated-src/main/java'
+            }
+        }
+    }
 }

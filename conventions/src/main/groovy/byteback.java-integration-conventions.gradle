@@ -20,10 +20,6 @@ configurations {
     integrationRuntime.extendsFrom testRuntime
 }
 
-processIntegrationResources {
-    duplicatesStrategy = 'include'
-}
-
 def integration = tasks.register("integration", Test) {
     description 'Runs the integration tests.'
     group = 'Verification'

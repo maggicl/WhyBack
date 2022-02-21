@@ -4,7 +4,7 @@ Program ::= Declaration*;
 // Declaration
 abstract Declaration ::= Identifier:Identifier Attributes:Attribute*;
 
-Attribute ::= <Label:String> [Argument:Expression];
+Attribute ::= Name:Identifier Arguments:Expression;
 
 // Type declaration
 abstract TypeDeclaration : Declaration ::= Arguments:TypeArgument*;

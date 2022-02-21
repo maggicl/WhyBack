@@ -17,6 +17,6 @@ jastadd {
     parser.name = "BoogieParser"
 
     genDir = "src/generated"
-    parser.genDir = "src/generated"
+    parser.genDir = "src/generated/byteback/frontend/boogie/parser"
     scanner.genDir = "src/generated/byteback/frontend/boogie/scanner"
 }

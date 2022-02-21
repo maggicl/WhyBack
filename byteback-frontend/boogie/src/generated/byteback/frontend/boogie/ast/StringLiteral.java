@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:107
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:130
  * @astdecl StringLiteral : Literal ::= <Value:String>;
  * @production StringLiteral : {@link Literal} ::= <span class="component">&lt;Value:String&gt;</span>;
 

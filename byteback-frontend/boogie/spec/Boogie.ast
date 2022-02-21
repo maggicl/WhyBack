@@ -26,17 +26,34 @@ Constant ::= Identifier;
 // Function declaration
 FunctionDeclaration ::= FunctionSignature;
 
-FunctionSignature ::= TypeArguments:TypeArgument* FunctionArguments:FunctionArgument* ReturnArgument:FunctionArgument;
+FunctionSignature ::= TypeArguments:TypeArgument* FunctionArguments:Binding* ReturnArgument:Binding;
 
-Argument ::= Name:Identifier Type;
-
-FunctionArgument : Argument;
-
-// Axiom declaration 
+// Axiom declaration
 AxiomDeclaration ::= Expression;
 
+// Variable declaration
+VariableDeclaration : Declaration ::= Variables:Binding* [WhereClause];
+
+WhereClause ::= Expression;
+
+// Procedure declaration
+ProcedureDeclaration : Declaration ::= Signature:ProcedureSignature Conditions:Specification* [Body];
+
+ProcedureSignature ::= TypeArguments:TypeArgument* InputParameters:Binding* OutputParameters:Binding*;
+
+// Implementation declaration
+ImplementationDeclaration : ProcedureDeclaration ::= Body;
+
+LocalVariableDeclaration : Declaration ::= Variables:Binding*;
+
+Body ::= LocalVariables:LocalVariableDeclaration* Statements:Statement*;
+
 // Expressions
-abstract Expression;
+abstract Meta;
+
+Star : Meta;
+
+abstract Expression : Meta;
 
 abstract BinaryExpression : Expression ::= LeftOperand:Expression RightOperand:Expression;
 
@@ -92,16 +109,16 @@ MapRangedAccessOperation : UnaryExpression ::= <RangeStart:Integer> <RangeEnd:In
 MapUpdateOperation : MapAccessOperation ::= Update:Expression;
 
 // Quantifier expressions
-abstract QuantifierExpression : UnaryExpression ::= TypeArguments:TypeArgument* Parameters:QuantifierArgument* Triggers:Expression*;
-
-QuantifierArgument : Argument;
+abstract QuantifierExpression : UnaryExpression ::= TypeArguments:TypeArgument* Parameters:Binding* Triggers:Expression*;
 
 UniversalQuantifier : QuantifierExpression;
 
 ExistentialQuantifier : QuantifierExpression;
 
-// Function call
-FunctionCall : Expression ::= Name:Identifier Arguments:Expression*;
+// Symbolic reference
+SymbolicReference : Expression ::= Name:Identifier;
+
+FunctionCall : SymbolicReference ::= Arguments:Expression*;
 
 // Literal expressions
 abstract Literal : Expression;
@@ -115,6 +132,46 @@ StringLiteral : Literal ::= <Value:String>;
 BoolLiteral : Literal ::= <Value:Boolean>;
 
 RealLiteral : Literal ::= <Value:String>;
+
+// Statements
+abstract Statement ::= Label:Identifier;
+
+AssertStatement : Statement ::= Expression;
+
+AssumeStatement : Statement ::= Expression;
+
+HavocStatement : Statement ::= SymbolicReference*;
+
+AssignmentStatement : Statement ::= Targets:SymbolicReference* Source:Expression*;
+
+abstract CallStatement : Statement ::= Callee:Identifier;
+
+TargetedCallStatement : CallStatement ::= Targets:SymbolicReference* Arguments:Expression*;
+
+ForAllCallStatement : CallStatement ::= Arguments:Meta*;
+
+IfStatement : Statement ::= Condition:Meta Then:BlockStatement [Else:BlockStatement];
+
+WhileStatement : Statement ::= Condition:Meta Statement;
+
+BreakStatement : Statement ::= [Label:Identifier];
+
+ReturnStatement : Statement;
+
+GotoStatement : Statement ::= [Label:Identifier];
+
+BlockStatement : Statement ::= Statement*;
+
+// Specifications
+abstract Specification ::= <Free:Boolean>;
+
+PreCondition ::= Expression;
+
+PostCondition ::= Expression;
+
+FrameCondition ::= SymbolicReference*;
+
+LoopInvariant ::= Expression;
 
 // Types
 abstract Type;
@@ -131,4 +188,6 @@ ConstructedType : Type ::= Name:Identifier Arguments:Type*;
 
 MapType : Type ::= Arguments:TypeArgument* KeyTypes:Type* ValueType:Type;
 
-TypeArgument ::= Identifier;
+TypeArgument ::= Name:Identifier;
+
+Binding ::= Name:Identifier Type;

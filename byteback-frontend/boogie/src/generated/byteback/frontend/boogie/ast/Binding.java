@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:31
- * @astdecl Argument : ASTNode ::= Name:Identifier Type;
- * @production Argument : {@link ASTNode} ::= <span class="component">Name:{@link Identifier}</span> <span class="component">{@link Type}</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:193
+ * @astdecl Binding : ASTNode ::= Name:Identifier Type;
+ * @production Binding : {@link ASTNode} ::= <span class="component">Name:{@link Identifier}</span> <span class="component">{@link Type}</span>;
 
  */
-public class Argument extends ASTNode<ASTNode> implements Cloneable {
+public class Binding extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public Argument() {
+  public Binding() {
     super();
   }
   /**
@@ -32,7 +32,7 @@ public class Argument extends ASTNode<ASTNode> implements Cloneable {
     type = {"Identifier", "Type"},
     kind = {"Child", "Child"}
   )
-  public Argument(Identifier p0, Type p1) {
+  public Binding(Identifier p0, Type p1) {
     setChild(p0, 0);
     setChild(p1, 1);
   }
@@ -64,16 +64,16 @@ public class Argument extends ASTNode<ASTNode> implements Cloneable {
   /** @apilevel internal 
    * @declaredat ASTNode:41
    */
-  public Argument clone() throws CloneNotSupportedException {
-    Argument node = (Argument) super.clone();
+  public Binding clone() throws CloneNotSupportedException {
+    Binding node = (Binding) super.clone();
     return node;
   }
   /** @apilevel internal 
    * @declaredat ASTNode:46
    */
-  public Argument copy() {
+  public Binding copy() {
     try {
-      Argument node = (Argument) clone();
+      Binding node = (Binding) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -92,7 +92,7 @@ public class Argument extends ASTNode<ASTNode> implements Cloneable {
    * @declaredat ASTNode:65
    */
   @Deprecated
-  public Argument fullCopy() {
+  public Binding fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -102,8 +102,8 @@ public class Argument extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:75
    */
-  public Argument treeCopyNoTransform() {
-    Argument tree = (Argument) copy();
+  public Binding treeCopyNoTransform() {
+    Binding tree = (Binding) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -123,8 +123,8 @@ public class Argument extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:95
    */
-  public Argument treeCopy() {
-    Argument tree = (Argument) copy();
+  public Binding treeCopy() {
+    Binding tree = (Binding) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);

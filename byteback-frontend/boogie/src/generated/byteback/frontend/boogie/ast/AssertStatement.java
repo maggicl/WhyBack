@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:94
- * @astdecl QuantifierArgument : Argument ::= Name:Identifier Type;
- * @production QuantifierArgument : {@link Argument};
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:139
+ * @astdecl AssertStatement : Statement ::= Label:Identifier Expression;
+ * @production AssertStatement : {@link Statement} ::= <span class="component">{@link Expression}</span>;
 
  */
-public class QuantifierArgument extends Argument implements Cloneable {
+public class AssertStatement extends Statement implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public QuantifierArgument() {
+  public AssertStatement() {
     super();
   }
   /**
@@ -28,11 +28,11 @@ public class QuantifierArgument extends Argument implements Cloneable {
    * @declaredat ASTNode:13
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Name", "Type"},
-    type = {"Identifier", "Type"},
+    name = {"Label", "Expression"},
+    type = {"Identifier", "Expression"},
     kind = {"Child", "Child"}
   )
-  public QuantifierArgument(Identifier p0, Type p1) {
+  public AssertStatement(Identifier p0, Expression p1) {
     setChild(p0, 0);
     setChild(p1, 1);
   }
@@ -64,16 +64,16 @@ public class QuantifierArgument extends Argument implements Cloneable {
   /** @apilevel internal 
    * @declaredat ASTNode:41
    */
-  public QuantifierArgument clone() throws CloneNotSupportedException {
-    QuantifierArgument node = (QuantifierArgument) super.clone();
+  public AssertStatement clone() throws CloneNotSupportedException {
+    AssertStatement node = (AssertStatement) super.clone();
     return node;
   }
   /** @apilevel internal 
    * @declaredat ASTNode:46
    */
-  public QuantifierArgument copy() {
+  public AssertStatement copy() {
     try {
-      QuantifierArgument node = (QuantifierArgument) clone();
+      AssertStatement node = (AssertStatement) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -92,7 +92,7 @@ public class QuantifierArgument extends Argument implements Cloneable {
    * @declaredat ASTNode:65
    */
   @Deprecated
-  public QuantifierArgument fullCopy() {
+  public AssertStatement fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -102,8 +102,8 @@ public class QuantifierArgument extends Argument implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:75
    */
-  public QuantifierArgument treeCopyNoTransform() {
-    QuantifierArgument tree = (QuantifierArgument) copy();
+  public AssertStatement treeCopyNoTransform() {
+    AssertStatement tree = (AssertStatement) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -123,8 +123,8 @@ public class QuantifierArgument extends Argument implements Cloneable {
    * @apilevel low-level
    * @declaredat ASTNode:95
    */
-  public QuantifierArgument treeCopy() {
-    QuantifierArgument tree = (QuantifierArgument) copy();
+  public AssertStatement treeCopy() {
+    AssertStatement tree = (AssertStatement) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -143,56 +143,56 @@ public class QuantifierArgument extends Argument implements Cloneable {
     return super.is$Equal(node);    
   }
   /**
-   * Replaces the Name child.
-   * @param node The new node to replace the Name child.
+   * Replaces the Label child.
+   * @param node The new node to replace the Label child.
    * @apilevel high-level
    */
-  public void setName(Identifier node) {
+  public void setLabel(Identifier node) {
     setChild(node, 0);
   }
   /**
-   * Retrieves the Name child.
-   * @return The current node used as the Name child.
+   * Retrieves the Label child.
+   * @return The current node used as the Label child.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Child(name="Name")
-  public Identifier getName() {
+  @ASTNodeAnnotation.Child(name="Label")
+  public Identifier getLabel() {
     return (Identifier) getChild(0);
   }
   /**
-   * Retrieves the Name child.
+   * Retrieves the Label child.
    * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the Name child.
+   * @return The current node used as the Label child.
    * @apilevel low-level
    */
-  public Identifier getNameNoTransform() {
+  public Identifier getLabelNoTransform() {
     return (Identifier) getChildNoTransform(0);
   }
   /**
-   * Replaces the Type child.
-   * @param node The new node to replace the Type child.
+   * Replaces the Expression child.
+   * @param node The new node to replace the Expression child.
    * @apilevel high-level
    */
-  public void setType(Type node) {
+  public void setExpression(Expression node) {
     setChild(node, 1);
   }
   /**
-   * Retrieves the Type child.
-   * @return The current node used as the Type child.
+   * Retrieves the Expression child.
+   * @return The current node used as the Expression child.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Child(name="Type")
-  public Type getType() {
-    return (Type) getChild(1);
+  @ASTNodeAnnotation.Child(name="Expression")
+  public Expression getExpression() {
+    return (Expression) getChild(1);
   }
   /**
-   * Retrieves the Type child.
+   * Retrieves the Expression child.
    * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the Type child.
+   * @return The current node used as the Expression child.
    * @apilevel low-level
    */
-  public Type getTypeNoTransform() {
-    return (Type) getChildNoTransform(1);
+  public Expression getExpressionNoTransform() {
+    return (Expression) getChildNoTransform(1);
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

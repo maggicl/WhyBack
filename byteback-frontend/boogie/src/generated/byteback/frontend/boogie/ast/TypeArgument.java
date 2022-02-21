@@ -2,9 +2,9 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:128
- * @astdecl TypeArgument : ASTNode ::= Identifier;
- * @production TypeArgument : {@link ASTNode} ::= <span class="component">{@link Identifier}</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:191
+ * @astdecl TypeArgument : ASTNode ::= Name:Identifier;
+ * @production TypeArgument : {@link ASTNode} ::= <span class="component">Name:{@link Identifier}</span>;
 
  */
 public class TypeArgument extends ASTNode<ASTNode> implements Cloneable {
@@ -28,7 +28,7 @@ public class TypeArgument extends ASTNode<ASTNode> implements Cloneable {
    * @declaredat ASTNode:13
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Identifier"},
+    name = {"Name"},
     type = {"Identifier"},
     kind = {"Child"}
   )
@@ -142,29 +142,29 @@ public class TypeArgument extends ASTNode<ASTNode> implements Cloneable {
     return super.is$Equal(node);    
   }
   /**
-   * Replaces the Identifier child.
-   * @param node The new node to replace the Identifier child.
+   * Replaces the Name child.
+   * @param node The new node to replace the Name child.
    * @apilevel high-level
    */
-  public void setIdentifier(Identifier node) {
+  public void setName(Identifier node) {
     setChild(node, 0);
   }
   /**
-   * Retrieves the Identifier child.
-   * @return The current node used as the Identifier child.
+   * Retrieves the Name child.
+   * @return The current node used as the Name child.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Child(name="Identifier")
-  public Identifier getIdentifier() {
+  @ASTNodeAnnotation.Child(name="Name")
+  public Identifier getName() {
     return (Identifier) getChild(0);
   }
   /**
-   * Retrieves the Identifier child.
+   * Retrieves the Name child.
    * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the Identifier child.
+   * @return The current node used as the Name child.
    * @apilevel low-level
    */
-  public Identifier getIdentifierNoTransform() {
+  public Identifier getNameNoTransform() {
     return (Identifier) getChildNoTransform(0);
   }
   /** @apilevel internal */

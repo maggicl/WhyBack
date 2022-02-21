@@ -2,12 +2,12 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:36
- * @astdecl Expression : ASTNode;
- * @production Expression : {@link ASTNode};
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:56
+ * @astdecl Expression : Meta;
+ * @production Expression : {@link Meta};
 
  */
-public abstract class Expression extends ASTNode<ASTNode> implements Cloneable {
+public abstract class Expression extends Meta implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */

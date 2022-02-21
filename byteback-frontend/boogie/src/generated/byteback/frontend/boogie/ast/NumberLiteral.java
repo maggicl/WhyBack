@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:103
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:126
  * @astdecl NumberLiteral : Literal ::= <Value:Integer>;
  * @production NumberLiteral : {@link Literal} ::= <span class="component">&lt;Value:Integer&gt;</span>;
 

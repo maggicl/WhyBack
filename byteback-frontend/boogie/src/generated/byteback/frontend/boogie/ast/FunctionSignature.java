@@ -3,8 +3,8 @@ package byteback.frontend.boogie.ast;
 /**
  * @ast node
  * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:29
- * @astdecl FunctionSignature : ASTNode ::= TypeArguments:TypeArgument* FunctionArguments:FunctionArgument* ReturnArgument:FunctionArgument;
- * @production FunctionSignature : {@link ASTNode} ::= <span class="component">TypeArguments:{@link TypeArgument}*</span> <span class="component">FunctionArguments:{@link FunctionArgument}*</span> <span class="component">ReturnArgument:{@link FunctionArgument}</span>;
+ * @astdecl FunctionSignature : ASTNode ::= TypeArguments:TypeArgument* FunctionArguments:Binding* ReturnArgument:Binding;
+ * @production FunctionSignature : {@link ASTNode} ::= <span class="component">TypeArguments:{@link TypeArgument}*</span> <span class="component">FunctionArguments:{@link Binding}*</span> <span class="component">ReturnArgument:{@link Binding}</span>;
 
  */
 public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
@@ -31,10 +31,10 @@ public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
    */
   @ASTNodeAnnotation.Constructor(
     name = {"TypeArguments", "FunctionArguments", "ReturnArgument"},
-    type = {"List<TypeArgument>", "List<FunctionArgument>", "FunctionArgument"},
+    type = {"List<TypeArgument>", "List<Binding>", "Binding"},
     kind = {"List", "List", "Child"}
   )
-  public FunctionSignature(List<TypeArgument> p0, List<FunctionArgument> p1, FunctionArgument p2) {
+  public FunctionSignature(List<TypeArgument> p0, List<Binding> p1, Binding p2) {
     setChild(p0, 0);
     setChild(p1, 1);
     setChild(p2, 2);
@@ -260,7 +260,7 @@ public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
    * @param list The new list node to be used as the FunctionArguments list.
    * @apilevel high-level
    */
-  public void setFunctionArgumentsList(List<FunctionArgument> list) {
+  public void setFunctionArgumentsList(List<Binding> list) {
     setChild(list, 1);
   }
   /**
@@ -286,8 +286,8 @@ public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
    * @return The element at position {@code i} in the FunctionArguments list.
    * @apilevel high-level
    */
-  public FunctionArgument getFunctionArguments(int i) {
-    return (FunctionArgument) getFunctionArgumentsList().getChild(i);
+  public Binding getFunctionArguments(int i) {
+    return (Binding) getFunctionArgumentsList().getChild(i);
   }
   /**
    * Check whether the FunctionArguments list has any children.
@@ -302,14 +302,14 @@ public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
    * @param node The element to append to the FunctionArguments list.
    * @apilevel high-level
    */
-  public void addFunctionArguments(FunctionArgument node) {
-    List<FunctionArgument> list = (parent == null) ? getFunctionArgumentsListNoTransform() : getFunctionArgumentsList();
+  public void addFunctionArguments(Binding node) {
+    List<Binding> list = (parent == null) ? getFunctionArgumentsListNoTransform() : getFunctionArgumentsList();
     list.addChild(node);
   }
   /** @apilevel low-level 
    */
-  public void addFunctionArgumentsNoTransform(FunctionArgument node) {
-    List<FunctionArgument> list = getFunctionArgumentsListNoTransform();
+  public void addFunctionArgumentsNoTransform(Binding node) {
+    List<Binding> list = getFunctionArgumentsListNoTransform();
     list.addChild(node);
   }
   /**
@@ -318,8 +318,8 @@ public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
    * @param i The list index of the node to be replaced.
    * @apilevel high-level
    */
-  public void setFunctionArguments(FunctionArgument node, int i) {
-    List<FunctionArgument> list = getFunctionArgumentsList();
+  public void setFunctionArguments(Binding node, int i) {
+    List<Binding> list = getFunctionArgumentsList();
     list.setChild(node, i);
   }
   /**
@@ -328,8 +328,8 @@ public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel high-level
    */
   @ASTNodeAnnotation.ListChild(name="FunctionArguments")
-  public List<FunctionArgument> getFunctionArgumentsList() {
-    List<FunctionArgument> list = (List<FunctionArgument>) getChild(1);
+  public List<Binding> getFunctionArgumentsList() {
+    List<Binding> list = (List<Binding>) getChild(1);
     return list;
   }
   /**
@@ -338,22 +338,22 @@ public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
    * @return The node representing the FunctionArguments list.
    * @apilevel low-level
    */
-  public List<FunctionArgument> getFunctionArgumentsListNoTransform() {
-    return (List<FunctionArgument>) getChildNoTransform(1);
+  public List<Binding> getFunctionArgumentsListNoTransform() {
+    return (List<Binding>) getChildNoTransform(1);
   }
   /**
    * @return the element at index {@code i} in the FunctionArguments list without
    * triggering rewrites.
    */
-  public FunctionArgument getFunctionArgumentsNoTransform(int i) {
-    return (FunctionArgument) getFunctionArgumentsListNoTransform().getChildNoTransform(i);
+  public Binding getFunctionArgumentsNoTransform(int i) {
+    return (Binding) getFunctionArgumentsListNoTransform().getChildNoTransform(i);
   }
   /**
    * Retrieves the FunctionArguments list.
    * @return The node representing the FunctionArguments list.
    * @apilevel high-level
    */
-  public List<FunctionArgument> getFunctionArgumentss() {
+  public List<Binding> getFunctionArgumentss() {
     return getFunctionArgumentsList();
   }
   /**
@@ -362,7 +362,7 @@ public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
    * @return The node representing the FunctionArguments list.
    * @apilevel low-level
    */
-  public List<FunctionArgument> getFunctionArgumentssNoTransform() {
+  public List<Binding> getFunctionArgumentssNoTransform() {
     return getFunctionArgumentsListNoTransform();
   }
   /**
@@ -370,7 +370,7 @@ public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
    * @param node The new node to replace the ReturnArgument child.
    * @apilevel high-level
    */
-  public void setReturnArgument(FunctionArgument node) {
+  public void setReturnArgument(Binding node) {
     setChild(node, 2);
   }
   /**
@@ -379,8 +379,8 @@ public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel high-level
    */
   @ASTNodeAnnotation.Child(name="ReturnArgument")
-  public FunctionArgument getReturnArgument() {
-    return (FunctionArgument) getChild(2);
+  public Binding getReturnArgument() {
+    return (Binding) getChild(2);
   }
   /**
    * Retrieves the ReturnArgument child.
@@ -388,8 +388,8 @@ public class FunctionSignature extends ASTNode<ASTNode> implements Cloneable {
    * @return The current node used as the ReturnArgument child.
    * @apilevel low-level
    */
-  public FunctionArgument getReturnArgumentNoTransform() {
-    return (FunctionArgument) getChildNoTransform(2);
+  public Binding getReturnArgumentNoTransform() {
+    return (Binding) getChildNoTransform(2);
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

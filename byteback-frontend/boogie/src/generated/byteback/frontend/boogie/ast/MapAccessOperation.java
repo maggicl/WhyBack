@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:85
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:105
  * @astdecl MapAccessOperation : UnaryExpression ::= Operand:Expression Indexes:Expression*;
  * @production MapAccessOperation : {@link UnaryExpression} ::= <span class="component">Indexes:{@link Expression}*</span>;
 

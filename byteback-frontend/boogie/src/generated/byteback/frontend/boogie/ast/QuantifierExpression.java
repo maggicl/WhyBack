@@ -2,9 +2,9 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:92
- * @astdecl QuantifierExpression : UnaryExpression ::= Operand:Expression TypeArguments:TypeArgument* Parameters:QuantifierArgument* Triggers:Expression*;
- * @production QuantifierExpression : {@link UnaryExpression} ::= <span class="component">TypeArguments:{@link TypeArgument}*</span> <span class="component">Parameters:{@link QuantifierArgument}*</span> <span class="component">Triggers:{@link Expression}*</span>;
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:112
+ * @astdecl QuantifierExpression : UnaryExpression ::= Operand:Expression TypeArguments:TypeArgument* Parameters:Binding* Triggers:Expression*;
+ * @production QuantifierExpression : {@link UnaryExpression} ::= <span class="component">TypeArguments:{@link TypeArgument}*</span> <span class="component">Parameters:{@link Binding}*</span> <span class="component">Triggers:{@link Expression}*</span>;
 
  */
 public abstract class QuantifierExpression extends UnaryExpression implements Cloneable {
@@ -32,10 +32,10 @@ public abstract class QuantifierExpression extends UnaryExpression implements Cl
    */
   @ASTNodeAnnotation.Constructor(
     name = {"Operand", "TypeArguments", "Parameters", "Triggers"},
-    type = {"Expression", "List<TypeArgument>", "List<QuantifierArgument>", "List<Expression>"},
+    type = {"Expression", "List<TypeArgument>", "List<Binding>", "List<Expression>"},
     kind = {"Child", "List", "List", "List"}
   )
-  public QuantifierExpression(Expression p0, List<TypeArgument> p1, List<QuantifierArgument> p2, List<Expression> p3) {
+  public QuantifierExpression(Expression p0, List<TypeArgument> p1, List<Binding> p2, List<Expression> p3) {
     setChild(p0, 0);
     setChild(p1, 1);
     setChild(p2, 2);
@@ -241,7 +241,7 @@ public abstract class QuantifierExpression extends UnaryExpression implements Cl
    * @param list The new list node to be used as the Parameters list.
    * @apilevel high-level
    */
-  public void setParametersList(List<QuantifierArgument> list) {
+  public void setParametersList(List<Binding> list) {
     setChild(list, 2);
   }
   /**
@@ -267,8 +267,8 @@ public abstract class QuantifierExpression extends UnaryExpression implements Cl
    * @return The element at position {@code i} in the Parameters list.
    * @apilevel high-level
    */
-  public QuantifierArgument getParameters(int i) {
-    return (QuantifierArgument) getParametersList().getChild(i);
+  public Binding getParameters(int i) {
+    return (Binding) getParametersList().getChild(i);
   }
   /**
    * Check whether the Parameters list has any children.
@@ -283,14 +283,14 @@ public abstract class QuantifierExpression extends UnaryExpression implements Cl
    * @param node The element to append to the Parameters list.
    * @apilevel high-level
    */
-  public void addParameters(QuantifierArgument node) {
-    List<QuantifierArgument> list = (parent == null) ? getParametersListNoTransform() : getParametersList();
+  public void addParameters(Binding node) {
+    List<Binding> list = (parent == null) ? getParametersListNoTransform() : getParametersList();
     list.addChild(node);
   }
   /** @apilevel low-level 
    */
-  public void addParametersNoTransform(QuantifierArgument node) {
-    List<QuantifierArgument> list = getParametersListNoTransform();
+  public void addParametersNoTransform(Binding node) {
+    List<Binding> list = getParametersListNoTransform();
     list.addChild(node);
   }
   /**
@@ -299,8 +299,8 @@ public abstract class QuantifierExpression extends UnaryExpression implements Cl
    * @param i The list index of the node to be replaced.
    * @apilevel high-level
    */
-  public void setParameters(QuantifierArgument node, int i) {
-    List<QuantifierArgument> list = getParametersList();
+  public void setParameters(Binding node, int i) {
+    List<Binding> list = getParametersList();
     list.setChild(node, i);
   }
   /**
@@ -309,8 +309,8 @@ public abstract class QuantifierExpression extends UnaryExpression implements Cl
    * @apilevel high-level
    */
   @ASTNodeAnnotation.ListChild(name="Parameters")
-  public List<QuantifierArgument> getParametersList() {
-    List<QuantifierArgument> list = (List<QuantifierArgument>) getChild(2);
+  public List<Binding> getParametersList() {
+    List<Binding> list = (List<Binding>) getChild(2);
     return list;
   }
   /**
@@ -319,22 +319,22 @@ public abstract class QuantifierExpression extends UnaryExpression implements Cl
    * @return The node representing the Parameters list.
    * @apilevel low-level
    */
-  public List<QuantifierArgument> getParametersListNoTransform() {
-    return (List<QuantifierArgument>) getChildNoTransform(2);
+  public List<Binding> getParametersListNoTransform() {
+    return (List<Binding>) getChildNoTransform(2);
   }
   /**
    * @return the element at index {@code i} in the Parameters list without
    * triggering rewrites.
    */
-  public QuantifierArgument getParametersNoTransform(int i) {
-    return (QuantifierArgument) getParametersListNoTransform().getChildNoTransform(i);
+  public Binding getParametersNoTransform(int i) {
+    return (Binding) getParametersListNoTransform().getChildNoTransform(i);
   }
   /**
    * Retrieves the Parameters list.
    * @return The node representing the Parameters list.
    * @apilevel high-level
    */
-  public List<QuantifierArgument> getParameterss() {
+  public List<Binding> getParameterss() {
     return getParametersList();
   }
   /**
@@ -343,7 +343,7 @@ public abstract class QuantifierExpression extends UnaryExpression implements Cl
    * @return The node representing the Parameters list.
    * @apilevel low-level
    */
-  public List<QuantifierArgument> getParameterssNoTransform() {
+  public List<Binding> getParameterssNoTransform() {
     return getParametersListNoTransform();
   }
   /**

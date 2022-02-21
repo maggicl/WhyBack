@@ -2,16 +2,16 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:33
- * @astdecl FunctionArgument : Argument ::= Name:Identifier Type;
- * @production FunctionArgument : {@link Argument};
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:32
+ * @astdecl AxiomDeclaration : ASTNode ::= Expression;
+ * @production AxiomDeclaration : {@link ASTNode} ::= <span class="component">{@link Expression}</span>;
 
  */
-public class FunctionArgument extends Argument implements Cloneable {
+public class AxiomDeclaration extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @declaredat ASTNode:1
    */
-  public FunctionArgument() {
+  public AxiomDeclaration() {
     super();
   }
   /**
@@ -22,58 +22,57 @@ public class FunctionArgument extends Argument implements Cloneable {
    * @declaredat ASTNode:10
    */
   public void init$Children() {
-    children = new ASTNode[2];
+    children = new ASTNode[1];
   }
   /**
    * @declaredat ASTNode:13
    */
   @ASTNodeAnnotation.Constructor(
-    name = {"Name", "Type"},
-    type = {"Identifier", "Type"},
-    kind = {"Child", "Child"}
+    name = {"Expression"},
+    type = {"Expression"},
+    kind = {"Child"}
   )
-  public FunctionArgument(Identifier p0, Type p1) {
+  public AxiomDeclaration(Expression p0) {
     setChild(p0, 0);
-    setChild(p1, 1);
   }
   /** @apilevel low-level 
-   * @declaredat ASTNode:23
+   * @declaredat ASTNode:22
    */
   protected int numChildren() {
-    return 2;
+    return 1;
   }
   /**
    * @apilevel internal
-   * @declaredat ASTNode:29
+   * @declaredat ASTNode:28
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:33
+   * @declaredat ASTNode:32
    */
   public void flushAttrCache() {
     super.flushAttrCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:37
+   * @declaredat ASTNode:36
    */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:41
+   * @declaredat ASTNode:40
    */
-  public FunctionArgument clone() throws CloneNotSupportedException {
-    FunctionArgument node = (FunctionArgument) super.clone();
+  public AxiomDeclaration clone() throws CloneNotSupportedException {
+    AxiomDeclaration node = (AxiomDeclaration) super.clone();
     return node;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:46
+   * @declaredat ASTNode:45
    */
-  public FunctionArgument copy() {
+  public AxiomDeclaration copy() {
     try {
-      FunctionArgument node = (FunctionArgument) clone();
+      AxiomDeclaration node = (AxiomDeclaration) clone();
       node.parent = null;
       if (children != null) {
         node.children = (ASTNode[]) children.clone();
@@ -89,10 +88,10 @@ public class FunctionArgument extends Argument implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    * @deprecated Please use treeCopy or treeCopyNoTransform instead
-   * @declaredat ASTNode:65
+   * @declaredat ASTNode:64
    */
   @Deprecated
-  public FunctionArgument fullCopy() {
+  public AxiomDeclaration fullCopy() {
     return treeCopyNoTransform();
   }
   /**
@@ -100,10 +99,10 @@ public class FunctionArgument extends Argument implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:75
+   * @declaredat ASTNode:74
    */
-  public FunctionArgument treeCopyNoTransform() {
-    FunctionArgument tree = (FunctionArgument) copy();
+  public AxiomDeclaration treeCopyNoTransform() {
+    AxiomDeclaration tree = (AxiomDeclaration) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
@@ -121,10 +120,10 @@ public class FunctionArgument extends Argument implements Cloneable {
    * The copy is dangling, i.e. has no parent.
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
-   * @declaredat ASTNode:95
+   * @declaredat ASTNode:94
    */
-  public FunctionArgument treeCopy() {
-    FunctionArgument tree = (FunctionArgument) copy();
+  public AxiomDeclaration treeCopy() {
+    AxiomDeclaration tree = (AxiomDeclaration) copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) getChild(i);
@@ -137,62 +136,36 @@ public class FunctionArgument extends Argument implements Cloneable {
     return tree;
   }
   /** @apilevel internal 
-   * @declaredat ASTNode:109
+   * @declaredat ASTNode:108
    */
   protected boolean is$Equal(ASTNode node) {
     return super.is$Equal(node);    
   }
   /**
-   * Replaces the Name child.
-   * @param node The new node to replace the Name child.
+   * Replaces the Expression child.
+   * @param node The new node to replace the Expression child.
    * @apilevel high-level
    */
-  public void setName(Identifier node) {
+  public void setExpression(Expression node) {
     setChild(node, 0);
   }
   /**
-   * Retrieves the Name child.
-   * @return The current node used as the Name child.
+   * Retrieves the Expression child.
+   * @return The current node used as the Expression child.
    * @apilevel high-level
    */
-  @ASTNodeAnnotation.Child(name="Name")
-  public Identifier getName() {
-    return (Identifier) getChild(0);
+  @ASTNodeAnnotation.Child(name="Expression")
+  public Expression getExpression() {
+    return (Expression) getChild(0);
   }
   /**
-   * Retrieves the Name child.
+   * Retrieves the Expression child.
    * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the Name child.
+   * @return The current node used as the Expression child.
    * @apilevel low-level
    */
-  public Identifier getNameNoTransform() {
-    return (Identifier) getChildNoTransform(0);
-  }
-  /**
-   * Replaces the Type child.
-   * @param node The new node to replace the Type child.
-   * @apilevel high-level
-   */
-  public void setType(Type node) {
-    setChild(node, 1);
-  }
-  /**
-   * Retrieves the Type child.
-   * @return The current node used as the Type child.
-   * @apilevel high-level
-   */
-  @ASTNodeAnnotation.Child(name="Type")
-  public Type getType() {
-    return (Type) getChild(1);
-  }
-  /**
-   * Retrieves the Type child.
-   * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the Type child.
-   * @apilevel low-level
-   */
-  public Type getTypeNoTransform() {
-    return (Type) getChildNoTransform(1);
+  public Expression getExpressionNoTransform() {
+    return (Expression) getChildNoTransform(0);
   }
   /** @apilevel internal */
   public ASTNode rewriteTo() {

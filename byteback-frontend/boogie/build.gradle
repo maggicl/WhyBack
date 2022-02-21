@@ -1,13 +1,9 @@
 plugins {
-    id 'java'
+    id 'byteback.java-common-conventions'
     id 'org.jastadd' version '1.14.5'
 }
 
-repositories {
-    flatDir {
-        dirs 'dist'
-    }
-}
+sourceSets.main.java.srcDirs = ['src/generated/java','src/main/java']
 
 jastadd {
     configureModuleBuild()
@@ -16,7 +12,7 @@ jastadd {
     astPackage = "byteback.frontend.boogie.ast"
     parser.name = "BoogieParser"
 
-    genDir = "src/generated"
-    parser.genDir = "src/generated/byteback/frontend/boogie/parser"
-    scanner.genDir = "src/generated/byteback/frontend/boogie/scanner"
+    genDir = "src/generated/java"
+    parser.genDir = "src/generated/java/byteback/frontend/boogie/parser"
+    scanner.genDir = "src/generated/java/byteback/frontend/boogie/scanner"
 }

@@ -2,20 +2,20 @@ module("boogie") {
     java {
         basedir "src/"
         include "main/**/*.java"
-        include "gen/**/*.java"
+        include "generated/**/*.java"
     }
 
     jastadd {
-        include "spec/*.ast"
+        include "spec/grammar/*.ast"
         include "spec/*.jadd"
         include "spec/*.jrag"
     }
 
     scanner {
-        include "spec/*.flex"
+        include "spec/scanner/*.flex"
     }
 
     parser {
-        include "spec/*.parser"
+        include "spec/parser/*.parser"
     }
 }

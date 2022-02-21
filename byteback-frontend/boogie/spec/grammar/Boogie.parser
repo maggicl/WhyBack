@@ -27,16 +27,16 @@ TypeDeclaration type_declaration
     ;
 
 TypeDeclaration type_definition
-    = type_constructor
-    | type_synonym
+    = type_constructor_definition
+    | type_synonym_definition
     ;
 
-TypeConstructor type_constructor
+TypeConstructor type_constructor_definition
     = FINITE.f? IDENTIFIER.tn type_argument_list.tal? SEMICOLON
       {: return new TypeConstructor(tn, null, tal, FINITE.f != null); :}
     ;
 
-TypeSynonym type_synonym
+TypeSynonym type_synonym_definition
     = IDENTIFIER.ta type_argument_list.tal EQUALS IDENTIFIER.tb SEMICOLON
       {: return new TypeSynonym(ta, null, tal, tb); :}
     ;
@@ -62,14 +62,14 @@ List attribute_list
 
 Attribute attribute
     = LBRACE DOUBLE_COLON IDENTIFIER.a expression_list.el RBRACE
-      {: return new Attribute(a, el) :}
+      {: return new Attribute(a, el); :}
     ;
 
 List expression_list
     = expression.e
       {: return new List(e); :}
     | expression_list.el COMMA expression.e
-      {: return el.add(e) :}
+      {: return el.add(e); :}
     ;
 
 Expression expression

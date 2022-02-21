@@ -2,27 +2,21 @@
 Program ::= Declaration*;
 
 // Declaration
-abstract Declaration ::= Identifier:Identifier Attributes:Attribute*;
-
-Attribute ::= Name:Identifier Arguments:Expression;
+abstract Declaration ::= <Name:String> Attributes:Attribute*;
 
 // Type declaration
 abstract TypeDeclaration : Declaration ::= Arguments:TypeArgument*;
 
 TypeConstructor : TypeDeclaration ::= <Finite:Boolean>;
 
-TypeSynonym : TypeDeclaration ::= Alias:Type;
-
-Identifier ::= <Label:String>;
+TypeSynonym : TypeDeclaration ::= <Aliased:String>;
 
 // Constant declaration
 ConstantDeclaration : Declaration ::= <Unique:Boolean> OrderSpecification;
 
 OrderSpecification ::= Edges:ParentEdge* <Complete:Boolean>;
 
-ParentEdge ::= <Unique:Boolean> Parent:Constant;
-
-Constant ::= Identifier;
+ParentEdge ::= <Unique:Boolean> <ParentConstant:String>;
 
 // Function declaration
 FunctionDeclaration ::= FunctionSignature;
@@ -117,7 +111,7 @@ UniversalQuantifier : QuantifierExpression;
 ExistentialQuantifier : QuantifierExpression;
 
 // Symbolic reference
-SymbolicReference : Expression ::= Name:Identifier;
+SymbolicReference : Expression ::= <Name:String>;
 
 FunctionCall : SymbolicReference ::= Arguments:Expression*;
 
@@ -135,7 +129,7 @@ BoolLiteral : Literal ::= <Value:Boolean>;
 RealLiteral : Literal ::= <Value:String>;
 
 // Statements
-abstract Statement ::= Label:Identifier;
+abstract Statement ::= [Label];
 
 AssertStatement : Statement ::= Expression;
 
@@ -145,7 +139,7 @@ HavocStatement : Statement ::= SymbolicReference*;
 
 AssignmentStatement : Statement ::= Targets:SymbolicReference* Source:Expression*;
 
-abstract CallStatement : Statement ::= Callee:Identifier;
+abstract CallStatement : Statement ::= <Callee:String>;
 
 TargetedCallStatement : CallStatement ::= Targets:SymbolicReference* Arguments:Expression*;
 
@@ -155,13 +149,15 @@ IfStatement : Statement ::= Condition:Meta Then:BlockStatement [Else:BlockStatem
 
 WhileStatement : Statement ::= Condition:Meta Statement;
 
-BreakStatement : Statement ::= [Label:Identifier];
+BreakStatement : Statement ::= [Label];
 
 ReturnStatement : Statement;
 
-GotoStatement : Statement ::= [Label:Identifier];
-
 BlockStatement : Statement ::= Statement*;
+
+GotoStatement : Statement ::= Label;
+
+Label ::= <Target:String>;
 
 // Specifications
 abstract Specification ::= <Free:Boolean>;
@@ -185,10 +181,12 @@ RealType : Type;
 
 BitVectorType : Type ::= <Size:Integer>;
 
-ConstructedType : Type ::= Name:Identifier Arguments:Type*;
+ConstructedType : Type ::= <Name:String> Arguments:Type*;
 
 MapType : Type ::= Arguments:TypeArgument* KeyTypes:Type* ValueType:Type;
 
-TypeArgument ::= Name:Identifier;
+TypeArgument ::= <Name:String>;
 
-Binding ::= Name:Identifier Type;
+Binding ::= <Name:String> Type;
+
+Attribute ::= <Name:String> Arguments:Expression*;

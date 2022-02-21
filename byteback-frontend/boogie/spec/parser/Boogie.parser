@@ -1,4 +1,7 @@
-%goal program;
+%header {:
+    package byteback.frontend.boogie.parser;
+    import byteback.frontend.boogie.ast.*;
+:};
 
 Program program
     = declaration_list.dl?
@@ -28,17 +31,23 @@ TypeDeclaration type_declaration
 
 TypeDeclaration type_definition
     = type_constructor_definition
+    | finite_type_constructor_definition
     | type_synonym_definition
     ;
 
+TypeConstructor finite_type_constructor_definition
+    = FINITE type_constructor_definition.tc
+      {: tc.setFinite(true); return tc; :}
+    ;
+
 TypeConstructor type_constructor_definition
-    = FINITE.f? IDENTIFIER.tn type_argument_list.tal? SEMICOLON
-      {: return new TypeConstructor(tn, null, tal, FINITE.f != null); :}
+    = IDENTIFIER.tn type_argument_list.tal? SEMICOLON
+      {: return new TypeConstructor(tn, new List(), tal, false); :}
     ;
 
 TypeSynonym type_synonym_definition
     = IDENTIFIER.ta type_argument_list.tal EQUALS IDENTIFIER.tb SEMICOLON
-      {: return new TypeSynonym(ta, null, tal, tb); :}
+      {: return new TypeSynonym(ta, new List(), tal, tb); :}
     ;
 
 List type_argument_list

@@ -3,7 +3,9 @@ plugins {
     id 'org.jastadd' version '1.14.5'
 }
 
-sourceSets.main.java.srcDirs = ['src/generated/java','src/main/java']
+dependencies {
+    implementation "net.sf.beaver:beaver-rt:0.9.11"
+}
 
 jastadd {
     configureModuleBuild()

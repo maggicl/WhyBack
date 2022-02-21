@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:155
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:156
  * @astdecl WhileStatement : Statement ::= Label:Identifier Condition:Meta Statement;
  * @production WhileStatement : {@link Statement} ::= <span class="component">Condition:{@link Meta}</span> <span class="component">{@link Statement}</span>;
 

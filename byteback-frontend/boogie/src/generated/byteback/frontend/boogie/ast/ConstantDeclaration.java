@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:18
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:19
  * @astdecl ConstantDeclaration : Declaration ::= Identifier:Identifier Attributes:Attribute* <Unique:Boolean> OrderSpecification;
  * @production ConstantDeclaration : {@link Declaration} ::= <span class="component">&lt;Unique:Boolean&gt;</span> <span class="component">{@link OrderSpecification}</span>;
 

@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:149
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:150
  * @astdecl TargetedCallStatement : CallStatement ::= Label:Identifier Callee:Identifier Targets:SymbolicReference* Arguments:Expression*;
  * @production TargetedCallStatement : {@link CallStatement} ::= <span class="component">Targets:{@link SymbolicReference}*</span> <span class="component">Arguments:{@link Expression}*</span>;
 

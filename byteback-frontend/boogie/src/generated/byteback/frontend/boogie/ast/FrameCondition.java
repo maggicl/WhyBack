@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:172
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:173
  * @astdecl FrameCondition : ASTNode ::= SymbolicReference*;
  * @production FrameCondition : {@link ASTNode} ::= <span class="component">{@link SymbolicReference}*</span>;
 

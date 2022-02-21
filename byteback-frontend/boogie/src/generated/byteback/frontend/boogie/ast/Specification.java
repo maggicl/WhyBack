@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:166
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:167
  * @astdecl Specification : ASTNode ::= <Free:Boolean>;
  * @production Specification : {@link ASTNode} ::= <span class="component">&lt;Free:Boolean&gt;</span>;
 

@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:11
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:12
  * @astdecl TypeConstructor : TypeDeclaration ::= Identifier:Identifier Attributes:Attribute* Arguments:TypeArgument* <Finite:Boolean>;
  * @production TypeConstructor : {@link TypeDeclaration} ::= <span class="component">&lt;Finite:Boolean&gt;</span>;
 

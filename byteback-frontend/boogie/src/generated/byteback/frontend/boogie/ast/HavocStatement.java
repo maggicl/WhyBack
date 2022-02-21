@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:143
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:144
  * @astdecl HavocStatement : Statement ::= Label:Identifier SymbolicReference*;
  * @production HavocStatement : {@link Statement} ::= <span class="component">{@link SymbolicReference}*</span>;
 

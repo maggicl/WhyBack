@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:174
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:175
  * @astdecl LoopInvariant : ASTNode ::= Expression;
  * @production LoopInvariant : {@link ASTNode} ::= <span class="component">{@link Expression}</span>;
 

@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:76
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:77
  * @astdecl NotEqualsOperation : BinaryExpression ::= LeftOperand:Expression RightOperand:Expression;
  * @production NotEqualsOperation : {@link BinaryExpression};
 

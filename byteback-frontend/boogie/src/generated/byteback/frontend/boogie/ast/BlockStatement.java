@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:163
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:164
  * @astdecl BlockStatement : Statement ::= Label:Identifier Statement*;
  * @production BlockStatement : {@link Statement} ::= <span class="component">{@link Statement}*</span>;
 

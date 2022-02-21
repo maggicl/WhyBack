@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:153
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:154
  * @astdecl IfStatement : Statement ::= Label:Identifier Condition:Meta Then:BlockStatement [Else:BlockStatement];
  * @production IfStatement : {@link Statement} ::= <span class="component">Condition:{@link Meta}</span> <span class="component">Then:{@link BlockStatement}</span> <span class="component">[Else:{@link BlockStatement}]</span>;
 

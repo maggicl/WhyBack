@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:112
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:113
  * @astdecl QuantifierExpression : UnaryExpression ::= Operand:Expression TypeArguments:TypeArgument* Parameters:Binding* Triggers:Expression*;
  * @production QuantifierExpression : {@link UnaryExpression} ::= <span class="component">TypeArguments:{@link TypeArgument}*</span> <span class="component">Parameters:{@link Binding}*</span> <span class="component">Triggers:{@link Expression}*</span>;
 

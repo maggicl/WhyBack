@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:35
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:36
  * @astdecl VariableDeclaration : Declaration ::= Identifier:Identifier Attributes:Attribute* Variables:Binding* [WhereClause];
  * @production VariableDeclaration : {@link Declaration} ::= <span class="component">Variables:{@link Binding}*</span> <span class="component">[{@link WhereClause}]</span>;
 

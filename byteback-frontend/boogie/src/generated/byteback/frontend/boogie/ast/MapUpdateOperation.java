@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:109
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:110
  * @astdecl MapUpdateOperation : MapAccessOperation ::= Operand:Expression Indexes:Expression* Update:Expression;
  * @production MapUpdateOperation : {@link MapAccessOperation} ::= <span class="component">Update:{@link Expression}</span>;
 

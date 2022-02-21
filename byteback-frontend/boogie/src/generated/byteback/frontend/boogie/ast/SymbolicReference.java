@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:119
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:120
  * @astdecl SymbolicReference : Expression ::= Name:Identifier;
  * @production SymbolicReference : {@link Expression} ::= <span class="component">Name:{@link Identifier}</span>;
 

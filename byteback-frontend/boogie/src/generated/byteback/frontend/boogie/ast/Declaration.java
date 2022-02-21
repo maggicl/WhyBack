@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:4
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:5
  * @astdecl Declaration : ASTNode ::= Identifier:Identifier Attributes:Attribute*;
  * @production Declaration : {@link ASTNode} ::= <span class="component">Identifier:{@link Identifier}</span> <span class="component">Attributes:{@link Attribute}*</span>;
 

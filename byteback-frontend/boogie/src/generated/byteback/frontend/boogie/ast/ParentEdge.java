@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:22
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:23
  * @astdecl ParentEdge : ASTNode ::= <Unique:Boolean> Parent:Constant;
  * @production ParentEdge : {@link ASTNode} ::= <span class="component">&lt;Unique:Boolean&gt;</span> <span class="component">Parent:{@link Constant}</span>;
 

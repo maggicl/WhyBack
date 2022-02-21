@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:27
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:28
  * @astdecl FunctionDeclaration : ASTNode ::= FunctionSignature;
  * @production FunctionDeclaration : {@link ASTNode} ::= <span class="component">{@link FunctionSignature}</span>;
 

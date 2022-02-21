@@ -1,3 +1,4 @@
+// A Boogie program is a set of declaration. 
 Program ::= Declaration*;
 
 // Declaration
@@ -29,7 +30,7 @@ FunctionDeclaration ::= FunctionSignature;
 FunctionSignature ::= TypeArguments:TypeArgument* FunctionArguments:Binding* ReturnArgument:Binding;
 
 // Axiom declaration
-AxiomDeclaration ::= Expression;
+AxiomDeclaration : Declaration ::= Expression;
 
 // Variable declaration
 VariableDeclaration : Declaration ::= Variables:Binding* [WhereClause];

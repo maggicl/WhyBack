@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:20
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:21
  * @astdecl OrderSpecification : ASTNode ::= Edges:ParentEdge* <Complete:Boolean>;
  * @production OrderSpecification : {@link ASTNode} ::= <span class="component">Edges:{@link ParentEdge}*</span> <span class="component">&lt;Complete:Boolean&gt;</span>;
 

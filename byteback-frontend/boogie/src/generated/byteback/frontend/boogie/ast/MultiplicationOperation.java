@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:93
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:94
  * @astdecl MultiplicationOperation : BinaryExpression ::= LeftOperand:Expression RightOperand:Expression;
  * @production MultiplicationOperation : {@link BinaryExpression};
 

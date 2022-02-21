@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:132
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:133
  * @astdecl BoolLiteral : Literal ::= <Value:Boolean>;
  * @production BoolLiteral : {@link Literal} ::= <span class="component">&lt;Value:Boolean&gt;</span>;
 

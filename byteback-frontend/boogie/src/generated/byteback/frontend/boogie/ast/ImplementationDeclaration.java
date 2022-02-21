@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:45
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:46
  * @astdecl ImplementationDeclaration : ProcedureDeclaration ::= Identifier:Identifier Attributes:Attribute* Signature:ProcedureSignature Conditions:Specification* Body;
  * @production ImplementationDeclaration : {@link ProcedureDeclaration} ::= <span class="component">{@link Body}</span>;
 

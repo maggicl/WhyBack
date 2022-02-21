@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:49
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:50
  * @astdecl Body : ASTNode ::= LocalVariables:LocalVariableDeclaration* Statements:Statement*;
  * @production Body : {@link ASTNode} ::= <span class="component">LocalVariables:{@link LocalVariableDeclaration}*</span> <span class="component">Statements:{@link Statement}*</span>;
 

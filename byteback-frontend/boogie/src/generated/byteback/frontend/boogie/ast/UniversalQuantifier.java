@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:114
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:115
  * @astdecl UniversalQuantifier : QuantifierExpression ::= Operand:Expression TypeArguments:TypeArgument* Parameters:Binding* Triggers:Expression*;
  * @production UniversalQuantifier : {@link QuantifierExpression};
 

@@ -2,7 +2,7 @@
 package byteback.frontend.boogie.ast;
 /**
  * @ast node
- * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:42
+ * @declaredat /home/mpaganoni/Projects/byteback/byteback-frontend/boogie/spec/Boogie.ast:43
  * @astdecl ProcedureSignature : ASTNode ::= TypeArguments:TypeArgument* InputParameters:Binding* OutputParameters:Binding*;
  * @production ProcedureSignature : {@link ASTNode} ::= <span class="component">TypeArguments:{@link TypeArgument}*</span> <span class="component">InputParameters:{@link Binding}*</span> <span class="component">OutputParameters:{@link Binding}*</span>;
 

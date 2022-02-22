@@ -58,7 +58,7 @@ BvType = "bv" {DecIntegerLiteral};
 %%
 
 <YYINITIAL>  {
-//    "type" { return symbol(Terminals.TYPE); }
+    "type" { return symbol(Terminals.TYPE); }
 //    "const" { return symbol(Terminals.CONST); }
 //    "function" { return symbol(Terminals.FUNCTION); }
 //    "axiom" { return symbol(Terminals.AXIOM); }
@@ -155,7 +155,7 @@ BvType = "bv" {DecIntegerLiteral};
 //    {BvType} { return symbol(Terminals.BVTYPE, yytext().intern()); }
 //
 //    /* identifiers */ 
-    {Identifier} { return symbol(Terminals.IDENTIFIER, yytext().intern()); }
+    {Identifier} { return symbol(Terminals.ID, yytext().intern()); }
 // 
 //    /* literals */
 //    {BvIntegerLiteral} { return symbol(Terminals.BITVECTOR, yytext().intern()); }

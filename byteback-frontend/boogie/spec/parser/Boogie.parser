@@ -3,56 +3,42 @@
     import byteback.frontend.boogie.ast.*;
 :};
 
+%goal program;
+
 Program program
     = declaration_list.dl?
-      {: return new Program(dl); :}
+    {: return new Program(dl); :}
     ;
 
 List declaration_list
     = declaration.d
-      {: return new List(d); :}
+    {: return new List(d); :}
     | declaration_list.dl declaration.d
-      {: return dl.add(d); :}
+    {: return dl.add(d); :}
     ;
 
 Declaration declaration
     = type_declaration
-    | constant_declaration
-    //| function_declaration
-    //| axiom_declaration
-    //| variable_declaration
-    //| procedure_declaration
-    //| implementation_declaration
     ;
 
-ConstantDeclaration constant_declaration
-    = CONST attribute_list.al? constant_definition.cd SEMICOLON
+List attribute_list
+    = attribute.a
+    {: return new List(a); :}
+    | attribute_list.al attribute.a
+    {: return al.add(a); :}
     ;
 
-ConstantDeclaration constant_definition
-    = common_constant_definition
-    | unique_constant_definition
-    ;
-
-ConstantDeclaration unique_constant_definition
-    = UNIQUE common_constant_definition.cd
-      {:
-        cd.setUnique(true);
-        return cd;
-      :}
-    ;
-
-ConstantDeclaration common_constant_definition
-    = IDENTIFIER.cn COLON type_access.ta order_specification.od
-      {: return new ConstantDeclaration(cn, ta, od, false); :}
+Attribute attribute
+    = LBRACE ID.i expression_comma_separated_list.el? RBRACE
+    {: return new Attribute(i, el); :}
     ;
 
 TypeDeclaration type_declaration
     = TYPE attribute_list.al? type_definition.td SEMICOLON
-      {:
-        td.setAttributesList(al);
-        return td;
-      :}
+    {:
+       td.setAttributesList(al);
+       return td;
+    :}
     ;
 
 TypeDeclaration type_definition
@@ -63,53 +49,135 @@ TypeDeclaration type_definition
 
 TypeConstructor finite_type_constructor_definition
     = FINITE type_constructor_definition.tcd
-      {:
-        tcd.setFinite(true);
-        return tcd;
-      :}
+    {:
+       tcd.setFinite(true);
+       return tcd;
+    :}
     ;
 
 TypeConstructor type_constructor_definition
-    = IDENTIFIER.tn type_argument_list.tal?
-      {: return new TypeConstructor(tn, new List(), tal, false); :}
+    = type_declarator.td type_variable_list.tal?
+    {: return new TypeConstructor(new List(), td, tal, false); :}
     ;
 
 TypeSynonym type_synonym_definition
-    = IDENTIFIER.ta type_argument_list.tal EQUALS IDENTIFIER.tb
-      {: return new TypeSynonym(ta, new List(), tal, tb); :}
+    = type_declarator.td type_variable_list.tal EQUALS type_accessor.tac
+    {: return new TypeSynonym(new List(), td, tal, tac); :}
     ;
 
-List type_argument_list
-    = type_argument.ta
-      {: return new List(ta); :}
-    | type_argument_list.tal type_argument.ta
-      {: return tal.add(ta); :}
+List type_accessor_comma_separated_list
+    = type_accessor.ta
+    {: return new List(ta); :}
+    | type_accessor_comma_separated_list.tal COMMA type_accessor.ta
+    {: return tal.add(ta); :}
     ;
 
-TypeArgument type_argument
-    = IDENTIFIER.an
-      {: return new TypeArgument(an); :}
+TypeAccessor type_accessor
+    = type.t
+    {: return new TypeAccessor(t); :}
     ;
 
-List attribute_list
-    = attribute.a
-      {: return new List(a); :}
-    | attribute_list.al attribute.a
-      {: return al.add(a); :}
+Type type
+    = type_atom
+    | map_type
+    | unknown_type
     ;
 
-Attribute attribute
-    = LBRACE DOUBLE_COLON IDENTIFIER.a expression_list.el RBRACE
-      {: return new Attribute(a, el); :}
+Type type_atom
+    = BOOL
+    {: return new BoolType(); :}
+    | INT
+    {: return new IntegerType(); :}
+    | REAL
+    {: return new RealType(); :}
+    | LPAREN type RPAREN
     ;
 
-List expression_list
+MapType map_type
+    = type_variable_block_list.tvl? LBRACKET type_accessor_comma_separated_list.tal RBRACKET type_accessor.ta
+    {: return new MapType(tvl, tal, ta); :}
+    ;
+
+UnknownType unknown_type
+    = ID.tn TODO
+    {: return new UnknownType(tn, null); :}
+    ;
+
+TypeDeclarator type_declarator
+    = ID.tn
+    {: return new TypeDeclarator(tn); :}
+    ;
+
+List type_variable_block_list
+    = LANGLE type_variable_comma_separated_list RANGLE
+    ;
+
+List type_variable_list
+    = type_variable.tv
+    {: return new List(tv); :}
+    | type_variable_list.tal type_variable.tv
+    {: return tal.add(tv); :}
+    ;
+
+List type_variable_comma_separated_list
+    = type_variable.tv
+    {: return new List(tv); :}
+    | type_variable_list.tal COMMA type_variable.tv
+    {: return tal.add(tv); :}
+    ;
+
+TypeVariable type_variable
+    = ID.tvn
+    {: return new TypeVariable(tvn); :}
+    ;
+
+List expression_comma_separated_list
     = expression.e
-      {: return new List(e); :}
-    | expression_list.el COMMA expression.e
-      {: return el.add(e); :}
+    {: return new List(e); :}
+    | expression_comma_separated_list.el expression.e
+    {: return el.add(e); :}
     ;
 
 Expression expression
-    = PLACEHOLDER
+    = expression0
+    ;
+
+Expression expression0
+    = expression1
+    | equivalence_operation
+    ;
+
+EquivalenceOperation equivalence_operation
+    = expression1.lhs IFF expression2.rhs
+    {: return new EquivalenceOperation(lhs, rhs); :}
+    ;
+
+Expression expression1
+    = expression2
+    | implication_operation
+    ;
+
+ImplicationOperation implication_operation
+    = expression2.lhs IMPLIES expression3.rhs
+    {: return new ImplicationOperation(lhs, rhs); :}
+    ;
+
+Expression expression2
+    = expression3
+    | or_operation
+    | and_operation
+    ;
+
+OrOperation or_operation
+    = expression3.lhs OR expression3.rhs
+    {: return new OrOperation(lhs, rhs); :}
+    ;
+
+AndOperation and_operation
+    = expression3.lhs AND expression3.rhs
+    {: return new AndOperation(lhs, rhs); :}
+    ;
+
+Expression expression3
+    = LITERAL
     ;

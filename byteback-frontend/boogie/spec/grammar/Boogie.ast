@@ -1,4 +1,4 @@
-// A Boogie program is a set of declaration. 
+// A Boogie program is a set of declarations 
 Program ::= Declaration*;
 
 // Declaration
@@ -45,9 +45,9 @@ RealType : Type;
 
 BitVectorType : Type ::= <Size:Integer>;
 
-UnknownType : Type ::= <Name:String> Arguments:Type*;
+UnknownType : Type ::= <Name:String> TypeParameters:TypeAccessor*;
 
-MapType : Type ::= TypeArguments:TypeVariable* KeyTypes:Type* ValueType:Type;
+MapType : Type ::= TypeArguments:TypeVariable* KeyTypes:TypeAccessor* ValueType:TypeAccessor;
 
 // Type declaration
 abstract TypeDeclaration : Declaration ::= Declarator:TypeDeclarator TypeArguments:TypeVariable*;
@@ -56,7 +56,7 @@ TypeDeclarator : GlobalDeclarator;
 
 TypeConstructor : TypeDeclaration ::= <Finite:Boolean>;
 
-TypeSynonym : TypeDeclaration ::= <Aliased:String>;
+TypeSynonym : TypeDeclaration ::= Aliased:TypeAccessor;
 
 // Constant declaration
 ConstantDeclaration : Declaration ::= Declarators:ConstantDeclarator* <Unique:Boolean> OrderSpecification;

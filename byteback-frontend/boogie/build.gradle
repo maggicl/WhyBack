@@ -21,8 +21,8 @@ jastadd {
 
 /* Funnily enough, it is not necessary to add the generated source
 from jastadd to the source sets in order for the tests to run, but if
-the source set is not also manually added the Intellij and Buildship
- will not even know that these classes exist. */
+the source set is not also manually added Intellij and Buildship
+will not even know that these classes exist. */
 java {
     sourceSets {
         main {

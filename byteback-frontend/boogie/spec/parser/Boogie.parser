@@ -17,7 +17,7 @@ List declaration_list
 
 Declaration declaration
     = type_declaration
-    //| constant_declaration
+    | constant_declaration
     //| function_declaration
     //| axiom_declaration
     //| variable_declaration
@@ -25,8 +25,34 @@ Declaration declaration
     //| implementation_declaration
     ;
 
+ConstantDeclaration constant_declaration
+    = CONST attribute_list.al? constant_definition.cd SEMICOLON
+    ;
+
+ConstantDeclaration constant_definition
+    = common_constant_definition
+    | unique_constant_definition
+    ;
+
+ConstantDeclaration unique_constant_definition
+    = UNIQUE common_constant_definition.cd
+      {:
+        cd.setUnique(true);
+        return cd;
+      :}
+    ;
+
+ConstantDeclaration common_constant_definition
+    = IDENTIFIER.cn COLON type_access.ta order_specification.od
+      {: return new ConstantDeclaration(cn, ta, od, false); :}
+    ;
+
 TypeDeclaration type_declaration
-    = TYPE attribute_list.al? type_definition.td {: td.setAttributesList(al); :}
+    = TYPE attribute_list.al? type_definition.td SEMICOLON
+      {:
+        td.setAttributesList(al);
+        return td;
+      :}
     ;
 
 TypeDeclaration type_definition
@@ -37,16 +63,19 @@ TypeDeclaration type_definition
 
 TypeConstructor finite_type_constructor_definition
     = FINITE type_constructor_definition.tcd
-      {: tcd.setFinite(true); :}
+      {:
+        tcd.setFinite(true);
+        return tcd;
+      :}
     ;
 
 TypeConstructor type_constructor_definition
-    = IDENTIFIER.tn type_argument_list.tal? SEMICOLON
+    = IDENTIFIER.tn type_argument_list.tal?
       {: return new TypeConstructor(tn, new List(), tal, false); :}
     ;
 
 TypeSynonym type_synonym_definition
-    = IDENTIFIER.ta type_argument_list.tal EQUALS IDENTIFIER.tb SEMICOLON
+    = IDENTIFIER.ta type_argument_list.tal EQUALS IDENTIFIER.tb
       {: return new TypeSynonym(ta, new List(), tal, tb); :}
     ;
 

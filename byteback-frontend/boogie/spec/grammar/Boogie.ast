@@ -2,44 +2,112 @@
 Program ::= Declaration*;
 
 // Declaration
-abstract Declaration ::= <Name:String> Attributes:Attribute*;
+abstract Declaration ::= Attributes:Attribute*;
+
+Attribute ::= <Name:String> Arguments:Expression*;
+
+// Declarator
+abstract Declarator ::= <Name:String>;
+
+abstract GlobalDeclarator : Declarator;
+
+abstract LocalDeclarator : Declarator;
+
+// Binding
+abstract Binding ::= TypeAccessor:TypeAccessor;
+
+BoundedBinding : Binding ::= [WhereClause];
+
+WhereClause ::= Expression;
+
+// Access
+abstract Accessor;
+
+TypeAccessor : Accessor ::= Type:Type;
+
+abstract SymbolicAccessor : Accessor ::= <Name:String>;
+
+FunctionAccessor : SymbolicAccessor;
+
+ProcedureAccessor : SymbolicAccessor; 
+
+// Type variable
+TypeVariable ::= <Identifier:String>;
+
+// Types
+abstract Type;
+
+BoolType : Type;
+
+IntegerType : Type;
+
+RealType : Type;
+
+BitVectorType : Type ::= <Size:Integer>;
+
+UnknownType : Type ::= <Name:String> Arguments:Type*;
+
+MapType : Type ::= TypeArguments:TypeVariable* KeyTypes:Type* ValueType:Type;
 
 // Type declaration
-abstract TypeDeclaration : Declaration ::= Arguments:TypeArgument*;
+abstract TypeDeclaration : Declaration ::= Declarator:TypeDeclarator TypeArguments:TypeVariable*;
+
+TypeDeclarator : GlobalDeclarator;
 
 TypeConstructor : TypeDeclaration ::= <Finite:Boolean>;
 
 TypeSynonym : TypeDeclaration ::= <Aliased:String>;
 
 // Constant declaration
-ConstantDeclaration : Declaration ::= <Unique:Boolean> OrderSpecification;
+ConstantDeclaration : Declaration ::= Declarators:ConstantDeclarator* <Unique:Boolean> OrderSpecification;
+
+ConstantDeclarator : GlobalDeclarator;
 
 OrderSpecification ::= Edges:ParentEdge* <Complete:Boolean>;
 
 ParentEdge ::= <Unique:Boolean> <ParentConstant:String>;
 
-// Function declaration
-FunctionDeclaration ::= FunctionSignature;
-
-FunctionSignature ::= TypeArguments:TypeArgument* FunctionArguments:Binding* ReturnArgument:Binding;
-
 // Axiom declaration
-AxiomDeclaration : Declaration ::= Expression;
+AxiomDeclaration : Declaration ::= Declarator:AxiomDeclarator Expression:Expression;
 
-// Variable declaration
-VariableDeclaration : Declaration ::= Variables:Binding* [WhereClause];
+AxiomDeclarator : GlobalDeclarator;
 
-WhereClause ::= Expression;
+// Global variable declaration
+GlobalVariableDeclaration : Declaration ::= Binding:GlobalVariableBinding;
+
+GlobalVariableBinding : BoundedBinding ::= Declarators:GlobalVariableDeclarator*;
+
+GlobalVariableDeclarator : GlobalDeclarator;
+
+// Local variable declaration
+LocalVariableDeclaration : Declaration ::= Declarators:LocalVariableDeclarator*;
+
+LocalVariableBinding : BoundedBinding ::= Declarators:LocalVariableDeclarator*;
+
+LocalVariableDeclarator : Declarator;
+
+// Function declaration
+FunctionDeclaration ::= Declarator:FunctionDeclarator Signature:FunctionSignature;
+
+FunctionDeclarator : GlobalDeclarator;
+
+FunctionSignature ::= TypeArguments:TypeVariable* FunctionArguments:FunctionBinding* ReturnArgument:FunctionBinding;
+
+FunctionBinding : Binding ::= [Declarator:ParameterDeclarator];
+
+ParameterDeclarator : LocalDeclarator;
 
 // Procedure declaration
-ProcedureDeclaration : Declaration ::= Signature:ProcedureSignature Conditions:Specification* [Body];
+ProcedureDeclaration : Declaration ::= Declarator:ProcedureDeclarator Signature:ProcedureSignature Conditions:Specification* [Body];
 
-ProcedureSignature ::= TypeArguments:TypeArgument* InputParameters:Binding* OutputParameters:Binding*;
+ProcedureDeclarator : Declarator;
+
+ProcedureSignature ::= TypeArguments:TypeVariable* InputParameters:ProcedureBinding* OutputParameters:ProcedureBinding*;
+
+ProcedureBinding : BoundedBinding ::= Declarators:ProcedureDeclarator*;
 
 // Implementation declaration
 ImplementationDeclaration : ProcedureDeclaration ::= Body;
-
-LocalVariableDeclaration : Declaration ::= Variables:Binding*;
 
 Body ::= LocalVariables:LocalVariableDeclaration* Statements:Statement*;
 
@@ -104,16 +172,18 @@ MapRangedAccessOperation : UnaryExpression ::= <RangeStart:Integer> <RangeEnd:In
 MapUpdateOperation : MapAccessOperation ::= Update:Expression;
 
 // Quantifier expressions
-abstract QuantifierExpression : UnaryExpression ::= TypeArguments:TypeArgument* Parameters:Binding* Triggers:Expression*;
+abstract QuantifierExpression : UnaryExpression ::= TypeArguments:TypeVariable* Parameters:QuantifierBinding* Triggers:Expression*;
+
+QuantifierBinding : Binding;
 
 UniversalQuantifier : QuantifierExpression;
 
 ExistentialQuantifier : QuantifierExpression;
 
 // Symbolic reference
-SymbolicReference : Expression ::= <Name:String>;
+SymbolicReference : Expression ::= Accessor:SymbolicAccessor;
 
-FunctionCall : SymbolicReference ::= Arguments:Expression*;
+FunctionCall : Expression ::= Accessor:FunctionAccessor Arguments:Expression*;
 
 // Literal expressions
 abstract Literal : Expression;
@@ -139,11 +209,11 @@ HavocStatement : Statement ::= SymbolicReference*;
 
 AssignmentStatement : Statement ::= Targets:SymbolicReference* Source:Expression*;
 
-abstract CallStatement : Statement ::= <Callee:String>;
+abstract CallStatement : Statement ::= Accessor:ProcedureAccessor;
 
 TargetedCallStatement : CallStatement ::= Targets:SymbolicReference* Arguments:Expression*;
 
-ForAllCallStatement : CallStatement ::= Arguments:Meta*;
+UniversalCallStatement : CallStatement ::= Arguments:Meta*;
 
 IfStatement : Statement ::= Condition:Meta Then:BlockStatement [Else:BlockStatement];
 
@@ -169,24 +239,3 @@ PostCondition ::= Expression;
 FrameCondition ::= SymbolicReference*;
 
 LoopInvariant ::= Expression;
-
-// Types
-abstract Type;
-
-BoolType : Type;
-
-IntegerType : Type;
-
-RealType : Type;
-
-BitVectorType : Type ::= <Size:Integer>;
-
-ConstructedType : Type ::= <Name:String> Arguments:Type*;
-
-MapType : Type ::= Arguments:TypeArgument* KeyTypes:Type* ValueType:Type;
-
-TypeArgument ::= <Name:String>;
-
-Binding ::= <Name:String> Type;
-
-Attribute ::= <Name:String> Arguments:Expression*;

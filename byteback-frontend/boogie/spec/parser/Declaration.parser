@@ -30,6 +30,7 @@ List attribute_list
 Declaration declaration
     = type_declaration
     | constant_declaration
+    | axiom_declaration
     ;
 
 List declaration_list
@@ -142,4 +143,9 @@ List parent_edge_comma_list
     {: return new List(e); :}
     | parent_edge_comma_list.el COMMA parent_edge.e
     {: return el.add(e); :}
+    ;
+
+AxiomDeclaration axiom_declaration
+    = AXIOM attribute_list.al expression.e
+    {: return new AxiomDeclaration(al, e); :}
     ;

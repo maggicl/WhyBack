@@ -152,7 +152,7 @@ BvType = "bv" {DecIntegerLiteral};
 //    "++" { return symbol(Terminals.CONCAT); }
 //
 //    /* Numbers, Ids and Strings */
-//    {BvType} { return symbol(Terminals.BVTYPE, yytext().intern()); }
+    {BvType} { return symbol(Terminals.BVTYPE, yytext().intern()); }
 //
 //    /* identifiers */ 
     {Identifier} { return symbol(Terminals.ID, yytext().intern()); }

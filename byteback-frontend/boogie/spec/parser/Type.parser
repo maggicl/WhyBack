@@ -18,6 +18,8 @@ Type type_atom
     {: return new IntegerType(); :}
     | REAL
     {: return new RealType(); :}
+    | BVTYPE.n
+    {: return new BitvectorType(n); :}
     | LPAREN type RPAREN
     ;
 

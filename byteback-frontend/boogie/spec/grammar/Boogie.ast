@@ -36,7 +36,7 @@ IntegerType : Type;
 
 RealType : Type;
 
-BitvectorType : Type ::= <Size:Integer>;
+BitvectorType : Type ::= <Size:String>;
 
 UnknownType : Type ::= Name:Accessor TypeParameters:Type*;
 
@@ -50,7 +50,7 @@ TypeConstructor : TypeDeclaration ::= <Finite:Boolean>;
 TypeSynonym : TypeDeclaration ::= Aliased:Type;
 
 // Axiom declaration
-AxiomDeclaration : Declaration ::= Declarator:Declarator Expression:Expression;
+AxiomDeclaration : Declaration ::= Expression:Expression;
 
 // Function declaration
 FunctionDeclaration ::= Declarator:Declarator Signature:FunctionSignature;

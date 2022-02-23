@@ -282,5 +282,88 @@ MultiplicationOperation multiplication_operation
     ;
 
 Expression expression7
-    = TERMINAL;
+    = expression8
+    | unary_expression
+    ;
+
+UnaryExpression unary_expression
+    = negation_operation
+    | minus_operation
+    ;
+
+NegationOperation negation_operation
+    = NOT expression7.op
+    {: return new NegationOperation(op); :}
+    ;
+
+MinusOperation minus_operation
+    = MINUS expression7.op
+    {: return new MinusOperation(op); :}
+    ;
+
+Expression expression8
+    = expression9
+    | map_expression
+    ;
+
+MapOperation map_expression
+    = expression9.op LBRACKET map_operation.mo RBRACKET
+    {:
+       mo.setOperand(op);
+       return mo;
+    :}
+    ;
+
+MapOperation map_operation
+    = map_access_operation
+    | map_ranged_access_operation
+    | map_update_operation
+    ;
+
+MapAccessOperation map_access_operation
+    = expression_comma_separated_list.el
+    {: return new MapAccessOperation(null, el); :}
+    ;
+
+MapAccessOperation map_ranged_access_operation
+    = number_literal.a COLON number_literal.b
+    {: return new MapRangedAccessOperation(null, a, b); :}
+    ;
+
+MapAccessOperation map_update_operation
+    = expression_comma_separated_list.el COLONEQ expression.ue
+    {: return new MapUpdateOperation(null, el, ue); :}
+    ;
+
+Expression expression9
+    = literal
+    ;
+
+Literal literal
+    = boolean_literal 
+    | number_literal
+    | real_literal
+    | bitvector_literal
+    ;
+
+BooleanLiteral boolean_literal
+    = TRUE.n
+    {: return new BooleanLiteral(n); :}
+    | FALSE.n
+    {: return new BooleanLiteral(n); :}
+    ;
+
+NumberLiteral number_literal
+    = NUMBER.n
+    {: return new NumberLiteral(n); :}
+    ;
+
+RealLiteral real_literal
+    = REAL.n
+    {: return new RealLiteral(n); :}
+    ;
+
+BitvectorLiteral bitvector_literal
+    = BITVECTOR.bv
+    {: return new BitvectorLiteral(bv); :}
     ;

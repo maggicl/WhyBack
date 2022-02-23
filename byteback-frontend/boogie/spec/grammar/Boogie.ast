@@ -165,9 +165,11 @@ MinusOperation : UnaryExpression;
 ConcatenationOperation : BinaryExpression;
 
 // Map expressions
-MapAccessOperation : UnaryExpression ::= Indexes:Expression*;
+abstract MapOperation : UnaryExpression;
 
-MapRangedAccessOperation : UnaryExpression ::= <RangeStart:Integer> <RangeEnd:Integer>;
+MapAccessOperation : MapOperation ::= Indexes:Expression*;
+
+MapRangedAccessOperation : MapOperation ::= <RangeStart:NumberLiteral> <RangeEnd:NumberLiteral>;
 
 MapUpdateOperation : MapAccessOperation ::= Update:Expression;
 
@@ -186,17 +188,17 @@ SymbolicReference : Expression ::= Accessor:SymbolicAccessor;
 FunctionCall : Expression ::= Accessor:FunctionAccessor Arguments:Expression*;
 
 // Literal expressions
-abstract Literal : Expression;
+abstract Literal : Expression ::= <Value:String>;
 
-NumberLiteral : Literal ::= <Value:Integer>;
+NumberLiteral : Literal;
 
-BitVectorLiteral : Literal ::= <Value:Integer> <Size:Integer>;
+BitvectorLiteral : Literal;
 
-StringLiteral : Literal ::= <Value:String>;
+StringLiteral : Literal;
 
-BoolLiteral : Literal ::= <Value:Boolean>;
+BooleanLiteral : Literal;
 
-RealLiteral : Literal ::= <Value:String>;
+RealLiteral : Literal;
 
 // Statements
 abstract Statement ::= [Label];

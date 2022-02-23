@@ -158,8 +158,8 @@ BvType = "bv" {DecIntegerLiteral};
     {Identifier} { return symbol(Terminals.ID, yytext().intern()); }
 // 
 //    /* literals */
-//    {BvIntegerLiteral} { return symbol(Terminals.BITVECTOR, yytext().intern()); }
-//    {DecIntegerLiteral} { return symbol(Terminals.NUMBER, yytext().intern()); }
+    {BvIntegerLiteral} { return symbol(Terminals.BITVECTOR, yytext().intern()); }
+    {DecIntegerLiteral} { return symbol(Terminals.NUMBER, yytext().intern()); }
 //    {RealIntegerLiteral} { return symbol(Terminals.REALNUMBER, yytext().intern()); }
 //    \" { string.setLength(0); yybegin(STRING); }
 //

@@ -1,5 +1,5 @@
 Attribute attribute
-    = LBRACE ID.i expression_comma_separated_list.el? RBRACE
+    = LBRACE ID.i expression_comma_list.el? RBRACE
     {: return new Attribute(i, el); :}
     ;
 

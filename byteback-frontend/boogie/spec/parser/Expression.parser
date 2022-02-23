@@ -1,12 +1,11 @@
-
 Expression expression
     = expression0
     ;
 
-List expression_comma_separated_list
+List expression_comma_list
     = expression.e
     {: return new List(e); :}
-    | expression_comma_separated_list.el expression.e
+    | expression_comma_list.el expression.e
     {: return el.add(e); :}
     ;
 
@@ -166,7 +165,7 @@ MapOperation map_operation
     ;
 
 MapAccessOperation map_access_operation
-    = expression_comma_separated_list.el
+    = expression_comma_list.el
     {: return new MapAccessOperation(null, el); :}
     ;
 
@@ -176,7 +175,7 @@ MapAccessOperation map_ranged_access_operation
     ;
 
 MapAccessOperation map_update_operation
-    = expression_comma_separated_list.el COLONEQ expression.ue
+    = expression_comma_list.el COLONEQ expression.ue
     {: return new MapUpdateOperation(null, el, ue); :}
     ;
 
@@ -197,7 +196,7 @@ ValueReference value_reference
     ;
 
 FunctionReference function_reference
-    = accessor.a LPAREN expression_comma_separated_list.el? RPAREN
+    = accessor.a LPAREN expression_comma_list.el? RPAREN
     {: return new FunctionReference(a, el); :}
     ;
 

@@ -5,7 +5,7 @@ Expression expression
 List expression_comma_list
     = expression.e
     {: return new List(e); :}
-    | expression_comma_list.el expression.e
+    | expression_comma_list.el COMMA expression.e
     {: return el.add(e); :}
     ;
 
@@ -183,6 +183,33 @@ Expression expression9
     = literal
     | symbolic_reference
     | old_reference
+    | quantifier_expression
+    ;
+
+QuantifierExpression quantifier_expression
+    = LPAREN universal_quantifier_expression RPAREN
+    | LPAREN existential_quantifier_expression RPAREN
+    ;
+
+QuantifierExpression universal_quantifier_expression
+    = FORALL quantifier_definition.e
+    {:
+       e.setQuantifier(new UniversalQuantifier());
+       return e;
+    :}
+    ;
+
+QuantifierExpression existential_quantifier_expression
+    = EXISTS quantifier_definition.e
+    {:
+       e.setQuantifier(new ExistentialQuantifier());
+       return e;
+    :}
+    ;
+
+QuantifierExpression quantifier_definition
+    = type_variable_block_list.dl? multi_binding_comma_list.bl QSEP option_list.ol? expression.e
+    {: return new QuantifierExpression(e, null, dl, bl, ol); :}
     ;
 
 SymbolicReference symbolic_reference

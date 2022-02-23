@@ -33,3 +33,15 @@ Accessor accessor
     = ID.n
     {: return new Accessor(n); :}
     ;
+
+MultiBinding multi_binding
+    = declarator_comma_list.dl COLON type.t
+    {: return new MultiBinding(t, dl); :}
+    ;
+
+List multi_binding_comma_list
+    = multi_binding.b
+    {: return new List(b); :}
+    | multi_binding_comma_list.bl COMMA multi_binding.b
+    {: return bl.add(b); :}
+    ;

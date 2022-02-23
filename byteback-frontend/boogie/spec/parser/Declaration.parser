@@ -1,5 +1,22 @@
+Option option
+    = attribute
+    | trigger
+    ;
+
+List option_list
+    = option.o
+    {: return new List(o); :}
+    | option_list.ol option.o
+    {: return ol.add(o); :}
+    ;
+
+Trigger trigger
+    = LBRACE expression_comma_list.el RBRACE
+    {: return new Trigger(el); :}
+    ;
+
 Attribute attribute
-    = LBRACE ID.i expression_comma_list.el? RBRACE
+    = LBRACE COLON ID.i expression_comma_list.el? RBRACE
     {: return new Attribute(i, el); :}
     ;
 

@@ -183,12 +183,13 @@ Expression expression9
     = literal
     | symbolic_reference
     | old_reference
-    | quantifier_expression
+    | LPAREN quantifier_expression RPAREN
+    | LPAREN expression RPAREN
     ;
 
 QuantifierExpression quantifier_expression
-    = LPAREN universal_quantifier_expression RPAREN
-    | LPAREN existential_quantifier_expression RPAREN
+    = universal_quantifier_expression
+    | existential_quantifier_expression
     ;
 
 QuantifierExpression universal_quantifier_expression

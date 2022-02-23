@@ -62,7 +62,7 @@ ConstantDeclaration : Declaration ::= Binding:MultiBinding <Unique:Boolean> Orde
 
 OrderSpecification ::= ParentEdges:ParentEdge* <Complete:Boolean>;
 
-ParentEdge ::= <Unique:Boolean> ParentConstant:Accessor;
+ParentEdge ::= ParentConstant:Accessor <Unique:Boolean> ;
 
 // Variable declaration
 abstract VariableDeclaration ::= Binding:MultiBinding;

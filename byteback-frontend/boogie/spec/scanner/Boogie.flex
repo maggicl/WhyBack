@@ -160,7 +160,7 @@ BvType = "bv" {DecIntegerLiteral};
 //    /* literals */
     {BvIntegerLiteral} { return symbol(Terminals.BITVECTOR, yytext().intern()); }
     {DecIntegerLiteral} { return symbol(Terminals.NUMBER, yytext().intern()); }
-//    {RealIntegerLiteral} { return symbol(Terminals.REALNUMBER, yytext().intern()); }
+    {RealIntegerLiteral} { return symbol(Terminals.REALNUMBER, yytext().intern()); }
 //    \" { string.setLength(0); yybegin(STRING); }
 //
 //    /* comments */

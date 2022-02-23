@@ -1,0 +1,43 @@
+Type type
+    = type_atom
+    | map_type
+    | unknown_type
+    ;
+
+List type_comma_list
+    = type.t
+    {: return new List(t); :}
+    | type_comma_list.tl COMMA type.t
+    {: return tl.add(t); :}
+    ;
+
+Type type_atom
+    = BOOL
+    {: return new BoolType(); :}
+    | INT
+    {: return new IntegerType(); :}
+    | REAL
+    {: return new RealType(); :}
+    | LPAREN type RPAREN
+    ;
+
+MapType map_type
+    = type_variable_block_list.tvl? LBRACKET type_comma_list.tl RBRACKET type.t
+    {: return new MapType(tvl, tl, t); :}
+    ;
+
+List type_variable_block_list
+    = LANGLE declarator_comma_list RANGLE
+    ;
+
+UnknownType unknown_type
+    = accessor.a type_constructor_list.tl
+    {: return new UnknownType(a, tl); :}
+    ;
+
+List type_constructor_list
+    = type_atom.t type_constructor_list.tl
+    {: return tl.add(t); :}
+    | type.t
+    {: return new List(t); :}
+    ;

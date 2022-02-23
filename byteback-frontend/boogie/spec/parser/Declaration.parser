@@ -1,0 +1,54 @@
+Attribute attribute
+    = LBRACE ID.i expression_comma_separated_list.el? RBRACE
+    {: return new Attribute(i, el); :}
+    ;
+
+List attribute_list
+    = attribute.a
+    {: return new List(a); :}
+    | attribute_list.al attribute.a
+    {: return al.add(a); :}
+    ;
+
+Declaration declaration
+    = type_declaration
+    ;
+
+List declaration_list
+    = declaration.d
+    {: return new List(d); :}
+    | declaration_list.dl declaration.d
+    {: return dl.add(d); :}
+    ;
+
+TypeDeclaration type_declaration
+    = TYPE attribute_list.al? type_definition.td SEMICOLON
+    {:
+       td.setAttributesList(al);
+       return td;
+    :}
+    ;
+
+TypeDeclaration type_definition
+    = type_constructor_definition
+    | finite_type_constructor_definition
+    | type_synonym_definition
+    ;
+
+TypeConstructor finite_type_constructor_definition
+    = FINITE type_constructor_definition.d
+    {:
+       d.setFinite(true);
+       return d;
+    :}
+    ;
+
+TypeConstructor type_constructor_definition
+    = declarator.d declarator_list.dl?
+    {: return new TypeConstructor(new List(), d, dl, false); :}
+    ;
+
+TypeSynonym type_synonym_definition
+    = declarator.d declarator_list.dl EQUALS type.t
+    {: return new TypeSynonym(new List(), d, dl, t); :}
+    ;

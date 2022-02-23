@@ -72,8 +72,31 @@ List type_accessor_comma_separated_list
     {: return tal.add(ta); :}
     ;
 
+List type_accessor_constructor_list
+    = type_atom_accessor.ta type_accessor_constructor_list.tal
+    {: return tal.add(ta); :}
+    | type_accessor.ta
+    {: return new List(ta); :}
+    ;
+
 TypeAccessor type_accessor
-    = type.t
+    = type_atom_accessor
+    | map_type_accessor
+    | unknown_type_accessor
+    ;
+
+TypeAccessor type_atom_accessor
+    = type_atom.t
+    {: return new TypeAccessor(t); :}
+    ;
+
+TypeAccessor map_type_accessor
+    = map_type.t
+    {: return new TypeAccessor(t); :}
+    ;
+
+TypeAccessor unknown_type_accessor
+    = unknown_type.t
     {: return new TypeAccessor(t); :}
     ;
 
@@ -99,8 +122,8 @@ MapType map_type
     ;
 
 UnknownType unknown_type
-    = ID.tn TODO
-    {: return new UnknownType(tn, null); :}
+    = ID.tn type_accessor_constructor_list.tal
+    {: return new UnknownType(tn, tal); :}
     ;
 
 TypeDeclarator type_declarator
@@ -148,7 +171,7 @@ Expression expression0
     ;
 
 EquivalenceOperation equivalence_operation
-    = expression1.lhs IFF expression2.rhs
+    = expression1.lhs IFF expression0.rhs
     {: return new EquivalenceOperation(lhs, rhs); :}
     ;
 
@@ -158,7 +181,7 @@ Expression expression1
     ;
 
 ImplicationOperation implication_operation
-    = expression2.lhs IMPLIES expression3.rhs
+    = expression2.lhs IMPLIES expression1.rhs
     {: return new ImplicationOperation(lhs, rhs); :}
     ;
 
@@ -179,5 +202,85 @@ AndOperation and_operation
     ;
 
 Expression expression3
-    = LITERAL
+    = expression4
+    | relational_operation
+    ;
+
+RelationalOperation relational_operation
+    = equals_operation
+    | not_equals_operation
+    | less_than_operation
+    | greater_than_operation
+    | less_than_equals_operation
+    | greater_than_equals_operation
+    | partial_order_operation
+    ;
+
+RelationalOperation equals_operation
+    = expression4.lhs EQUALS expression4.rhs
+    {: return new EqualsOperation(lhs, rhs); :}
+    ;
+
+RelationalOperation not_equals_operation
+    = expression4.lhs NEQ expression4.rhs
+    {: return new NotEqualsOperation(lhs, rhs); :}
+    ;
+
+RelationalOperation less_than_operation
+    = expression4.lhs LT expression4.rhs
+    {: return new LessThanOperation(lhs, rhs); :}
+    ;
+
+RelationalOperation greater_than_operation
+    = expression4.lhs GT expression4.rhs
+    {: return new GreaterThanOperation(lhs, rhs); :}
+    ;
+
+RelationalOperation less_than_equals_operation
+    = expression4.lhs LTEQ expression4.rhs
+    {: return new LessThanEqualsOperation(lhs, rhs); :}
+    ;
+
+RelationalOperation greater_than_equals_operation
+    = expression4.lhs GTEQ expression4.rhs
+    {: return new EqualsOperation(lhs, rhs); :}
+    ;
+
+RelationalOperation partial_order_operation
+    = expression4.lhs PARTORDER expression4.rhs
+    {: return new PartialOrderOperation(lhs, rhs); :}
+    ;
+
+Expression expression4
+    = expression5
+    | concatenation_operation
+    ;
+
+ConcatenationOperation concatenation_operation
+    = expression4.lhs CONCAT expression5.rhs
+    {: return new ConcatenationOperation(lhs, rhs); :}
+    ;
+
+Expression expression5
+    = expression6
+    | addition_operation
+    ;
+
+AdditionOperation addition_operation
+    = expression5.lhs PLUS expression6.rhs
+    {: return new AdditionOperation(lhs, rhs); :}
+    ;
+
+Expression expression6
+    = expression7
+    | multiplication_operation
+    ;
+
+MultiplicationOperation multiplication_operation
+    = expression6.lhs TIMES expression7.rhs
+    {: return new AdditionOperation(lhs, rhs); :}
+    ;
+
+Expression expression7
+    = TERMINAL;
     ;

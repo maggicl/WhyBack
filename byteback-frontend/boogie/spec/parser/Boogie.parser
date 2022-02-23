@@ -45,3 +45,28 @@ List multi_binding_comma_list
     | multi_binding_comma_list.bl COMMA multi_binding.b
     {: return bl.add(b); :}
     ;
+
+OptionalBinding optional_binding
+    = unused_binding
+    | used_binding
+    ;
+
+List optional_binding_comma_list
+    = optional_binding.b
+    {: return new List(b); :}
+    | optional_binding_comma_list.bl COMMA optional_binding.b
+    {: return bl.add(b); :}
+    ;
+
+OptionalBinding used_binding
+    = declarator.d COLON unused_binding.b
+    {:
+       b.setDeclarator(d);
+       return b;
+    :}
+    ;
+
+OptionalBinding unused_binding
+    = type.t
+    {: return new OptionalBinding(t, new Opt()); :}
+    ;

@@ -17,9 +17,11 @@ Attribute : Option ::= <Name:String> Arguments:Expression*;
 Trigger : Option ::= Expressions:Expression*;
 
 // Binding
-Binding ::= Type:Type;
+abstract Binding ::= Type:Type;
 
 SymbolicBinding : Binding ::= Declarator:Declarator;
+
+OptionalBinding : Binding ::= [Declarator:Declarator];
 
 MultiBinding : Binding ::= Declarators:Declarator*;
 
@@ -53,7 +55,7 @@ TypeSynonym : TypeDeclaration ::= Aliased:Type;
 AxiomDeclaration : Declaration ::= Expression:Expression;
 
 // Function declaration
-FunctionDeclaration ::= Declarator:Declarator Signature:FunctionSignature;
+FunctionDeclaration : Declaration ::= Declarator:Declarator Signature:FunctionSignature [Expression:Expression];
 
 FunctionSignature ::= TypeArguments:Declarator* Arguments:Binding* ReturnArgument:Binding;
 

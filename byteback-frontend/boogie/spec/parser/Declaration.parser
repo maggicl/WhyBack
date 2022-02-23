@@ -31,6 +31,7 @@ Declaration declaration
     = type_declaration
     | constant_declaration
     | axiom_declaration
+    | function_declaration
     ;
 
 List declaration_list
@@ -148,4 +149,36 @@ List parent_edge_comma_list
 AxiomDeclaration axiom_declaration
     = AXIOM attribute_list.al expression.e
     {: return new AxiomDeclaration(al, e); :}
+    ;
+
+FunctionDeclaration function_declaration
+    = FUNCTION attribute_list.al declarator.d function_definition.fd
+    {:
+       fd.setAttributesList(al);
+       fd.setDeclarator(d);
+       return fd;
+    :}
+    ;
+
+FunctionDeclaration function_definition
+    = function_prototype SEMICOLON
+    | function_body
+    ;
+
+FunctionDeclaration function_body
+    = function_prototype.f LBRACE expression.e RBRACE
+    {:
+       f.setExpression(e);
+       return e;
+    :}
+    ;
+
+FunctionDeclaration function_prototype
+    = function_signature.fs
+    {: return new FunctionDeclaration(new List(), null, fs, new Opt()); :}
+    ;
+
+FunctionSignature function_signature
+    = type_variable_block_list.dl? LPAREN optional_binding_comma_list.bl RPAREN RETURNS LPAREN optional_binding.b RPAREN
+    {: return new FunctionSignature(dl, bl, b); :}
     ;

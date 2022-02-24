@@ -3,6 +3,13 @@ Body body
     {: return new Body(dl, sl); :}
     ;
 
+List body_list
+    = body.b
+    {: return new List(b); :}
+    | body_list.bl body.b
+    {: return bl.add(b); :}
+    ;
+
 List variable_declaration_list
     = variable_declaration.d
     {: return new List(d); :}

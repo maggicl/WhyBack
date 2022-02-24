@@ -75,7 +75,9 @@ ProcedureDeclaration : Declaration ::= Declarator:Declarator Signature:Procedure
 ProcedureSignature ::= TypeArguments:Declarator* InputParameters:BoundedBinding* OutputParameters:Binding*;
 
 // Implementation declaration
-ImplementationDeclaration : ProcedureDeclaration ::= Body;
+ImplementationDeclaration : Declaration ::= Declarator:Declarator Signature:ImplementationSignature Bodies:Body*;
+
+ImplementationSignature ::= TypeArguments:Declarator* InputParameters:MultiBinding* OutParameters:MultiBinding*;
 
 Body ::= LocalVariables:VariableDeclaration* Statements:Statement*;
 

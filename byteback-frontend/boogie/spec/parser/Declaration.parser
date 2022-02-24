@@ -207,11 +207,11 @@ ProcedureDeclaration procedure_definition
     ;
 
 ProcedureSignature procedure_signature
-    = type_variable_block_list.dl LPAREN bounded_binding_comma_list.bli RPAREN out_parameters.blo?
+    = type_variable_block_list.dl LPAREN bounded_binding_comma_list.bli RPAREN procedure_out_parameters.blo?
     {: return new ProcedureSignature(dl, bli, blo); :}
     ;
 
-List out_parameters
+List procedure_out_parameters
     = RETURNS LPAREN bounded_binding_comma_list RPAREN
     ;
 
@@ -251,4 +251,27 @@ PostCondition ensures_specification
 FrameCondition modifies_specification
     = MODIFIES accessor_comma_list.al
     {: return new FrameCondition(false, al); :}
+    ;
+
+ImplementationDeclaration procedure_declaration
+    = IMPLEMENTATION attribute_list.al declarator.d implementation_definition.id SEMICOLON
+    {:
+       id.setAttributesList(al);
+       id.setDeclarator(d);
+       return id;
+    :}
+    ;
+
+ImplementationDeclaration implementation_definition
+    = implementation_signature.s body_list.bl?
+    {: return new ImplementationDeclaration(new List(), null, s, bl); :}
+    ;
+
+ImplementationSignature implementation_signature
+    = type_variable_block_list.dl LPAREN multi_binding_comma_list.bli? RPAREN implementation_out_parameters.blo?
+    {: return new ProcedureSignature(dl, bli, blo); :}
+    ;
+
+List implementation_out_parameters
+    = RETURNS LPAREN multi_binding_comma_list RPAREN
     ;

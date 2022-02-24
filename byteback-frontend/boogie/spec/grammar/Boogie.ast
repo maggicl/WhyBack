@@ -198,7 +198,7 @@ UniversalCallStatement : CallStatement ::= Arguments:Meta*;
 
 IfStatement : Statement ::= Condition:Meta Then:BlockStatement [Else:BlockStatement];
 
-WhileStatement : Statement ::= Condition:Meta Statement;
+WhileStatement : Statement ::= Condition:Meta Statement Invariants:LoopInvariant*;
 
 BreakStatement : Statement ::= [Target:Label];
 

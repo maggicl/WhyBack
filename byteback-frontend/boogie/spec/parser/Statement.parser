@@ -17,7 +17,7 @@ Body body_block
 Statement statement
     = unit_statement SEMICOLON
     | label_statement
-    | block_statement
+    | group_statement
     ;
 
 List statement_list
@@ -37,8 +37,54 @@ Label label
     {: return new Label(n); :}
     ;
 
-Statement block_statement
-    = TERMINAL
+Statement group_statement
+    = block_statement
+    | if_statement
+    | while_statement
+    ;
+
+WhileStatement while_statement
+    = WHILE LPAREN meta.m RPAREN loop_invariant_list.il? block_statement.b
+    {: return new WhileStatement(m, b, il); :}
+    ;
+
+List loop_invariant_list
+    = loop_invariant.i
+    {: return new List(i); :}
+    | loop_invariant_list.il loop_invariant.i
+    {: return il.add(i); :}
+    ;
+
+LoopInvariant loop_invariant
+    = standard_loop_invariant
+    | free_loop_invariant
+    ;
+
+LoopInvariant free_loop_invariant
+    = FREE standard_loop_invariant.i
+    {:
+       i.setFree(true);
+       return i;
+    :}
+    ;
+
+LoopInvariant standard_loop_invariant
+    = INVARIANT expression.e SEMICOLON
+    {: return new LoopInvariant(false, e); :}
+    ;
+
+IfStatement if_statement
+    = IF LPAREN meta.m RPAREN block_statement.b else_block.eb?
+    {: return new IfStatement(m, b, eb); :}
+    ;
+
+BlockStatement else_block
+    = ELSE block_statement
+    | ELSE if_statement
+    ;
+
+BlockStatement block_statement
+    = LBRACE statement_list RBRACE
     ;
 
 Statement unit_statement

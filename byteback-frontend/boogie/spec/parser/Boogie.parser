@@ -87,10 +87,3 @@ Accessor accessor
     = ID.n
     {: return new Accessor(n); :}
     ;
-
-List accessor_comma_list
-    = accessor.a
-    {: return new List(a); :}
-    | accessor_comma_list.al COMMA accessor.a
-    {: return al.add(a); :}
-    ;

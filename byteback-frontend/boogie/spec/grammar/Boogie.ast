@@ -19,11 +19,9 @@ Trigger : Option ::= Expressions:Expression*;
 // Binding
 abstract Binding ::= Type:Type;
 
-SymbolicBinding : Binding ::= Declarator:Declarator;
+MultiBinding : Binding ::= Declarators:Declarator*;
 
 OptionalBinding : Binding ::= [Declarator:Declarator];
-
-MultiBinding : Binding ::= Declarators:Declarator*;
 
 BoundedBinding : MultiBinding ::= [WhereClause:WhereClause];
 
@@ -217,10 +215,10 @@ Label ::= <Target:String>;
 // Specifications
 abstract Specification ::= <Free:Boolean>;
 
-PreCondition : Specification ::= Expression;
+PreCondition : Specification ::= Expression:Expression;
 
-PostCondition : Specification ::= Expression;
+PostCondition : Specification ::= Expression:Expression;
 
-FrameCondition : Specification ::= Accessor*;
+FrameCondition : Specification ::= References:ValueReference*;
 
-LoopInvariant : Specification ::= Expression;
+LoopInvariant : Specification ::= Expression:Expression;

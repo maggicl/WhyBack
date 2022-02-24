@@ -29,7 +29,7 @@ MapType map_type
     ;
 
 List type_variable_block_list
-    = LANGLE declarator_comma_list RANGLE
+    = LT declarator_comma_list GT
     ;
 
 UnknownType unknown_type

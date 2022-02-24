@@ -249,7 +249,7 @@ PostCondition ensures_specification
     ;
 
 FrameCondition modifies_specification
-    = MODIFIES accessor_comma_list.al
+    = MODIFIES value_reference_comma_list.al
     {: return new FrameCondition(false, al); :}
     ;
 

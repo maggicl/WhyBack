@@ -174,7 +174,7 @@ BooleanLiteral : Literal;
 RealLiteral : Literal;
 
 // Statements
-abstract Statement ::= [Label:Label];
+abstract Statement;
 
 AssertStatement : Statement ::= Expression:Expression;
 
@@ -202,15 +202,17 @@ BlockStatement : Statement ::= Statement*;
 
 GotoStatement : Statement ::= Label;
 
+LabelStatement : Statement ::= Label;
+
 Label ::= <Target:String>;
 
 // Specifications
 abstract Specification ::= <Free:Boolean>;
 
-PreCondition ::= Expression;
+PreCondition : Specification ::= Expression;
 
-PostCondition ::= Expression;
+PostCondition : Specification ::= Expression;
 
-FrameCondition ::= SymbolicReference*;
+FrameCondition : Specification ::= Accessor*;
 
-LoopInvariant ::= Expression;
+LoopInvariant : Specification ::= Expression;

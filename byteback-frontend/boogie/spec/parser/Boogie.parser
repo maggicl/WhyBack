@@ -29,11 +29,6 @@ List declarator_comma_list
     {: return dl.add(d); :}
     ;
 
-Accessor accessor
-    = ID.n
-    {: return new Accessor(n); :}
-    ;
-
 MultiBinding multi_binding
     = declarator_comma_list.dl COLON type.t
     {: return new MultiBinding(t, dl); :}
@@ -86,4 +81,16 @@ BoundedBinding bounded_binding
 WhereClause where_clause
     = WHERE expression.e
     {: return new WhereClause(e); :}
+    ;
+
+Accessor accessor
+    = ID.n
+    {: return new Accessor(n); :}
+    ;
+
+List accessor_comma_list
+    = accessor.a
+    {: return new List(a); :}
+    | accessor_comma_list.al COMMA accessor.a
+    {: return al.add(a); :}
     ;

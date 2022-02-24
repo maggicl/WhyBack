@@ -33,6 +33,7 @@ Declaration declaration
     | axiom_declaration
     | function_declaration
     | variable_declaration
+    | procedure_declaration
     ;
 
 List declaration_list
@@ -187,4 +188,67 @@ FunctionSignature function_signature
 VariableDeclaration variable_declaration
     = VAR attribute_list.al bounded_binding_comma_list.bl SEMICOLON
     {: return new VariableDeclaration(al, bl); :}
+    ;
+
+ProcedureDeclaration procedure_declaration
+    = PROCEDURE attribute_list.al declarator.d procedure_definition.pd
+    {:
+       pd.setAttributesList(al);
+       pd.setDeclarator(d);
+       return pd;
+    :}
+    ;
+
+ProcedureDeclaration procedure_definition
+    = procedure_signature.ps SEMICOLON specification_list.sl
+    {: return new ProcedureDeclaration(new List(), null, ps, sl, new Opt()); :}
+    | procedure_signature.ps specification_list.sl body_block.b
+    {: return new ProcedureDeclaration(new List(), null, ps, sl, new Opt(b)); :}
+    ;
+
+ProcedureSignature procedure_signature
+    = type_variable_block_list.dl LPAREN bounded_binding_comma_list.bli RPAREN out_parameters.blo?
+    {: return new ProcedureSignature(dl, bli, blo); :}
+    ;
+
+List out_parameters
+    = RETURNS LPAREN bounded_binding_comma_list RPAREN
+    ;
+
+List specification_list
+    = specification.s
+    {: return new List(s); :}
+    | specification_list.sl specification.s
+    {: return sl.add(s); :}
+    ;
+
+Specification specification
+    = standard_specification SEMICOLON
+    | free_specification SEMICOLON
+    ;
+
+Specification free_specification
+    = FREE standard_specification.s
+    {: s.setFree(true); :}
+    ;
+
+Specification standard_specification
+    = requires_specification
+    | modifies_specification
+    | ensures_specification
+    ;
+
+PreCondition requires_specification
+    = REQUIRES expression.e
+    {: return new PreCondition(false, e); :}
+    ;
+
+PostCondition ensures_specification
+    = ENSURES expression.e
+    {: return new PostCondition(false, e); :}
+    ;
+
+FrameCondition modifies_specification
+    = MODIFIES accessor_comma_list.al
+    {: return new FrameCondition(false, al); :}
     ;

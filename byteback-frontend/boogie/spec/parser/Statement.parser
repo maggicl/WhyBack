@@ -1,0 +1,70 @@
+Body body
+    = variable_declaration_list.dl statement_list.sl
+    {: return new Body(dl, sl); :}
+    ;
+
+List variable_declaration_list
+    = variable_declaration.d
+    {: return new List(d); :}
+    | variable_declaration_list.dl variable_declaration.d
+    {: return dl.add(d); :}
+    ;
+
+Body body_block
+    = LBRACE body RBRACE
+    ;
+
+Statement statement
+    = unit_statement SEMICOLON
+    | label_statement
+    | block_statement
+    ;
+
+List statement_list
+    = statement.s
+    {: return new List(s); :}
+    | statement_list.sl statement.s
+    {: return sl.add(s); :}
+    ;
+
+LabelStatement label_statement
+    = label.l COLON
+    {: return new LabelStatement(l); :}
+    ;
+
+Label label
+    = ID.n
+    {: return new Label(n); :}
+    ;
+
+Statement block_statement
+    = TERMINAL
+    ;
+
+Statement unit_statement
+    = assert_statement
+    | assume_statement
+    | havoc_statement
+    ;
+
+AssertStatement assert_statement
+    = ASSERT expression.e
+    {: return new AssertStatement(e); :}
+    ;
+
+AssumeStatement assume_statement
+    = ASSUME expression.e
+    {: return new AssumeStatement(e); :}
+    ;
+
+HavocStatement havoc_statement
+    = symbolic_reference_comma_list.sl
+    {: return new HavocStatement(sl); :}
+    ;
+
+List symbolic_reference_comma_list
+    = symbolic_reference.s
+    {: return new List(s); :}
+    | symbolic_reference_comma_list.sl COMMA symbolic_reference.s
+    {: return sl.add(s); :}
+    ;

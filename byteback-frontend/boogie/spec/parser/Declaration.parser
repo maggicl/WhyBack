@@ -89,7 +89,7 @@ ConstantDeclaration constant_definition
     ;
 
 ConstantDeclaration standard_constant_definition
-    = multi_binding.b order_specification.os
+    = set_binding.b order_specification.os
     {: return new ConstantDeclaration(new List(), b, false, os); :}
     ;
 
@@ -215,16 +215,39 @@ List procedure_out_parameters
     = RETURNS LPAREN bounded_binding_comma_list RPAREN
     ;
 
-List specification_list
-    = specification.s
-    {: return new List(s); :}
-    | specification_list.sl specification.s
-    {: return sl.add(s); :}
+ImplementationDeclaration implementation_declaration
+    = IMPLEMENTATION attribute_list.al declarator.d implementation_definition.id SEMICOLON
+    {:
+       id.setAttributesList(al);
+       id.setDeclarator(d);
+       return id;
+    :}
+    ;
+
+ImplementationDeclaration implementation_definition
+    = implementation_signature.s body_list.bl?
+    {: return new ImplementationDeclaration(new List(), null, s, bl); :}
+    ;
+
+ImplementationSignature implementation_signature
+    = type_variable_block_list.dl LPAREN set_binding_comma_list.bli? RPAREN implementation_out_parameters.blo?
+    {: return new ProcedureSignature(dl, bli, blo); :}
+    ;
+
+List implementation_out_parameters
+    = RETURNS LPAREN set_binding_comma_list RPAREN
     ;
 
 Specification specification
     = standard_specification SEMICOLON
     | free_specification SEMICOLON
+    ;
+
+List specification_list
+    = specification.s
+    {: return new List(s); :}
+    | specification_list.sl specification.s
+    {: return sl.add(s); :}
     ;
 
 Specification free_specification
@@ -251,27 +274,4 @@ PostCondition ensures_specification
 FrameCondition modifies_specification
     = MODIFIES value_reference_comma_list.al
     {: return new FrameCondition(false, al); :}
-    ;
-
-ImplementationDeclaration procedure_declaration
-    = IMPLEMENTATION attribute_list.al declarator.d implementation_definition.id SEMICOLON
-    {:
-       id.setAttributesList(al);
-       id.setDeclarator(d);
-       return id;
-    :}
-    ;
-
-ImplementationDeclaration implementation_definition
-    = implementation_signature.s body_list.bl?
-    {: return new ImplementationDeclaration(new List(), null, s, bl); :}
-    ;
-
-ImplementationSignature implementation_signature
-    = type_variable_block_list.dl LPAREN multi_binding_comma_list.bli? RPAREN implementation_out_parameters.blo?
-    {: return new ProcedureSignature(dl, bli, blo); :}
-    ;
-
-List implementation_out_parameters
-    = RETURNS LPAREN multi_binding_comma_list RPAREN
     ;

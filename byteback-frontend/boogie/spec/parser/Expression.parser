@@ -238,7 +238,7 @@ QuantifierExpression existential_quantifier_expression
     ;
 
 QuantifierExpression quantifier_definition
-    = type_variable_block_list.dl? multi_binding_comma_list.bl QSEP option_list.ol? expression.e
+    = type_variable_block_list.dl? set_binding_comma_list.bl QSEP option_list.ol? expression.e
     {: return new QuantifierExpression(e, null, dl, bl, ol); :}
     ;
 

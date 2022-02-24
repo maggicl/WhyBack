@@ -29,15 +29,15 @@ List declarator_comma_list
     {: return dl.add(d); :}
     ;
 
-MultiBinding multi_binding
+SetBinding set_binding
     = declarator_comma_list.dl COLON type.t
-    {: return new MultiBinding(t, dl); :}
+    {: return new SetBinding(t, dl); :}
     ;
 
-List multi_binding_comma_list
-    = multi_binding.b
+List set_binding_comma_list
+    = set_binding.b
     {: return new List(b); :}
-    | multi_binding_comma_list.bl COMMA multi_binding.b
+    | set_binding_comma_list.bl COMMA set_binding.b
     {: return bl.add(b); :}
     ;
 

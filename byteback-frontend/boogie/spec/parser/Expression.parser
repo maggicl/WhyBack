@@ -118,11 +118,23 @@ AdditionOperation addition_operation
 Expression expression6
     = expression7
     | multiplication_operation
+    | division_operation
+    | modulo_operation
     ;
 
 MultiplicationOperation multiplication_operation
     = expression6.lhs TIMES expression7.rhs
-    {: return new AdditionOperation(lhs, rhs); :}
+    {: return new MultiplicationOperation(lhs, rhs); :}
+    ;
+
+DivisionOperation division_operation
+    = expression6.lhs DIVIDE expression7.rhs
+    {: return new DivisionOperation(lhs, rhs); :}
+    ;
+
+ModuloOperation modulo_operation
+    = expression6.lhs MOD expression7.rhs
+    {: return new ModuloOperation(lhs, rhs); :}
     ;
 
 Expression expression7

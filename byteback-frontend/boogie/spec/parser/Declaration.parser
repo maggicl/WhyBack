@@ -32,6 +32,7 @@ Declaration declaration
     | constant_declaration
     | axiom_declaration
     | function_declaration
+    | variable_declaration
     ;
 
 List declaration_list
@@ -181,4 +182,9 @@ FunctionDeclaration function_prototype
 FunctionSignature function_signature
     = type_variable_block_list.dl? LPAREN optional_binding_comma_list.bl RPAREN RETURNS LPAREN optional_binding.b RPAREN
     {: return new FunctionSignature(dl, bl, b); :}
+    ;
+
+VariableDeclaration variable_declaration
+    = VAR attribute_list.al bounded_binding_comma_list.bl SEMICOLON
+    {: return new VariableDeclaration(al, bl); :}
     ;

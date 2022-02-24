@@ -25,7 +25,7 @@ List declarator_list
 List declarator_comma_list
     = declarator.d
     {: return new List(d); :}
-    | declarator_list.dl COMMA declarator.d
+    | declarator_comma_list.dl COMMA declarator.d
     {: return dl.add(d); :}
     ;
 
@@ -69,4 +69,21 @@ OptionalBinding used_binding
 OptionalBinding unused_binding
     = type.t
     {: return new OptionalBinding(t, new Opt()); :}
+    ;
+
+List bounded_binding_comma_list
+    = bounded_binding.b
+    {: return new List(b); :}
+    | bounded_binding_comma_list.bl COMMA bounded_binding.b
+    {: return bl.add(b); :}
+    ;
+
+BoundedBinding bounded_binding
+    = declarator_comma_list.dl COLON type.t where_clause.wc?
+    {: return new BoundedBinding(t, dl, wc); :}
+    ;
+
+WhereClause where_clause
+    = WHERE expression.e
+    {: return new WhereClause(e); :}
     ;

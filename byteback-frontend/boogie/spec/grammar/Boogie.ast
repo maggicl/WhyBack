@@ -67,13 +67,7 @@ OrderSpecification ::= ParentEdges:ParentEdge* <Complete:Boolean>;
 ParentEdge ::= ParentConstant:Accessor <Unique:Boolean> ;
 
 // Variable declaration
-abstract VariableDeclaration ::= Binding:MultiBinding;
-
-// Global variable declaration
-GlobalVariableDeclaration : VariableDeclaration; 
-
-// Local variable declaration
-LocalVariableDeclaration : VariableDeclaration;
+VariableDeclaration : Declaration ::= Binding:BoundedBinding*;
 
 // Procedure declaration
 ProcedureDeclaration : Declaration ::= Declarator:Declarator Signature:ProcedureSignature Conditions:Specification* [Body];
@@ -83,7 +77,7 @@ ProcedureSignature ::= TypeArguments:Declarator* InputParameters:BoundedBinding*
 // Implementation declaration
 ImplementationDeclaration : ProcedureDeclaration ::= Body;
 
-Body ::= LocalVariables:LocalVariableDeclaration* Statements:Statement*;
+Body ::= LocalVariables:VariableDeclaration* Statements:Statement*;
 
 // Expressions
 abstract Meta;

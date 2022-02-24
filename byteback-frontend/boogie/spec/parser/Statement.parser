@@ -45,6 +45,11 @@ Statement unit_statement
     = assert_statement
     | assume_statement
     | havoc_statement
+    | assignment_statement
+    | call_statement
+    | break_statement
+    | return_statement
+    | goto_statement
     ;
 
 AssertStatement assert_statement
@@ -58,13 +63,82 @@ AssumeStatement assume_statement
     ;
 
 HavocStatement havoc_statement
-    = symbolic_reference_comma_list.sl
+    = HAVOC value_reference_comma_list.sl
     {: return new HavocStatement(sl); :}
     ;
 
-List symbolic_reference_comma_list
-    = symbolic_reference.s
-    {: return new List(s); :}
-    | symbolic_reference_comma_list.sl COMMA symbolic_reference.s
-    {: return sl.add(s); :}
+List value_reference_comma_list
+    = value_reference.r
+    {: return new List(r); :}
+    | value_reference_comma_list.rl COMMA value_reference.r
+    {: return rl.add(r); :}
+    ;
+
+AssignmentStatement assignment_statement
+    = assignee_comma_list.al COLONEQ expression_comma_list.el
+    {: return new AssignmentStatement(al, el); :}
+    ;
+
+Assignee assignee
+    = value_assignee
+    | map_assignee
+    ;
+
+Assignee value_assignee
+    = value_reference.r 
+    {: return new Assignee(r); :}
+    ;
+
+List value_assignee_comma_list
+    = value_assignee.a
+    {: return new List(a); :}
+    | value_assignee_comma_list.al COMMA value_assignee.a
+    {: return al.add(a); :}
+    ;
+
+MapAssignee map_assignee
+    = value_reference.r map_select.s
+    {: return new MapAssignee(r, s); :}
+    ;
+
+MapSelect map_select
+    = LBRACKET expression_comma_list.el RBRACKET
+    {: return new MapSelect(el); :}
+    ;
+
+List assignee_comma_list
+    = assignee.a
+    {: return new List(a); :}
+    | assignee_comma_list.al COMMA assignee.a
+    {: return al.add(a); :}
+    ;
+
+CallStatement call_statement
+    = targeted_call_statement
+    | universal_call_statement
+    ;
+
+TargetedCallStatement targeted_call_statement
+    = CALL value_assignee_comma_list.asl COLONEQ accessor.a LPAREN expression_comma_list.el RPAREN
+    {: return new TargetedCallStatement(a, asl, el); :}
+    ;
+
+UniversalCallStatement universal_call_statement
+    = CALL FORALL accessor.a LPAREN meta_comma_list.ml RPAREN
+    {: return new UniversalCallStatement(a, ml); :}
+    ;
+
+BreakStatement break_statement
+    = BREAK label.l?
+    {: return new BreakStatement(l); :}
+    ;
+
+ReturnStatement return_statement
+    = RETURN
+    {: return new ReturnStatement(); :}
+    ;
+
+GotoStatement goto_statement
+    = GOTO label.l
+    {: return new GotoStatement(l); :}
     ;

@@ -1,3 +1,20 @@
+Meta meta
+    = expression
+    | star
+    ;
+
+Star star
+    = STAR
+    {: return new Star(); :}
+    ;
+
+List meta_comma_list
+    = meta.m
+    {: return new List(m); :}
+    | meta_comma_list.ml COMMA meta.m
+    {: return ml.add(m); :}
+    ;
+
 Expression expression
     = expression0
     ;
@@ -178,7 +195,7 @@ MapOperation map_operation
 
 MapAccessOperation map_access_operation
     = expression_comma_list.el
-    {: return new MapAccessOperation(null, el); :}
+    {: return new MapAccessOperation(null, new MapSelect(el)); :}
     ;
 
 MapAccessOperation map_ranged_access_operation
@@ -188,7 +205,7 @@ MapAccessOperation map_ranged_access_operation
 
 MapAccessOperation map_update_operation
     = expression_comma_list.el COLONEQ expression.ue
-    {: return new MapUpdateOperation(null, el, ue); :}
+    {: return new MapUpdateOperation(null, new MapSelect(el), ue); :}
     ;
 
 Expression expression9

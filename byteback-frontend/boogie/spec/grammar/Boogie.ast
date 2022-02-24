@@ -135,11 +135,13 @@ ConcatenationOperation : BinaryExpression;
 // Map expressions
 abstract MapOperation : UnaryExpression;
 
-MapAccessOperation : MapOperation ::= Indexes:Expression*;
+MapAccessOperation : MapOperation ::= Select:MapSelect;
 
 MapRangedAccessOperation : MapOperation ::= <RangeStart:NumberLiteral> <RangeEnd:NumberLiteral>;
 
 MapUpdateOperation : MapAccessOperation ::= Update:Expression;
+
+MapSelect ::= Expressions:Expression*;
 
 // Symbolic reference
 abstract SymbolicReference : Expression ::= Accessor:Accessor;
@@ -182,7 +184,11 @@ AssumeStatement : Statement ::= Expression:Expression;
 
 HavocStatement : Statement ::= References:SymbolicReference*;
 
-AssignmentStatement : Statement ::= Targets:SymbolicReference* Source:Expression*;
+AssignmentStatement : Statement ::= Targets:Assignee* Source:Expression*;
+
+Assignee ::= Reference:ValueReference;
+
+MapAssignee : Assignee ::= MapSelect;
 
 abstract CallStatement : Statement ::= Accessor:Accessor;
 

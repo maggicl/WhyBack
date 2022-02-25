@@ -33,7 +33,7 @@ List type_variable_block_list
     ;
 
 UnknownType unknown_type
-    = accessor.a type_constructor_list.tl
+    = accessor.a type_constructor_list.tl?
     {: return new UnknownType(a, tl); :}
     ;
 

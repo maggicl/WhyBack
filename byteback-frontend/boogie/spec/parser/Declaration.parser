@@ -77,7 +77,7 @@ TypeSynonym type_synonym_definition
     ;
 
 ConstantDeclaration constant_declaration
-    = CONST attribute_list.al constant_definition.cd SEMICOLON
+    = CONST attribute_list.al? constant_definition.cd SEMICOLON
     {:
        cd.setAttributesList(al);
        return cd;
@@ -90,7 +90,7 @@ ConstantDeclaration constant_definition
     ;
 
 ConstantDeclaration standard_constant_definition
-    = set_binding.b order_specification.os
+    = set_binding.b order_specification.os?
     {: return new ConstantDeclaration(new List(), b, false, os); :}
     ;
 

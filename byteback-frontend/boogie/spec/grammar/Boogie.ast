@@ -81,7 +81,7 @@ AxiomDeclaration : Declaration ::= Expression:Expression;
 FunctionDeclaration : Declaration ::= Declarator:Declarator Signature:FunctionSignature [Expression:Expression];
 
 // Constant declaration
-ConstantDeclaration : Declaration ::= Binding:SetBinding <Unique:Boolean> OrderSpecification:OrderSpecification;
+ConstantDeclaration : Declaration ::= Binding:SetBinding <Unique:Boolean> [OrderSpecification:OrderSpecification];
 
 OrderSpecification ::= ParentEdges:ParentEdge* <Complete:Boolean>;
 

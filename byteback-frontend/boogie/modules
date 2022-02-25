@@ -6,8 +6,8 @@ module("boogie") {
 
     jastadd {
         include "spec/grammar/*.ast"
-        include "spec/*.jadd"
-        include "spec/*.jrag"
+        include "spec/frontend/*.jadd"
+        include "spec/frontend/*.jrag"
     }
 
     scanner {

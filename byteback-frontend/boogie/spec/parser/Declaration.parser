@@ -34,6 +34,7 @@ Declaration declaration
     | function_declaration
     | variable_declaration
     | procedure_declaration
+    | implementation_declaration
     ;
 
 List declaration_list

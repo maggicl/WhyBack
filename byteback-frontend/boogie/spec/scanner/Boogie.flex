@@ -30,28 +30,33 @@ import beaver.Scanner;
 %{
     StringBuffer string = new StringBuffer();
 
-    private Symbol symbol(short type) {
-        return new Symbol(type, yyline, yycolumn);
+    private Symbol symbol(short id) {
+        System.out.println(id);
+        return new Symbol(id, yyline + 1, yycolumn + 1, yylength(), yytext());
     }
 
-    private Symbol symbol(short type, Object value) {
-        return new Symbol(type, yyline, yycolumn, value);
+    private Symbol symbol(short id, String value) {
+        return new Symbol(id, yyline + 1, yycolumn + 1, yylength(), value);
     }
 %}
 
-LineTerminator = \r|\n|\r\n;
-InputCharacter = [^\r\n];
-WhiteSpace = {LineTerminator} | [ \t\f];
-Comment = {TraditionalComment} | {EndOfLineComment};
-TraditionalComment = "/*" ~"*/";
-EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?;
-BoogieLetter = [:letter:] | ['~#$\^_.?\\];
-BoogieLetterDigit = {BoogieLetter} | [:digit:];
-Identifier = {BoogieLetter} {BoogieLetterDigit}*;
-DecIntegerLiteral = 0 | [1-9][0-9]*;
-RealIntegerLiteral = {DecIntegerLiteral} "." [0-9]+;
-BvIntegerLiteral = {DecIntegerLiteral} "bv" {DecIntegerLiteral};
-BvType = "bv" {DecIntegerLiteral};
+LineTerminator = \r|\n|\r\n
+InputCharacter = [^\r\n]
+WhiteSpace     = {LineTerminator} | [ \t\f]
+
+/* comments */
+Comment = {TraditionalComment} | {EndOfLineComment}
+
+TraditionalComment   = "/*" ~"*/" 
+EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
+BoogieLetter = [:letter:] | ['~#$\^_.?\\]
+BoogieLetterDigit = {BoogieLetter} | [:digit:]
+Identifier = {BoogieLetter} {BoogieLetterDigit}*
+
+DecIntegerLiteral = 0 | [1-9][0-9]*
+RealIntegerLiteral = {DecIntegerLiteral} "." [0-9]+
+BvIntegerLiteral = {DecIntegerLiteral} "bv" {DecIntegerLiteral}
+BvType = "bv" {DecIntegerLiteral}
 
 %state STRING
 
@@ -142,28 +147,28 @@ BvType = "bv" {DecIntegerLiteral};
     "::" { return symbol(Terminals.QSEP); }
     "\u2022" { return symbol(Terminals.QSEP); }
     "++" { return symbol(Terminals.CONCAT); }
-//
-//    /* Numbers, Ids and Strings */
+
+    /* Numbers, Ids and Strings */
     {BvType} { return symbol(Terminals.BVTYPE, yytext().intern()); }
-//
-//    /* identifiers */ 
+
+    /* identifiers */ 
     {Identifier} { return symbol(Terminals.ID, yytext().intern()); }
-// 
-//    /* literals */
+ 
+    /* literals */
     {BvIntegerLiteral} { return symbol(Terminals.BITVECTOR, yytext().intern()); }
     {DecIntegerLiteral} { return symbol(Terminals.NUMBER, yytext().intern()); }
     {RealIntegerLiteral} { return symbol(Terminals.REALNUMBER, yytext().intern()); }
     \" { string.setLength(0); yybegin(STRING); }
-//
-//    /* comments */
-    {Comment} { /* ignore */ }
-// 
-//    /* whitespace */
-    {WhiteSpace} { /* ignore */ }
+
+    /* comments */
+    {Comment} { }
+
+    /* whitespace */
+    {WhiteSpace} { }
 }
 
 <STRING> {
-    \"                             {
+    \" {
         yybegin(YYINITIAL);
         // return symbol(Terminals.ATTR_STRING, string.toString().intern());
     }
@@ -178,3 +183,5 @@ BvType = "bv" {DecIntegerLiteral};
 
 /* error fallback */
 [^]|\n { throw new Scanner.Exception(yyline + 1, yycolumn + 1, "illegal character \"" + yytext() + "\""); }
+
+<<EOF>> { return symbol(Terminals.EOF); }

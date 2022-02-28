@@ -1,0 +1,41 @@
+aspect Variable {
+
+    syn lazy List<Variable> Binding.getVariableList();
+
+    eq OptionalBinding.getVariableList() {
+        final List<Variable> variables = new List<>();
+
+        if (hasDeclarator()) {
+            variables.add(new Variable(getType(), getDeclarator()));
+        }
+
+        return variables;
+    }
+
+    eq SetBinding.getVariableList() {
+        final List<Variable> variables = new List<>();
+
+        for (Declarator declarator : getDeclaratorList()) {
+            variables.add(new Variable(getType(), declarator));
+        }
+
+        return variables;
+    }
+
+    inh lazy boolean Variable.isMutable();
+
+    eq VariableDeclaration.getVariableSpace().isMutable() = true;
+
+    eq Body.getVariableSpace().isMutable() = true;
+
+    eq ConstantDeclaration.getVariableSpace().isMutable() = false;
+
+    eq FunctionDeclaration.getVariableSpace().isMutable() = false;
+
+    eq ProcedureDeclaration.getVariableSpace().isMutable() = false;
+
+    eq ImplementationDeclaration.getVariableSpace().isMutable() = false;
+
+    eq QuantifierExpression.getVariableSpace().isMutable() = false;
+
+}

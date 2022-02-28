@@ -1,0 +1,69 @@
+/**
+ * Analysis for looking up variables
+ */
+aspect VariableAnalysis {
+
+    syn lazy Variable Accessor.variable();
+
+    eq Accessor.variable() = lookupVariable(getName());
+
+    inh lazy Variable Accessor.lookupVariable(String name);
+
+    /**
+     * Lookup variable in program.
+     */
+    eq Program.getChild().lookupVariable(String name) {
+        final Variable variable = programLookupVariable(name);
+
+        return variable;
+    }
+
+    syn lazy Variable Program.programLookupVariable(String name);
+
+    eq Program.programLookupVariable(String name) {
+        return getVariableSpace().find(name);
+    }
+
+    /**
+     * Lookup variable in signature.
+     */
+    inh lazy Variable Declaration.lookupVariable(String name);
+
+    eq Declaration.getChild().lookupVariable(String name) {
+        final Variable variable = declarationLookupVariable(name);
+
+        if (variable != null) {
+            return variable;
+        } else {
+            return lookupVariable(name);
+        }
+    }
+
+    syn lazy Variable Declaration.declarationLookupVariable(String name);
+
+    eq Declaration.declarationLookupVariable(String name) {
+        return getVariableSpace().find(name);
+    }
+
+    /**
+     * Lookup variable in body.
+     */
+    inh lazy Variable Body.lookupVariable(String name);
+
+    eq Body.getChild().lookupVariable(String name) {
+        final Variable variable = bodyLookupVariable(name);
+
+        if (variable != null) {
+            return variable;
+        } else {
+            return lookupVariable(name);
+        }
+    }
+
+    syn lazy Variable Body.bodyLookupVariable(String name);
+
+    eq Body.bodyLookupVariable(String name) {
+        return getVariableSpace().find(name);
+    }
+
+}

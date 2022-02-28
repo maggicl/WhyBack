@@ -12,15 +12,30 @@ Accessor ::= <Name:String>;
 // Binding
 //
 // A binding can be used to declare a variable of a specific type.
-abstract Binding ::= Type:Type;
+abstract Binding ::= Type;
 
-SetBinding : Binding ::= Declarators:Declarator*;
+SetBinding : Binding ::= Declarator*;
 
-OptionalBinding : Binding ::= [Declarator:Declarator];
+OptionalBinding : Binding ::= [Declarator];
 
-BoundedBinding : SetBinding ::= [WhereClause:WhereClause];
+BoundedBinding : SetBinding ::= [WhereClause];
 
-WhereClause ::= Expression:Expression;
+WhereClause ::= Expression;
+
+// Definitions
+//
+// A definition in this case is a node used as a NTA to better keep
+// track of declarations.
+
+Definition ::= Declarator;
+
+Variable : Definition ::= Type;
+
+Function : Definition ::= InputType:Type* OutputType:Type*;
+
+Procedure : Function;
+
+Implementation : Procedure;
 
 // Type
 //
@@ -35,9 +50,9 @@ RealType : Type;
 
 BitvectorType : Type ::= <Size:String>;
 
-UnknownType : Type ::= Name:Accessor TypeParameters:Type*;
+UnknownType : Type ::= Accessor Argument:Type*;
 
-MapType : Type ::= TypeArguments:Declarator* KeyTypes:Type* ValueType:Type;
+MapType : Type ::= Parameter:Declarator* KeyType:Type* ValueType:Type;
 
 // Option
 //
@@ -47,43 +62,43 @@ MapType : Type ::= TypeArguments:Declarator* KeyTypes:Type* ValueType:Type;
 // quantifiers.
 abstract Option;
 
-Attribute : Option ::= <Name:String> Arguments:Expression*;
+Attribute : Option ::= <Name:String> Argument:Expression*;
 
-Trigger : Option ::= Expressions:Expression*;
+Trigger : Option ::= Expression*;
 
 // Declaration
 //
 // A declaration always must always correlate to a set of declarators.
-abstract Declaration ::= Attributes:Attribute*;
+abstract Declaration ::= Attribute* /Definition*/;
 
 // Signature
 //
 // Signature nodes for functions, procedures and implementations.
-abstract Signature ::= TypeArguments:Declarator*;
+abstract Signature ::= Parameter:Declarator*;
 
-FunctionSignature : Signature ::= InputArguments:OptionalBinding* ReturnArgument:OptionalBinding;
+FunctionSignature : Signature ::= InputBinding:OptionalBinding* OutputBinding:OptionalBinding;
 
-ProcedureSignature : Signature ::= InputParameters:BoundedBinding* OutputParameters:BoundedBinding*;
+ProcedureSignature : Signature ::= InputBinding:BoundedBinding* OutputBinding:BoundedBinding*;
 
-ImplementationSignature : Signature ::= InputParameters:SetBinding* OutParameters:SetBinding*;
+ImplementationSignature : Signature ::= InputBinding:SetBinding* OutputBinding:SetBinding*;
 
 // Type declaration
-abstract TypeDeclaration : Declaration ::= Declarator:Declarator VariableDeclarators:Declarator*;
+abstract TypeDeclaration : Declaration ::= Declarator Parameter:Declarator*;
 
 TypeConstructor : TypeDeclaration ::= <Finite:Boolean>;
 
 TypeSynonym : TypeDeclaration ::= Aliased:Type;
 
 // Axiom declaration
-AxiomDeclaration : Declaration ::= Expression:Expression;
+AxiomDeclaration : Declaration ::= Expression;
 
 // Function declaration
-FunctionDeclaration : Declaration ::= Declarator:Declarator Signature:FunctionSignature [Expression:Expression];
+FunctionDeclaration : Declaration ::= Declarator Signature:FunctionSignature [Expression];
 
 // Constant declaration
-ConstantDeclaration : Declaration ::= Binding:SetBinding <Unique:Boolean> [OrderSpecification:OrderSpecification];
+ConstantDeclaration : Declaration ::= Binding:SetBinding <Unique:Boolean> [OrderSpecification];
 
-OrderSpecification ::= ParentEdges:ParentEdge* <Complete:Boolean>;
+OrderSpecification ::= ParentEdge* <Complete:Boolean>;
 
 ParentEdge ::= ParentConstant:Accessor <Unique:Boolean>;
 
@@ -91,12 +106,12 @@ ParentEdge ::= ParentConstant:Accessor <Unique:Boolean>;
 VariableDeclaration : Declaration ::= Binding:BoundedBinding*;
 
 // Procedure declaration
-ProcedureDeclaration : Declaration ::= Declarator:Declarator Signature:ProcedureSignature Conditions:Specification* [Body];
+ProcedureDeclaration : Declaration ::= Declarator Signature:ProcedureSignature Specification* [Body];
 
 // Implementation declaration
-ImplementationDeclaration : Declaration ::= Declarator:Declarator Signature:ImplementationSignature Bodies:Body*;
+ImplementationDeclaration : Declaration ::= Declarator Signature:ImplementationSignature Body*;
 
-Body ::= LocalVariables:VariableDeclaration* Statements:Statement*;
+Body ::= LocalVariable:VariableDeclaration* Statement*;
 
 // Expressions
 abstract Meta;
@@ -163,17 +178,17 @@ MapUpdateOperation : MapAccessOperation ::= Update:Expression;
 MapSelect ::= Expressions:Expression*;
 
 // Symbolic reference
-abstract SymbolicReference : Expression ::= Accessor:Accessor;
+abstract SymbolicReference : Expression ::= Accessor;
 
 ValueReference : SymbolicReference;
 
-FunctionReference : SymbolicReference ::= Arguments:Expression*;
+FunctionReference : SymbolicReference ::= Argument:Expression*;
 
 // Old reference
 OldReference : Expression ::= Argument:Expression;
 
 // Quantifier expression
-QuantifierExpression : UnaryExpression ::= Quantifier:Quantifier TypeArguments:Declarator* Parameters:SetBinding* Options:Option*;
+QuantifierExpression : UnaryExpression ::= Quantifier Parameter:Declarator* Binding:SetBinding* Option* /Variable*/;
 
 abstract Quantifier;
 
@@ -197,27 +212,27 @@ RealLiteral : Literal;
 // Statements
 abstract Statement;
 
-AssertStatement : Statement ::= Expression:Expression;
+AssertStatement : Statement ::= Expression;
 
-AssumeStatement : Statement ::= Expression:Expression;
+AssumeStatement : Statement ::= Expression;
 
-HavocStatement : Statement ::= References:SymbolicReference*;
+HavocStatement : Statement ::= Reference:SymbolicReference*;
 
-AssignmentStatement : Statement ::= Targets:Assignee* Source:Expression*;
+AssignmentStatement : Statement ::= Target:Assignee* Source:Expression*;
 
 Assignee ::= Reference:ValueReference;
 
 MapAssignee : Assignee ::= MapSelect;
 
-abstract CallStatement : Statement ::= Accessor:Accessor;
+abstract CallStatement : Statement ::= Accessor;
 
-TargetedCallStatement : CallStatement ::= Targets:SymbolicReference* Arguments:Expression*;
+TargetedCallStatement : CallStatement ::= Target:SymbolicReference* Argument:Expression*;
 
-UniversalCallStatement : CallStatement ::= Arguments:Meta*;
+UniversalCallStatement : CallStatement ::= Argument:Meta*;
 
 IfStatement : Statement ::= Condition:Meta Then:BlockStatement [Else:BlockStatement];
 
-WhileStatement : Statement ::= Condition:Meta Statement Invariants:LoopInvariant*;
+WhileStatement : Statement ::= Condition:Meta BlockStatement Invariant:LoopInvariant*;
 
 BreakStatement : Statement ::= [Target:Label];
 
@@ -234,10 +249,10 @@ Label ::= <Target:String>;
 // Specifications
 abstract Specification ::= <Free:Boolean>;
 
-PreCondition : Specification ::= Expression:Expression;
+PreCondition : Specification ::= Expression;
 
-PostCondition : Specification ::= Expression:Expression;
+PostCondition : Specification ::= Expression;
 
-FrameCondition : Specification ::= References:ValueReference*;
+FrameCondition : Specification ::= Reference:ValueReference*;
 
-LoopInvariant : Specification ::= Expression:Expression;
+LoopInvariant : Specification ::= Expression;

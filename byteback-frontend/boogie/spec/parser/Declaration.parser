@@ -47,7 +47,7 @@ List declaration_list
 TypeDeclaration type_declaration
     = TYPE attribute_list.al? type_definition.td SEMICOLON
     {:
-       td.setAttributesList(al);
+       td.setAttributeList(al);
        return td;
     :}
     ;
@@ -79,7 +79,7 @@ TypeSynonym type_synonym_definition
 ConstantDeclaration constant_declaration
     = CONST attribute_list.al? constant_definition.cd SEMICOLON
     {:
-       cd.setAttributesList(al);
+       cd.setAttributeList(al);
        return cd;
     :}
     ;
@@ -157,7 +157,7 @@ AxiomDeclaration axiom_declaration
 FunctionDeclaration function_declaration
     = FUNCTION attribute_list.al declarator.d function_definition.fd
     {:
-       fd.setAttributesList(al);
+       fd.setAttributeList(al);
        fd.setDeclarator(d);
        return fd;
     :}
@@ -194,7 +194,7 @@ VariableDeclaration variable_declaration
 ProcedureDeclaration procedure_declaration
     = PROCEDURE attribute_list.al declarator.d procedure_definition.pd
     {:
-       pd.setAttributesList(al);
+       pd.setAttributeList(al);
        pd.setDeclarator(d);
        return pd;
     :}
@@ -219,7 +219,7 @@ List procedure_out_parameters
 ImplementationDeclaration implementation_declaration
     = IMPLEMENTATION attribute_list.al declarator.d implementation_definition.id SEMICOLON
     {:
-       id.setAttributesList(al);
+       id.setAttributeList(al);
        id.setDeclarator(d);
        return id;
     :}

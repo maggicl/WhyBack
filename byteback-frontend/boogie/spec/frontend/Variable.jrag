@@ -139,11 +139,11 @@ aspect Variable {
 
     eq ConstantDeclaration.getVariable().isMutable() = false;
 
-    eq FunctionDeclaration.getFunction().isMutable() = false;
+    eq FunctionDeclaration.getSignature().isMutable() = false;
     
-    eq ProcedureDeclaration.getProcedure().isMutable() = true;
+    eq ProcedureDeclaration.getSignature().isMutable() = true;
 
-    eq ImplementationDeclaration.getImplementation().isMutable() = true;
+    eq ImplementationDeclaration.getSignature().isMutable() = true;
 
     eq QuantifierExpression.getBinding().isMutable() = false;
 

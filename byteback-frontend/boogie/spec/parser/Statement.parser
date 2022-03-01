@@ -1,12 +1,12 @@
 Body body
-    = variable_declaration_list.dl statement_list.sl
+    = variable_declaration_list.dl? statement_list.sl?
     {: return new Body(dl, sl); :}
     ;
 
 List body_list
-    = body.b
+    = body_block.b
     {: return new List(b); :}
-    | body_list.bl body.b
+    | body_list.bl body_block.b
     {: return bl.add(b); :}
     ;
 
@@ -18,7 +18,8 @@ List variable_declaration_list
     ;
 
 Body body_block
-    = LBRACE body RBRACE
+    = LBRACE body.b RBRACE
+    {: return b; :}
     ;
 
 Statement statement

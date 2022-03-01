@@ -193,7 +193,7 @@ VariableDeclaration variable_declaration
     ;
 
 ProcedureDeclaration procedure_declaration
-    = PROCEDURE attribute_list.al declarator.d procedure_definition.pd
+    = PROCEDURE attribute_list.al? declarator.d procedure_definition.pd
     {:
        pd.setAttributeList(al);
        pd.setDeclarator(d);
@@ -204,7 +204,7 @@ ProcedureDeclaration procedure_declaration
 ProcedureDeclaration procedure_definition
     = procedure_signature.ps SEMICOLON specification_list.sl
     {: return new ProcedureDeclaration(new List(), null, ps, sl, new Opt()); :}
-    | procedure_signature.ps specification_list.sl body_block.b
+    | procedure_signature.ps specification_list.sl? body_block.b
     {: return new ProcedureDeclaration(new List(), null, ps, sl, new Opt(b)); :}
     ;
 
@@ -218,7 +218,7 @@ List procedure_out_parameters
     ;
 
 ImplementationDeclaration implementation_declaration
-    = IMPLEMENTATION attribute_list.al declarator.d implementation_definition.id SEMICOLON
+    = IMPLEMENTATION attribute_list.al? declarator.d implementation_definition.id SEMICOLON
     {:
        id.setAttributeList(al);
        id.setDeclarator(d);

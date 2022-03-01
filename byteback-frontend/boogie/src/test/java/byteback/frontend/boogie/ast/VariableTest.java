@@ -1,0 +1,27 @@
+package byteback.frontend.boogie.ast;
+
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+public class VariableTest extends ASTTestFixture {
+
+    @Test
+    public void Variables_OnUnitProgram_ReturnsSingleElementTable() {
+        final Program program = getProgram("Unit");
+        assertTrue(program.variables().size() == 1);
+    }
+
+    @Test
+    public void Variables_OnUnitIdentityFunction_ReturnsSingleElementTable() {
+        final Function function = getFunction("Unit", "identity");
+        assertTrue(function.variables().size() == 1);
+    }
+
+    @Test
+    public void Variables_OnArithmeticAdditionFunction_Returns2ElementsTable() {
+        final Function function = getFunction("Arithmetic", "addition");
+        assertTrue(function.variables().size() == 2);
+    }
+    
+}

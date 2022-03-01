@@ -1,0 +1,23 @@
+import java.util.Optional;
+
+aspect EntityTable {
+
+    public class EntityTable<T extends Entity> extends LinkedList<T> {
+
+        public EntityTable() {
+            super();
+        }
+
+        public Optional<T> getFirst(String name) {
+            for (T entity : this) {
+                if (entity.getDeclarator().getName().equals(name)) {
+                    return Optional.of(entity);
+                }
+            }
+
+            return Optional.empty();
+        }
+        
+    }
+    
+}

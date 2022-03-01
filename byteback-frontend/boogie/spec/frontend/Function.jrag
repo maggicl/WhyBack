@@ -1,11 +1,13 @@
+import java.util.Optional;
+
 aspect Function {
 
     /**
      * Scope collections.
      */
-    coll LinkedList<Function> Program.functions();
+    coll EntityTable<Function> Program.functions();
 
-    Function contributes this to Program.functions();
+    FunctionDeclaration contributes getFunction() to Program.functions();
 
     /**
      * NTA definitions.
@@ -15,11 +17,29 @@ aspect Function {
     eq FunctionDeclaration.getFunction() {
         Function function = new Function();
         Signature signature = getSignature();
+        function.setDeclarator(getDeclarator());
         function.setInputVariableList(signature.getInputVariableList());
         function.setOutputVariableList(signature.getOutputVariableList());
         function.setExpressionOpt(getExpressionOpt());
 
         return function;
     }
-    
+
+    /**
+     * Looking up functions.
+     */
+    syn lazy Optional<Function> Accessor.function();
+
+    eq Accessor.function() = lookupFunction(getName());
+
+    /**
+     * Lookup function in program.
+     */
+    syn lazy Optional<Function> Program.lookupFunction(String name);
+
+    eq Program.lookupFunction(String name) = functions().getFirst(name);
+
+    inh lazy Optional<Function> Accessor.lookupFunction(String name);
+
+    eq Program.getChild().lookupFunction(String name) = lookupFunction(name);
 }

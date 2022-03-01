@@ -1,0 +1,27 @@
+aspect Entity {
+
+    inh Body Entity.body();
+
+    inh Body Declaration.body();
+
+    eq Program.getChild().body() = null;
+
+    eq Body.getLocalVariable().body() = this;
+
+    inh SignedEntity Entity.signedEntity();
+
+    eq Program.getChild().signedEntity() = null;
+
+    eq SignedEntity.getInputVariable().signedEntity() = this;
+
+    eq SignedEntity.getOutputVariable().signedEntity() = this;
+
+    inh QuantifierExpression Entity.quantifierExpression();
+
+    inh QuantifierExpression Binding.quantifierExpression();
+
+    eq Program.getChild().quantifierExpression() = null;
+
+    eq QuantifierExpression.getChild().quantifierExpression() = this;
+
+}

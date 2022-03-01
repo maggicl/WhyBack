@@ -155,7 +155,7 @@ AxiomDeclaration axiom_declaration
     ;
 
 FunctionDeclaration function_declaration
-    = FUNCTION attribute_list.al declarator.d function_definition.fd
+    = FUNCTION attribute_list.al? declarator.d function_definition.fd
     {:
        fd.setAttributeList(al);
        fd.setDeclarator(d);
@@ -164,7 +164,8 @@ FunctionDeclaration function_declaration
     ;
 
 FunctionDeclaration function_definition
-    = function_prototype SEMICOLON
+    = function_prototype.fd SEMICOLON
+    {: return fd; :}
     | function_body
     ;
 

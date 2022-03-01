@@ -1,0 +1,15 @@
+aspect Signature {
+
+    interface SignatureBinding {
+
+        List<? extends Binding> getInputBindingList();
+
+        List<? extends Binding> getOutputBindingList();
+
+    }
+
+    Signature implements SignatureBinding;
+
+    syn List<OptionalBinding> FunctionSignature.getOutputBindingList() = new List(getOutputBinding());
+
+}

@@ -1,0 +1,38 @@
+/**
+ * Analysis for looking up variables
+ */
+aspect EntityAnalysis {
+
+    syn Variable Accessor.variable();
+
+    eq Accessor.variable() = null;
+
+    inh lazy Entity Accessor.lookup(String name);
+
+    /**
+     * Lookup variable in program.
+     */
+    eq Program.getChild().lookup(String name) = null;
+
+    /**
+     * Lookup variable in signature.
+     */
+    inh lazy Entity Declaration.lookup(String name);
+
+    eq Declaration.getChild().lookup(String name) = null;
+
+    /**
+     * Lookup in body.
+     */
+    inh lazy Entity Body.lookup(String name);
+
+    eq Body.getChild().lookup(String name) = null;
+
+    /**
+     * Lookup in quantifier expression.
+     */
+    inh lazy Entity QuantifierExpression.lookup(String name);
+
+    eq QuantifierExpression.getChild().lookup(String name) = null;
+
+}

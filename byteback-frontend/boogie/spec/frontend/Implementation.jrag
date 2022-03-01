@@ -1,0 +1,30 @@
+aspect Implementation {
+
+    /**
+     * Scope collections.
+     */
+    coll LinkedList<Implementation> Program.implementations();
+
+    Implementation contributes this to Program.implementations();
+
+    /**
+     * NTA definitions.
+     */
+    syn nta List<Implementation> ImplementationDeclaration.getImplementationList();
+
+    eq ImplementationDeclaration.getImplementationList() {
+        List<Implementation> implementations = new List<>();
+
+        for (Body body : getBodyList()) {
+            Implementation implementation = new Implementation();
+            Signature signature = getSignature();
+            implementation.setInputVariableList(signature.getInputVariableList());
+            implementation.setOutputVariableList(signature.getOutputVariableList());
+            implementation.setBody(body);
+            implementations.add(implementation);
+        }
+
+        return implementations;
+    }
+
+}

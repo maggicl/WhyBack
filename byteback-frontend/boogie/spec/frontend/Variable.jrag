@@ -1,12 +1,54 @@
+import java.util.LinkedList;
+
 aspect Variable {
 
-    syn lazy List<Variable> Binding.getVariableList();
+    /**
+     * Scope collections.
+     */
+    coll LinkedList<Variable> Program.variables();
 
+    VariableDeclaration contributes
+        each getVariableList() to Program.variables();
+
+    ConstantDeclaration contributes
+        each getVariableList() to Program.variables();
+
+    coll LinkedList<Variable> SignedEntity.variables();
+
+    FunctionDeclaration contributes
+        each getSignature().getVariableList() to SignedEntity.variables()
+        for getFunction();
+
+    ProcedureDeclaration contributes
+        each getSignature().getVariableList() to SignedEntity.variables()
+        for getProcedure();
+
+    ImplementationDeclaration contributes
+        each getSignature().getVariableList() to SignedEntity.variables()
+        for each getImplementationList();
+
+    coll LinkedList<Variable> Body.variables(); 
+
+    VariableDeclaration contributes
+        each getVariableList() to Body.variables()
+        for body();
+
+    coll LinkedList<Variable> QuantifierExpression.variables(); 
+
+    Binding contributes
+        each getVariableList() to QuantifierExpression.variables()
+        for quantifierExpression();
+
+    /**
+     * NTA definitions.
+     */
+    syn nta List<Variable> Binding.getVariableList();
+    
     eq OptionalBinding.getVariableList() {
         final List<Variable> variables = new List<>();
 
         if (hasDeclarator()) {
-            variables.add(new Variable(getType(), getDeclarator()));
+            variables.add(new Variable(getDeclarator(), getType()));
         }
 
         return variables;
@@ -16,26 +58,93 @@ aspect Variable {
         final List<Variable> variables = new List<>();
 
         for (Declarator declarator : getDeclaratorList()) {
-            variables.add(new Variable(getType(), declarator));
+            variables.add(new Variable(declarator, getType()));
         }
 
         return variables;
     }
 
-    inh lazy boolean Variable.isMutable();
+    syn nta List<Variable> QuantifierExpression.getVariableList();
 
-    eq VariableDeclaration.getVariableSpace().isMutable() = true;
+    eq QuantifierExpression.getVariableList() {
+        final List<Variable> variables = new List<>();
 
-    eq Body.getVariableSpace().isMutable() = true;
+        for (Binding binding : getBindingList()) {
+            variables.addAll(binding.getVariableList());
+        }
 
-    eq ConstantDeclaration.getVariableSpace().isMutable() = false;
+        return variables;
+    }
 
-    eq FunctionDeclaration.getVariableSpace().isMutable() = false;
+    syn nta List<Variable> Signature.getInputVariableList();
 
-    eq ProcedureDeclaration.getVariableSpace().isMutable() = false;
+    eq Signature.getInputVariableList() {
+        final List<Variable> variables = new List<>();
 
-    eq ImplementationDeclaration.getVariableSpace().isMutable() = false;
+        for (Binding binding : getInputBindingList()) {
+            variables.addAll(binding.getVariableList());
+        }
 
-    eq QuantifierExpression.getVariableSpace().isMutable() = false;
+        return variables;
+    }
+
+    syn nta List<Variable> Signature.getOutputVariableList();
+
+    eq Signature.getOutputVariableList() {
+        final List<Variable> variables = new List<>();
+
+        for (Binding binding : getOutputBindingList()) {
+            variables.addAll(binding.getVariableList());
+        }
+
+        return variables;
+    }
+
+    syn nta List<Variable> Signature.getVariableList();
+
+    eq Signature.getVariableList() {
+        List<Variable> variables = new List<>();
+
+        return variables
+            .addAll(getInputVariableList())
+            .addAll(getOutputVariableList());
+    }
+
+    syn nta List<Variable> VariableDeclaration.getVariableList();
+
+    eq VariableDeclaration.getVariableList() {
+        List<Variable> variables = new List<>();
+
+        for (Binding binding : getBindingList()) {
+            variables.addAll(binding.getVariableList());
+        }
+
+        return variables;
+    }
+
+    syn nta List<Variable> ConstantDeclaration.getVariableList();
+
+    eq ConstantDeclaration.getVariableList() {
+        List<Variable> variables = getBinding().getVariableList();
+
+        return variables;
+    }
+
+    /**
+     * Variable attributes.
+     */
+    inh boolean Variable.isMutable();
+
+    eq VariableDeclaration.getVariable().isMutable() = true;
+
+    eq ConstantDeclaration.getVariable().isMutable() = false;
+
+    eq FunctionDeclaration.getFunction().isMutable() = false;
+    
+    eq ProcedureDeclaration.getProcedure().isMutable() = true;
+
+    eq ImplementationDeclaration.getImplementation().isMutable() = true;
+
+    eq QuantifierExpression.getBinding().isMutable() = false;
 
 }

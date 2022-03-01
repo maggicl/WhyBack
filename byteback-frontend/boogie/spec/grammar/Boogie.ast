@@ -12,7 +12,7 @@ Accessor ::= <Name:String>;
 // Binding
 //
 // A binding can be used to declare a variable of a specific type.
-abstract Binding ::= Type;
+abstract Binding ::= Type /Variable*/;
 
 SetBinding : Binding ::= Declarator*;
 
@@ -21,21 +21,6 @@ OptionalBinding : Binding ::= [Declarator];
 BoundedBinding : SetBinding ::= [WhereClause];
 
 WhereClause ::= Expression;
-
-// Definitions
-//
-// A definition in this case is a node used as a NTA to better keep
-// track of declarations.
-
-Definition ::= Declarator;
-
-Variable : Definition ::= Type;
-
-Function : Definition ::= InputType:Type* OutputType:Type*;
-
-Procedure : Function;
-
-Implementation : Procedure;
 
 // Type
 //
@@ -69,7 +54,7 @@ Trigger : Option ::= Expression*;
 // Declaration
 //
 // A declaration always must always correlate to a set of declarators.
-abstract Declaration ::= Attribute* /Definition*/;
+abstract Declaration ::= Attribute*;
 
 // Signature
 //
@@ -93,23 +78,23 @@ TypeSynonym : TypeDeclaration ::= Aliased:Type;
 AxiomDeclaration : Declaration ::= Expression;
 
 // Function declaration
-FunctionDeclaration : Declaration ::= Declarator Signature:FunctionSignature [Expression];
+FunctionDeclaration : Declaration ::= Declarator Signature:FunctionSignature [Expression] /Function/;
 
 // Constant declaration
-ConstantDeclaration : Declaration ::= Binding:SetBinding <Unique:Boolean> [OrderSpecification];
+ConstantDeclaration : Declaration ::= Binding:SetBinding <Unique:Boolean> [OrderSpecification] /Variable*/;
 
 OrderSpecification ::= ParentEdge* <Complete:Boolean>;
 
 ParentEdge ::= ParentConstant:Accessor <Unique:Boolean>;
 
 // Variable declaration
-VariableDeclaration : Declaration ::= Binding:BoundedBinding*;
+VariableDeclaration : Declaration ::= Binding:BoundedBinding* /Variable*/;
 
 // Procedure declaration
-ProcedureDeclaration : Declaration ::= Declarator Signature:ProcedureSignature Specification* [Body];
+ProcedureDeclaration : Declaration ::= Declarator Signature:ProcedureSignature Specification* [Body] /Procedure/;
 
 // Implementation declaration
-ImplementationDeclaration : Declaration ::= Declarator Signature:ImplementationSignature Body*;
+ImplementationDeclaration : Declaration ::= Declarator Signature:ImplementationSignature Body* /Implementation*/;
 
 Body ::= LocalVariable:VariableDeclaration* Statement*;
 
@@ -188,7 +173,7 @@ FunctionReference : SymbolicReference ::= Argument:Expression*;
 OldReference : Expression ::= Argument:Expression;
 
 // Quantifier expression
-QuantifierExpression : UnaryExpression ::= Quantifier Parameter:Declarator* Binding:SetBinding* Option* /Variable*/;
+QuantifierExpression : UnaryExpression ::= Quantifier Parameter:Declarator* Binding:SetBinding* Option*;
 
 abstract Quantifier;
 

@@ -20,7 +20,8 @@ Type type_atom
     {: return new RealType(); :}
     | BVTYPE.n
     {: return new BitvectorType(n); :}
-    | LPAREN type RPAREN
+    | LPAREN type.t RPAREN
+    {: return t; :}
     ;
 
 MapType map_type
@@ -29,7 +30,8 @@ MapType map_type
     ;
 
 List type_variable_block_list
-    = LT declarator_comma_list GT
+    = LT declarator_comma_list.dl GT
+    {: return dl; :}
     ;
 
 UnknownType unknown_type

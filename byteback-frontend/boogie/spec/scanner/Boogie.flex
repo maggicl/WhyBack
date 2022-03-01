@@ -31,7 +31,7 @@ import beaver.Scanner;
     StringBuffer string = new StringBuffer();
 
     private Symbol symbol(short id) {
-        return new Symbol(id, yyline + 1, yycolumn + 1, yylength(), yytext());
+        return new Symbol(id, yyline + 1, yycolumn + 1, yylength());
     }
 
     private Symbol symbol(short id, String value) {

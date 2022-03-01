@@ -1,0 +1,25 @@
+aspect Function {
+
+    /**
+     * Scope collections.
+     */
+    coll LinkedList<Function> Program.functions();
+
+    Function contributes this to Program.functions();
+
+    /**
+     * NTA definitions.
+     */
+    syn nta Function FunctionDeclaration.getFunction();
+
+    eq FunctionDeclaration.getFunction() {
+        Function function = new Function();
+        Signature signature = getSignature();
+        function.setInputVariableList(signature.getInputVariableList());
+        function.setOutputVariableList(signature.getOutputVariableList());
+        function.setExpressionOpt(getExpressionOpt());
+
+        return function;
+    }
+    
+}

@@ -1,0 +1,50 @@
+import java.util.Optional;
+
+aspect Type {
+
+    /**
+     * Scope collections.
+     */
+    coll EntityTable<Type> Program.types();
+
+    TypeDeclaration contributes getType() to Program.types();
+
+    /**
+     * NTA definitions.
+     */
+    syn nta Type TypeDeclaration.getType();
+
+    eq TypeDeclaration.getType() {
+        final Type type = new Type();
+        type.setDeclarator(getDeclarator());
+        type.setParameterCount(getParameterList().getNumChild());
+
+        return type;
+    }
+
+    eq TypeSynonym.getType() {
+        final Type type = super.getType();
+        type.setAliased(getAliased());
+
+        return type;
+    }
+
+    /**
+     * Looking up types.
+     */
+    syn lazy Optional<Type> Accessor.type();
+
+    eq Accessor.type() = lookupType(getName());
+
+    /**
+     * Lookup type in program.
+     */
+    syn lazy Optional<Type> Program.lookupType(String name);
+
+    eq Program.lookupType(String name) = types().getFirst(name);
+
+    inh lazy Optional<Type> Accessor.lookupType(String name);
+
+    eq Program.getChild().lookupType(String name) = lookupType(name);
+
+}

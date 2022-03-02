@@ -1,4 +1,4 @@
-Type type
+TypeUse type
     = type_atom
     | map_type
     | unknown_type
@@ -11,7 +11,7 @@ List type_comma_list
     {: return tl.add(t); :}
     ;
 
-Type type_atom
+TypeUse type_atom
     = BOOL
     {: return new BoolType(); :}
     | INT

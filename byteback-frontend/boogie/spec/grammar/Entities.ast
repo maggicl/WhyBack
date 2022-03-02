@@ -3,10 +3,12 @@ abstract Entity ::= Declarator;
 
 abstract SignedEntity : Entity ::= InputVariable:Variable* OutputVariable:Variable*;
 
-Variable : Entity ::= Type;
+Variable : Entity ::= TypeUse;
 
 Function : SignedEntity ::= [Expression];
 
 Procedure : SignedEntity ::= [Body];
 
 Implementation : SignedEntity ::= Body;
+
+Type : Entity ::= <ParameterCount:Integer> [Aliased:TypeUse];

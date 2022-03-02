@@ -2,6 +2,8 @@ package byteback.frontend.boogie.ast;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
+
 import org.junit.Test;
 
 public class VariableTest extends ASTTestFixture {
@@ -41,5 +43,14 @@ public class VariableTest extends ASTTestFixture {
         final Procedure procedure = getProcedure("Unit", "identity");
         assertTrue(procedure.getBody().variables().size() == 1);
     }
-    
+
+    @Test
+    public void Variables_OnUnitPrototypeImplementation_Returns2ElementsTable() {
+        final Collection<Implementation> implementations = getImplementations("Unit", "prototype");
+
+        for (Implementation implementation : implementations) {
+            assertTrue(implementation.variables().size() == 2);
+        }
+    }
+
 }

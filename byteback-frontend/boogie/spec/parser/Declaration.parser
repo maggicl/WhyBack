@@ -219,7 +219,7 @@ List procedure_out_parameters
     ;
 
 ImplementationDeclaration implementation_declaration
-    = IMPLEMENTATION attribute_list.al? declarator.d implementation_definition.id SEMICOLON
+    = IMPLEMENTATION attribute_list.al? declarator.d implementation_definition.id
     {:
        id.setAttributeList(al);
        id.setDeclarator(d);
@@ -233,12 +233,13 @@ ImplementationDeclaration implementation_definition
     ;
 
 ImplementationSignature implementation_signature
-    = type_variable_block_list.dl LPAREN set_binding_comma_list.bli? RPAREN implementation_out_parameters.blo?
-    {: return new ProcedureSignature(dl, bli, blo); :}
+    = type_variable_block_list.dl? LPAREN set_binding_comma_list.bli? RPAREN implementation_out_parameters.blo?
+    {: return new ImplementationSignature(dl, bli, blo); :}
     ;
 
 List implementation_out_parameters
-    = RETURNS LPAREN set_binding_comma_list RPAREN
+    = RETURNS LPAREN set_binding_comma_list.blo RPAREN
+    {: return blo; :}
     ;
 
 Specification specification

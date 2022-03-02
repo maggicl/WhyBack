@@ -1,4 +1,6 @@
 import java.util.Optional;
+import java.util.Collection;
+import java.util.LinkedList;
 
 aspect EntityTable {
 
@@ -16,6 +18,18 @@ aspect EntityTable {
             }
 
             return Optional.empty();
+        }
+
+        public Collection<T> getAll(String name) {
+            final Collection<T> entities = new LinkedList<>();
+
+            for (T entity : this) {
+                if (entity.getDeclarator().getName().equals(name)) {
+                    entities.add(entity);
+                }
+            }
+
+            return entities;
         }
         
     }

@@ -3,9 +3,9 @@ aspect Implementation {
     /**
      * Scope collections.
      */
-    coll LinkedList<Implementation> Program.implementations();
+    coll EntityTable<Implementation> Program.implementations();
 
-    Implementation contributes this to Program.implementations();
+    ImplementationDeclaration contributes each getImplementationList() to Program.implementations();
 
     /**
      * NTA definitions.
@@ -13,11 +13,12 @@ aspect Implementation {
     syn nta List<Implementation> ImplementationDeclaration.getImplementationList();
 
     eq ImplementationDeclaration.getImplementationList() {
-        List<Implementation> implementations = new List<>();
+        final List<Implementation> implementations = new List<>();
 
         for (Body body : getBodyList()) {
-            Implementation implementation = new Implementation();
-            Signature signature = getSignature();
+            final Implementation implementation = new Implementation();
+            final Signature signature = getSignature();
+            implementation.setDeclarator(getDeclarator());
             implementation.setInputVariableList(signature.getInputVariableList());
             implementation.setOutputVariableList(signature.getOutputVariableList());
             implementation.setBody(body);
@@ -26,5 +27,23 @@ aspect Implementation {
 
         return implementations;
     }
+
+    /**
+     * Looking up implementations.
+     */
+    syn lazy Collection<Implementation> Accessor.implementations();
+
+    eq Accessor.implementations() = lookupImplementations(getName());
+
+    /**
+     * Lookup implementation in program.
+     */
+    syn lazy Collection<Implementation> Program.lookupImplementations(String name);
+
+    eq Program.lookupImplementations(String name) = implementations().getAll(name);
+
+    inh lazy Collection<Implementation> Accessor.lookupImplementations(String name);
+
+    eq Program.getChild().lookupImplementations(String name) = lookupImplementations(name);
 
 }

@@ -15,4 +15,11 @@ public class BoogieParserTest {
         parser.parse(scanner);
     }
 
+    @Test
+    public void Parse_GivenArithmeticProgram_DoesNotThrowExceptions() throws Exception {
+        final BoogieParser parser = new BoogieParser();
+        final Scanner scanner = new BoogieLexer(ResourcesUtil.getBoogieReader("Arithmetic"));
+        parser.parse(scanner);
+    }
+
 }

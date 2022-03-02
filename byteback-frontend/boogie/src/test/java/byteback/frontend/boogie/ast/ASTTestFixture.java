@@ -1,5 +1,7 @@
 package byteback.frontend.boogie.ast;
 
+import java.util.Collection;
+
 import beaver.Scanner;
 import byteback.frontend.boogie.ResourcesUtil;
 import byteback.frontend.boogie.parser.BoogieParser;
@@ -30,8 +32,14 @@ public class ASTTestFixture {
         Procedure procedure = program.lookupProcedure(procedureName)
             .orElseThrow(() -> new RuntimeException("No such procedure: " + procedureName));
 
-        System.out.println(procedure);
         return procedure;
+    }
+
+    public Collection<Implementation> getImplementations(final String programName, final String implementationName) {
+        Program program = getProgram(programName);
+        Collection<Implementation> implementations = program.lookupImplementations(implementationName);
+
+        return implementations;
     }
 
 }

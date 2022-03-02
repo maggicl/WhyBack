@@ -23,5 +23,11 @@ public class VariableTest extends ASTTestFixture {
         final Function function = getFunction("Arithmetic", "addition");
         assertTrue(function.variables().size() == 2);
     }
+
+    @Test
+    public void Variables_OnArithmeticSumProcedure_Returns2ElementsTable() {
+        final Procedure procedure = getProcedure("Arithmetic", "sum");
+        assertTrue(procedure.variables().size() == 2);
+    }
     
 }

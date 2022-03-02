@@ -17,12 +17,21 @@ public class ASTTestFixture {
         }
     }
 
-    public Function getFunction(String programName, String functionName) {
+    public Function getFunction(final String programName, final String functionName) {
         Program program = getProgram(programName);
         Function function = program.lookupFunction(functionName)
-            .orElseThrow(() -> new RuntimeException("No such function " + functionName));
+            .orElseThrow(() -> new RuntimeException("No such function: " + functionName));
 
         return function;
+    }
+
+    public Procedure getProcedure(final String programName, final String procedureName) {
+        Program program = getProgram(programName);
+        Procedure procedure = program.lookupProcedure(procedureName)
+            .orElseThrow(() -> new RuntimeException("No such procedure: " + procedureName));
+
+        System.out.println(procedure);
+        return procedure;
     }
 
 }

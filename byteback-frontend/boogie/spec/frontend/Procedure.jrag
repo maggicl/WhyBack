@@ -5,9 +5,9 @@ aspect Procedure {
     /**
      * Scope collections.
      */
-    coll LinkedList<Procedure> Program.procedures();
+    coll EntityTable<Procedure> Program.procedures();
 
-    Procedure contributes this to Program.procedures();
+    ProcedureDeclaration contributes getProcedure() to Program.procedures();
 
     /**
      * NTA definitions.
@@ -17,11 +17,30 @@ aspect Procedure {
     eq ProcedureDeclaration.getProcedure() {
         Procedure procedure = new Procedure();
         Signature signature = getSignature();
+        procedure.setDeclarator(getDeclarator());
         procedure.setInputVariableList(signature.getInputVariableList());
         procedure.setOutputVariableList(signature.getOutputVariableList());
         procedure.setBodyOpt(getBodyOpt());
 
         return procedure;
     }
+
+    /**
+     * Looking up procedures.
+     */
+    syn lazy Optional<Procedure> Accessor.procedure();
+
+    eq Accessor.procedure() = lookupProcedure(getName());
+
+    /**
+     * Lookup procedure in program.
+     */
+    syn lazy Optional<Procedure> Program.lookupProcedure(String name);
+
+    eq Program.lookupProcedure(String name) = procedures().getFirst(name);
+
+    inh lazy Optional<Procedure> Accessor.lookupProcedure(String name);
+
+    eq Program.getChild().lookupProcedure(String name) = lookupProcedure(name);
     
 }

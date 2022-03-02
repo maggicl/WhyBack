@@ -29,5 +29,17 @@ public class VariableTest extends ASTTestFixture {
         final Procedure procedure = getProcedure("Arithmetic", "sum");
         assertTrue(procedure.variables().size() == 2);
     }
+
+    @Test
+    public void Variables_OnArithmeticIdentityProcedure_Returns2ElementsTable() {
+        final Procedure procedure = getProcedure("Unit", "identity");
+        assertTrue(procedure.variables().size() == 2);
+    }
+
+    @Test
+    public void Variables_OnArithmeticIdentityProcedureBody_Returns2ElementsTable() {
+        final Procedure procedure = getProcedure("Unit", "identity");
+        assertTrue(procedure.getBody().variables().size() == 1);
+    }
     
 }

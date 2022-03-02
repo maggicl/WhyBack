@@ -188,7 +188,7 @@ FunctionSignature function_signature
     ;
 
 VariableDeclaration variable_declaration
-    = VAR attribute_list.al bounded_binding_comma_list.bl SEMICOLON
+    = VAR attribute_list.al? bounded_binding_comma_list.bl SEMICOLON
     {: return new VariableDeclaration(al, bl); :}
     ;
 

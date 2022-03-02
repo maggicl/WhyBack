@@ -27,17 +27,29 @@ aspect Variable {
         each getSignature().getVariableList() to SignedEntity.variables()
         for each getImplementationList();
 
+    SignedEntity contributes {} to Program.variables();
+
     coll LinkedList<Variable> Body.variables(); 
 
     VariableDeclaration contributes
         each getVariableList() to Body.variables()
         for body();
 
+    Body contributes {} to SignedEntity.variables();
+
+    Body contributes {} to Program.variables();
+
     coll LinkedList<Variable> QuantifierExpression.variables(); 
 
     Binding contributes
         each getVariableList() to QuantifierExpression.variables()
         for quantifierExpression();
+
+    Quantifier contributes {} to Body.variables();
+
+    Quantifier contributes {} to SignedEntity.variables();
+
+    Quantifier contributes {} to Program.variables();
 
     /**
      * NTA definitions.

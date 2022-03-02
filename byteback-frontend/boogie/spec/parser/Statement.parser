@@ -23,9 +23,12 @@ Body body_block
     ;
 
 Statement statement
-    = unit_statement SEMICOLON
-    | label_statement
-    | group_statement
+    = unit_statement.s SEMICOLON
+    {: return s; :}
+    | label_statement.s
+    {: return s; :}
+    | group_statement.s
+    {: return s; :}
     ;
 
 List statement_list

@@ -202,19 +202,20 @@ ProcedureDeclaration procedure_declaration
     ;
 
 ProcedureDeclaration procedure_definition
-    = procedure_signature.ps SEMICOLON specification_list.sl
+    = procedure_signature.ps SEMICOLON specification_list.sl?
     {: return new ProcedureDeclaration(new List(), null, ps, sl, new Opt()); :}
     | procedure_signature.ps specification_list.sl? body_block.b
     {: return new ProcedureDeclaration(new List(), null, ps, sl, new Opt(b)); :}
     ;
 
 ProcedureSignature procedure_signature
-    = type_variable_block_list.dl LPAREN bounded_binding_comma_list.bli RPAREN procedure_out_parameters.blo?
+    = type_variable_block_list.dl? LPAREN bounded_binding_comma_list.bli? RPAREN procedure_out_parameters.blo?
     {: return new ProcedureSignature(dl, bli, blo); :}
     ;
 
 List procedure_out_parameters
-    = RETURNS LPAREN bounded_binding_comma_list RPAREN
+    = RETURNS LPAREN bounded_binding_comma_list.blo? RPAREN
+    {: return blo; :}
     ;
 
 ImplementationDeclaration implementation_declaration

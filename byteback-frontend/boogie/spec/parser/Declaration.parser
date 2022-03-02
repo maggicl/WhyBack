@@ -170,10 +170,10 @@ FunctionDeclaration function_definition
     ;
 
 FunctionDeclaration function_body
-    = function_prototype.f LBRACE expression.e RBRACE
+    = function_prototype.fd LBRACE expression.e RBRACE
     {:
-       f.setExpression(e);
-       return e;
+       fd.setExpression(e);
+       return fd;
     :}
     ;
 

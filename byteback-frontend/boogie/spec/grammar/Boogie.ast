@@ -12,7 +12,7 @@ Accessor ::= <Name:String>;
 // Binding
 //
 // A binding can be used to declare a variable of a specific type.
-abstract Binding ::= TypeUse /Variable*/;
+abstract Binding ::= TypeAccess /Variable*/;
 
 SetBinding : Binding ::= Declarator*;
 
@@ -22,22 +22,20 @@ BoundedBinding : SetBinding ::= [WhereClause];
 
 WhereClause ::= Expression;
 
-// Type use
-//
-// A type node in this case always corresponds to a type access.
-abstract TypeUse;
+// Type access
+abstract TypeAccess;
 
-BoolType : TypeUse;
+BoolTypeAccess : TypeAccess;
 
-IntegerType : TypeUse;
+IntegerTypeAccess : TypeAccess;
 
-RealType : TypeUse;
+RealTypeAccess : TypeAccess;
 
-BitvectorType : TypeUse ::= <Definition:String>;
+BitvectorTypeAccess : TypeAccess ::= <Definition:String>;
 
-UnknownType : TypeUse ::= Accessor Argument:TypeUse*;
+UnknownTypeAccess : TypeAccess ::= Accessor Argument:TypeAccess*;
 
-MapType : TypeUse ::= Parameter:Declarator* KeyType:TypeUse* ValueType:TypeUse;
+MapTypeAccess : TypeAccess ::= Parameter:Declarator* KeyType:TypeAccess* ValueType:TypeAccess;
 
 // Option
 //
@@ -68,11 +66,11 @@ ProcedureSignature : Signature ::= InputBinding:BoundedBinding* OutputBinding:Bo
 ImplementationSignature : Signature ::= InputBinding:SetBinding* OutputBinding:SetBinding*;
 
 // Type declaration
-abstract TypeDeclaration : Declaration ::= Declarator Parameter:Declarator* /Type/;
+abstract TypeDeclaration : Declaration ::= Declarator Parameter:Declarator* /TypeDefinition/;
 
-TypeConstructor : TypeDeclaration ::= <Finite:Boolean>;
+TypeConstructorDeclaration : TypeDeclaration ::= <Finite:Boolean>;
 
-TypeSynonym : TypeDeclaration ::= Aliased:TypeUse;
+TypeSynonymDeclaration : TypeDeclaration ::= Aliased:TypeAccess;
 
 // Axiom declaration
 AxiomDeclaration : Declaration ::= Expression;

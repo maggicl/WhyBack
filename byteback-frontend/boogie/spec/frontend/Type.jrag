@@ -5,46 +5,47 @@ aspect Type {
     /**
      * Scope collections.
      */
-    coll EntityTable<Type> Program.types();
+    coll EntityTable<TypeDefinition> Program.typeDefinitions();
 
-    TypeDeclaration contributes getType() to Program.types();
+    TypeDeclaration contributes getTypeDefinition() to Program.typeDefinitions();
 
     /**
      * NTA definitions.
      */
-    syn nta Type TypeDeclaration.getType();
+    syn nta TypeDefinition TypeDeclaration.getTypeDefinition();
 
-    eq TypeDeclaration.getType() {
-        final Type type = new Type();
-        type.setDeclarator(getDeclarator());
-        type.setParameterCount(getParameterList().getNumChild());
+    eq TypeDeclaration.getTypeDefinition() {
+        final DefinedType type = new DefinedType();
+        final TypeDefinition typeDefinition = new TypeDefinition();
+        typeDefinition.setDefinedType(type);
+        typeDefinition.setDeclarator(getDeclarator());
 
-        return type;
+        return typeDefinition;
     }
 
-    eq TypeSynonym.getType() {
-        final Type type = super.getType();
-        type.setAliased(getAliased());
+    eq TypeSynonymDeclaration.getTypeDefinition() {
+        final TypeDefinition typeDefinition = super.getTypeDefinition();
+        typeDefinition.setAliased(getAliased());
 
-        return type;
+        return typeDefinition;
     }
 
     /**
      * Looking up types.
      */
-    syn lazy Optional<Type> Accessor.type();
+    syn lazy Optional<TypeDefinition> Accessor.type();
 
-    eq Accessor.type() = lookupType(getName());
+    eq Accessor.type() = lookupTypeDefinition(getName());
 
     /**
      * Lookup type in program.
      */
-    syn lazy Optional<Type> Program.lookupType(String name);
+    syn lazy Optional<TypeDefinition> Program.lookupTypeDefinition(String name);
 
-    eq Program.lookupType(String name) = types().getFirst(name);
+    eq Program.lookupTypeDefinition(String name) = typeDefinitions().getFirst(name);
 
-    inh lazy Optional<Type> Accessor.lookupType(String name);
+    inh lazy Optional<TypeDefinition> Accessor.lookupTypeDefinition(String name);
 
-    eq Program.getChild().lookupType(String name) = lookupType(name);
+    eq Program.getChild().lookupTypeDefinition(String name) = lookupTypeDefinition(name);
 
 }

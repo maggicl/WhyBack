@@ -58,7 +58,7 @@ TypeDeclaration type_definition
     | type_synonym_definition
     ;
 
-TypeConstructor finite_type_constructor_definition
+TypeConstructorDeclaration finite_type_constructor_definition
     = FINITE type_constructor_definition.d
     {:
        d.setFinite(true);
@@ -66,14 +66,14 @@ TypeConstructor finite_type_constructor_definition
     :}
     ;
 
-TypeConstructor type_constructor_definition
+TypeConstructorDeclaration type_constructor_definition
     = declarator.d declarator_list.dl?
-    {: return new TypeConstructor(new List(), d, dl, false); :}
+    {: return new TypeConstructorDeclaration(new List(), d, dl, false); :}
     ;
 
-TypeSynonym type_synonym_definition
+TypeSynonymDeclaration type_synonym_definition
     = declarator.d declarator_list.dl EQUALS type.t
-    {: return new TypeSynonym(new List(), d, dl, t); :}
+    {: return new TypeSynonymDeclaration(new List(), d, dl, t); :}
     ;
 
 ConstantDeclaration constant_declaration

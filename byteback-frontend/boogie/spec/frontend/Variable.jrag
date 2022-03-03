@@ -60,7 +60,7 @@ aspect Variable {
         final List<Variable> variables = new List<>();
 
         if (hasDeclarator()) {
-            variables.add(new Variable(getDeclarator(), getTypeUse()));
+            variables.add(new Variable(getDeclarator(), getTypeAccess()));
         }
 
         return variables;
@@ -70,7 +70,7 @@ aspect Variable {
         final List<Variable> variables = new List<>();
 
         for (Declarator declarator : getDeclaratorList()) {
-            variables.add(new Variable(declarator, getTypeUse()));
+            variables.add(new Variable(declarator, getTypeAccess()));
         }
 
         return variables;

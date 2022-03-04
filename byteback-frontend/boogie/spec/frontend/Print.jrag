@@ -10,10 +10,17 @@ aspect Print {
 
     class PrintUtil {
 
-        static void printList(final StringBuilder builder, final String separator, final List<? extends Printable> printableList) {
-            final Iterator<? extends Printable> iterator = printableList.iterator();
+        static void listPrint(final StringBuilder builder, final String separator, final List<? extends Printable> list) {
+            indentedListPrint(builder, separator, 0, list);
+        }
+
+        static void indentedListPrint(final StringBuilder builder, final String separator, final int level,
+                                 final List<? extends Printable> list) {
+
+            final Iterator<? extends Printable> iterator = list.iterator();
 
             while (iterator.hasNext()) {
+                indent(builder, level);
                 iterator.next().print(builder);
 
                 if (iterator.hasNext()) {
@@ -22,18 +29,29 @@ aspect Print {
             }
         }
 
+        static void indentedAppend(final StringBuilder builder, final int level, final String string) {
+            indent(builder, level);
+            builder.append(string);
+        }
+
+        static void indent(final StringBuilder builder, final int level) {
+            for (int i = 0; i < level; ++i) {
+                builder.append("  ");
+            }
+        }
+
     }
 
     Program implements Printable;
 
     public void Program.print(final StringBuilder builder) {
-        PrintUtil.printList(builder, "\n\n", getDeclarationList());
+        PrintUtil.listPrint(builder, "\n\n", getDeclarationList());
     }
 
     Declaration implements Printable;
 
     public void Declaration.printAttributes(final StringBuilder builder) {
-        PrintUtil.printList(builder, " ", getAttributeList());
+        PrintUtil.listPrint(builder, " ", getAttributeList());
 
         if (getAttributeList().getNumChild() > 0) {
             builder.append(" ");
@@ -43,7 +61,7 @@ aspect Print {
     public void VariableDeclaration.print(final StringBuilder builder) {
         builder.append("var ");
         super.printAttributes(builder);
-        PrintUtil.printList(builder, ", ", getBindingList());
+        PrintUtil.listPrint(builder, ", ", getBindingList());
         builder.append(";");
     }
 
@@ -94,7 +112,8 @@ aspect Print {
         getSignature().print(builder);
 
         if (hasBody()) {
-            // TODO
+            builder.append(" ");
+            getBody().print(builder);
         } else {
             builder.append(";");
         }
@@ -122,14 +141,14 @@ aspect Print {
 
         builder.append(getDeclarator().getName());
         builder.append(" ");
-        PrintUtil.printList(builder, ", ", getParameterList());
+        PrintUtil.listPrint(builder, ", ", getParameterList());
     }
 
     public void TypeSynonymDeclaration.print(final StringBuilder builder) {
         super.print(builder);
         builder.append(getDeclarator().getName());
         builder.append(" ");
-        PrintUtil.printList(builder, ", ", getParameterList());
+        PrintUtil.listPrint(builder, ", ", getParameterList());
         builder.append(" = ");
         getAliased().print(builder);
     }
@@ -138,11 +157,11 @@ aspect Print {
 
     public void Signature.print(final StringBuilder builder) {
         builder.append("(");
-        PrintUtil.printList(builder, ", ", getInputBindingList());
+        PrintUtil.listPrint(builder, ", ", getInputBindingList());
         builder.append(")");
         builder.append(" returns ");
         builder.append("(");
-        PrintUtil.printList(builder, ", ", getOutputBindingList());
+        PrintUtil.listPrint(builder, ", ", getOutputBindingList());
         builder.append(")");
     }
 
@@ -150,7 +169,7 @@ aspect Print {
 
     public void OrderSpecification.print(final StringBuilder builder) {
         builder.append("<: ");
-        PrintUtil.printList(builder, ", ", getParentEdgeList());
+        PrintUtil.listPrint(builder, ", ", getParentEdgeList());
     }
 
     ParentEdge implements Printable;
@@ -166,7 +185,7 @@ aspect Print {
     Binding implements Printable;
 
     public void SetBinding.print(final StringBuilder builder) {
-        PrintUtil.printList(builder, ", ", getDeclaratorList());
+        PrintUtil.listPrint(builder, ", ", getDeclaratorList());
         builder.append(" : ");
         getTypeAccess().print(builder);
     }
@@ -214,15 +233,15 @@ aspect Print {
 
     public void UnknownTypeAccess.print(final StringBuilder builder) {
         getAccessor().print(builder);
-        PrintUtil.printList(builder, " ", getArgumentList());
+        PrintUtil.listPrint(builder, " ", getArgumentList());
     }
 
     public void MapTypeAccess.print(final StringBuilder builder) {
         builder.append("<");
-        PrintUtil.printList(builder, ", ", getParameterList());
+        PrintUtil.listPrint(builder, ", ", getParameterList());
         builder.append(">");
         builder.append("[");
-        PrintUtil.printList(builder, ", ", getKeyTypeList());
+        PrintUtil.listPrint(builder, ", ", getKeyTypeList());
         builder.append("]");
         getValueType().print(builder);
     }
@@ -231,7 +250,7 @@ aspect Print {
 
     public void Trigger.print(final StringBuilder builder) {
         builder.append("{");
-        PrintUtil.printList(builder, ", ", getExpressionList());
+        PrintUtil.listPrint(builder, ", ", getExpressionList());
         builder.append("}");
     }
 
@@ -240,7 +259,7 @@ aspect Print {
         builder.append(":");
         builder.append(getName());
         builder.append(" ");
-        PrintUtil.printList(builder, ", ", getArgumentList());
+        PrintUtil.listPrint(builder, ", ", getArgumentList());
         builder.append("}");
     }
 
@@ -368,7 +387,7 @@ aspect Print {
     public void MapUpdateOperation.print(final StringBuilder builder) {
         getOperand().print(builder);
         builder.append("[");
-        PrintUtil.printList(builder, ", ", getSelect().getExpressionList());
+        PrintUtil.listPrint(builder, ", ", getSelect().getExpressionList());
         builder.append(" := ");
         getUpdate().print(builder);
         builder.append("]");
@@ -381,7 +400,7 @@ aspect Print {
     public void FunctionReference.print(final StringBuilder builder) {
         super.print(builder);
         builder.append("(");
-        PrintUtil.printList(builder, ", ", getArgumentList());
+        PrintUtil.listPrint(builder, ", ", getArgumentList());
         builder.append(")");
     }
 
@@ -396,12 +415,12 @@ aspect Print {
         getQuantifier().print(builder);
         builder.append(" ");
         builder.append("<");
-        PrintUtil.printList(builder, ", ", getParameterList());
+        PrintUtil.listPrint(builder, ", ", getParameterList());
         builder.append(">");
         builder.append(" ");
-        PrintUtil.printList(builder, ", ", getBindingList());
+        PrintUtil.listPrint(builder, ", ", getBindingList());
         builder.append(" :: ");
-        PrintUtil.printList(builder, ", ", getOptionList());
+        PrintUtil.listPrint(builder, ", ", getOptionList());
         builder.append(" ");
         getOperand().print(builder);
         builder.append(")");
@@ -420,22 +439,184 @@ aspect Print {
     Statement implements Printable;
 
     public void Statement.print(final StringBuilder builder) {
-        System.out.println("?;");
+        builder.append(this);
     }
 
-    public void Statement.indentPrint(final StringBuilder builder, final int level) {
-        for (int i = 0; i < level; ++i) {
-            builder.append("  ");
+    // TODO: Move implementation in a static method.
+    public void Statement.indentedPrint(final StringBuilder builder, final int level) {
+        PrintUtil.indent(builder, level);
+        print(builder);
+    }
+
+    public void AssertStatement.print(final StringBuilder builder) {
+        builder.append("assert ");
+        getExpression().print(builder);
+        builder.append(";");
+    }
+
+    public void AssumeStatement.print(final StringBuilder builder) {
+        builder.append("assume ");
+        getExpression().print(builder);
+        builder.append(";");
+    }
+
+    public void HavocStatement.print(final StringBuilder builder) {
+        builder.append("havoc ");
+        PrintUtil.listPrint(builder, ", ", getReferenceList());
+        builder.append(";");
+    }
+
+    public void AssignmentStatement.print(final StringBuilder builder) {
+        PrintUtil.listPrint(builder, ", ", getTargetList());
+        builder.append(" := ");
+        PrintUtil.listPrint(builder, ", ", getSourceList());
+        builder.append(";");
+    }
+
+    public void CallStatement.print(final StringBuilder builder) {
+        builder.append("call");
+    }
+
+    public void TargetedCallStatement.print(final StringBuilder builder) {
+        super.print(builder);
+        builder.append(" ");
+
+        if (getTargetList().getNumChild() > 0) {
+            PrintUtil.listPrint(builder, ", ", getTargetList());
+            builder.append(" := ");
         }
 
+        getAccessor().print(builder);
+        builder.append("(");
+        PrintUtil.listPrint(builder, ", ", getArgumentList());
+        builder.append(")");
+        builder.append(";");
+    }
+
+    public void UniversalCallStatement.print(final StringBuilder builder) {
+        super.print(builder);
+        builder.append(" forall ");
+        getAccessor().print(builder);
+        builder.append("(");
+        PrintUtil.listPrint(builder, ", ", getArgumentList());
+        builder.append(")");
+        builder.append(";");
+    }
+
+    public void BlockStatement.indentedPrint(final StringBuilder builder, final int level) {
+        final Iterator<Statement> statementIterator = getStatementList().iterator();
+        builder.append("{\n");
+
+        while (statementIterator.hasNext()) {
+            statementIterator.next().indentedPrint(builder, level + 1);
+            builder.append("\n");
+        }
+        
+        PrintUtil.indentedAppend(builder, level, "}");
+    }
+
+    public void BlockStatement.print(final StringBuilder builder) {
+        indentedPrint(builder, 0);
+    }
+
+    public void IfStatement.indentedPrint(final StringBuilder builder, final int level) {
+        PrintUtil.indentedAppend(builder, level, "if (");
+        getCondition().print(builder);
+        builder.append(") ");
+        getThen().indentedPrint(builder, level);
+
+        if (hasElse()) {
+            builder.append(" else ");
+            getElse().indentedPrint(builder, level);
+        }
+    }
+
+    public void IfStatement.print(final StringBuilder builder) {
+        indentedPrint(builder, 0);
+    }
+
+    public void WhileStatement.indentedPrint(final StringBuilder builder, final int level) {
+        PrintUtil.indentedAppend(builder, level, "while (");
+        getCondition().print(builder);
+        builder.append(") ");
+        getBlock().indentedPrint(builder, level);
+    }
+
+    public void WhileStatement.print(final StringBuilder builder, final int level) {
+        indentedPrint(builder, 0);
+    }
+
+    public void BreakStatement.print(final StringBuilder builder) {
+        builder.append("break;");
+    }
+
+    public void ReturnStatement.print(final StringBuilder builder) {
+        builder.append("return;");
+    }
+
+    public void GotoStatement.print(final StringBuilder builder) {
+        builder.append("goto ");
+        getLabel().print(builder);
+        builder.append(";");
+    }
+
+    public void LabelStatement.indentedPrint(final StringBuilder builder, final int level) {
+        // Skip indentation.
         print(builder);
+    }
+
+    public void LabelStatement.print(final StringBuilder builder) {
+        getLabel().print(builder);
+        builder.append(":");
+    }
+
+    Label implements Printable;
+
+    public void Label.print(final StringBuilder builder) {
+        builder.append(getTarget());
+    }
+
+    Assignee implements Printable;
+
+    public void Assignee.print(final StringBuilder builder) {
+        getReference().print(builder);
+    }
+
+    public void MapAssignee.print(final StringBuilder builder) {
+        super.print(builder);
+        getSelect().print(builder);
+    }
+
+    Body implements Printable;
+
+    public void Body.print(final StringBuilder builder) {
+        final Iterator<VariableDeclaration> localIterator = getLocalVariableList().iterator();
+        final Iterator<Statement> statementIterator = getStatementList().iterator();
+
+        builder.append("{\n");
+
+        while (localIterator.hasNext()) {
+            builder.append("  ");
+            localIterator.next().print(builder);
+            builder.append("\n");
+        }
+
+        while (statementIterator.hasNext()) {
+            statementIterator.next().indentedPrint(builder, 1);
+
+            if (statementIterator.hasNext()) {
+                builder.append("\n");
+            }
+        }
+        
+        builder.append("\n}");
     }
 
     MapSelect implements Printable;
 
     public void MapSelect.print(final StringBuilder builder) {
         builder.append("[");
-        PrintUtil.printList(builder, ", ", getExpressionList());
+        PrintUtil.listPrint(builder, ", ", getExpressionList());
         builder.append("]");
     }
 

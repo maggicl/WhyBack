@@ -205,7 +205,7 @@ AssignmentStatement : Statement ::= Target:Assignee* Source:Expression*;
 
 Assignee ::= Reference:ValueReference;
 
-MapAssignee : Assignee ::= MapSelect;
+MapAssignee : Assignee ::= Select:MapSelect;
 
 abstract CallStatement : Statement ::= Accessor;
 
@@ -215,7 +215,7 @@ UniversalCallStatement : CallStatement ::= Argument:Meta*;
 
 IfStatement : Statement ::= Condition:Meta Then:BlockStatement [Else:BlockStatement];
 
-WhileStatement : Statement ::= Condition:Meta BlockStatement Invariant:LoopInvariant*;
+WhileStatement : Statement ::= Condition:Meta Block:BlockStatement Invariant:LoopInvariant*;
 
 BreakStatement : Statement ::= [Target:Label];
 

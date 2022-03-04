@@ -77,7 +77,14 @@ aspect Print {
         super.printAttributes(builder);
         builder.append(getDeclarator().getName());
         getSignature().print(builder);
-        // TODO
+
+        if (hasExpression()) {
+            builder.append(" { ");
+            getExpression().print(builder);
+            builder.append(" }");
+        } else {
+            builder.append(";");
+        }
     }
 
     public void ProcedureDeclaration.print(final StringBuilder builder) {
@@ -85,7 +92,12 @@ aspect Print {
         super.printAttributes(builder);
         builder.append(getDeclarator().getName());
         getSignature().print(builder);
-        // TODO
+
+        if (hasBody()) {
+            // TODO
+        } else {
+            builder.append(";");
+        }
     }
 
     public void ImplementationDeclaration.print(final StringBuilder builder) {
@@ -99,17 +111,27 @@ aspect Print {
     public void TypeDeclaration.print(final StringBuilder builder) {
         builder.append("type ");
         super.printAttributes(builder);
-        builder.append(getDeclarator().getName());
     }
 
     public void TypeConstructorDeclaration.print(final StringBuilder builder) {
         super.print(builder);
-        // TODO
+
+        if (getFinite()) {
+            builder.append("finite ");
+        }
+
+        builder.append(getDeclarator().getName());
+        builder.append(" ");
+        PrintUtil.printList(builder, ", ", getParameterList());
     }
 
     public void TypeSynonymDeclaration.print(final StringBuilder builder) {
         super.print(builder);
-        // TODO
+        builder.append(getDeclarator().getName());
+        builder.append(" ");
+        PrintUtil.printList(builder, ", ", getParameterList());
+        builder.append(" = ");
+        getAliased().print(builder);
     }
 
     Signature implements Printable;
@@ -393,6 +415,20 @@ aspect Print {
 
     public void ExistentialQuantifier.print(final StringBuilder builder) {
         builder.append("exists");
+    }
+
+    Statement implements Printable;
+
+    public void Statement.print(final StringBuilder builder) {
+        System.out.println("?;");
+    }
+
+    public void Statement.indentPrint(final StringBuilder builder, final int level) {
+        for (int i = 0; i < level; ++i) {
+            builder.append("  ");
+        }
+
+        print(builder);
     }
 
     MapSelect implements Printable;

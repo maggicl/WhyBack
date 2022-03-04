@@ -4,7 +4,7 @@ const unique unit : Unit;
 
 axiom unit == unit;
 
-function identity<T>(arg: T) returns (T);
+function identity<T>(arg: T) returns (T) { arg }
 
 procedure nothing<T>(arg: T) {}
 

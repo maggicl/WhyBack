@@ -150,7 +150,7 @@ List parent_edge_comma_list
     ;
 
 AxiomDeclaration axiom_declaration
-    = AXIOM attribute_list.al expression.e
+    = AXIOM attribute_list.al? expression.e SEMICOLON
     {: return new AxiomDeclaration(al, e); :}
     ;
 

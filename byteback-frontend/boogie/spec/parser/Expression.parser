@@ -4,7 +4,7 @@ Meta meta
     ;
 
 Star star
-    = STAR
+    = TIMES
     {: return new Star(); :}
     ;
 

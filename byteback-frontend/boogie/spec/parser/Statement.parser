@@ -49,9 +49,12 @@ Label label
     ;
 
 Statement group_statement
-    = block_statement
-    | if_statement
-    | while_statement
+    = block_statement.s
+    {: return s; :}
+    | if_statement.s
+    {: return s; :}
+    | while_statement.s
+    {: return s; :}
     ;
 
 WhileStatement while_statement
@@ -67,8 +70,10 @@ List loop_invariant_list
     ;
 
 LoopInvariant loop_invariant
-    = standard_loop_invariant
-    | free_loop_invariant
+    = standard_loop_invariant.c
+    {: return c; :}
+    | free_loop_invariant.c
+    {: return c; :}
     ;
 
 LoopInvariant free_loop_invariant
@@ -90,12 +95,15 @@ IfStatement if_statement
     ;
 
 BlockStatement else_block
-    = ELSE block_statement
-    | ELSE if_statement
+    = ELSE block_statement.s
+    {: return s; :}
+    | ELSE if_statement.s
+    {: return s; :}
     ;
 
 BlockStatement block_statement
-    = LBRACE statement_list RBRACE
+    = LBRACE statement_list.sl RBRACE
+    {: return new BlockStatement(sl); :}
     ;
 
 Statement unit_statement

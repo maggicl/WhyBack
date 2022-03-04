@@ -1,0 +1,221 @@
+import java.util.Iterator;
+
+aspect Print {
+
+    interface Printable {
+
+        void print(StringBuilder builder);
+
+    }
+
+    class PrintUtil {
+
+        static void printList(final StringBuilder builder, final String separator, final List<? extends Printable> printableList) {
+            final Iterator<? extends Printable> iterator = printableList.iterator();
+
+            while (iterator.hasNext()) {
+                iterator.next().print(builder);
+
+                if (iterator.hasNext()) {
+                    builder.append(separator);
+                }
+            }
+        }
+
+    }
+
+    Program implements Printable;
+
+    public void Program.print(final StringBuilder builder) {
+        PrintUtil.printList(builder, "\n\n", getDeclarationList());
+    }
+
+    Declaration implements Printable;
+
+    public void Declaration.printAttributes(final StringBuilder builder) {
+        PrintUtil.printList(builder, " ", getAttributeList());
+
+        if (getAttributeList().getNumChild() > 0) {
+            builder.append(" ");
+        }
+    }
+
+    public void VariableDeclaration.print(final StringBuilder builder) {
+        builder.append("var ");
+        super.printAttributes(builder);
+        PrintUtil.printList(builder, ", ", getBindingList());
+        builder.append(";");
+    }
+
+    public void ConstantDeclaration.print(final StringBuilder builder) {
+        builder.append("const ");
+        super.printAttributes(builder);
+
+        if (getUnique()) {
+            builder.append("unique ");
+        }
+        
+        getBinding().print(builder);
+
+        if (hasOrderSpecification()) {
+            builder.append(" ");
+            getOrderSpecification().print(builder);
+        }
+
+        builder.append(";");
+    }
+
+    public void AxiomDeclaration.print(final StringBuilder builder) {
+        builder.append("axiom ");
+        super.printAttributes(builder);
+        getExpression().print(builder);
+    }
+
+    public void FunctionDeclaration.print(final StringBuilder builder) {
+        builder.append("function ");
+        super.printAttributes(builder);
+        builder.append(getDeclarator().getName());
+        // TODO
+    }
+
+    public void ProcedureDeclaration.print(final StringBuilder builder) {
+        builder.append("procedure ");
+        super.printAttributes(builder);
+        builder.append(getDeclarator().getName());
+        // TODO
+    }
+
+    public void ImplementationDeclaration.print(final StringBuilder builder) {
+        builder.append("implementation ");
+        super.printAttributes(builder);
+        builder.append(getDeclarator().getName());
+        // TODO
+    }
+
+    public void TypeDeclaration.print(final StringBuilder builder) {
+        builder.append("type ");
+        super.printAttributes(builder);
+        builder.append(getDeclarator().getName());
+    }
+
+    public void TypeConstructorDeclaration.print(final StringBuilder builder) {
+        super.print(builder);
+        // TODO
+    }
+
+    public void TypeSynonymDeclaration.print(final StringBuilder builder) {
+        super.print(builder);
+        // TODO
+    }
+
+    OrderSpecification implements Printable;
+
+    public void OrderSpecification.print(final StringBuilder builder) {
+        builder.append("<: ");
+        PrintUtil.printList(builder, ", ", getParentEdgeList());
+    }
+
+    ParentEdge implements Printable;
+
+    public void ParentEdge.print(final StringBuilder builder) {
+        if (getUnique()) {
+            builder.append("unique ");
+        }
+
+        getParentConstant().print(builder);
+    }
+
+    Binding implements Printable;
+
+    public void SetBinding.print(final StringBuilder builder) {
+        PrintUtil.printList(builder, ", ", getDeclaratorList());
+        builder.append(" : ");
+        getTypeAccess().print(builder);
+    }
+
+    public void OptionalBinding.print(final StringBuilder builder) {
+        if (hasDeclarator()) {
+            getDeclarator().print(builder);
+        }
+
+        builder.append(" : ");
+        getTypeAccess().print(builder);
+    }
+
+    public void BoundedBinding.print(final StringBuilder builder) {
+        super.print(builder);
+
+        if (hasWhereClause()) {
+            getWhereClause().print(builder);
+        }
+    }
+
+    WhereClause implements Printable;
+
+    public void WhereClause.print(final StringBuilder builder) {
+        getExpression().print(builder);
+    }
+
+    TypeAccess implements Printable;
+
+    public void BoolTypeAccess.print(final StringBuilder builder) {
+        builder.append("bool");
+    }
+
+    public void IntegerTypeAccess.print(final StringBuilder builder) {
+        builder.append("int");
+    }
+
+    public void RealTypeAccess.print(final StringBuilder builder) {
+        builder.append("real");
+    }
+
+    public void BitvectorTypeAccess.print(final StringBuilder builder) {
+        builder.append(getDefinition());
+    }
+
+    public void UnknownTypeAccess.print(final StringBuilder builder) {
+        getAccessor().print(builder);
+        PrintUtil.printList(builder, " ", getArgumentList());
+    }
+
+    public void MapTypeAccess.print(final StringBuilder builder) {
+        builder.append("<");
+        PrintUtil.printList(builder, ", ", getParameterList());
+        builder.append(">");
+        builder.append("[");
+        PrintUtil.printList(builder, ", ", getKeyTypeList());
+        builder.append("]");
+        getValueType().print(builder);
+    }
+
+    Attribute implements Printable;
+
+    public void Attribute.print(final StringBuilder builder) {
+        builder.append("{");
+        builder.append(":");
+        builder.append(getName());
+        builder.append(" ");
+        PrintUtil.printList(builder, ", ", getArgumentList());
+        builder.append("}");
+    }
+
+    Expression implements Printable;
+
+    public void Expression.print(final StringBuilder builder) {
+        // TODO
+    }
+
+    Declarator implements Printable;
+
+    public void Declarator.print(final StringBuilder builder) {
+        builder.append(getName());
+    }
+
+    Accessor implements Printable;
+
+    public void Accessor.print(final StringBuilder builder) {
+        builder.append(getName());
+    }
+
+}

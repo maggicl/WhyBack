@@ -205,7 +205,13 @@ aspect Print {
         getValueType().print(builder);
     }
 
-    Attribute implements Printable;
+    Option implements Printable;
+
+    public void Trigger.print(final StringBuilder builder) {
+        builder.append("{");
+        PrintUtil.printList(builder, ", ", getExpressionList());
+        builder.append("}");
+    }
 
     public void Attribute.print(final StringBuilder builder) {
         builder.append("{");
@@ -226,17 +232,6 @@ aspect Print {
 
     public void Literal.print(final StringBuilder builder) {
         builder.append(getValue());
-    }
-
-    public void SymbolicReference.print(final StringBuilder builder) {
-        getAccessor().print(builder);
-    }
-
-    public void FunctionReference.print(final StringBuilder builder) {
-        super.print(builder);
-        builder.append("(");
-        PrintUtil.printList(builder, ", ", getArgumentList());
-        builder.append(")");
     }
 
     public void BinaryExpression.print(final StringBuilder builder) {
@@ -355,6 +350,49 @@ aspect Print {
         builder.append(" := ");
         getUpdate().print(builder);
         builder.append("]");
+    }
+
+    public void SymbolicReference.print(final StringBuilder builder) {
+        getAccessor().print(builder);
+    }
+
+    public void FunctionReference.print(final StringBuilder builder) {
+        super.print(builder);
+        builder.append("(");
+        PrintUtil.printList(builder, ", ", getArgumentList());
+        builder.append(")");
+    }
+
+    public void OldReference.print(final StringBuilder builder) {
+        builder.append("old(");
+        getArgument().print(builder);
+        builder.append(")");
+    }
+
+    public void QuantifierExpression.print(final StringBuilder builder) {
+        builder.append("(");
+        getQuantifier().print(builder);
+        builder.append(" ");
+        builder.append("<");
+        PrintUtil.printList(builder, ", ", getParameterList());
+        builder.append(">");
+        builder.append(" ");
+        PrintUtil.printList(builder, ", ", getBindingList());
+        builder.append(" :: ");
+        PrintUtil.printList(builder, ", ", getOptionList());
+        builder.append(" ");
+        getOperand().print(builder);
+        builder.append(")");
+    }
+
+    Quantifier implements Printable;
+
+    public void UniversalQuantifier.print(final StringBuilder builder) {
+        builder.append("forall");
+    }
+
+    public void ExistentialQuantifier.print(final StringBuilder builder) {
+        builder.append("exists");
     }
 
     MapSelect implements Printable;

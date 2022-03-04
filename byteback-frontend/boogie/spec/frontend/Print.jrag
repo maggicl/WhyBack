@@ -69,6 +69,7 @@ aspect Print {
         builder.append("axiom ");
         super.printAttributes(builder);
         getExpression().print(builder);
+        builder.append(";");
     }
 
     public void FunctionDeclaration.print(final StringBuilder builder) {

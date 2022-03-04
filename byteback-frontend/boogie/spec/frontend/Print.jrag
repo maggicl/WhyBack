@@ -76,6 +76,7 @@ aspect Print {
         builder.append("function ");
         super.printAttributes(builder);
         builder.append(getDeclarator().getName());
+        getSignature().print(builder);
         // TODO
     }
 
@@ -83,6 +84,7 @@ aspect Print {
         builder.append("procedure ");
         super.printAttributes(builder);
         builder.append(getDeclarator().getName());
+        getSignature().print(builder);
         // TODO
     }
 
@@ -90,6 +92,7 @@ aspect Print {
         builder.append("implementation ");
         super.printAttributes(builder);
         builder.append(getDeclarator().getName());
+        getSignature().print(builder);
         // TODO
     }
 
@@ -107,6 +110,18 @@ aspect Print {
     public void TypeSynonymDeclaration.print(final StringBuilder builder) {
         super.print(builder);
         // TODO
+    }
+
+    Signature implements Printable;
+
+    public void Signature.print(final StringBuilder builder) {
+        builder.append("(");
+        PrintUtil.printList(builder, ", ", getInputBindingList());
+        builder.append(")");
+        builder.append(" returns ");
+        builder.append("(");
+        PrintUtil.printList(builder, ", ", getOutputBindingList());
+        builder.append(")");
     }
 
     OrderSpecification implements Printable;
@@ -137,9 +152,9 @@ aspect Print {
     public void OptionalBinding.print(final StringBuilder builder) {
         if (hasDeclarator()) {
             getDeclarator().print(builder);
+            builder.append(" : ");
         }
 
-        builder.append(" : ");
         getTypeAccess().print(builder);
     }
 

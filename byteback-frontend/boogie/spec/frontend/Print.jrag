@@ -216,10 +216,113 @@ aspect Print {
         builder.append("}");
     }
 
-    Expression implements Printable;
+    Meta implements Printable;
 
-    public void Expression.print(final StringBuilder builder) {
-        // TODO
+    public void Star.print(final StringBuilder builder) {
+        builder.append("*");
+    }
+
+    public void Expression.print(final StringBuilder builder) {}
+
+    public void Literal.print(final StringBuilder builder) {
+        builder.append(getValue());
+    }
+
+    public void SymbolicReference.print(final StringBuilder builder) {
+        getAccessor().print(builder);
+    }
+
+    public void FunctionReference.print(final StringBuilder builder) {
+        super.print(builder);
+        builder.append("(");
+        PrintUtil.printList(builder, ", ", getArgumentList());
+        builder.append(")");
+    }
+
+    public void BinaryExpression.print(final StringBuilder builder) {
+        printLeftOperand(builder);
+        builder.append(" ");
+        printOperator(builder);
+        builder.append(" ");
+        printRightOperand(builder);
+    }
+
+    public void BinaryExpression.printLeftOperand(final StringBuilder builder) {
+        getLeftOperand().print(builder);
+    }
+
+    public void BinaryExpression.printRightOperand(final StringBuilder builder) {
+        getRightOperand().print(builder);
+    }
+
+    public abstract void BinaryExpression.printOperator(final StringBuilder builder);
+
+    public void EquivalenceOperation.printOperator(final StringBuilder builder) {
+        builder.append("<==>");
+    }
+
+    public void ImplicationOperation.printOperator(final StringBuilder builder) {
+        builder.append("==>");
+    }
+
+    public void AndOperation.printOperator(final StringBuilder builder) {
+        builder.append("&&");
+    }
+
+    public void OrOperation.printOperator(final StringBuilder builder) {
+        builder.append("||");
+    }
+
+    public void EqualsOperation.printOperator(final StringBuilder builder) {
+        builder.append("==");
+    }
+
+    public void NotEqualsOperation.printOperator(final StringBuilder builder) {
+        builder.append("!=");
+    }
+
+    public void LessThanOperation.printOperator(final StringBuilder builder) {
+        builder.append("<");
+    }
+
+    public void GreaterThanOperation.printOperator(final StringBuilder builder) {
+        builder.append(">");
+    }
+
+    public void GreaterThanEqualsOperation.printOperator(final StringBuilder builder) {
+        builder.append(">=");
+    }
+
+    public void LessThanEqualsOperation.printOperator(final StringBuilder builder) {
+        builder.append("<=");
+    }
+
+    public void PartialOrderOperation.printOperator(final StringBuilder builder) {
+        builder.append("<:");
+    }
+
+    public void AdditionOperation.printOperator(final StringBuilder builder) {
+        builder.append("+");
+    }
+
+    public void SubtractionOperation.printOperator(final StringBuilder builder) {
+        builder.append("-");
+    }
+
+    public void MultiplicationOperation.printOperator(final StringBuilder builder) {
+        builder.append("*");
+    }
+
+    public void DivisionOperation.printOperator(final StringBuilder builder) {
+        builder.append("/");
+    }
+
+    public void ModuloOperation.printOperator(final StringBuilder builder) {
+        builder.append("%");
+    }
+
+    public void ConcatenationOperation.printOperator(final StringBuilder builder) {
+        builder.append("++");
     }
 
     Declarator implements Printable;

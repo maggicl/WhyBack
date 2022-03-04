@@ -2,6 +2,8 @@ type Unit;
 
 const unique unit : Unit;
 
+axiom unit == unit;
+
 function identity<T>(arg: T) returns (T);
 
 procedure nothing<T>(arg: T) {}

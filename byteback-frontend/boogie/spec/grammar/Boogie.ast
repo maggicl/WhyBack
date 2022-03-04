@@ -158,7 +158,7 @@ MapRangedAccessOperation : MapOperation ::= <RangeStart:NumberLiteral> <RangeEnd
 
 MapUpdateOperation : MapAccessOperation ::= Update:Expression;
 
-MapSelect ::= Expressions:Expression*;
+MapSelect ::= Expression*;
 
 // Symbolic reference
 abstract SymbolicReference : Expression ::= Accessor;

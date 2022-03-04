@@ -325,6 +325,46 @@ aspect Print {
         builder.append("++");
     }
 
+    public void NegationOperation.print(final StringBuilder builder) {
+        builder.append("!");
+        getOperand().print(builder);
+    }
+
+    public void MinusOperation.print(final StringBuilder builder) {
+        builder.append("-");
+        getOperand().print(builder);
+    }
+
+    public void MapAccessOperation.print(final StringBuilder builder) {
+        getOperand().print(builder);
+        getSelect().print(builder);
+    }
+
+    public void MapRangedAccessOperation.print(final StringBuilder builder) {
+        getOperand().print(builder);
+        builder.append("[");
+        builder.append(getRangeStart());
+        builder.append(getRangeEnd());
+        builder.append("]");
+    }
+
+    public void MapUpdateOperation.print(final StringBuilder builder) {
+        getOperand().print(builder);
+        builder.append("[");
+        PrintUtil.printList(builder, ", ", getSelect().getExpressionList());
+        builder.append(" := ");
+        getUpdate().print(builder);
+        builder.append("]");
+    }
+
+    MapSelect implements Printable;
+
+    public void MapSelect.print(final StringBuilder builder) {
+        builder.append("[");
+        PrintUtil.printList(builder, ", ", getExpressionList());
+        builder.append("]");
+    }
+
     Declarator implements Printable;
 
     public void Declarator.print(final StringBuilder builder) {

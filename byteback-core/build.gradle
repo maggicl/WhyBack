@@ -17,15 +17,11 @@ application {
 
 def copyResources = tasks.register("copyResources") {
     project(':byteback-dummy').getSubprojects().forEach {
-        println "----------------"
-        println it
-        println "----------------"
         def jar = it.jar
+        def destination = "${project.getProjectDir()}/src/integration/resources/compiled"
         copy {
             from jar
-            into "${project.getProjectDir()}/src/integration/resources/compiled"
+            into destination
         }
     }
 }
-
-integration.dependsOn(copyResources);

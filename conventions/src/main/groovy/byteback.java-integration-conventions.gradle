@@ -9,9 +9,6 @@ sourceSets {
             runtimeClasspath += main.output + test.output
             srcDir file('src/integration/java')
         }
-        resources {
-            srcDir file('src/integration/resources')
-        }
     }
 }
 

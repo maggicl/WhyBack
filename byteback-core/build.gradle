@@ -25,3 +25,5 @@ def copyResources = tasks.register("copyResources") {
         }
     }
 }
+
+integration.dependsOn(copyResources)

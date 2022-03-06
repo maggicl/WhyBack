@@ -22,5 +22,6 @@ def copyResources = tasks.register("copyResources", Copy) {
     }
     from jars
     into "src/integration/resources/compiled/"
-    integration.dependsOn(copyResources)
 }
+
+integration.dependsOn(copyResources)

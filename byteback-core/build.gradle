@@ -15,15 +15,12 @@ application {
     mainClass = 'byteback.core.Main'
 }
 
-def copyResources = tasks.register("copyResources") {
-    project(':byteback-dummy').getSubprojects().forEach {
-        def jar = it.jar
-        def destination = "${project.getProjectDir()}/src/integration/resources/compiled"
-        copy {
-            from jar
-            into destination
-        }
+def copyResources = tasks.register("copyResources", Copy) {
+    def jars = []
+    project(":byteback-dummy").subprojects.each { dummy ->
+        jars += dummy.jar
     }
+    from jars
+    into "src/integration/resources/compiled/"
+    integration.dependsOn(copyResources)
 }
-
-integration.dependsOn(copyResources)

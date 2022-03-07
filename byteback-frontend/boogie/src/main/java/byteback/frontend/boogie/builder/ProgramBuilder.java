@@ -1,10 +1,10 @@
 package byteback.frontend.boogie.builder;
 
-import byteback.frontend.boogie.ast.Program;
+import byteback.frontend.boogie.ast.*;
 
 public class ProgramBuilder {
 
-    final Program program;
+    private final Program program;
 
     public ProgramBuilder() {
         this.program = new Program();

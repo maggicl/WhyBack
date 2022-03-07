@@ -291,11 +291,13 @@ aspect Print {
     }
 
     public void BinaryExpression.print(final StringBuilder builder) {
+        builder.append("(");
         printLeftOperand(builder);
         builder.append(" ");
         printOperator(builder);
         builder.append(" ");
         printRightOperand(builder);
+        builder.append(")");
     }
 
     public void BinaryExpression.printLeftOperand(final StringBuilder builder) {

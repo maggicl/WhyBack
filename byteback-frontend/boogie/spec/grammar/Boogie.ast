@@ -35,7 +35,7 @@ BitvectorTypeAccess : TypeAccess ::= <Definition:String>;
 
 UnknownTypeAccess : TypeAccess ::= Accessor Argument:TypeAccess*;
 
-MapTypeAccess : TypeAccess ::= Parameter:Declarator* KeyType:TypeAccess* ValueType:TypeAccess;
+MapTypeAccess : TypeAccess ::= TypeParameter* KeyType:TypeAccess* ValueType:TypeAccess;
 
 // Option
 //
@@ -57,7 +57,7 @@ abstract Declaration ::= Attribute*;
 // Signature
 //
 // Signature nodes for functions, procedures and implementations.
-abstract Signature ::= Parameter:Declarator*;
+abstract Signature ::= TypeParameter*;
 
 FunctionSignature : Signature ::= InputBinding:OptionalBinding* OutputBinding:OptionalBinding;
 
@@ -66,11 +66,13 @@ ProcedureSignature : Signature ::= InputBinding:BoundedBinding* OutputBinding:Bo
 ImplementationSignature : Signature ::= InputBinding:SetBinding* OutputBinding:SetBinding*;
 
 // Type declaration
-abstract TypeDeclaration : Declaration ::= Declarator Parameter:Declarator* /TypeDefinition/;
+abstract TypeDeclaration : Declaration ::= Declarator TypeParameter* /TypeDefinition/;
 
 TypeConstructorDeclaration : TypeDeclaration ::= <Finite:Boolean>;
 
 TypeSynonymDeclaration : TypeDeclaration ::= Aliased:TypeAccess;
+
+TypeParameter ::= Declarator;
 
 // Axiom declaration
 AxiomDeclaration : Declaration ::= Expression;
@@ -171,7 +173,7 @@ FunctionReference : SymbolicReference ::= Argument:Expression*;
 OldReference : Expression ::= Argument:Expression;
 
 // Quantifier expression
-QuantifierExpression : UnaryExpression ::= Quantifier Parameter:Declarator* Binding:SetBinding* Option*;
+QuantifierExpression : UnaryExpression ::= Quantifier TypeParameter* Binding:SetBinding* Option*;
 
 abstract Quantifier;
 

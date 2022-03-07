@@ -1,6 +1,8 @@
 Option option
-    = attribute
-    | trigger
+    = attribute.a
+    {: return a; :}
+    | trigger.r
+    {: return r; :}
     ;
 
 List option_list
@@ -28,13 +30,20 @@ List attribute_list
     ;
 
 Declaration declaration
-    = type_declaration
-    | constant_declaration
-    | axiom_declaration
-    | function_declaration
-    | variable_declaration
-    | procedure_declaration
-    | implementation_declaration
+    = type_declaration.d
+    {: return d; :}
+    | constant_declaration.d
+    {: return d; :}
+    | axiom_declaration.d
+    {: return d; :}
+    | function_declaration.d
+    {: return d; :}
+    | variable_declaration.d
+    {: return d; :}
+    | procedure_declaration.d
+    {: return d; :}
+    | implementation_declaration.d
+    {: return d; :}
     ;
 
 List declaration_list
@@ -53,9 +62,12 @@ TypeDeclaration type_declaration
     ;
 
 TypeDeclaration type_definition
-    = type_constructor_definition
-    | finite_type_constructor_definition
-    | type_synonym_definition
+    = type_constructor_definition.td
+    {: return td; :}
+    | finite_type_constructor_definition.td
+    {: return td; :}
+    | type_synonym_definition.td
+    {: return td; :}
     ;
 
 TypeConstructorDeclaration finite_type_constructor_definition
@@ -67,13 +79,13 @@ TypeConstructorDeclaration finite_type_constructor_definition
     ;
 
 TypeConstructorDeclaration type_constructor_definition
-    = declarator.d declarator_list.dl?
-    {: return new TypeConstructorDeclaration(new List(), d, dl, false); :}
+    = declarator.d type_parameter_list.tpl?
+    {: return new TypeConstructorDeclaration(new List(), d, tpl, false); :}
     ;
 
 TypeSynonymDeclaration type_synonym_definition
-    = declarator.d declarator_list.dl EQUALS type.t
-    {: return new TypeSynonymDeclaration(new List(), d, dl, t); :}
+    = declarator.d type_parameter_list.tpl? EQUALS type.t
+    {: return new TypeSynonymDeclaration(new List(), d, tpl, t); :}
     ;
 
 ConstantDeclaration constant_declaration
@@ -85,8 +97,10 @@ ConstantDeclaration constant_declaration
     ;
 
 ConstantDeclaration constant_definition
-    = standard_constant_definition
-    | unique_constant_definition
+    = standard_constant_definition.cd
+    {: return cd; :}
+    | unique_constant_definition.cd
+    {: return cd; :}
     ;
 
 ConstantDeclaration standard_constant_definition
@@ -103,12 +117,15 @@ ConstantDeclaration unique_constant_definition
     ;
 
 OrderSpecification order_specification
-    = standard_order_specification
-    | complete_order_specification
+    = standard_order_specification.os
+    {: return os; :}
+    | complete_order_specification.os
+    {: return os; :}
     ;
 
 OrderSpecification standard_order_specification
     = parent_info.os
+    {: return os; :}
     ;
 
 OrderSpecification complete_order_specification
@@ -125,8 +142,10 @@ OrderSpecification parent_info
     ;
 
 ParentEdge parent_edge
-    = standard_parent_edge
-    | unique_parent_edge
+    = standard_parent_edge.pe
+    {: return pe; :}
+    | unique_parent_edge.pe
+    {: return pe; :}
     ;
 
 ParentEdge unique_parent_edge
@@ -183,8 +202,8 @@ FunctionDeclaration function_prototype
     ;
 
 FunctionSignature function_signature
-    = type_variable_block_list.dl? LPAREN optional_binding_comma_list.bl RPAREN RETURNS LPAREN optional_binding.b RPAREN
-    {: return new FunctionSignature(dl, bl, b); :}
+    = type_parameter_block_list.tdl? LPAREN optional_binding_comma_list.bl RPAREN RETURNS LPAREN optional_binding.b RPAREN
+    {: return new FunctionSignature(tdl, bl, b); :}
     ;
 
 VariableDeclaration variable_declaration
@@ -209,8 +228,8 @@ ProcedureDeclaration procedure_definition
     ;
 
 ProcedureSignature procedure_signature
-    = type_variable_block_list.dl? LPAREN bounded_binding_comma_list.bli? RPAREN procedure_out_parameters.blo?
-    {: return new ProcedureSignature(dl, bli, blo); :}
+    = type_parameter_block_list.tdl? LPAREN bounded_binding_comma_list.bli? RPAREN procedure_out_parameters.blo?
+    {: return new ProcedureSignature(tdl, bli, blo); :}
     ;
 
 List procedure_out_parameters
@@ -233,7 +252,7 @@ ImplementationDeclaration implementation_definition
     ;
 
 ImplementationSignature implementation_signature
-    = type_variable_block_list.dl? LPAREN set_binding_comma_list.bli? RPAREN implementation_out_parameters.blo?
+    = type_parameter_block_list.dl? LPAREN set_binding_comma_list.bli? RPAREN implementation_out_parameters.blo?
     {: return new ImplementationSignature(dl, bli, blo); :}
     ;
 
@@ -243,8 +262,10 @@ List implementation_out_parameters
     ;
 
 Specification specification
-    = standard_specification SEMICOLON
-    | free_specification SEMICOLON
+    = standard_specification.s SEMICOLON
+    {: return s; :}
+    | free_specification.s SEMICOLON
+    {: return s; :}
     ;
 
 List specification_list
@@ -260,9 +281,12 @@ Specification free_specification
     ;
 
 Specification standard_specification
-    = requires_specification
-    | modifies_specification
-    | ensures_specification
+    = requires_specification.s
+    {: return s; :}
+    | modifies_specification.s
+    {: return s; :}
+    | ensures_specification.s
+    {: return s; :}
     ;
 
 PreCondition requires_specification

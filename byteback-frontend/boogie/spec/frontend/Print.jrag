@@ -141,16 +141,22 @@ aspect Print {
 
         builder.append(getDeclarator().getName());
         builder.append(" ");
-        PrintUtil.listPrint(builder, ", ", getParameterList());
+        PrintUtil.listPrint(builder, ", ", getTypeParameterList());
     }
 
     public void TypeSynonymDeclaration.print(final StringBuilder builder) {
         super.print(builder);
         builder.append(getDeclarator().getName());
         builder.append(" ");
-        PrintUtil.listPrint(builder, ", ", getParameterList());
+        PrintUtil.listPrint(builder, ", ", getTypeParameterList());
         builder.append(" = ");
         getAliased().print(builder);
+    }
+
+    TypeParameter implements Printable;
+
+    public void TypeParameter.print(final StringBuilder builder) {
+        getDeclarator().print(builder);
     }
 
     Signature implements Printable;
@@ -238,7 +244,7 @@ aspect Print {
 
     public void MapTypeAccess.print(final StringBuilder builder) {
         builder.append("<");
-        PrintUtil.listPrint(builder, ", ", getParameterList());
+        PrintUtil.listPrint(builder, ", ", getTypeParameterList());
         builder.append(">");
         builder.append("[");
         PrintUtil.listPrint(builder, ", ", getKeyTypeList());
@@ -415,7 +421,7 @@ aspect Print {
         getQuantifier().print(builder);
         builder.append(" ");
         builder.append("<");
-        PrintUtil.listPrint(builder, ", ", getParameterList());
+        PrintUtil.listPrint(builder, ", ", getTypeParameterList());
         builder.append(">");
         builder.append(" ");
         PrintUtil.listPrint(builder, ", ", getBindingList());

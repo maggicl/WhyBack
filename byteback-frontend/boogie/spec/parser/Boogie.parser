@@ -15,13 +15,6 @@ Declarator declarator
     {: return new Declarator(n); :}
     ;
 
-List declarator_list
-    = declarator.d
-    {: return new List(d); :}
-    | declarator_list.dl declarator.d
-    {: return dl.add(d); :}
-    ;
-
 List declarator_comma_list
     = declarator.d
     {: return new List(d); :}
@@ -42,8 +35,10 @@ List set_binding_comma_list
     ;
 
 OptionalBinding optional_binding
-    = unused_binding
-    | used_binding
+    = unused_binding.b
+    {: return b; :}
+    | used_binding.b
+    {: return b; :}
     ;
 
 List optional_binding_comma_list

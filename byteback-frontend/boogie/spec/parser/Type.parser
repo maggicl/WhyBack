@@ -25,13 +25,32 @@ TypeAccess type_atom
     ;
 
 MapTypeAccess map_type
-    = type_variable_block_list.tvl? LBRACKET type_comma_list.tl RBRACKET type.t
-    {: return new MapTypeAccess(tvl, tl, t); :}
+    = type_parameter_block_list.tdl? LBRACKET type_comma_list.tl RBRACKET type.t
+    {: return new MapTypeAccess(tdl, tl, t); :}
     ;
 
-List type_variable_block_list
-    = LT declarator_comma_list.dl GT
-    {: return dl; :}
+List type_parameter_block_list
+    = LT type_parameter_comma_list.tdl GT
+    {: return tdl; :}
+    ;
+
+TypeParameter type_parameter
+    = declarator.dl
+    {: return new TypeParameter(dl);  :}
+    ;
+
+List type_parameter_list
+    = type_parameter.tp
+    {: return new List(tp); :}
+    | type_parameter_list.tpl type_parameter.tp
+    {: return tpl.add(tp); :}
+    ;
+
+List type_parameter_comma_list
+    = type_parameter.tp
+    {: return new List(tp); :}
+    | type_parameter_comma_list.tdl COMMA type_parameter.tp
+    {: return tdl.add(tp); :}
     ;
 
 UnknownTypeAccess unknown_type

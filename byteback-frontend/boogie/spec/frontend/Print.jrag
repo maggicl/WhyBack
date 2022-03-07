@@ -10,12 +10,14 @@ aspect Print {
 
     class PrintUtil {
 
-        static void listPrint(final StringBuilder builder, final String separator, final List<? extends Printable> list) {
+        static void listPrint(final StringBuilder builder, final String separator,
+                              final List<? extends Printable> list) {
+
             indentedListPrint(builder, separator, 0, list);
         }
 
         static void indentedListPrint(final StringBuilder builder, final String separator, final int level,
-                                 final List<? extends Printable> list) {
+                                      final List<? extends Printable> list) {
 
             final Iterator<? extends Printable> iterator = list.iterator();
 
@@ -112,7 +114,13 @@ aspect Print {
         getSignature().print(builder);
 
         if (hasBody()) {
-            builder.append(" ");
+            builder.append("\n");
+            PrintUtil.indentedListPrint(builder, "\n", 1, getSpecificationList());
+
+            if (getSpecificationList().getNumChild() > 0) {
+                builder.append("\n");
+            }
+
             getBody().print(builder);
         } else {
             builder.append(";");
@@ -124,7 +132,8 @@ aspect Print {
         super.printAttributes(builder);
         builder.append(getDeclarator().getName());
         getSignature().print(builder);
-        // TODO
+        builder.append("\n");
+        PrintUtil.listPrint(builder, "\n", getBodyList());
     }
 
     public void TypeDeclaration.print(final StringBuilder builder) {
@@ -448,7 +457,6 @@ aspect Print {
         builder.append(this);
     }
 
-    // TODO: Move implementation in a static method.
     public void Statement.indentedPrint(final StringBuilder builder, final int level) {
         PrintUtil.indent(builder, level);
         print(builder);
@@ -544,7 +552,9 @@ aspect Print {
     public void WhileStatement.indentedPrint(final StringBuilder builder, final int level) {
         PrintUtil.indentedAppend(builder, level, "while (");
         getCondition().print(builder);
-        builder.append(") ");
+        builder.append(")\n");
+        PrintUtil.indentedListPrint(builder, "\n", level + 1, getInvariantList());
+        builder.append("\n");
         getBlock().indentedPrint(builder, level);
     }
 
@@ -636,6 +646,32 @@ aspect Print {
 
     public void Accessor.print(final StringBuilder builder) {
         builder.append(getName());
+    }
+
+    Specification implements Printable;
+
+    public void PreCondition.print(final StringBuilder builder) {
+        builder.append("requires ");
+        getExpression().print(builder);
+        builder.append(";");
+    }
+
+    public void PostCondition.print(final StringBuilder builder) {
+        builder.append("ensures ");
+        getExpression().print(builder);
+        builder.append(";");
+    }
+
+    public void FrameCondition.print(final StringBuilder builder) {
+        builder.append("modifies ");
+        PrintUtil.listPrint(builder, ", ", getReferenceList());
+        builder.append(";");
+    }
+
+    public void LoopInvariant.print(final StringBuilder builder) {
+        builder.append("invariant ");
+        getExpression().print(builder);
+        builder.append(";");
     }
 
 }

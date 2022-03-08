@@ -31,7 +31,7 @@ public class SootType implements Type<SootTypeVisitor> {
      *
      * @return The number associated with this type.
      */
-    protected int getNumber() {
+    public int getNumber() {
         return sootType.getNumber();
     }
 

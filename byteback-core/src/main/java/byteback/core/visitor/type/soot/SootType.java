@@ -1,6 +1,6 @@
-package byteback.core.type.soot;
+package byteback.core.visitor.type.soot;
 
-import byteback.core.type.Type;
+import byteback.core.visitor.type.Type;
 
 /**
  * Encapsulates a Soot type representation, visitable using a

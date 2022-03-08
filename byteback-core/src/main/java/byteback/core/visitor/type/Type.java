@@ -1,4 +1,6 @@
-package byteback.core.type;
+package byteback.core.visitor.type;
+
+import byteback.core.visitor.Visitable;
 
 /**
  * Base interface for a type entity. Every type should be accessed using a
@@ -6,8 +8,5 @@ package byteback.core.type;
  *
  * @param <T> The type of the visitor used to access the type representation.
  */
-public interface Type<T extends TypeVisitor> {
-
-    void apply(T visitor);
-
+public interface Type<T extends TypeVisitor> extends Visitable<T> {
 }

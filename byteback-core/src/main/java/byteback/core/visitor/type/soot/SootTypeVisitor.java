@@ -1,6 +1,6 @@
-package byteback.core.type.soot;
+package byteback.core.visitor.type.soot;
 
-import byteback.core.type.TypeVisitor;
+import byteback.core.visitor.type.TypeVisitor;
 import soot.TypeSwitch;
 
 /**

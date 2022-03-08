@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     implementation project(':byteback-annotations')
+    implementation project(':byteback-frontend:boogie')
     implementation 'org.soot-oss:soot:4.1.0'
     implementation 'org.slf4j:slf4j-simple:1.6.1'
     integrationImplementation 'org.mockito:mockito-core:3.+'

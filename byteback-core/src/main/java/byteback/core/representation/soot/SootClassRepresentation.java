@@ -10,7 +10,7 @@ import soot.SootClass;
 /**
  * Wraps a {@link SootClass} intermediate representation.
  */
-public class SootClassRepresentation implements ClassRepresentation<SootType, SootFieldRepresentation, SootMethodRepresentation> {
+public class SootClassRepresentation implements ClassRepresentation {
 
     private final SootClass sootClass;
 
@@ -63,7 +63,6 @@ public class SootClassRepresentation implements ClassRepresentation<SootType, So
      *
      * @return The type corresponding to the {@link SootClass}.
      */
-    @Override
     public SootType getType() {
         return new SootType(sootClass.getType());
     }
@@ -73,7 +72,6 @@ public class SootClassRepresentation implements ClassRepresentation<SootType, So
      *
      * @return The stream of method representations.
      */
-    @Override
     public Stream<SootMethodRepresentation> methods() {
         assert !isPhantomClass();
 
@@ -85,7 +83,6 @@ public class SootClassRepresentation implements ClassRepresentation<SootType, So
      *
      * @return The stream of field representations.
      */
-    @Override
     public Stream<SootFieldRepresentation> fields() {
         assert !isPhantomClass();
 

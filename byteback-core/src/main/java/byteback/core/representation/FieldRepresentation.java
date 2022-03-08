@@ -1,9 +1,8 @@
 package byteback.core.representation;
 
 import byteback.core.identifier.MemberName;
-import byteback.core.type.Type;
 
-public interface FieldRepresentation<T extends Type<?>> {
+public interface FieldRepresentation {
 
     /**
      * Getter for the name of the field.
@@ -11,12 +10,5 @@ public interface FieldRepresentation<T extends Type<?>> {
      * @return The name of the field.
      */
     MemberName getName();
-
-    /**
-     * Getter for the type of the field.
-     *
-     * @return The type of the field.
-     */
-    T getType();
 
 }

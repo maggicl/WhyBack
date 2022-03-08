@@ -5,7 +5,7 @@ import byteback.core.representation.FieldRepresentation;
 import byteback.core.type.soot.SootType;
 import soot.SootField;
 
-public class SootFieldRepresentation implements FieldRepresentation<SootType> {
+public class SootFieldRepresentation implements FieldRepresentation {
 
     private final SootField sootField;
 
@@ -21,7 +21,6 @@ public class SootFieldRepresentation implements FieldRepresentation<SootType> {
         return name;
     }
 
-    @Override
     public SootType getType() {
         return new SootType(sootField.getType());
     }

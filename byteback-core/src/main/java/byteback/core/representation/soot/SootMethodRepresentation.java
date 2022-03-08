@@ -5,7 +5,7 @@ import byteback.core.representation.MethodRepresentation;
 import byteback.core.type.soot.SootType;
 import soot.SootMethod;
 
-public class SootMethodRepresentation implements MethodRepresentation<SootType> {
+public class SootMethodRepresentation implements MethodRepresentation {
 
     private final SootMethod sootMethod;
 
@@ -26,7 +26,6 @@ public class SootMethodRepresentation implements MethodRepresentation<SootType> 
         return name;
     }
 
-    @Override
     public SootType getReturnType() {
         return new SootType(sootMethod.getReturnType());
     }

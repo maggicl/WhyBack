@@ -96,7 +96,7 @@ ProcedureDeclaration : Declaration ::= Declarator Signature:ProcedureSignature S
 // Implementation declaration
 ImplementationDeclaration : Declaration ::= Declarator Signature:ImplementationSignature Body* /Implementation*/;
 
-Body ::= LocalVariable:VariableDeclaration* Statement*;
+Body ::= LocalDeclaration:VariableDeclaration* Statement*;
 
 // Expressions
 abstract Meta;

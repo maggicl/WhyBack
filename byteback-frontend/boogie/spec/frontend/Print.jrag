@@ -608,7 +608,7 @@ aspect Print {
     Body implements Printable;
 
     public void Body.print(final StringBuilder builder) {
-        final Iterator<VariableDeclaration> localIterator = getLocalVariableList().iterator();
+        final Iterator<VariableDeclaration> localIterator = getLocalDeclarationList().iterator();
         final Iterator<Statement> statementIterator = getStatementList().iterator();
 
         builder.append("{\n");

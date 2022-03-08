@@ -1,27 +1,37 @@
+import java.util.Optional;
+import java.util.Collection;
+import java.util.LinkedList;
+
 aspect Entity {
 
-    inh Body Entity.body();
+    public class EntityTable<T extends Entity> extends LinkedList<T> {
 
-    inh Body Declaration.body();
+        public EntityTable() {
+            super();
+        }
 
-    eq Program.getChild().body() = null;
+        public Optional<T> getFirst(String name) {
+            for (T entity : this) {
+                if (entity.getDeclarator().getName().equals(name)) {
+                    return Optional.of(entity);
+                }
+            }
 
-    eq Body.getLocalVariable().body() = this;
+            return Optional.empty();
+        }
 
-    inh SignedEntity Entity.signedEntity();
+        public Collection<T> getAll(String name) {
+            final Collection<T> entities = new LinkedList<>();
 
-    eq Program.getChild().signedEntity() = null;
+            for (T entity : this) {
+                if (entity.getDeclarator().getName().equals(name)) {
+                    entities.add(entity);
+                }
+            }
 
-    eq SignedEntity.getInputVariable().signedEntity() = this;
-
-    eq SignedEntity.getOutputVariable().signedEntity() = this;
-
-    inh QuantifierExpression Entity.quantifierExpression();
-
-    inh QuantifierExpression Binding.quantifierExpression();
-
-    eq Program.getChild().quantifierExpression() = null;
-
-    eq QuantifierExpression.getChild().quantifierExpression() = this;
-
+            return entities;
+        }
+        
+    }
+    
 }

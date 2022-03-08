@@ -31,9 +31,9 @@ aspect Variable {
 
     coll LinkedList<Variable> Body.variables(); 
 
-    VariableDeclaration contributes
+    Body contributes
         each getVariableList() to Body.variables()
-        for body();
+        for this;
 
     Body contributes {} to SignedEntity.variables();
 
@@ -41,15 +41,15 @@ aspect Variable {
 
     coll LinkedList<Variable> QuantifierExpression.variables(); 
 
-    Binding contributes
+    QuantifierExpression contributes
         each getVariableList() to QuantifierExpression.variables()
-        for quantifierExpression();
+        for this;
 
-    Quantifier contributes {} to Body.variables();
+    QuantifierExpression contributes {} to Body.variables();
 
-    Quantifier contributes {} to SignedEntity.variables();
+    QuantifierExpression contributes {} to SignedEntity.variables();
 
-    Quantifier contributes {} to Program.variables();
+    QuantifierExpression contributes {} to Program.variables();
 
     /**
      * NTA definitions.
@@ -71,18 +71,6 @@ aspect Variable {
 
         for (Declarator declarator : getDeclaratorList()) {
             variables.add(new Variable(declarator, getTypeAccess()));
-        }
-
-        return variables;
-    }
-
-    syn nta List<Variable> QuantifierExpression.getVariableList();
-
-    eq QuantifierExpression.getVariableList() {
-        final List<Variable> variables = new List<>();
-
-        for (Binding binding : getBindingList()) {
-            variables.addAll(binding.getVariableList());
         }
 
         return variables;
@@ -138,6 +126,28 @@ aspect Variable {
 
     eq ConstantDeclaration.getVariableList() {
         List<Variable> variables = getBinding().getVariableList();
+
+        return variables;
+    }
+
+    syn nta List<Variable> Body.getVariableList() {
+        final List<Variable> variables = new List<>();
+
+        for (VariableDeclaration declaration : getLocalDeclarationList()) {
+            variables.addAll(declaration.getVariableList());
+        }
+
+        return variables;
+    }
+
+    syn nta List<Variable> QuantifierExpression.getVariableList();
+
+    eq QuantifierExpression.getVariableList() {
+        final List<Variable> variables = new List<>();
+
+        for (Binding binding : getBindingList()) {
+            variables.addAll(binding.getVariableList());
+        }
 
         return variables;
     }

@@ -2,7 +2,7 @@ package byteback.core.representation.soot;
 
 import byteback.core.identifier.MemberName;
 import byteback.core.representation.FieldRepresentation;
-import byteback.core.type.soot.SootType;
+import byteback.core.visitor.type.soot.SootType;
 import soot.SootField;
 
 public class SootFieldRepresentation implements FieldRepresentation {

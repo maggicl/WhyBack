@@ -1,10 +1,11 @@
 package byteback.core.representation.soot;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import byteback.core.identifier.Name;
 import byteback.core.representation.ClassRepresentation;
-import byteback.core.type.soot.SootType;
+import byteback.core.visitor.type.soot.SootType;
 import soot.SootClass;
 
 /**

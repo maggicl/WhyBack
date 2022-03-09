@@ -13,9 +13,9 @@ import soot.BooleanType;
 import soot.Local;
 import soot.Unit;
 import soot.UnitPatchingChain;
-import soot.JastAddJ.ReturnStmt;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
+import soot.jimple.ReturnStmt;
 import soot.jimple.StaticInvokeExpr;
 
 public class PredicateConverter {

@@ -1,5 +1,7 @@
 package byteback.annotations;
 
+import byteback.annotations.Contract.Predicate;
+
 /**
  * Utilities to aid the formulation of complex boolean expressions.
  *
@@ -16,6 +18,7 @@ public interface Operator {
      * @param b Consequent of the implication.
      * @return {@code true} if {@code a -> b}.
      */
+    @Predicate
     public static boolean implies(final boolean a, final boolean b) {
         return !a || b;
     }
@@ -27,8 +30,56 @@ public interface Operator {
      * @param b Second statement.
      * @return {@code true} if {@code a <-> b}.
      */
+    @Predicate
     public static boolean iff(final boolean a, final boolean b) {
         return a == b;
+    }
+
+    /**
+     * Boolean AND.
+     *
+     * @param a First operand.
+     * @param b Second operand.
+     * @return {@code true} if {@code a && b}.
+     */
+    @Predicate
+    public static boolean and(final boolean a, final boolean b) {
+        return a && b;
+    }
+
+    /**
+     * Boolean OR.
+     *
+     * @param a First operand.    
+     * @param b Second operand.
+     * @return {@code true} if {@code a || b}.
+     */
+    @Predicate
+    public static boolean or(final boolean a, final boolean b) {
+        return a || b;
+    }
+
+    /**
+     * Boolean NOT.
+     *
+     * @param a Single operand.    
+     * @return {@code true} if {@code !o}.
+     */
+    @Predicate
+    public static boolean not(final boolean a) {
+        return !a;
+    }
+
+    /**
+     * Object equality.
+     *
+     * @param a First operand.    
+     * @param b Second operand.
+     * @return {@code true} if {@code a || b}.
+     */
+    @Predicate
+    public static boolean equals(final Object a, final Object b) {
+        return a.equals(b);
     }
 
 }

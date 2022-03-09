@@ -2,7 +2,7 @@ package byteback.core.representation.soot;
 
 import byteback.core.identifier.MethodName;
 import byteback.core.identifier.Name;
-import byteback.core.type.soot.SootTypeVisitor;
+import byteback.core.visitor.type.soot.SootTypeVisitor;
 import org.junit.Test;
 
 import soot.RefType;

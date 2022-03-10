@@ -10,7 +10,6 @@ public class IntegerPredicates {
     /** 
      * TODO: include annotation definition in SootContext from {@link byteback.annotations}
      */
-
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.METHOD })
     @interface Predicate {
@@ -22,28 +21,8 @@ public class IntegerPredicates {
     }
 
     @Predicate
-    public static boolean equals(@Old int a, int b) {
-        return a == b && a % 2 == 0;
+    public static boolean equals(int a, int b) {
+        return equals(a, b);
     }
 
-    @Predicate
-    public static boolean greaterThan(int a, int b) {
-        return a > b;
-    }
-
-    @Predicate
-    public static boolean lessThan(int a, int b) {
-        return a < b;
-    }
-
-    @Predicate
-    public static boolean greaterThanOrEquals(int a, int b) {
-        return a >= b;
-    }
-
-    @Predicate
-    public static boolean lessThanOrEquals(int a, int b) {
-        return a <= b;
-    }
-    
 }

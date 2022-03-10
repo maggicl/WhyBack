@@ -9,12 +9,15 @@ import byteback.core.visitor.type.soot.SootTypeVisitor;
 import byteback.core.visitor.unit.soot.SootUnitVisitor;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
+import byteback.frontend.boogie.ast.Program;
 import soot.BooleanType;
 import soot.Local;
 import soot.Unit;
 import soot.UnitPatchingChain;
+import soot.Value;
 import soot.jimple.AssignStmt;
-import soot.jimple.InvokeStmt;
+import soot.jimple.IdentityStmt;
+import soot.jimple.ParameterRef;
 import soot.jimple.ReturnStmt;
 import soot.jimple.StaticInvokeExpr;
 
@@ -22,38 +25,65 @@ public class PredicateConverter {
 
     private static class ExpressionInliner extends SootUnitVisitor {
 
-        private static class StaticInvocationExtractor extends SootExpressionVisitor {
-
-            private StaticInvokeExpr result;
+        private static class LocalExtractor extends SootExpressionVisitor {
+            private Local result;
 
             @Override
-            public void caseStaticInvokeExpr(final StaticInvokeExpr expression) {
+            public void caseLocal(final Local expression) {
                 result = expression;
             }
 
             @Override
             public void defaultCase(final Object object) {
-                throw new IllegalArgumentException("Invoke instruction does not target a static method");
+                throw new IllegalArgumentException("Expected local definition, got " + object);
             }
 
             @Override
-            public StaticInvokeExpr getResult() {
+            public Local getResult() {
                 return result;
             }
-
         }
 
-        private static class BoogieExpressionInliner extends SootExpressionVisitor {
+        // This extractor is a more general version of BoogieInlineExpressionExtractor.
+        // TODO: Extract this inner class
+        private static class BoogieExpressionExtractor extends SootExpressionVisitor {
 
-            private Expression result;
+            @Override
+            public void caseParameterRef(final ParameterRef parameterReference) {
+                // TODO: Initialize function parameters. 
+            }
+
+            @Override
+            public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
+                // TODO: lookup in program to determine if invocation
+                // refers to a predicate
+                System.out.println("Invocation: " + invocation);
+                for (Value value : invocation.getArgs()) {
+                    LocalExtractor extractor = new LocalExtractor();
+                    value.apply(extractor);
+                    Local local = extractor.getResult();
+                    System.out.println(local);
+                }
+            }
 
             @Override
             public void defaultCase(final Object object) {
-                // TODO: Generate Boogie expression and substitute the
-                // local references by using the localExpressionIndex
-                // map.
+                throw new UnsupportedOperationException("Unable to convert Jimple expression of type " + object.getClass() + " to Boogie");
+            }
+            
+        }
 
-                throw new UnsupportedOperationException();
+        private static class BoogieInlineExpressionExtractor extends BoogieExpressionExtractor {
+
+            private Expression result;
+
+            private Map<Local, Expression> localExpressionIndex;
+
+            private final Program boogieProgram;
+
+            public BoogieInlineExpressionExtractor(Map<Local, Expression> localExpressionIndex, Program boogieProgram) {
+                this.localExpressionIndex = localExpressionIndex;
+                this.boogieProgram = boogieProgram;
             }
 
             @Override
@@ -65,22 +95,28 @@ public class PredicateConverter {
 
         private final Map<Local, Expression> localExpressionIndex;
 
-        public ExpressionInliner() {
+        private final Program boogieProgram;
+
+        public ExpressionInliner(Program boogieProgram) {
             this.localExpressionIndex = new HashMap<>();
+            this.boogieProgram = boogieProgram;
+        }
+
+        @Override
+        public void caseIdentityStmt(final IdentityStmt identity) {
+            // TODO: Initialize table entry
         }
 
         @Override
         public void caseAssignStmt(final AssignStmt assignment) {
-            assignment.getRightOp();
-        }
-
-        @Override
-        public void caseInvokeStmt(final InvokeStmt invocation) {
-            final StaticInvocationExtractor extractor = new StaticInvocationExtractor();
-            invocation.getInvokeExpr().apply(extractor);
-            final StaticInvokeExpr expression = extractor.getResult();
-            // TODO: Check that target is a predicate 
-            expression.apply(new BoogieExpressionInliner());
+            final LocalExtractor localExtractor = new LocalExtractor();
+            final BoogieInlineExpressionExtractor expressionExtractor = new BoogieInlineExpressionExtractor(
+                    localExpressionIndex, boogieProgram);
+            assignment.getLeftOp().apply(localExtractor);
+            assignment.getRightOp().apply(expressionExtractor);
+            final Local left = localExtractor.getResult();
+            final Expression right = expressionExtractor.getResult();
+            localExpressionIndex.put(left, right);
         }
 
         @Override
@@ -91,15 +127,18 @@ public class PredicateConverter {
         @Override
         public void defaultCase(final Object object) {
             Unit unit = (Unit) object;
-            throw new UnsupportedOperationException("Inlining of statement " + unit + " is not supported");
+            System.out.println("Unit: " + unit + " of type " + unit.getClass());
         }
 
     }
 
     private final FunctionDeclaration predicateDeclaration;
 
-    public PredicateConverter() {
+    private final Program boogieProgram;
+
+    public PredicateConverter(Program boogieProgram) {
         this.predicateDeclaration = new FunctionDeclaration();
+        this.boogieProgram = boogieProgram;
     }
 
     public FunctionDeclaration convert(SootMethodRepresentation methodRepresentation) {
@@ -118,7 +157,7 @@ public class PredicateConverter {
         });
 
         final UnitPatchingChain unitChain = methodRepresentation.getBody().getUnits();
-        final ExpressionInliner expressionInliner = new ExpressionInliner();
+        final ExpressionInliner expressionInliner = new ExpressionInliner(boogieProgram);
 
         System.out.println(methodRepresentation.getBody());
 

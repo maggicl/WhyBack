@@ -3,7 +3,7 @@ package byteback.core.converter.soot.boogie;
 import java.util.HashMap;
 import java.util.Map;
 
-import byteback.core.representation.clazz.soot.SootMethodProxy;
+import byteback.core.representation.unit.soot.SootMethodProxy;
 import byteback.core.representation.body.soot.SootExpressionVisitor;
 import byteback.core.representation.type.soot.SootTypeVisitor;
 import byteback.core.representation.body.soot.SootStatementVisitor;

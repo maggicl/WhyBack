@@ -1,6 +1,6 @@
 package byteback.core.representation.type.soot;
 
-import byteback.core.Visitable;
+import byteback.core.representation.Visitable;
 
 /**
  * Encapsulates a Soot type representation, visitable using a

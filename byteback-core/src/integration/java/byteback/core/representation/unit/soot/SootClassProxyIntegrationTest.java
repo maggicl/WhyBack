@@ -1,4 +1,4 @@
-package byteback.core.representation.clazz.soot;
+package byteback.core.representation.unit.soot;
 
 import byteback.core.representation.type.soot.SootTypeVisitor;
 import org.junit.Test;

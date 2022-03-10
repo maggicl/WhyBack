@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import byteback.core.context.ClassLoadException;
-import byteback.core.representation.clazz.soot.SootClassProxy;
+import byteback.core.representation.unit.soot.SootClassProxy;
 import org.junit.Test;
 
 import byteback.core.ResourcesUtil;

@@ -1,6 +1,6 @@
 package byteback.core.representation.body.soot;
 
-import byteback.core.Visitor;
+import byteback.core.representation.Visitor;
 import soot.jimple.AbstractJimpleValueSwitch;
 import soot.jimple.Expr;
 

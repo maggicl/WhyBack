@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import byteback.core.context.ClassLoadException;
 import byteback.core.context.Context;
-import byteback.core.representation.clazz.soot.SootClassProxy;
+import byteback.core.representation.unit.soot.SootClassProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

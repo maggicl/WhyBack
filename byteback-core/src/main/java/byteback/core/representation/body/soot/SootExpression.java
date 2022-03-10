@@ -1,6 +1,6 @@
 package byteback.core.representation.body.soot;
 
-import byteback.core.Visitable;
+import byteback.core.representation.Visitable;
 import soot.jimple.Expr;
 
 public class SootExpression implements Visitable<SootExpressionVisitor> {

@@ -1,4 +1,4 @@
-package byteback.core;
+package byteback.core.representation;
 
 public interface Visitable<T extends Visitor> {
 

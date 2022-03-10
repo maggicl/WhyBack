@@ -1,6 +1,6 @@
 package byteback.core.representation.body.soot;
 
-import byteback.core.Visitable;
+import byteback.core.representation.Visitable;
 
 public class SootStatement implements Visitable<SootStatementVisitor> {
 

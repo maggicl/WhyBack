@@ -6,7 +6,7 @@ import byteback.core.representation.unit.soot.SootClassProxy;
 import byteback.core.representation.unit.soot.SootClassProxyFixture;
 import byteback.frontend.boogie.ast.Program;
 
-public class PredicateConverterIntegrationTest extends SootClassProxyFixture {
+public class BoogiePredicateExtractorIntegrationTest extends SootClassProxyFixture {
 
     @Test
     public void test() {
@@ -15,7 +15,7 @@ public class PredicateConverterIntegrationTest extends SootClassProxyFixture {
         final Program boogieProgram = new Program();
         representation.methods().filter((method) -> method.getName().equals("equals"))
                 .forEach((method) -> {
-                    PredicateConverter converter = new PredicateConverter(boogieProgram);
+                    BoogiePredicateExtractor converter = new BoogiePredicateExtractor(boogieProgram);
                     converter.convert(method);
                 });
     }

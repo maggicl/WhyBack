@@ -13,7 +13,7 @@ import byteback.frontend.boogie.ast.Program;
 import soot.*;
 import soot.jimple.*;
 
-public class PredicateConverter {
+public class BoogiePredicateExtractor {
 
     private static class ExpressionInliner extends SootStatementVisitor {
 
@@ -36,38 +36,7 @@ public class PredicateConverter {
             }
         }
 
-        // This extractor is a more general version of BoogieInlineExpressionExtractor.
-        // TODO: Extract this inner class
-        private static class BoogieExpressionExtractor extends SootExpressionVisitor {
-
-            @Override
-            public void caseParameterRef(final ParameterRef parameterReference) {
-                // TODO: Initialize function parameters. 
-            }
-
-            @Override
-            public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
-                // TODO: lookup in program to determine if invocation
-                // refers to a predicate
-                System.out.println("Invocation: " + invocation);
-                for (Value value : invocation.getArgs()) {
-                    LocalExtractor extractor = new LocalExtractor();
-                    value.apply(extractor);
-                    Local local = extractor.getResult();
-                    System.out.println(local);
-                }
-            }
-
-            @Override
-            public void caseDefault(final Expr expression) {
-                throw new UnsupportedOperationException("Unable to convert Jimple expression of type " + expression.getClass() + " to Boogie");
-            }
-            
-        }
-
         private static class BoogieInlineExpressionExtractor extends BoogieExpressionExtractor {
-
-            private Expression result;
 
             private Map<Local, Expression> localExpressionIndex;
 
@@ -78,16 +47,11 @@ public class PredicateConverter {
                 this.boogieProgram = boogieProgram;
             }
 
-            @Override
-            public Expression getResult() {
-                return result;
-            }
-
         }
 
-        private final Map<Local, Expression> localExpressionIndex;
-
         private final Program boogieProgram;
+
+        private final Map<Local, Expression> localExpressionIndex;
 
         public ExpressionInliner(Program boogieProgram) {
             this.localExpressionIndex = new HashMap<>();
@@ -127,7 +91,7 @@ public class PredicateConverter {
 
     private final Program boogieProgram;
 
-    public PredicateConverter(Program boogieProgram) {
+    public BoogiePredicateExtractor(Program boogieProgram) {
         this.predicateDeclaration = new FunctionDeclaration();
         this.boogieProgram = boogieProgram;
     }

@@ -4,6 +4,6 @@ import byteback.core.Visitor;
 import soot.Unit;
 import soot.jimple.AbstractStmtSwitch;
 
-public abstract class SootUnitVisitor extends AbstractStmtSwitch implements Visitor<Unit> {
+public abstract class SootStatementVisitor extends AbstractStmtSwitch implements Visitor<Unit> {
 
 }

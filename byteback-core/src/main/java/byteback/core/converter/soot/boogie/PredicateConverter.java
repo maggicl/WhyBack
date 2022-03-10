@@ -6,7 +6,7 @@ import java.util.Map;
 import byteback.core.representation.clazz.soot.SootMethodProxy;
 import byteback.core.representation.body.soot.SootExpressionVisitor;
 import byteback.core.representation.type.soot.SootTypeVisitor;
-import byteback.core.representation.body.soot.SootUnitVisitor;
+import byteback.core.representation.body.soot.SootStatementVisitor;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
 import byteback.frontend.boogie.ast.Program;
@@ -15,7 +15,7 @@ import soot.jimple.*;
 
 public class PredicateConverter {
 
-    private static class ExpressionInliner extends SootUnitVisitor {
+    private static class ExpressionInliner extends SootStatementVisitor {
 
         private static class LocalExtractor extends SootExpressionVisitor {
             private Local result;

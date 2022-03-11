@@ -1,10 +1,13 @@
 package byteback.core.converter.soot.boogie;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import byteback.core.representation.unit.soot.SootMethodProxy;
+import byteback.core.util.CountingMap;
 import byteback.core.representation.body.soot.SootExpressionVisitor;
 import byteback.core.representation.body.soot.SootStatementVisitor;
 import byteback.frontend.boogie.ast.Declarator;
@@ -17,7 +20,9 @@ import byteback.frontend.boogie.ast.Program;
 import soot.*;
 import soot.jimple.*;
 
-public class BoogieFunctionExtractor {
+public class BoogieFunctionConverter {
+
+    private static final Logger log = LoggerFactory.getLogger(BoogieFunctionConverter.class);
 
     private static class LocalExtractor extends SootExpressionVisitor {
 
@@ -72,11 +77,11 @@ public class BoogieFunctionExtractor {
 
         private Expression expression;
 
-        private final Map<Local, Optional<Expression>> localExpressionIndex;
+        private final CountingMap<Local, Optional<Expression>> localExpressionIndex;
         private final Program program;
 
         public BoogieFunctionExpressionExtractor(final Program program) {
-            this.localExpressionIndex = new HashMap<>();
+            this.localExpressionIndex = new CountingMap<>();
             this.program = program;
         }
 
@@ -110,7 +115,13 @@ public class BoogieFunctionExtractor {
         public void caseReturnStmt(final ReturnStmt returns) {
             final LocalExtractor localExtractor = new LocalExtractor();
             returns.getOp().apply(localExtractor);
-            // TODO: Report unused expansions
+
+            for (Map.Entry<Local, Integer> entry : localExpressionIndex.getAccessCount().entrySet()) {
+                if (entry.getValue() == 0) {
+                    log.warn("Local assignment {} unused in the final expansion of function", entry.getKey());
+                }
+            }
+
             setExpression(localExpressionIndex.get(localExtractor.getResult()).get());
         }
 
@@ -125,7 +136,7 @@ public class BoogieFunctionExtractor {
 
     private final Program program;
 
-    public BoogieFunctionExtractor(Program program) {
+    public BoogieFunctionConverter(Program program) {
         this.functionDeclaration = new FunctionDeclaration();
         this.program = program;
     }
@@ -142,7 +153,7 @@ public class BoogieFunctionExtractor {
                 identity.getLeftOp().apply(localExtractor);
                 localExtractor.getResult().getType().apply(typeAccessExtractor);
                 final Declarator argumentDeclarator = new Declarator(localExtractor.getResult().getName());
-                final OptionalBinding argumentBinding = new OptionalBinding(); 
+                final OptionalBinding argumentBinding = new OptionalBinding();
                 argumentBinding.setDeclarator(argumentDeclarator);
                 argumentBinding.setTypeAccess(typeAccessExtractor.getResult());
                 functionSignature.addInputBinding(argumentBinding);

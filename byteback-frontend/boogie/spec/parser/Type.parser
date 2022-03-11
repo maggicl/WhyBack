@@ -13,7 +13,7 @@ List type_comma_list
 
 TypeAccess type_atom
     = BOOL
-    {: return new BoolTypeAccess(); :}
+    {: return new BooleanTypeAccess(); :}
     | INT
     {: return new IntegerTypeAccess(); :}
     | REAL

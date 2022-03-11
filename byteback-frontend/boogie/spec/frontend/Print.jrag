@@ -230,7 +230,7 @@ aspect Print {
 
     TypeAccess implements Printable;
 
-    public void BoolTypeAccess.print(final StringBuilder builder) {
+    public void BooleanTypeAccess.print(final StringBuilder builder) {
         builder.append("bool");
     }
 

@@ -68,17 +68,16 @@ public class BoogieFunctionExtractor {
 
     }
 
-    private static class BoogieFunctionExpressionExtractor extends SootStatementVisitor {
+    private class BoogieFunctionExpressionExtractor extends SootStatementVisitor {
 
         private Expression expression;
 
-        private final Program boogieProgram;
-
         private final Map<Local, Optional<Expression>> localExpressionIndex;
+        private final Program program;
 
-        public BoogieFunctionExpressionExtractor(Program boogieProgram) {
+        public BoogieFunctionExpressionExtractor(final Program program) {
             this.localExpressionIndex = new HashMap<>();
-            this.boogieProgram = boogieProgram;
+            this.program = program;
         }
 
         public void setExpression(final Expression expression) {
@@ -101,7 +100,7 @@ public class BoogieFunctionExtractor {
         public void caseAssignStmt(final AssignStmt assignment) {
             final LocalExtractor localExtractor = new LocalExtractor();
             final BoogieInlineExpressionExtractor expressionExtractor = new BoogieInlineExpressionExtractor(
-                    localExpressionIndex, boogieProgram);
+                    localExpressionIndex, program);
             assignment.getLeftOp().apply(localExtractor);
             assignment.getRightOp().apply(expressionExtractor);
             localExpressionIndex.put(localExtractor.getResult(), Optional.of(expressionExtractor.getResult()));

@@ -9,6 +9,8 @@ import soot.tagkit.VisibilityParameterAnnotationTag;
 import java.util.Collections;
 import java.util.List;
 
+import byteback.core.representation.type.soot.SootType;
+
 public class SootMethodProxy {
 
     private final SootMethod sootMethod;
@@ -27,7 +29,11 @@ public class SootMethodProxy {
     }
 
     public Body getBody() {
-        return this.sootMethod.retrieveActiveBody();
+        return sootMethod.retrieveActiveBody();
+    }
+
+    public SootType getReturnType() {
+        return new SootType(sootMethod.getReturnType());
     }
 
     public SootMethod getSootMethod() {

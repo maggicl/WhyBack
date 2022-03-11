@@ -132,16 +132,14 @@ public class BoogieFunctionConverter {
 
     }
 
-    private final FunctionDeclaration functionDeclaration;
-
     private final Program program;
 
     public BoogieFunctionConverter(Program program) {
-        this.functionDeclaration = new FunctionDeclaration();
         this.program = program;
     }
 
     public FunctionDeclaration convert(final SootMethodProxy methodProxy) {
+        final FunctionDeclaration functionDeclaration = new FunctionDeclaration();
         final BoogieTypeAccessExtractor typeAccessExtractor = new BoogieTypeAccessExtractor(program);
         final FunctionSignature functionSignature = new FunctionSignature();
         final BoogieFunctionExpressionExtractor expressionExtractor = new BoogieFunctionExpressionExtractor(program) {

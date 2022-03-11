@@ -62,7 +62,6 @@ public class BoogieFunctionExtractor {
             expressionOptional.ifPresentOrElse((expression) -> {
                 setExpression(expression);
             }, () -> {
-                // TODO: Check that the local has been defined properly.
                 super.caseLocal(local);
             });
         }

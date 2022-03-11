@@ -5,7 +5,7 @@ aspect Variable {
     /**
      * Scope collections.
      */
-    coll LinkedList<Variable> Program.variables();
+    coll EntityTable<Variable> Program.variables();
 
     VariableDeclaration contributes
         each getVariableList() to Program.variables();
@@ -29,7 +29,7 @@ aspect Variable {
 
     SignedEntity contributes {} to Program.variables();
 
-    coll LinkedList<Variable> Body.variables(); 
+    coll EntityTable<Variable> Body.variables(); 
 
     Body contributes
         each getVariableList() to Body.variables()
@@ -39,7 +39,7 @@ aspect Variable {
 
     Body contributes {} to Program.variables();
 
-    coll LinkedList<Variable> QuantifierExpression.variables(); 
+    coll EntityTable<Variable> QuantifierExpression.variables(); 
 
     QuantifierExpression contributes
         each getVariableList() to QuantifierExpression.variables()
@@ -168,5 +168,16 @@ aspect Variable {
     eq ImplementationDeclaration.getSignature().isMutable() = true;
 
     eq QuantifierExpression.getBinding().isMutable() = false;
+
+    /**
+     * Lookup variables in program.
+     */
+    syn lazy Optional<Variable> Program.lookupVariable(String name);
+
+    eq Program.lookupVariable(String name) = variables().getFirst(name);
+
+    inh lazy Optional<Variable> Accessor.lookupVariable(String name);
+
+    eq Program.getChild().lookupVariable(String name) = lookupVariable(name);
 
 }

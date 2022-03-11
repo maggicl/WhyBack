@@ -40,19 +40,11 @@ public interface Contract {
     public static @interface Condition {
 
         /**
-         * Declares a parameter containing the old invocation target.
-         */
-        @Retention(RetentionPolicy.RUNTIME)
-        @Target({ ElementType.PARAMETER })
-        public static @interface Old {
-        }
-
-        /**
          * Declares a parameter containing the current invocation target.
          */
         @Retention(RetentionPolicy.RUNTIME)
         @Target({ ElementType.PARAMETER })
-        public static @interface Current {
+        public static @interface Instance {
         }
 
         /**

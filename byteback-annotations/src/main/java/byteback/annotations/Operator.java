@@ -82,4 +82,16 @@ public interface Operator {
         return a.equals(b);
     }
 
+    /**
+     * Specifies a reference to a old expression in a condition.
+     * <p>
+     * This expression is only allowed in the specification of conditions.
+     *
+     * @param a Single operand.
+     * @return The given {@code a} instance.
+     */
+    public static <T> T old(T a) {
+        return a;
+    }
+
 }

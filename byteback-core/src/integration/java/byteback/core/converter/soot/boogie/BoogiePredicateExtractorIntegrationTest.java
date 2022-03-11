@@ -15,7 +15,7 @@ public class BoogiePredicateExtractorIntegrationTest extends SootClassProxyFixtu
         final Program boogieProgram = new Program();
         representation.methods().filter((method) -> method.getName().equals("equals"))
                 .forEach((method) -> {
-                    BoogiePredicateExtractor converter = new BoogiePredicateExtractor(boogieProgram);
+                    BoogieFunctionExtractor converter = new BoogieFunctionExtractor(boogieProgram);
                     converter.convert(method);
                 });
     }

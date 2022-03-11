@@ -5,7 +5,6 @@ import java.util.Map;
 
 import byteback.core.representation.unit.soot.SootMethodProxy;
 import byteback.core.representation.body.soot.SootExpressionVisitor;
-import byteback.core.representation.type.soot.SootTypeVisitor;
 import byteback.core.representation.body.soot.SootStatementVisitor;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
@@ -13,7 +12,7 @@ import byteback.frontend.boogie.ast.Program;
 import soot.*;
 import soot.jimple.*;
 
-public class BoogiePredicateExtractor {
+public class BoogieFunctionExtractor {
 
     private static class ExpressionInliner extends SootStatementVisitor {
 
@@ -40,11 +39,9 @@ public class BoogiePredicateExtractor {
 
             private Map<Local, Expression> localExpressionIndex;
 
-            private final Program boogieProgram;
-
             public BoogieInlineExpressionExtractor(Map<Local, Expression> localExpressionIndex, Program boogieProgram) {
+                super(boogieProgram);
                 this.localExpressionIndex = localExpressionIndex;
-                this.boogieProgram = boogieProgram;
             }
 
         }
@@ -91,30 +88,18 @@ public class BoogiePredicateExtractor {
 
     private final Program boogieProgram;
 
-    public BoogiePredicateExtractor(Program boogieProgram) {
+    public BoogieFunctionExtractor(Program boogieProgram) {
         this.predicateDeclaration = new FunctionDeclaration();
         this.boogieProgram = boogieProgram;
     }
 
     public FunctionDeclaration convert(final SootMethodProxy methodProxy) {
-        methodProxy.getSootMethod().getReturnType().apply(new SootTypeVisitor() {
+        final UnitPatchingChain unitChain = methodProxy.getBody().getUnits();
+        final ExpressionInliner expressionInliner = new ExpressionInliner(boogieProgram);
 
-            @Override
-            public void caseBooleanType(final BooleanType type) {
-                final UnitPatchingChain unitChain = methodProxy.getBody().getUnits();
-                final ExpressionInliner expressionInliner = new ExpressionInliner(boogieProgram);
-
-                for (Unit unit : unitChain) {
-                    unit.apply(expressionInliner);
-                }
-            }
-
-            @Override
-            public void caseDefault(final Type type) {
-                throw new IllegalArgumentException("Predicate must return a boolean value");
-            }
-
-        });
+        for (Unit unit : unitChain) {
+            unit.apply(expressionInliner);
+        }
 
         return predicateDeclaration;
     }

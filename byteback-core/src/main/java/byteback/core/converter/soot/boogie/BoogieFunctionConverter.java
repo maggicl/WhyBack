@@ -17,6 +17,7 @@ import byteback.frontend.boogie.ast.FunctionSignature;
 import byteback.frontend.boogie.ast.Opt;
 import byteback.frontend.boogie.ast.OptionalBinding;
 import byteback.frontend.boogie.ast.Program;
+import byteback.frontend.boogie.builder.FunctionDeclarationBuilder;
 import soot.*;
 import soot.jimple.*;
 
@@ -140,7 +141,7 @@ public class BoogieFunctionConverter {
     }
 
     public FunctionDeclaration convert(final SootMethodUnit methodProxy) {
-        final FunctionDeclaration functionDeclaration = new FunctionDeclaration();
+        final FunctionDeclarationBuilder functionBuilder = new FunctionDeclarationBuilder();
         final BoogieTypeAccessExtractor typeAccessExtractor = new BoogieTypeAccessExtractor(program);
         final FunctionSignature functionSignature = new FunctionSignature();
         final BoogieFunctionExpressionExtractor expressionExtractor = new BoogieFunctionExpressionExtractor(program) {
@@ -163,16 +164,15 @@ public class BoogieFunctionConverter {
 
         methodProxy.getReturnType().apply(typeAccessExtractor);
         functionSignature.setOutputBinding(new OptionalBinding(typeAccessExtractor.getResult(), new Opt<>()));
-        functionDeclaration.setDeclarator(new Declarator(BoogieNameConverter.convertMethod(methodProxy)));
-        functionDeclaration.setSignature(functionSignature);
+        functionBuilder.name(BoogieNameConverter.convertMethod(methodProxy)).signature(functionSignature);
 
         for (Unit unit : methodProxy.getBody().getUnits()) {
             unit.apply(expressionExtractor);
         }
 
-        functionDeclaration.setExpression(expressionExtractor.getResult());
+        functionBuilder.expression(expressionExtractor.getResult());
 
-        return functionDeclaration;
+        return functionBuilder.build();
     }
 
 }

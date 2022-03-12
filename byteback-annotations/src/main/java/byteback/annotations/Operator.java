@@ -1,6 +1,8 @@
 package byteback.annotations;
 
-import byteback.annotations.Contract.Predicate;
+import byteback.annotations.Contract.Defined;
+import byteback.annotations.Contract.Pure;
+import byteback.annotations.Contract.Pure;
 
 /**
  * Utilities to aid the formulation of complex boolean expressions.
@@ -18,7 +20,8 @@ public interface Operator {
      * @param b Consequent of the implication.
      * @return {@code true} if {@code a -> b}.
      */
-    @Predicate
+    @Pure
+    @Defined("implies")
     public static boolean implies(final boolean a, final boolean b) {
         return !a || b;
     }
@@ -30,7 +33,8 @@ public interface Operator {
      * @param b Second statement.
      * @return {@code true} if {@code a <-> b}.
      */
-    @Predicate
+    @Pure
+    @Defined("iff")
     public static boolean iff(final boolean a, final boolean b) {
         return a == b;
     }
@@ -42,7 +46,8 @@ public interface Operator {
      * @param b Second operand.
      * @return {@code true} if {@code a && b}.
      */
-    @Predicate
+    @Pure
+    @Defined("and")
     public static boolean and(final boolean a, final boolean b) {
         return a && b;
     }
@@ -54,7 +59,8 @@ public interface Operator {
      * @param b Second operand.
      * @return {@code true} if {@code a || b}.
      */
-    @Predicate
+    @Pure
+    @Defined("or")
     public static boolean or(final boolean a, final boolean b) {
         return a || b;
     }
@@ -65,7 +71,8 @@ public interface Operator {
      * @param a Single operand.    
      * @return {@code true} if {@code !o}.
      */
-    @Predicate
+    @Pure
+    @Defined("not")
     public static boolean not(final boolean a) {
         return !a;
     }
@@ -77,8 +84,9 @@ public interface Operator {
      * @param b Second operand.
      * @return {@code true} if {@code a || b}.
      */
-    @Predicate
-    public static boolean equals(final Object a, final Object b) {
+    @Pure
+    @Defined("eq")
+    public static boolean eq(final Object a, final Object b) {
         return a.equals(b);
     }
 

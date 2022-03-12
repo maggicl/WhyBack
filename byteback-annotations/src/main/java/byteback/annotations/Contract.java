@@ -24,7 +24,16 @@ public interface Contract {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.METHOD })
-    public static @interface Predicate {
+    public static @interface Pure {
+    }
+
+    /**
+     * Declares that the function is already defined in the preamble.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD })
+    public static @interface Defined {
+        public String value();
     }
 
     /**

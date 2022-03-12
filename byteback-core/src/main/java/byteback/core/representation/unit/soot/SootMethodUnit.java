@@ -5,7 +5,6 @@ import soot.SootMethod;
 import soot.Type;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.VisibilityAnnotationTag;
-import soot.tagkit.VisibilityParameterAnnotationTag;
 
 import java.util.Collections;
 import java.util.Iterator;

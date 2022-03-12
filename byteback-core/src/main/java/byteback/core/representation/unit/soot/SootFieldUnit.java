@@ -2,11 +2,11 @@ package byteback.core.representation.unit.soot;
 
 import soot.SootField;
 
-public class SootFieldProxy {
+public class SootFieldUnit {
 
     private final SootField sootField;
 
-    public SootFieldProxy(final SootField sootField) {
+    public SootFieldUnit(final SootField sootField) {
         this.sootField = sootField;
     }
 

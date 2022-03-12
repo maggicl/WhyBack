@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import byteback.core.context.ClassLoadException;
-import byteback.core.representation.unit.soot.SootClassProxy;
+import byteback.core.representation.unit.soot.SootClassUnit;
 import org.junit.Test;
 
 import byteback.core.ResourcesUtil;
@@ -64,8 +64,8 @@ public class SootContextIntegrationTest extends SootContextFixture {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final String unitName = "byteback.dummy.Unit";
         getContext().prependClassPath(classPath);
-        final SootClassProxy sootClass = getContext().loadClass(unitName);
-        assertEquals(sootClass.getName(), unitName);
+        final SootClassUnit classUnit = getContext().loadClass(unitName);
+        assertEquals(classUnit.getName(), unitName);
     }
 
     @Test
@@ -74,8 +74,8 @@ public class SootContextIntegrationTest extends SootContextFixture {
         final Path classPath = ResourcesUtil.getJarPath("java8");
         final String unitName = "byteback.dummy.Unit";
         getContext().prependClassPath(classPath);
-        final SootClassProxy sootClass = getContext().loadClassAndSupport("byteback.dummy.Unit");
-        assertEquals(sootClass.getName(), unitName);
+        final SootClassUnit classUnit = getContext().loadClassAndSupport("byteback.dummy.Unit");
+        assertEquals(classUnit.getName(), unitName);
     }
 
     @Test(expected = ClassLoadException.class)
@@ -114,12 +114,12 @@ public class SootContextIntegrationTest extends SootContextFixture {
 
     @Test
     public void Classes_GivenUnloadedScene_ReturnsBasicClassesStream() {
-        assertTrue(getContext().classes().allMatch(SootClassProxy::isBasicClass));
+        assertTrue(getContext().classes().allMatch(SootClassUnit::isBasicClass));
     }
 
     @Test
     public void Classes_GivenUnloadedScene_ReturnsConcreteClassesStream() {
-        assertTrue(getContext().classes().noneMatch(SootClassProxy::isPhantomClass));
+        assertTrue(getContext().classes().noneMatch(SootClassUnit::isPhantomClass));
     }
 
     @Test

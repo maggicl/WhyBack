@@ -8,7 +8,7 @@ import soot.SootClass;
 /**
  * Wraps a {@link SootClass} intermediate representation.
  */
-public class SootClassProxy {
+public class SootClassUnit {
 
     private final SootClass sootClass;
 
@@ -17,7 +17,7 @@ public class SootClassProxy {
      *
      * @param sootClass The wrapped {@link SootClass} class.
      */
-    public SootClassProxy(final SootClass sootClass) {
+    public SootClassUnit(final SootClass sootClass) {
         this.sootClass = sootClass;
     }
 
@@ -65,10 +65,10 @@ public class SootClassProxy {
      *
      * @return The stream of method representations.
      */
-    public Stream<SootMethodProxy> methods() {
+    public Stream<SootMethodUnit> methods() {
         assert !isPhantomClass();
 
-        return sootClass.getMethods().stream().map(SootMethodProxy::new);
+        return sootClass.getMethods().stream().map((sootMethod) -> new SootMethodUnit(this, sootMethod));
     }
 
     /**
@@ -76,7 +76,7 @@ public class SootClassProxy {
      *
      * @return The stream of field representations.
      */
-    public Stream<SootFieldProxy> fields() {
+    public Stream<SootFieldUnit> fields() {
         assert !isPhantomClass();
 
         throw new UnsupportedOperationException();

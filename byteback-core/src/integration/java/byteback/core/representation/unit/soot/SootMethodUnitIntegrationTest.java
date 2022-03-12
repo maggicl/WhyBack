@@ -27,4 +27,11 @@ public class SootMethodUnitIntegrationTest extends SootMethodUnitFixture {
         assertEquals(2, methodUnit.getBody().getUnits().size());
     }
 
+    @Test
+    public void GetAnnotations_GivenIntegerMethodsIsEven_ReturnsPureAnnotation() {
+        final SootMethodUnit methodUnit = getMethodUnit("java8", "byteback.dummy.IntegerMethods", "isEven(int)");
+        assertEquals(1, methodUnit.getAnnotations().size());
+        assertEquals(methodUnit.getAnnotations().get(0).getName(), "Pure");
+    }
+
 }

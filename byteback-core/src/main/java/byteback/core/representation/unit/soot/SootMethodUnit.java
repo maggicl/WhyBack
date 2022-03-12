@@ -88,15 +88,4 @@ public class SootMethodUnit {
         }
     }
 
-    public List<VisibilityAnnotationTag> getParameterAnnotations() {
-        final VisibilityParameterAnnotationTag tag = (VisibilityParameterAnnotationTag) sootMethod
-                .getTag("VisibilityParameterAnnotationTag");
-
-        if (tag != null) {
-            return tag.getVisibilityAnnotations();
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
 }

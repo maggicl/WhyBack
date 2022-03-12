@@ -1,6 +1,7 @@
 package byteback.core.converter.soot.boogie;
 
 import byteback.core.representation.body.soot.SootExpressionVisitor;
+import byteback.core.representation.unit.soot.SootMethodUnit;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.AdditionOperation;
 import byteback.frontend.boogie.ast.DivisionOperation;
@@ -40,11 +41,10 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor {
 
     @Override
     public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
-        // TODO: Determine if invocation target is a procedure or a function in the program.
         final SootMethod method = invocation.getMethod();
+        final SootMethodUnit methodUnit = new SootMethodUnit(method);
         final FunctionReference functionReference = new FunctionReference();
-        // TODO: Infer method name based on argument types to support overloading.
-        functionReference.setAccessor(new Accessor(method.getName()));
+        functionReference.setAccessor(new Accessor(BoogieNameConverter.convertMethod(methodUnit)));
 
         for (Value argument : invocation.getArgs()) {
             BoogieExpressionExtractor extractor = instance();
@@ -92,7 +92,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor {
     }
 
     @Override
-    public void caseLocal(Local local) {
+    public void caseLocal(final Local local) {
         setExpression(new ValueReference(new Accessor(local.getName())));
     }
 

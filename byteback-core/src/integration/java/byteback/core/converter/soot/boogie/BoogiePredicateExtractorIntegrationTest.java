@@ -1,23 +1,23 @@
 package byteback.core.converter.soot.boogie;
 
+import byteback.core.representation.unit.soot.SootClassUnitFixture;
 import org.junit.Test;
 
-import byteback.core.representation.unit.soot.SootClassProxy;
-import byteback.core.representation.unit.soot.SootClassProxyFixture;
+import byteback.core.representation.unit.soot.SootClassUnit;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
 import byteback.frontend.boogie.ast.Program;
 
-public class BoogiePredicateExtractorIntegrationTest extends SootClassProxyFixture {
+public class BoogiePredicateExtractorIntegrationTest extends SootClassUnitFixture {
 
     @Test
     public void test() {
         final String integerPredicatesName = "byteback.dummy.IntegerPredicates";
-        final SootClassProxy representation = getClassProxy("java8", integerPredicatesName);
+        final SootClassUnit classUnit = getClassUnit("java8", integerPredicatesName);
         final Program program = new Program();
-        representation.methods().filter((method) -> method.getName().equals("equals"))
+        classUnit.methods().filter((method) -> method.getName().equals("equals"))
                 .forEach((method) -> {
-                    BoogieFunctionConverter converter = new BoogieFunctionConverter(program);
-                    FunctionDeclaration declaration = converter.convert(method);
+                    final BoogieFunctionConverter converter = new BoogieFunctionConverter(program);
+                    final FunctionDeclaration declaration = converter.convert(method);
                 });
     }
 

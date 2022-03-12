@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import byteback.core.representation.unit.soot.SootMethodProxy;
+import byteback.core.representation.unit.soot.SootMethodUnit;
 import byteback.core.util.CountingMap;
 import byteback.core.representation.body.soot.SootExpressionVisitor;
 import byteback.core.representation.body.soot.SootStatementVisitor;
@@ -78,6 +78,7 @@ public class BoogieFunctionConverter {
         private Expression expression;
 
         private final CountingMap<Local, Optional<Expression>> localExpressionIndex;
+
         private final Program program;
 
         public BoogieFunctionExpressionExtractor(final Program program) {
@@ -118,7 +119,7 @@ public class BoogieFunctionConverter {
 
             for (Map.Entry<Local, Integer> entry : localExpressionIndex.getAccessCount().entrySet()) {
                 if (entry.getValue() == 0) {
-                    log.warn("Local assignment {} unused in the final expansion of function", entry.getKey());
+                    log.warn("Local assignment {} unused in the final expansion", entry.getKey());
                 }
             }
 
@@ -138,7 +139,7 @@ public class BoogieFunctionConverter {
         this.program = program;
     }
 
-    public FunctionDeclaration convert(final SootMethodProxy methodProxy) {
+    public FunctionDeclaration convert(final SootMethodUnit methodProxy) {
         final FunctionDeclaration functionDeclaration = new FunctionDeclaration();
         final BoogieTypeAccessExtractor typeAccessExtractor = new BoogieTypeAccessExtractor(program);
         final FunctionSignature functionSignature = new FunctionSignature();
@@ -162,7 +163,7 @@ public class BoogieFunctionConverter {
 
         methodProxy.getReturnType().apply(typeAccessExtractor);
         functionSignature.setOutputBinding(new OptionalBinding(typeAccessExtractor.getResult(), new Opt<>()));
-        functionDeclaration.setDeclarator(new Declarator(methodProxy.getName()));
+        functionDeclaration.setDeclarator(new Declarator(BoogieNameConverter.convertMethod(methodProxy)));
         functionDeclaration.setSignature(functionSignature);
 
         for (Unit unit : methodProxy.getBody().getUnits()) {

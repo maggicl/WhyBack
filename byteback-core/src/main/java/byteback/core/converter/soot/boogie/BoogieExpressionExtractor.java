@@ -1,24 +1,29 @@
 package byteback.core.converter.soot.boogie;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import byteback.core.representation.body.soot.SootExpressionVisitor;
 import byteback.core.representation.unit.soot.SootMethodUnit;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.AdditionOperation;
+import byteback.frontend.boogie.ast.BinaryExpression;
 import byteback.frontend.boogie.ast.DivisionOperation;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.ModuloOperation;
 import byteback.frontend.boogie.ast.MultiplicationOperation;
 import byteback.frontend.boogie.ast.NumberLiteral;
+import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
 import soot.Local;
 import soot.SootMethod;
 import soot.Value;
 import soot.jimple.AddExpr;
+import soot.jimple.BinopExpr;
 import soot.jimple.DivExpr;
+import soot.jimple.DoubleConstant;
 import soot.jimple.IntConstant;
 import soot.jimple.MulExpr;
 import soot.jimple.RemExpr;
@@ -41,6 +46,18 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor {
         return new BoogieExpressionExtractor();
     }
 
+    public BinaryExpression binaryExpression(final BinopExpr sootExpression, final Supplier<? extends BinaryExpression> supplier) {
+        final BinaryExpression boogieExpression = supplier.get();
+        final BoogieExpressionExtractor leftExtractor = instance();
+        final BoogieExpressionExtractor rightExtractor = instance();
+        sootExpression.getOp1().apply(leftExtractor);
+        sootExpression.getOp2().apply(rightExtractor);
+        boogieExpression.setLeftOperand(leftExtractor.getResult());
+        boogieExpression.setRightOperand(rightExtractor.getResult());
+
+        return boogieExpression;
+    }
+
     @Override
     public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
         final SootMethod method = invocation.getMethod();
@@ -59,52 +76,37 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor {
 
     @Override
     public void caseAddExpr(final AddExpr addition) {
-        final BoogieExpressionExtractor leftExtractor = instance();
-        final BoogieExpressionExtractor rightExtractor = instance();
-        addition.getOp1().apply(leftExtractor);
-        addition.getOp2().apply(rightExtractor);
-        setExpression(new AdditionOperation(leftExtractor.getResult(), rightExtractor.getResult()));
+        setExpression(binaryExpression(addition, () -> new AdditionOperation()));
     }
 
     @Override
     public void caseSubExpr(final SubExpr subtraction) {
-        final BoogieExpressionExtractor leftExtractor = instance();
-        final BoogieExpressionExtractor rightExtractor = instance();
-        subtraction.getOp1().apply(leftExtractor);
-        subtraction.getOp2().apply(rightExtractor);
-        setExpression(new SubtractionOperation(leftExtractor.getResult(), rightExtractor.getResult()));
+        setExpression(binaryExpression(subtraction, () -> new SubtractionOperation()));
     }
 
     @Override
     public void caseDivExpr(final DivExpr division) {
-        final BoogieExpressionExtractor leftExtractor = instance();
-        final BoogieExpressionExtractor rightExtractor = instance();
-        division.getOp1().apply(leftExtractor);
-        division.getOp2().apply(rightExtractor);
-        setExpression(new DivisionOperation(leftExtractor.getResult(), rightExtractor.getResult()));
+        setExpression(binaryExpression(division, () -> new DivisionOperation()));
     }
 
     @Override
     public void caseMulExpr(final MulExpr multiplication) {
-        final BoogieExpressionExtractor leftExtractor = instance();
-        final BoogieExpressionExtractor rightExtractor = instance();
-        multiplication.getOp1().apply(leftExtractor);
-        multiplication.getOp2().apply(rightExtractor);
-        setExpression(new MultiplicationOperation(leftExtractor.getResult(), rightExtractor.getResult()));
+        setExpression(binaryExpression(multiplication, () -> new MultiplicationOperation()));
     }
 
     @Override
     public void caseRemExpr(final RemExpr modulo) {
-        final BoogieExpressionExtractor leftExtractor = instance();
-        final BoogieExpressionExtractor rightExtractor = instance();
-        modulo.getOp1().apply(leftExtractor);
-        modulo.getOp2().apply(rightExtractor);
-        setExpression(new ModuloOperation(leftExtractor.getResult(), rightExtractor.getResult()));
+        setExpression(binaryExpression(modulo, () -> new ModuloOperation()));
     }
 
     @Override
     public void caseIntConstant(final IntConstant intConstant) {
-        setExpression(new NumberLiteral(String.valueOf(intConstant.value)));
+        setExpression(new NumberLiteral(intConstant.toString()));
+    }
+
+    @Override
+    public void caseDoubleConstant(final DoubleConstant doubleConstant) {
+        setExpression(new RealLiteral(doubleConstant.toString()));
     }
 
     @Override
@@ -114,7 +116,8 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor {
 
     @Override
     public void caseDefault(final Value expression) {
-        throw new UnsupportedOperationException("Unable to convert Jimple expression of type " + expression.getClass() + " to Boogie");
+        throw new UnsupportedOperationException(
+                "Unable to convert Jimple expression of type " + expression.getClass() + " to Boogie");
     }
 
     @Override

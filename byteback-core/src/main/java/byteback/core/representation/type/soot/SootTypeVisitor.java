@@ -9,7 +9,6 @@ import soot.TypeSwitch;
  */
 public abstract class SootTypeVisitor extends TypeSwitch implements Visitor<Type> {
 
-    @SuppressWarnings("deprecation")
     @Override
     public abstract void caseDefault(Type type);
 

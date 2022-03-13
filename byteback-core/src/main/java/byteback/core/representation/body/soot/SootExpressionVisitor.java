@@ -1,11 +1,12 @@
 package byteback.core.representation.body.soot;
 
 import byteback.core.representation.Visitor;
+import soot.Value;
 import soot.jimple.AbstractJimpleValueSwitch;
-import soot.jimple.Expr;
 
-/**
- * Base class for a {@link SootExpression} visitor.
- */
-public abstract class SootExpressionVisitor extends AbstractJimpleValueSwitch implements Visitor<Expr> {
+public abstract class SootExpressionVisitor extends AbstractJimpleValueSwitch implements Visitor<Value> {
+
+    public void defaultCase(Object object) {
+        caseDefault((Value) object);
+    }
 }

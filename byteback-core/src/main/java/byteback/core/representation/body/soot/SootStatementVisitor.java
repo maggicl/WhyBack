@@ -6,4 +6,8 @@ import soot.jimple.AbstractStmtSwitch;
 
 public abstract class SootStatementVisitor extends AbstractStmtSwitch implements Visitor<Unit> {
 
+    public void defaultCase(Object object) {
+        caseDefault((Unit) object);
+    }
+    
 }

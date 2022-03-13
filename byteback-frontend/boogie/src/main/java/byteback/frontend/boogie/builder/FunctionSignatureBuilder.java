@@ -1,3 +1,5 @@
+package byteback.frontend.boogie.builder;
+
 import java.util.Optional;
 
 import byteback.frontend.boogie.ast.FunctionSignature;
@@ -21,6 +23,8 @@ public class FunctionSignatureBuilder extends DeclarationBuilder {
 
     public FunctionSignatureBuilder addTypeParameter(final TypeParameter typeParameter) {
         this.typeParameters.add(typeParameter);
+
+        return this;
     }
 
     public FunctionSignatureBuilder addInputBinding(final OptionalBinding inputBinding) {
@@ -31,6 +35,8 @@ public class FunctionSignatureBuilder extends DeclarationBuilder {
 
     public FunctionSignatureBuilder outputBinding(final OptionalBinding optionalBinding) {
         outputBindingParameter = Optional.of(optionalBinding);
+
+        return this;
     }
 
     public FunctionSignature build() {

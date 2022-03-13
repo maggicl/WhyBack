@@ -58,4 +58,9 @@ public class SootType implements Visitable<SootTypeVisitor> {
         return object instanceof SootType && getNumber() == ((SootType) object).getNumber();
     }
 
+    @Override
+    public String toString() {
+        return sootType.toString();
+    }
+
 }

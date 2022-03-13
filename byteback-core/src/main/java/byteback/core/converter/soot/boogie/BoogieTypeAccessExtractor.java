@@ -1,9 +1,10 @@
 package byteback.core.converter.soot.boogie;
 
+import java.util.Optional;
+
 import byteback.core.representation.type.soot.SootTypeVisitor;
 import byteback.frontend.boogie.ast.BooleanTypeAccess;
 import byteback.frontend.boogie.ast.IntegerTypeAccess;
-import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.TypeAccess;
 import soot.BooleanType;
 import soot.IntType;
@@ -11,16 +12,10 @@ import soot.Type;
 
 public class BoogieTypeAccessExtractor extends SootTypeVisitor {
 
-    private TypeAccess typeAccess;
-
-    private final Program program;
-
-    public BoogieTypeAccessExtractor(final Program program) {
-        this.program = program;
-    }
+    private Optional<TypeAccess> typeAccess;
 
     public void setTypeAccess(final TypeAccess typeAccess) {
-        this.typeAccess = typeAccess;
+        this.typeAccess = Optional.of(typeAccess);
     }
 
     @Override
@@ -40,7 +35,9 @@ public class BoogieTypeAccessExtractor extends SootTypeVisitor {
 
     @Override
     public TypeAccess getResult() {
-        return typeAccess;
+        return typeAccess.orElseThrow(() -> {
+            throw new IllegalStateException("Cannot retrieve resulting value");
+        });
     }
 
 }

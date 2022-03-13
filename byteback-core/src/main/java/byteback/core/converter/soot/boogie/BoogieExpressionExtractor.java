@@ -1,5 +1,7 @@
 package byteback.core.converter.soot.boogie;
 
+import java.util.Optional;
+
 import byteback.core.representation.body.soot.SootExpressionVisitor;
 import byteback.core.representation.unit.soot.SootMethodUnit;
 import byteback.frontend.boogie.ast.Accessor;
@@ -7,8 +9,9 @@ import byteback.frontend.boogie.ast.AdditionOperation;
 import byteback.frontend.boogie.ast.DivisionOperation;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionReference;
+import byteback.frontend.boogie.ast.ModuloOperation;
 import byteback.frontend.boogie.ast.MultiplicationOperation;
-import byteback.frontend.boogie.ast.Program;
+import byteback.frontend.boogie.ast.NumberLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
 import soot.Local;
@@ -16,27 +19,26 @@ import soot.SootMethod;
 import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.DivExpr;
-import soot.jimple.Expr;
+import soot.jimple.IntConstant;
 import soot.jimple.MulExpr;
+import soot.jimple.RemExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.SubExpr;
 
 public class BoogieExpressionExtractor extends SootExpressionVisitor {
 
-    protected Expression expression;
+    protected Optional<Expression> expression;
 
-    protected final Program program;
-
-    public BoogieExpressionExtractor(final Program program) {
-        this.program = program;
+    public BoogieExpressionExtractor() {
+        this.expression = Optional.empty();
     }
 
     public void setExpression(final Expression expression) {
-        this.expression = expression;
+        this.expression = Optional.of(expression);
     }
 
     public BoogieExpressionExtractor instance() {
-        return new BoogieExpressionExtractor(program);
+        return new BoogieExpressionExtractor();
     }
 
     @Override
@@ -44,7 +46,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor {
         final SootMethod method = invocation.getMethod();
         final SootMethodUnit methodUnit = new SootMethodUnit(method);
         final FunctionReference functionReference = new FunctionReference();
-        functionReference.setAccessor(new Accessor(BoogieNameConverter.convertMethod(methodUnit)));
+        functionReference.setAccessor(new Accessor(BoogieNameConverter.methodName(methodUnit)));
 
         for (Value argument : invocation.getArgs()) {
             BoogieExpressionExtractor extractor = instance();
@@ -92,18 +94,34 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor {
     }
 
     @Override
+    public void caseRemExpr(final RemExpr modulo) {
+        final BoogieExpressionExtractor leftExtractor = instance();
+        final BoogieExpressionExtractor rightExtractor = instance();
+        modulo.getOp1().apply(leftExtractor);
+        modulo.getOp2().apply(rightExtractor);
+        setExpression(new ModuloOperation(leftExtractor.getResult(), rightExtractor.getResult()));
+    }
+
+    @Override
+    public void caseIntConstant(final IntConstant intConstant) {
+        setExpression(new NumberLiteral(String.valueOf(intConstant.value)));
+    }
+
+    @Override
     public void caseLocal(final Local local) {
         setExpression(new ValueReference(new Accessor(local.getName())));
     }
 
     @Override
-    public void caseDefault(final Expr expression) {
+    public void caseDefault(final Value expression) {
         throw new UnsupportedOperationException("Unable to convert Jimple expression of type " + expression.getClass() + " to Boogie");
     }
 
     @Override
     public Expression getResult() {
-        return expression;
+        return expression.orElseThrow(() -> {
+            throw new IllegalStateException("Cannot retrieve resulting value");
+        });
     }
 
 }

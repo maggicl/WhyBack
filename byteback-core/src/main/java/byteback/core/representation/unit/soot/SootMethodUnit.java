@@ -1,6 +1,5 @@
 package byteback.core.representation.unit.soot;
 
-import soot.Body;
 import soot.SootMethod;
 import soot.Type;
 import soot.tagkit.AnnotationTag;
@@ -11,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import byteback.core.representation.body.soot.SootBody;
 import byteback.core.representation.type.soot.SootType;
 
 public class SootMethodUnit {
@@ -57,16 +57,16 @@ public class SootMethodUnit {
         return builder.toString();
     }
 
-    public Body getBody() {
-        return sootMethod.retrieveActiveBody();
-    }
-
     public List<SootType> getParameterTypes() {
         return sootMethod.getParameterTypes().stream().map((type) -> new SootType(type)).collect(Collectors.toList());
     }
 
     public SootType getReturnType() {
         return new SootType(sootMethod.getReturnType());
+    }
+
+    public SootBody getBody() {
+        return new SootBody(sootMethod.retrieveActiveBody());
     }
 
     public SootClassUnit getClassUnit() {

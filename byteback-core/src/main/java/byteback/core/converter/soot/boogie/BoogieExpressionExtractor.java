@@ -113,7 +113,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
     @Override
     public Expression result() {
         if (expression == null) {
-            throw new IllegalStateException("Could not retrieve local reference");
+            throw new IllegalStateException("Could not retrieve expression");
         } else {
             return expression;
         }

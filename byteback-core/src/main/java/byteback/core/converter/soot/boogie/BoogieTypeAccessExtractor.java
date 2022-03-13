@@ -10,12 +10,12 @@ import soot.BooleanType;
 import soot.IntType;
 import soot.Type;
 
-public class BoogieTypeAccessExtractor extends SootTypeVisitor {
+public class BoogieTypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
 
-    private Optional<TypeAccess> typeAccess;
+    private TypeAccess typeAccess;
 
     public void setTypeAccess(final TypeAccess typeAccess) {
-        this.typeAccess = Optional.of(typeAccess);
+        this.typeAccess = typeAccess;
     }
 
     @Override
@@ -34,10 +34,12 @@ public class BoogieTypeAccessExtractor extends SootTypeVisitor {
     }
 
     @Override
-    public TypeAccess getResult() {
-        return typeAccess.orElseThrow(() -> {
-            throw new IllegalStateException("Cannot retrieve resulting value");
-        });
+    public TypeAccess result() {
+        if (typeAccess == null) {
+            throw new IllegalStateException("Could not retrieve type access");
+        } else {
+            return typeAccess;
+        }
     }
 
 }

@@ -2,7 +2,7 @@ package byteback.core.representation.body.soot;
 
 import byteback.core.representation.Visitable;
 
-public class SootStatement implements Visitable<SootStatementVisitor> {
+public class SootStatement implements Visitable<SootStatementVisitor<?>> {
 
     private final soot.Unit sootUnit;
 
@@ -11,7 +11,7 @@ public class SootStatement implements Visitable<SootStatementVisitor> {
     }
 
     @Override
-    public void apply(final SootStatementVisitor visitor) {
+    public void apply(final SootStatementVisitor<?> visitor) {
         sootUnit.apply(visitor);
     }
 

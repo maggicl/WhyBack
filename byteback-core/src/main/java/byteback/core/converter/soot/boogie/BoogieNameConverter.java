@@ -6,8 +6,6 @@ import byteback.core.representation.type.soot.SootType;
 
 public class BoogieNameConverter {
 
-    
-
     static String methodName(SootMethodUnit methodUnit) {
         final StringBuilder builder = new StringBuilder();
         final Iterator<SootType> typeIterator = methodUnit.getParameterTypes().iterator();

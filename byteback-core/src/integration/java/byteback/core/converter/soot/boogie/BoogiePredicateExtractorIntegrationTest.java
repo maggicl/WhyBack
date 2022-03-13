@@ -17,7 +17,7 @@ public class BoogiePredicateExtractorIntegrationTest extends SootClassUnitFixtur
                 .forEach((method) -> {
                     final BoogieFunctionExtractor extractor = new BoogieFunctionExtractor();
                     extractor.convert(method);
-                    FunctionDeclaration declaration = extractor.getResult();
+                    FunctionDeclaration declaration = extractor.result();
                     StringBuilder builder = new StringBuilder();
                     declaration.print(builder);
                     System.out.println("--------------------------");

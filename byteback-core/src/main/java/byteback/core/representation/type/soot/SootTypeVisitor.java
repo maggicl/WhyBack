@@ -7,7 +7,7 @@ import soot.TypeSwitch;
 /**
  * Base class for a {@link SootType} visitor.
  */
-public abstract class SootTypeVisitor extends TypeSwitch implements Visitor<Type> {
+public abstract class SootTypeVisitor<R> extends TypeSwitch implements Visitor<Type, R> {
 
     @Override
     public abstract void caseDefault(Type type);

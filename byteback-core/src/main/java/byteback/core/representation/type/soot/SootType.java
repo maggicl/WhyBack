@@ -10,7 +10,7 @@ import byteback.core.representation.Visitable;
  * wrappers. For now this wrapping is not considered necessary, as there are no
  * features that are planned to be added to the Soot type hierarchy.
  */
-public class SootType implements Visitable<SootTypeVisitor> {
+public class SootType implements Visitable<SootTypeVisitor<?>> {
 
     private final soot.Type sootType;
 
@@ -42,7 +42,7 @@ public class SootType implements Visitable<SootTypeVisitor> {
      * @param visitor The visitor to be applied.
      */
     @Override
-    public void apply(final SootTypeVisitor visitor) {
+    public void apply(final SootTypeVisitor<?> visitor) {
         sootType.apply(visitor);
     }
 

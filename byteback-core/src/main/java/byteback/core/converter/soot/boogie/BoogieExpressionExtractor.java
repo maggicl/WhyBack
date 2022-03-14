@@ -5,7 +5,9 @@ import java.util.Optional;
 import byteback.core.representation.body.soot.SootExpression;
 import byteback.core.representation.body.soot.SootExpressionVisitor;
 import byteback.core.representation.unit.soot.SootAnnotation;
+import byteback.core.representation.unit.soot.SootAnnotationElement;
 import byteback.core.representation.unit.soot.SootMethodUnit;
+import byteback.core.representation.unit.soot.SootAnnotationElement.StringElementExtractor;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.AdditionOperation;
 import byteback.frontend.boogie.ast.BinaryExpression;
@@ -69,13 +71,16 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 
         setExpression(functionReference);
     }
-
+    
     @Override
     public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
         final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
-        final Optional<SootAnnotation> definedAnnotation = methodUnit.getAnnotation("Lbyteback/annotations/Contract$Defined;");
-        System.out.println(definedAnnotation.get().getValue());
-        setFunctionReference(invocation, "eq");
+        final Optional<SootAnnotation> definedAnnotation = methodUnit
+                .getAnnotation("Lbyteback/annotations/Contract$Defined;");
+        final Optional<String> definedValue = definedAnnotation.flatMap(SootAnnotation::getValue)
+                .flatMap((element) -> Optional.of(new StringElementExtractor().visit(element)));
+
+        setFunctionReference(invocation, definedValue.orElseGet(() -> BoogieNameConverter.methodName(methodUnit)));
     }
 
     @Override

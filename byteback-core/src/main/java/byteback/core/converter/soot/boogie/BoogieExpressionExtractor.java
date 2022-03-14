@@ -36,7 +36,6 @@ import soot.jimple.OrExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.SubExpr;
-import soot.tagkit.AnnotationTag;
 
 public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression> {
 
@@ -75,8 +74,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
     public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
         final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
         final Optional<SootAnnotation> definedAnnotation = methodUnit.getAnnotation("Lbyteback/annotations/Contract$Defined;");
-        System.out.println(definedAnnotation.get());
-
+        System.out.println(definedAnnotation.get().getValue());
         setFunctionReference(invocation, "eq");
     }
 

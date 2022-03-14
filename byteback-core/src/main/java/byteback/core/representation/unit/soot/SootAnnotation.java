@@ -1,5 +1,6 @@
 package byteback.core.representation.unit.soot;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
 
 import soot.tagkit.AnnotationTag;
@@ -16,8 +17,8 @@ public class SootAnnotation {
         return tag.getType();
     }
 
-    public Optional<String> getValue() {
-        return Optional.of(new String(tag.getValue()));
+    public Optional<ByteBuffer> getValue() {
+        return Optional.of(ByteBuffer.wrap(tag.getValue()));
     }
     
 }

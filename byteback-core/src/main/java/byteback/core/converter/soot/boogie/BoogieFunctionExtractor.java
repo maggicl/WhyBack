@@ -47,27 +47,6 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 
     }
 
-    private static class BoogieInlineExtractor extends BoogieExpressionExtractor {
-
-        private final Map<Local, Optional<Expression>> localExpressionIndex;
-
-        public BoogieInlineExtractor(final Map<Local, Optional<Expression>> localExpressionIndex) {
-            this.localExpressionIndex = localExpressionIndex;
-        }
-
-        @Override
-        public BoogieInlineExtractor instance() {
-            return new BoogieInlineExtractor(localExpressionIndex);
-        }
-
-        @Override
-        public void caseLocal(final Local local) {
-            final Optional<Expression> expressionOptional = localExpressionIndex.get(local);
-            expressionOptional.ifPresentOrElse(this::setExpression, () -> super.caseLocal(local));
-        }
-
-    }
-
     private final FunctionDeclarationBuilder functionBuilder;
 
     private final FunctionSignatureBuilder signatureBuilder;

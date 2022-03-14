@@ -19,7 +19,7 @@ application {
 def copyResources = tasks.register("copyResources", Copy) {
     def jars = []
     project(":byteback-dummy").subprojects.each { dummy ->
-        jars += dummy.jar
+        jars += dummy.shadowJar
     }
     from jars
     into "src/integration/resources/compiled/"

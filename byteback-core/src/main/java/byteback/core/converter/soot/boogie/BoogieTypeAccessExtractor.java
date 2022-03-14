@@ -1,7 +1,5 @@
 package byteback.core.converter.soot.boogie;
 
-import java.util.Optional;
-
 import byteback.core.representation.type.soot.SootTypeVisitor;
 import byteback.frontend.boogie.ast.BooleanTypeAccess;
 import byteback.frontend.boogie.ast.IntegerTypeAccess;

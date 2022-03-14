@@ -28,7 +28,7 @@ public class ResourcesUtil {
      * @throws FileNotFoundException If the resource could not be located.
      */
     public static Path getJarPath(final String jarName) throws FileNotFoundException {
-        final Path jarPath = compiledPath.resolve(jarName + ".jar");
+        final Path jarPath = compiledPath.resolve(jarName + "-all.jar");
 
         if (Files.exists(jarPath)) {
             return jarPath;

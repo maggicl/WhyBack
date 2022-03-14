@@ -2,13 +2,13 @@ package byteback.core.representation.unit.soot;
 
 import soot.SootMethod;
 import soot.Type;
-import soot.tagkit.AnnotationTag;
 import soot.tagkit.VisibilityAnnotationTag;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import byteback.core.representation.body.soot.SootBody;
 import byteback.core.representation.type.soot.SootType;
@@ -77,14 +77,22 @@ public class SootMethodUnit {
         return sootMethod;
     }
 
-    public List<AnnotationTag> getAnnotations() {
+    public Stream<SootAnnotation> annotations() {
         final VisibilityAnnotationTag tag = (VisibilityAnnotationTag) sootMethod.getTag("VisibilityAnnotationTag");
 
         if (tag != null) {
-            return tag.getAnnotations();
+            return tag.getAnnotations().stream().map(SootAnnotation::new);
         } else {
-            return Collections.emptyList();
+            return Stream.empty();
         }
+    }
+
+    public Optional<SootAnnotation> getAnnotation(final String type) {
+        return annotations().filter((tag) -> tag.getTypeName().equals(type)).findFirst();
+    }
+
+    public boolean hasAnnotation(final String type) {
+        return getAnnotation(type).isPresent();
     }
 
 }

@@ -4,16 +4,20 @@ import java.util.Optional;
 
 import byteback.core.representation.body.soot.SootExpression;
 import byteback.core.representation.body.soot.SootExpressionVisitor;
+import byteback.core.representation.unit.soot.SootAnnotation;
 import byteback.core.representation.unit.soot.SootMethodUnit;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.AdditionOperation;
 import byteback.frontend.boogie.ast.BinaryExpression;
 import byteback.frontend.boogie.ast.DivisionOperation;
+import byteback.frontend.boogie.ast.EqualsOperation;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.ModuloOperation;
 import byteback.frontend.boogie.ast.MultiplicationOperation;
+import byteback.frontend.boogie.ast.NegationOperation;
 import byteback.frontend.boogie.ast.NumberLiteral;
+import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
@@ -23,11 +27,16 @@ import soot.jimple.AddExpr;
 import soot.jimple.BinopExpr;
 import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
+import soot.jimple.EqExpr;
 import soot.jimple.IntConstant;
+import soot.jimple.InvokeExpr;
 import soot.jimple.MulExpr;
+import soot.jimple.NegExpr;
+import soot.jimple.OrExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.SubExpr;
+import soot.tagkit.AnnotationTag;
 
 public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression> {
 
@@ -50,11 +59,9 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
         return boogieExpression;
     }
 
-    @Override
-    public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
-        final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
+    public void setFunctionReference(final InvokeExpr invocation, final String methodName) {
         final FunctionReference functionReference = new FunctionReference();
-        functionReference.setAccessor(new Accessor(BoogieNameConverter.methodName(methodUnit)));
+        functionReference.setAccessor(new Accessor(methodName));
 
         for (Value argument : invocation.getArgs()) {
             final SootExpression sootExpression = new SootExpression(argument);
@@ -62,6 +69,15 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
         }
 
         setExpression(functionReference);
+    }
+
+    @Override
+    public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
+        final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
+        final Optional<SootAnnotation> definedAnnotation = methodUnit.getAnnotation("Lbyteback/annotations/Contract$Defined;");
+        System.out.println(definedAnnotation.get());
+
+        setFunctionReference(invocation, "eq");
     }
 
     @Override
@@ -87,6 +103,22 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
     @Override
     public void caseRemExpr(final RemExpr modulo) {
         setExpression(binaryExpression(modulo, new ModuloOperation()));
+    }
+
+    @Override
+    public void caseNegExpr(final NegExpr negation) {
+        final SootExpression operand = new SootExpression(negation.getOp());
+        setExpression(new NegationOperation(instance().visit(operand)));
+    }
+
+    @Override
+    public void caseOrExpr(final OrExpr or) {
+        setExpression(binaryExpression(or, new OrOperation()));
+    }
+
+    @Override
+    public void caseEqExpr(final EqExpr equality) {
+        setExpression(binaryExpression(equality, new EqualsOperation()));
     }
 
     @Override

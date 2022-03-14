@@ -1,5 +1,6 @@
 plugins {
     id 'byteback.java-common-conventions'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 java {

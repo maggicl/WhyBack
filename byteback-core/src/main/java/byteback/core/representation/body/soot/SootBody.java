@@ -25,4 +25,9 @@ public class SootBody implements Visitable<SootStatementVisitor<?>> {
         }
     }
 
+    @Override
+    public String toString() {
+        return sootBody.toString();
+    }
+
 }

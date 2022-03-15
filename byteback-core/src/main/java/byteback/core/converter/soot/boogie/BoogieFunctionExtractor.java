@@ -65,10 +65,11 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
         this(new FunctionDeclarationBuilder());
     }
 
-    public void convert(final SootMethodUnit methodUnit) {
+    public FunctionDeclaration convert(final SootMethodUnit methodUnit) {
         this.methodUnit = methodUnit;
         functionBuilder.name(BoogieNameConverter.methodName(methodUnit));
         methodUnit.getBody().apply(this);
+        return result();
     }
 
     @Override

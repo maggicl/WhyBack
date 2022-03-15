@@ -14,7 +14,7 @@ public abstract class SootTypeVisitor<R> extends TypeSwitch implements Visitor<T
 
     @Override
     public void defaultCase(Type type) {
-        caseDefault((Type) type);
+        caseDefault(type);
     }
 
 }

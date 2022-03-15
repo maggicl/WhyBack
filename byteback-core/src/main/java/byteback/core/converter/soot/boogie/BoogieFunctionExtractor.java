@@ -47,6 +47,8 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 
     }
 
+    private SootMethodUnit methodUnit;
+
     private final FunctionDeclarationBuilder functionBuilder;
 
     private final FunctionSignatureBuilder signatureBuilder;
@@ -64,6 +66,7 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
     }
 
     public void convert(final SootMethodUnit methodUnit) {
+        this.methodUnit = methodUnit;
         functionBuilder.name(BoogieNameConverter.methodName(methodUnit));
         methodUnit.getBody().apply(this);
     }
@@ -94,8 +97,9 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
     @Override
     public void caseReturnStmt(final ReturnStmt returns) {
         final SootExpression operand = new SootExpression(returns.getOp());
-        final Local local = new LocalExtractor().visit(operand);
-        final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(new SootType(local.getType()));
+        final Expression expression = new BoogieInlineExtractor(methodUnit.getReturnType(), localExpressionIndex)
+                .visit(operand);
+        final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(methodUnit.getReturnType());
         final OptionalBinding binding = new OptionalBinding();
 
         for (Map.Entry<Local, Integer> entry : localExpressionIndex.getAccessCount().entrySet()) {
@@ -106,10 +110,7 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 
         binding.setTypeAccess(typeAccess);
         signatureBuilder.outputBinding(binding);
-        functionBuilder.signature(signatureBuilder.build())
-                .expression(localExpressionIndex.get(local).orElseThrow(() -> {
-                    throw new IllegalArgumentException("Cannot inline final statement " + returns);
-                }));
+        functionBuilder.signature(signatureBuilder.build()).expression(expression);
     }
 
     @Override

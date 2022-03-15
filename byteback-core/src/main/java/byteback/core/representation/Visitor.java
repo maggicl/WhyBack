@@ -4,7 +4,9 @@ public interface Visitor<T, R> {
 
     void caseDefault(T argument);
 
-    R result();
+    default R result() {
+        return null;
+    }
 
     @SuppressWarnings("unchecked")
     default <S extends Visitor<T, ?>> R visit(final Visitable<S> visitable) {

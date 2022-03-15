@@ -86,7 +86,8 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
         final SootExpression left = new SootExpression(assignment.getLeftOp());
         final SootExpression right = new SootExpression(assignment.getRightOp());
         final Local local = new LocalExtractor().visit(left);
-        final Expression expression = new BoogieInlineExtractor(localExpressionIndex).visit(right);
+        final Expression expression = new BoogieInlineExtractor(new SootType(local.getType()), localExpressionIndex)
+                .visit(right);
         localExpressionIndex.put(local, Optional.of(expression));
     }
 

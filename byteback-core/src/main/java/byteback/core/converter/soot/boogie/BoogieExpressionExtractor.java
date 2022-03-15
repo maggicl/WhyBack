@@ -4,13 +4,16 @@ import java.util.Optional;
 
 import byteback.core.representation.body.soot.SootExpression;
 import byteback.core.representation.body.soot.SootExpressionVisitor;
+import byteback.core.representation.type.soot.SootType;
+import byteback.core.representation.type.soot.SootTypeVisitor;
 import byteback.core.representation.unit.soot.SootAnnotation;
-import byteback.core.representation.unit.soot.SootAnnotationElement;
 import byteback.core.representation.unit.soot.SootMethodUnit;
 import byteback.core.representation.unit.soot.SootAnnotationElement.StringElementExtractor;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.AdditionOperation;
+import byteback.frontend.boogie.ast.AndOperation;
 import byteback.frontend.boogie.ast.BinaryExpression;
+import byteback.frontend.boogie.ast.BooleanLiteral;
 import byteback.frontend.boogie.ast.DivisionOperation;
 import byteback.frontend.boogie.ast.EqualsOperation;
 import byteback.frontend.boogie.ast.Expression;
@@ -23,9 +26,12 @@ import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
+import soot.BooleanType;
 import soot.Local;
+import soot.Type;
 import soot.Value;
 import soot.jimple.AddExpr;
+import soot.jimple.AndExpr;
 import soot.jimple.BinopExpr;
 import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
@@ -43,21 +49,30 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 
     protected Expression expression;
 
+    protected final SootType type;
+
+    public BoogieExpressionExtractor(final SootType type) {
+        this.type = type;
+    }
+
     public void setExpression(final Expression expression) {
         this.expression = expression;
     }
 
-    public BoogieExpressionExtractor instance() {
-        return new BoogieExpressionExtractor();
+    public final BoogieExpressionExtractor subExpressionExtractor() {
+        return subExpressionExtractor(type);
     }
 
-    public BinaryExpression binaryExpression(final BinopExpr sootExpression, final BinaryExpression boogieExpression) {
+    public BoogieExpressionExtractor subExpressionExtractor(final SootType type) {
+        return new BoogieExpressionExtractor(type);
+    }
+
+    public void setBinaryExpression(final BinopExpr sootExpression, final BinaryExpression boogieBinary) {
         final SootExpression left = new SootExpression(sootExpression.getOp1());
         final SootExpression right = new SootExpression(sootExpression.getOp2());
-        boogieExpression.setLeftOperand(instance().visit(left));
-        boogieExpression.setRightOperand(instance().visit(right));
-
-        return boogieExpression;
+        boogieBinary.setLeftOperand(subExpressionExtractor().visit(left));
+        boogieBinary.setRightOperand(subExpressionExtractor().visit(right));
+        setExpression(boogieBinary);
     }
 
     public void setFunctionReference(final InvokeExpr invocation, final String methodName) {
@@ -65,13 +80,14 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
         functionReference.setAccessor(new Accessor(methodName));
 
         for (Value argument : invocation.getArgs()) {
-            final SootExpression sootExpression = new SootExpression(argument);
-            functionReference.addArgument(instance().visit(sootExpression));
+            final SootExpression expression = new SootExpression(argument);
+            final SootType type = new SootType(argument.getType());
+            functionReference.addArgument(subExpressionExtractor(type).visit(expression));
         }
 
         setExpression(functionReference);
     }
-    
+
     @Override
     public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
         final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
@@ -85,48 +101,89 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 
     @Override
     public void caseAddExpr(final AddExpr addition) {
-        setExpression(binaryExpression(addition, new AdditionOperation()));
+        setBinaryExpression(addition, new AdditionOperation());
     }
 
     @Override
     public void caseSubExpr(final SubExpr subtraction) {
-        setExpression(binaryExpression(subtraction, new SubtractionOperation()));
+        setBinaryExpression(subtraction, new SubtractionOperation());
     }
 
     @Override
     public void caseDivExpr(final DivExpr division) {
-        setExpression(binaryExpression(division, new DivisionOperation()));
+        setBinaryExpression(division, new DivisionOperation());
     }
 
     @Override
     public void caseMulExpr(final MulExpr multiplication) {
-        setExpression(binaryExpression(multiplication, new MultiplicationOperation()));
+        setBinaryExpression(multiplication, new MultiplicationOperation());
     }
 
     @Override
     public void caseRemExpr(final RemExpr modulo) {
-        setExpression(binaryExpression(modulo, new ModuloOperation()));
+        setBinaryExpression(modulo, new ModuloOperation());
     }
 
     @Override
     public void caseNegExpr(final NegExpr negation) {
         final SootExpression operand = new SootExpression(negation.getOp());
-        setExpression(new NegationOperation(instance().visit(operand)));
-    }
-
-    @Override
-    public void caseOrExpr(final OrExpr or) {
-        setExpression(binaryExpression(or, new OrOperation()));
-    }
-
-    @Override
-    public void caseEqExpr(final EqExpr equality) {
-        setExpression(binaryExpression(equality, new EqualsOperation()));
+        setExpression(new NegationOperation(subExpressionExtractor().visit(operand)));
     }
 
     @Override
     public void caseIntConstant(final IntConstant intConstant) {
-        setExpression(new NumberLiteral(intConstant.toString()));
+        type.apply(new SootTypeVisitor<>() {
+
+            @Override
+            public void caseBooleanType(final BooleanType type) {
+                setExpression(new BooleanLiteral(intConstant.value == 0 ? "true" : "false"));
+            }
+
+            @Override
+            public void caseDefault(final Type type) {
+                setExpression(new NumberLiteral(intConstant.toString()));
+            }
+
+        });
+    }
+
+    @Override
+    public void caseOrExpr(final OrExpr or) {
+        type.apply(new SootTypeVisitor<>() {
+
+            @Override
+            public void caseBooleanType(final BooleanType type) {
+                setBinaryExpression(or, new OrOperation());
+            }
+
+            @Override
+            public void caseDefault(final Type type) {
+                throw new IllegalArgumentException("Bitwise OR is currently not supported for type " + type);
+            }
+
+        });
+    }
+
+    @Override
+    public void caseAndExpr(final AndExpr and) {
+        type.apply(new SootTypeVisitor<>() {
+
+            @Override
+            public void caseBooleanType(final BooleanType type) {
+                setBinaryExpression(and, new AndOperation());
+            }
+
+            @Override
+            public void caseDefault(final Type type) {
+                throw new IllegalArgumentException("Bitwise AND is currently not supported for type " + type);
+            }
+
+        });
+    }
+
+    @Override
+    public void caseEqExpr(final EqExpr equality) {
+        setBinaryExpression(equality, new EqualsOperation());
     }
 
     @Override
@@ -148,6 +205,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
     @Override
     public Expression result() {
         if (expression == null) {
+            System.out.println(this);
             throw new IllegalStateException("Could not retrieve expression");
         } else {
             return expression;

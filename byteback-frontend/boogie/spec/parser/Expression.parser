@@ -209,11 +209,16 @@ MapAccessOperation map_update_operation
     ;
 
 Expression expression9
-    = literal
-    | symbolic_reference
-    | old_reference
-    | LPAREN quantifier_expression RPAREN
-    | LPAREN expression RPAREN
+    = literal.l
+    {: return l; :}
+    | symbolic_reference.r
+    {: return r; :}
+    | old_reference.o
+    {: return o; :}
+    | LPAREN quantifier_expression.qe RPAREN
+    {: return qe; :}
+    | LPAREN expression.e RPAREN
+    {: return e; :}
     ;
 
 QuantifierExpression quantifier_expression
@@ -243,8 +248,10 @@ QuantifierExpression quantifier_definition
     ;
 
 SymbolicReference symbolic_reference
-    = value_reference
-    | function_reference
+    = value_reference.r
+    {: return r; :}
+    | function_reference.r
+    {: return r; :}
     ;
 
 ValueReference value_reference

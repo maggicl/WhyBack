@@ -205,7 +205,6 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
     @Override
     public Expression result() {
         if (expression == null) {
-            System.out.println(this);
             throw new IllegalStateException("Could not retrieve expression");
         } else {
             return expression;

@@ -63,9 +63,9 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
         return new MethodIdentifier(className, methodIdentifier);
     }
 
-    public Stream<Program> getExpectedOutput(final String jarName, final String classification) {
+    public Stream<Program> getExpectedBoogiePrograms(final String jarName) {
         try {
-            final Stream<Path> paths = ResourcesUtil.getRegressionPaths(jarName, classification);
+            final Stream<Path> paths = ResourcesUtil.getBoogiePaths(jarName);
 
             return paths.flatMap((path) -> {
                 try {
@@ -82,7 +82,7 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
     }
 
     public Stream<RegressionEntry<FunctionDeclaration>> getFunctionEntries() {
-        final Stream<Program> programs = getExpectedOutput("java8", "boogie/function");
+        final Stream<Program> programs = getExpectedBoogiePrograms("java8");
 
         return programs.flatMap((program) -> {
             return program.functions().stream().flatMap((function) -> {

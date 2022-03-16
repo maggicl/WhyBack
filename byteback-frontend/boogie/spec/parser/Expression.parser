@@ -63,57 +63,67 @@ AndOperation and_operation
     ;
 
 Expression expression3
-    = expression4
-    | relational_operation
+    = expression4.e
+    {: return e; :}
+    | relational_operation.o
+    {: return o; :}
     ;
 
-RelationalOperation relational_operation
-    = equals_operation
-    | not_equals_operation
-    | less_than_operation
-    | greater_than_operation
-    | less_than_equals_operation
-    | greater_than_equals_operation
-    | partial_order_operation
+Expression relational_operation
+    = equals_operation.o
+    {: return o; :}
+    | not_equals_operation.o
+    {: return o; :}
+    | less_than_operation.o
+    {: return o; :}
+    | greater_than_operation.o
+    {: return o; :}
+    | less_than_equals_operation.o
+    {: return o; :}
+    | greater_than_equals_operation.o
+    {: return o; :}
+    | partial_order_operation.o
+    {: return o; :}
     ;
 
-RelationalOperation equals_operation
+Expression equals_operation
     = expression4.lhs EQUALS expression4.rhs
     {: return new EqualsOperation(lhs, rhs); :}
     ;
 
-RelationalOperation not_equals_operation
+Expression not_equals_operation
     = expression4.lhs NEQ expression4.rhs
     {: return new NotEqualsOperation(lhs, rhs); :}
     ;
 
-RelationalOperation less_than_operation
+Expression less_than_operation
     = expression4.lhs LT expression4.rhs
     {: return new LessThanOperation(lhs, rhs); :}
     ;
 
-RelationalOperation greater_than_operation
+Expression greater_than_operation
     = expression4.lhs GT expression4.rhs
     {: return new GreaterThanOperation(lhs, rhs); :}
     ;
 
-RelationalOperation less_than_equals_operation
+Expression less_than_equals_operation
     = expression4.lhs LTEQ expression4.rhs
     {: return new LessThanEqualsOperation(lhs, rhs); :}
     ;
 
-RelationalOperation greater_than_equals_operation
+Expression greater_than_equals_operation
     = expression4.lhs GTEQ expression4.rhs
     {: return new EqualsOperation(lhs, rhs); :}
     ;
 
-RelationalOperation partial_order_operation
+Expression partial_order_operation
     = expression4.lhs PARTORDER expression4.rhs
     {: return new PartialOrderOperation(lhs, rhs); :}
     ;
 
 Expression expression4
-    = expression5
+    = expression5.e
+    {: return e; :}
     | concatenation_operation
     ;
 
@@ -123,13 +133,17 @@ ConcatenationOperation concatenation_operation
     ;
 
 Expression expression5
-    = expression6
-    | addition_operation
+    = expression6.e
+    {: return e; :}
+    | addition_operation.o
+    {: return o; :}
     ;
 
-AdditionOperation addition_operation
+Expression addition_operation
     = expression5.lhs PLUS expression6.rhs
     {: return new AdditionOperation(lhs, rhs); :}
+    | expression5.lhs MINUS expression6.rhs
+    {: return new SubtractionOperation(lhs, rhs); :}
     ;
 
 Expression expression6

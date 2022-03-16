@@ -1,20 +1,11 @@
 package byteback.core;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import beaver.Parser;
-import byteback.frontend.boogie.ast.Program;
-import byteback.frontend.boogie.parser.BoogieParser;
-import byteback.frontend.boogie.scanner.BoogieLexer;
 
 /**
  * Utility class for accessing test resources.
@@ -50,8 +41,8 @@ public class ResourcesUtil {
         }
     }
 
-    public static Stream<Path> getRegressionPaths(final String jarName, final String type) throws IOException {
-        final Path regressionRoot = regressionPath.resolve(jarName).resolve(type);
+    public static Stream<Path> getBoogiePaths(final String jarName) throws IOException {
+        final Path regressionRoot = regressionPath.resolve(jarName).resolve("boogie");
 
         return Files.list(regressionRoot);
     }

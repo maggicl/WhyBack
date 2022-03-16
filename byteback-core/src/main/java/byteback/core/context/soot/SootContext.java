@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -158,10 +159,14 @@ public class SootContext implements Context<SootClassUnit> {
      * @param className Qualified name of the class.
      * @return The class corresponding to the given {@code className}.
      */
-    public SootClassUnit getClass(final String className) {
+    public Optional<SootClassUnit> getClass(final String className) {
         final SootClass sootClass = scene().getSootClass(className);
 
-        return new SootClassUnit(sootClass);
+        if (sootClass == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(new SootClassUnit(sootClass));
+        }
     }
 
     /**

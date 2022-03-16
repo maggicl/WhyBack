@@ -71,7 +71,7 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
                 try {
                     return Stream.of(ParserUtil.parseBoogieProgram(path));
                 } catch (final Exception exception) {
-                    log.error("Could not parse the program at {}", exception);
+                    log.error("Could not parse the program at {}", path, exception);
 
                     return Stream.empty();
                 }

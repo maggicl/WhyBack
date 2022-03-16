@@ -13,6 +13,7 @@ function byteback.dummy.IntegerMethods.multiplication#int#int#(a: int, b: int) r
     a * b
 }
 
+// TODO: Model integer division
 function byteback.dummy.IntegerMethods.division#int#int#(a: int, b: int) returns (int)
 {
     a / b
@@ -72,4 +73,9 @@ function byteback.dummy.IntegerMethods.nestedPlus#int#(a: int) returns (int)
 function byteback.dummy.IntegerMethods.assignPlusIndirectVariables#int#(a: int) returns (int)
 {
     a + 1 + 2 + 3 + 4 + 5
+}
+
+function byteback.dummy.IntegerMethods.commonSubExpressionPlus#int#(a: int) returns (int)
+{
+    (a + 1) + (a + 1)
 }

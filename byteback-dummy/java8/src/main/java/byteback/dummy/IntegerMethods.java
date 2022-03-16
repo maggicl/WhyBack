@@ -102,4 +102,12 @@ public class IntegerMethods {
         return f;
     }
 
+    @Pure
+    public static int commonSubExpressionPlus(int a) {
+        a = a + 1;
+        int b = a + a;
+
+        return b;
+    }
+
 }

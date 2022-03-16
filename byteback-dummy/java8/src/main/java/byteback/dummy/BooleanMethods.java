@@ -15,8 +15,8 @@ public class BooleanMethods {
     }
 
     @Pure
-    public static boolean negation(boolean a) {
-        return !a;
+    public static boolean xor(boolean a, boolean b) {
+        return a ^ b;
     }
 
 }

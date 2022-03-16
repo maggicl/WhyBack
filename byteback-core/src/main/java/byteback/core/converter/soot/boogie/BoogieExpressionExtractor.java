@@ -55,6 +55,7 @@ import soot.jimple.OrExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.SubExpr;
+import soot.jimple.XorExpr;
 
 public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression> {
 
@@ -169,6 +170,23 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
             @Override
             public void caseDefault(final Type type) {
                 throw new IllegalArgumentException("Bitwise AND is currently not supported for type " + type);
+            }
+
+        });
+    }
+
+    @Override
+    public void caseXorExpr(final XorExpr xor) {
+        type.apply(new SootTypeVisitor<>() {
+
+            @Override
+            public void caseBooleanType(final BooleanType type) {
+                setBinaryExpression(xor, new NotEqualsOperation());
+            }
+
+            @Override
+            public void caseDefault(final Type type) {
+                throw new IllegalArgumentException("Bitwise XOR is currently not supported for type " + type);
             }
 
         });

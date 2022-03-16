@@ -8,7 +8,7 @@ function byteback.dummy.BooleanMethods.and#boolean#boolean#(a: bool, b: bool) re
     a && b
 }
 
-function byteback.dummy.BooleanMethods.and#boolean#(a: bool) returns (bool)
+function byteback.dummy.BooleanMethods.xor#boolean#boolean#(a: bool, b: bool) returns(bool)
 {
-    !a
+    a != b
 }

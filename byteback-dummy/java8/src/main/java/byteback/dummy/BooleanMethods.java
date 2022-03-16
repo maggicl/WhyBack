@@ -14,4 +14,9 @@ public class BooleanMethods {
         return a & b;
     }
 
+    @Pure
+    public static boolean negation(boolean a) {
+        return !a;
+    }
+
 }

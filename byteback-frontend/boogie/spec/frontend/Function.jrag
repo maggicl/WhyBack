@@ -42,4 +42,11 @@ aspect Function {
     inh lazy Optional<Function> Accessor.lookupFunction(String name);
 
     eq Program.getChild().lookupFunction(String name) = lookupFunction(name);
+
+    /**
+     * Get declaration from function entity.
+     */
+    inh lazy FunctionDeclaration Function.declaration();
+
+    eq FunctionDeclaration.getFunction().declaration() = this;
 }

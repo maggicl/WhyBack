@@ -55,7 +55,6 @@ import soot.jimple.OrExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.SubExpr;
-import soot.jimple.ThisRef;
 
 public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression> {
 

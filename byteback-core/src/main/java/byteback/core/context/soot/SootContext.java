@@ -127,7 +127,7 @@ public class SootContext implements Context<SootClassUnit> {
 
             return new SootClassUnit(sootClass);
         } catch (AssertionError exception) {
-            log.error("Failed to load {}", className);
+            log.error("Failed to load {}", className, exception);
             throw new ClassLoadException(this, className);
         }
     }
@@ -147,9 +147,21 @@ public class SootContext implements Context<SootClassUnit> {
 
             return new SootClassUnit(sootClass);
         } catch (AssertionError exception) {
-            log.error("Failed to load {}", className);
+            log.error("Failed to load {}", className, exception);
             throw new ClassLoadException(this, className);
         }
+    }
+
+    /**
+     * Returns a class unit that was already loaded into the context
+     *
+     * @param className Qualified name of the class.
+     * @return The class corresponding to the given {@code className}.
+     */
+    public SootClassUnit getClass(final String className) {
+        final SootClass sootClass = scene().getSootClass(className);
+
+        return new SootClassUnit(sootClass);
     }
 
     /**

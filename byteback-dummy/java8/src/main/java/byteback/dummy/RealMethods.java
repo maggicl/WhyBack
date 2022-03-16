@@ -17,5 +17,9 @@ public class RealMethods {
     public static float multiplication(float a, float b) {
         return a * b;
     }
+
+    public static double circleArea(double r) {
+        return 3.14 * r * r;
+    }
     
 }

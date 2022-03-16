@@ -54,7 +54,7 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
         return new String(nameArray).replace("#", ",");
     }
 
-    public static MethodIdentifier javaMethodNameIdentifier(final String javaMethodName) {
+    public static MethodIdentifier javaMethodIdentifier(final String javaMethodName) {
         final String[] fullParts = javaMethodName.split("\\(");
         final String[] nameParts = fullParts[0].split("\\.");
         final String className = String.join(".", Arrays.copyOfRange(nameParts, 0, nameParts.length - 1));
@@ -72,6 +72,7 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
                     return Stream.of(ParserUtil.parseBoogieProgram(path));
                 } catch (final Exception exception) {
                     log.error("Could not parse the program at {}", exception);
+
                     return Stream.empty();
                 }
             });
@@ -82,14 +83,24 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
 
     public Stream<RegressionEntry<FunctionDeclaration>> getFunctionEntries() {
         final Stream<Program> programs = getExpectedOutput("java8", "boogie/function");
-        return programs.flatMap((program) -> {
-            return program.functions().stream().map((function) -> {
-                final FunctionDeclaration declaration = function.declaration();
-                final String javaName = toJavaMethodName(declaration.getDeclarator().getName());
-                final MethodIdentifier javaIdentifier = javaMethodNameIdentifier(javaName);
-                final SootMethodUnit methodUnit = getMethodUnit("java8", javaIdentifier.className, javaIdentifier.methodName);
 
-                return new RegressionEntry<>(declaration, new BoogieFunctionExtractor().convert(methodUnit));
+        return programs.flatMap((program) -> {
+            return program.functions().stream().flatMap((function) -> {
+                try {
+                    final FunctionDeclaration declaration = function.declaration();
+                    final String javaName = toJavaMethodName(declaration.getDeclarator().getName());
+                    final MethodIdentifier javaIdentifier = javaMethodIdentifier(javaName);
+                    final SootMethodUnit methodUnit = getMethodUnit("java8", javaIdentifier.className,
+                            javaIdentifier.methodName);
+                    final RegressionEntry<FunctionDeclaration> entry = new RegressionEntry<>(declaration,
+                            new BoogieFunctionExtractor().convert(methodUnit));
+
+                    return Stream.of(entry);
+                } catch (RuntimeException exception) {
+                    log.error("Error while loading function", exception);
+
+                    return Stream.empty();
+                }
             });
         });
     }

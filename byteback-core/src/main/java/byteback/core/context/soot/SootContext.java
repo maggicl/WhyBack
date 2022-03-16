@@ -79,6 +79,7 @@ public class SootContext implements Context<SootClassUnit> {
      * Configures Soot's parameters.
      */
     private void configure() {
+        options().setPhaseOption("jb", "use-original-names:true");
         options().set_output_format(Options.output_format_jimple);
         options().set_whole_program(true);
         scene().loadBasicClasses();

@@ -15,8 +15,6 @@ import byteback.core.representation.type.soot.SootType;
 
 public class SootMethodUnit {
 
-    private final SootClassUnit classUnit;
-
     private final SootMethod sootMethod;
 
     /**
@@ -25,13 +23,8 @@ public class SootMethodUnit {
      * @param classUnit The class unit corresponding to the method.
      * @param sootMethod The wrapped {@code SootMethod} instance.
      */
-    public SootMethodUnit(final SootClassUnit classUnit, final SootMethod sootMethod) {
-        this.classUnit = classUnit;
-        this.sootMethod = sootMethod;
-    }
-
     public SootMethodUnit(final SootMethod sootMethod) {
-        this(new SootClassUnit(sootMethod.getDeclaringClass()), sootMethod);
+        this.sootMethod = sootMethod;
     }
 
     public String getName() {
@@ -70,7 +63,7 @@ public class SootMethodUnit {
     }
 
     public SootClassUnit getClassUnit() {
-        return classUnit;
+        return new SootClassUnit(sootMethod.getDeclaringClass());
     }
 
     public SootMethod getSootMethod() {

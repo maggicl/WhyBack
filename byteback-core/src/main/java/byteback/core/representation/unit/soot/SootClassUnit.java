@@ -68,7 +68,7 @@ public class SootClassUnit {
     public Stream<SootMethodUnit> methods() {
         assert !isPhantomClass();
 
-        return sootClass.getMethods().stream().map((sootMethod) -> new SootMethodUnit(this, sootMethod));
+        return sootClass.getMethods().stream().map(SootMethodUnit::new);
     }
 
     /**

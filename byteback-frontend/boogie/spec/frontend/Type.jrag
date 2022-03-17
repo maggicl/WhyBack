@@ -31,14 +31,14 @@ aspect Type {
     }
 
     /**
-     * Looking up types.
+     * Looking up type definitions.
      */
     syn lazy Optional<TypeDefinition> Accessor.type();
 
     eq Accessor.type() = lookupTypeDefinition(getName());
 
     /**
-     * Lookup type in program.
+     * Lookup type definition in program.
      */
     syn lazy Optional<TypeDefinition> Program.lookupTypeDefinition(String name);
 
@@ -47,5 +47,40 @@ aspect Type {
     inh lazy Optional<TypeDefinition> Accessor.lookupTypeDefinition(String name);
 
     eq Program.getChild().lookupTypeDefinition(String name) = lookupTypeDefinition(name);
+
+    /**
+     * Link type definitions with concrete types.
+     */
+    syn nta Type TypeDefinition.getType();
+
+    eq TypeDefinition.getType() = new DefinedType();
+
+    /**
+     * Link concrete types with their accessors.
+     */
+    syn lazy TypeAccess Type.getTypeAccess();
+
+    eq BooleanType.getTypeAccess() = BooleanTypeAccess.instance();
+
+    eq IntegerType.getTypeAccess() = IntegerTypeAccess.instance();
+
+    eq RealType.getTypeAccess() = RealTypeAccess.instance();
+
+    eq MapType.getTypeAccess() = new MapTypeAccess(); // TODO: Fetch constructor arguments
+
+    eq BitvectorType.getTypeAccess() = new BitvectorTypeAccess();
+
+    eq DefinedType.getTypeAccess() = new UnknownTypeAccess(getAccessor(), new List<>());
+
+    /**
+     * Defined type attributes. 
+     */
+    inh lazy Accessor DefinedType.getAccessor();
+
+    eq TypeDeclaration.getTypeDefinition().getAccessor() = new Accessor(getDeclarator().getName());
+
+    inh lazy List<TypeParameter> DefinedType.getTypeParameterList();
+
+    eq TypeDeclaration.getTypeDefinition().getTypeParameterList() = getTypeParameterList();
 
 }

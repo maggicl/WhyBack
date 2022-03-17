@@ -9,15 +9,25 @@ import byteback.frontend.boogie.ast.Program;
 public class BoogiePreambleIntegrationTest {
 
     @Test
-    public void Initialize_GivenPreamble_DoesNotThrowExceptions() {
-        BoogiePreamble.initialize();
+    public void InitializeProgram_GivenPreamble_DoesNotThrowExceptions() {
+        BoogiePreamble.initializeProgram();
     }
 
     @Test
-    public void Load_CalledTwice_ReturnsTheSameInstance() {
-        final Program a = BoogiePreamble.load();
-        final Program b = BoogiePreamble.load();
+    public void LoadProgram_CalledTwice_ReturnsTheSameInstance() {
+        final Program a = BoogiePreamble.loadProgram();
+        final Program b = BoogiePreamble.loadProgram();
         assertEquals(b, a);
+    }
+
+    @Test
+    public void GetReferenceType_GivenPreamble_DoesNotThrowException() {
+        BoogiePreamble.getReferenceType();
+    }
+
+    @Test
+    public void GetHeapType_GivenPreamble_DoesNotThrowException() {
+        BoogiePreamble.getHeapType();
     }
 
 }

@@ -60,11 +60,11 @@ aspect Type {
      */
     syn lazy TypeAccess Type.getTypeAccess();
 
-    eq BooleanType.getTypeAccess() = BooleanTypeAccess.instance();
+    eq BooleanType.getTypeAccess() = new BooleanTypeAccess();
 
-    eq IntegerType.getTypeAccess() = IntegerTypeAccess.instance();
+    eq IntegerType.getTypeAccess() = new IntegerTypeAccess();
 
-    eq RealType.getTypeAccess() = RealTypeAccess.instance();
+    eq RealType.getTypeAccess() = new RealTypeAccess();
 
     eq MapType.getTypeAccess() = new MapTypeAccess(); // TODO: Fetch constructor arguments
 

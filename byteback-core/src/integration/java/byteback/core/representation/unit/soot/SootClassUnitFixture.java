@@ -10,7 +10,7 @@ public class SootClassUnitFixture extends SootContextFixture {
             getContext().prependClassPath(ResourcesUtil.getJarPath(jarName));
 
             return getContext().loadClassAndSupport(className);
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
             throw new RuntimeException(exception);
         }
     }

@@ -76,7 +76,7 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
                     return Stream.empty();
                 }
             });
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
             throw new RuntimeException(exception);
         }
     }
@@ -96,7 +96,7 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
                             new BoogieFunctionExtractor(methodUnit).convert());
 
                     return Stream.of(entry);
-                } catch (RuntimeException exception) {
+                } catch (final RuntimeException exception) {
                     log.error("Error while loading function", exception);
 
                     return Stream.empty();

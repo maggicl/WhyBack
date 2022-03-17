@@ -19,6 +19,10 @@ public class BoogieNameConverter {
             builder.append("#");
         }
 
+        if (methodUnit.getParameterTypes().size() == 0) {
+            builder.append("#");
+        }
+
         return builder.toString();
     }
     

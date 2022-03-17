@@ -10,7 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import beaver.Parser;
 import byteback.core.util.Lazy;
+import byteback.frontend.boogie.ast.BooleanType;
+import byteback.frontend.boogie.ast.IntegerType;
 import byteback.frontend.boogie.ast.Program;
+import byteback.frontend.boogie.ast.RealType;
 import byteback.frontend.boogie.ast.Type;
 import byteback.frontend.boogie.ast.TypeDefinition;
 import byteback.frontend.boogie.util.ParserUtil;
@@ -20,10 +23,6 @@ public class BoogiePreamble {
     static private final Logger log = LoggerFactory.getLogger(BoogiePreamble.class);
 
     static private final Lazy<Program> preamble = Lazy.from(BoogiePreamble::initializeProgram);
-
-    static private final Lazy<Type> referenceType = Lazy.from(BoogiePreamble::initializeReferenceType);
-
-    static private final Lazy<Type> heapType = Lazy.from(BoogiePreamble::initializeHeapType);
 
     static public Program loadProgram() {
         return preamble.get();
@@ -47,10 +46,6 @@ public class BoogiePreamble {
     }
 
     static public Type getReferenceType() {
-        return referenceType.get();
-    }
-
-    static public Type initializeReferenceType() {
         final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Reference").orElseThrow(() -> {
             throw new IllegalStateException("Missing definition for Reference type");
         });
@@ -59,15 +54,23 @@ public class BoogiePreamble {
     }
 
     static public Type getHeapType() {
-        return heapType.get();
-    }
-
-    static public Type initializeHeapType() {
         final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Store").orElseThrow(() -> {
             throw new IllegalStateException("Missing definition for heap Store type");
         });
 
         return typeDefinition.getType();
+    }
+
+    static public Type getBooleanType() {
+        return BooleanType.instance();
+    }
+
+    static public Type getIntegerType() {
+        return IntegerType.instance();
+    }
+
+    static public Type getRealType() {
+        return RealType.instance();
     }
 
 }

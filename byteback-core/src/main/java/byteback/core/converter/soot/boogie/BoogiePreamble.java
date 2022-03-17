@@ -20,7 +20,7 @@ public class BoogiePreamble {
     static public Optional<Program> preamble = Optional.empty();
 
     static public Program load() {
-        return preamble.orElse(initialize());
+        return preamble.orElseGet(BoogiePreamble::initialize);
     }
 
     static public Program initialize() {

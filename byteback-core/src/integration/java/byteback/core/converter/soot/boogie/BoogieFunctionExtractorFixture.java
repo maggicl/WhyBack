@@ -93,7 +93,7 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
                     final SootMethodUnit methodUnit = getMethodUnit("java8", javaIdentifier.className,
                             javaIdentifier.methodName);
                     final RegressionEntry<FunctionDeclaration> entry = new RegressionEntry<>(declaration,
-                            new BoogieFunctionExtractor().convert(methodUnit));
+                            new BoogieFunctionExtractor(methodUnit).convert());
 
                     return Stream.of(entry);
                 } catch (RuntimeException exception) {

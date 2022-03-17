@@ -52,7 +52,6 @@ import soot.jimple.MulExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.NegExpr;
 import soot.jimple.OrExpr;
-import soot.jimple.ParameterRef;
 import soot.jimple.RemExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.SubExpr;
@@ -253,11 +252,6 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
     @Override
     public void caseLocal(final Local local) {
         setExpression(new ValueReference(new Accessor(local.getName())));
-    }
-
-    @Override
-    public void caseParameterRef(final ParameterRef parameter) {
-        System.err.println(parameter;
     }
 
     @Override

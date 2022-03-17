@@ -1,14 +1,17 @@
 package byteback.core.converter.soot.boogie;
 
 import byteback.core.representation.type.soot.SootTypeVisitor;
+import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.BooleanTypeAccess;
 import byteback.frontend.boogie.ast.IntegerTypeAccess;
 import byteback.frontend.boogie.ast.RealTypeAccess;
 import byteback.frontend.boogie.ast.TypeAccess;
+import byteback.frontend.boogie.ast.UnknownTypeAccess;
 import soot.BooleanType;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
+import soot.RefType;
 import soot.Type;
 
 public class BoogieTypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
@@ -35,8 +38,16 @@ public class BoogieTypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
     }
 
     @Override
-    public void caseBooleanType(final BooleanType integerType) {
+    public void caseBooleanType(final BooleanType booleanType) {
         setTypeAccess(new BooleanTypeAccess());
+    }
+
+    @Override
+    public void caseRefType(final RefType referenceType) {
+        final UnknownTypeAccess typeAccess = new UnknownTypeAccess();
+        final Accessor accessor = new Accessor("Reference");
+        typeAccess.setAccessor(accessor);
+        setTypeAccess(typeAccess);
     }
 
     @Override

@@ -47,7 +47,7 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 
     }
 
-    private SootMethodUnit methodUnit;
+    private final SootMethodUnit methodUnit;
 
     private final FunctionDeclarationBuilder functionBuilder;
 
@@ -55,21 +55,21 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 
     private final CountingMap<Local, Optional<Expression>> localExpressionIndex;
 
-    public BoogieFunctionExtractor(final FunctionDeclarationBuilder functionBuilder) {
+    public BoogieFunctionExtractor(final SootMethodUnit methodUnit) {
+        this.methodUnit = methodUnit;
+        this.functionBuilder = new FunctionDeclarationBuilder();
         this.signatureBuilder = new FunctionSignatureBuilder();
-        this.functionBuilder = functionBuilder;
         this.localExpressionIndex = new CountingMap<>();
     }
 
-    public BoogieFunctionExtractor() {
-        this(new FunctionDeclarationBuilder());
-    }
-
-    public FunctionDeclaration convert(final SootMethodUnit methodUnit) {
-        this.methodUnit = methodUnit;
+    public FunctionDeclaration convert() {
         functionBuilder.name(BoogieNameConverter.methodName(methodUnit));
         methodUnit.getBody().apply(this);
         return result();
+    }
+
+    public void buildImplicitBindings() {
+        // TODO
     }
 
     @Override

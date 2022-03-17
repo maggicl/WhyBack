@@ -16,7 +16,8 @@ List meta_comma_list
     ;
 
 Expression expression
-    = expression0
+    = expression0.e
+    {: return e; :}
     ;
 
 List expression_comma_list
@@ -27,8 +28,10 @@ List expression_comma_list
     ;
 
 Expression expression0
-    = expression1
-    | equivalence_operation
+    = expression1.e
+    {: return e; :}
+    | equivalence_operation.o
+    {: return o; :}
     ;
 
 EquivalenceOperation equivalence_operation
@@ -37,8 +40,10 @@ EquivalenceOperation equivalence_operation
     ;
 
 Expression expression1
-    = expression2
-    | implication_operation
+    = expression2.e
+    {: return e; :}
+    | implication_operation.o
+    {: return o; :}
     ;
 
 ImplicationOperation implication_operation
@@ -47,9 +52,12 @@ ImplicationOperation implication_operation
     ;
 
 Expression expression2
-    = expression3
-    | or_operation
-    | and_operation
+    = expression3.e
+    {: return e; :}
+    | or_operation.o
+    {: return o; :}
+    | and_operation.o
+    {: return o; :}
     ;
 
 OrOperation or_operation
@@ -124,7 +132,8 @@ Expression partial_order_operation
 Expression expression4
     = expression5.e
     {: return e; :}
-    | concatenation_operation
+    | concatenation_operation.o
+    {: return o; :}
     ;
 
 ConcatenationOperation concatenation_operation
@@ -147,10 +156,14 @@ Expression addition_operation
     ;
 
 Expression expression6
-    = expression7
-    | multiplication_operation
-    | division_operation
-    | modulo_operation
+    = expression7.e
+    {: return e; :}
+    | multiplication_operation.o
+    {: return o; :}
+    | division_operation.o
+    {: return o; :}
+    | modulo_operation.o
+    {: return o; :}
     ;
 
 MultiplicationOperation multiplication_operation
@@ -169,32 +182,38 @@ ModuloOperation modulo_operation
     ;
 
 Expression expression7
-    = expression8
-    | unary_expression
+    = expression8.e
+    {: return e; :}
+    | unary_expression.o
+    {: return o; :}
     ;
 
 UnaryExpression unary_expression
-    = negation_operation
-    | minus_operation
+    = negation_operation.o
+    {: return o; :}
+    | minus_operation.o
+    {: return o; :}
     ;
 
 NegationOperation negation_operation
-    = NOT expression7.op
-    {: return new NegationOperation(op); :}
+    = NOT expression7.e
+    {: return new NegationOperation(e); :}
     ;
 
 MinusOperation minus_operation
-    = MINUS expression7.op
-    {: return new MinusOperation(op); :}
+    = MINUS expression7.e
+    {: return new MinusOperation(e); :}
     ;
 
 Expression expression8
-    = expression9
-    | map_expression
+    = expression9.e
+    {: return e; :}
+    | map_expression.o
+    {: return o; :}
     ;
 
 MapOperation map_expression
-    = expression9.op LBRACKET map_operation.mo RBRACKET
+    = expression8.op LBRACKET map_operation.mo RBRACKET
     {:
        mo.setOperand(op);
        return mo;
@@ -202,9 +221,12 @@ MapOperation map_expression
     ;
 
 MapOperation map_operation
-    = map_access_operation
-    | map_ranged_access_operation
-    | map_update_operation
+    = map_access_operation.o
+    {: return o; :}
+    | map_ranged_access_operation.o
+    {: return o; :}
+    | map_update_operation.o
+    {: return o; :}
     ;
 
 MapAccessOperation map_access_operation
@@ -236,8 +258,10 @@ Expression expression9
     ;
 
 QuantifierExpression quantifier_expression
-    = universal_quantifier_expression
-    | existential_quantifier_expression
+    = universal_quantifier_expression.q
+    {: return q; :}
+    | existential_quantifier_expression.q
+    {: return q; :}
     ;
 
 QuantifierExpression universal_quantifier_expression
@@ -284,10 +308,14 @@ OldReference old_reference
     ;
 
 Literal literal
-    = boolean_literal 
-    | number_literal
-    | real_literal
-    | bitvector_literal
+    = boolean_literal.l
+    {: return l; :}
+    | number_literal.l
+    {: return l; :}
+    | real_literal.l
+    {: return l; :}
+    | bitvector_literal.l
+    {: return l; :}
     ;
 
 BooleanLiteral boolean_literal

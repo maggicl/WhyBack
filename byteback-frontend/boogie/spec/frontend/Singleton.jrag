@@ -1,0 +1,39 @@
+aspect Singleton {
+
+    static private final BooleanType BooleanType.instance = new BooleanType();
+    
+    static public BooleanType BooleanType.instance() {
+        return instance;
+    }
+
+    static private final BooleanTypeAccess BooleanTypeAccess.instance = new BooleanTypeAccess();
+    
+    static public BooleanTypeAccess BooleanTypeAccess.instance() {
+        return instance;
+    }
+
+    static private final IntegerType IntegerType.instance = new IntegerType();
+    
+    static public IntegerType IntegerType.instance() {
+        return instance;
+    }
+
+    static private final IntegerTypeAccess IntegerTypeAccess.instance = new IntegerTypeAccess();
+    
+    static public IntegerTypeAccess IntegerTypeAccess.instance() {
+        return instance;
+    }
+
+    static private final RealType RealType.instance = new RealType();
+    
+    static public RealType RealType.instance() {
+        return instance;
+    }
+
+    static private final RealTypeAccess RealTypeAccess.instance = new RealTypeAccess();
+    
+    static public RealTypeAccess RealTypeAccess.instance() {
+        return instance;
+    }
+    
+}

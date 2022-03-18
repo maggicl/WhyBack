@@ -31,7 +31,6 @@ import byteback.frontend.boogie.ast.NumberLiteral;
 import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
-import byteback.frontend.boogie.ast.SymbolicReference;
 import byteback.frontend.boogie.ast.ValueReference;
 import soot.BooleanType;
 import soot.Local;
@@ -44,8 +43,6 @@ import soot.jimple.BinopExpr;
 import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
 import soot.jimple.EqExpr;
-import soot.jimple.Expr;
-import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
 import soot.jimple.GeExpr;
 import soot.jimple.GtExpr;
@@ -265,7 +262,8 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
         final SootFieldUnit sootField = new SootFieldUnit(instanceFieldReference.getField());
         final SootExpression sootBase = new SootExpression(instanceFieldReference.getBase());
         final Expression boogieBase = subExpressionExtractor(new SootType(RefType.v())).visit(sootBase);
-        final Expression boogieFieldReference = BoogiePrelude.getFieldReference(sootField).getValueReference();
+        final Expression boogieFieldReference = new ValueReference(
+                new Accessor(BoogieNameConverter.fieldName(sootField)));
         setExpression(BoogiePrelude.getHeapAccess(boogieBase, boogieFieldReference));
     }
 

@@ -1,6 +1,8 @@
 package byteback.core.converter.soot.boogie;
 
 import java.util.Iterator;
+
+import byteback.core.representation.unit.soot.SootFieldUnit;
 import byteback.core.representation.unit.soot.SootMethodUnit;
 import byteback.core.representation.type.soot.SootType;
 
@@ -24,6 +26,13 @@ public class BoogieNameConverter {
         }
 
         return builder.toString();
+    }
+
+    static String fieldName(final SootFieldUnit fieldUnit) {
+        final String fieldName = fieldUnit.getName();
+        final String className = fieldUnit.getClassUnit().getName();
+
+        return className + "." + fieldName;
     }
     
 }

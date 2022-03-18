@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import beaver.Parser;
-import byteback.core.representation.unit.soot.SootFieldUnit;
 import byteback.core.util.Lazy;
 import byteback.frontend.boogie.ast.BooleanType;
 import byteback.frontend.boogie.ast.Expression;
@@ -80,10 +79,6 @@ public class BoogiePrelude {
         return loadProgram().lookupVariable("~heap").orElseThrow(() -> {
             throw new IllegalStateException("Missing definition for the ~heap variable");
         });
-    }
-
-    public static Variable getFieldReference(final SootFieldUnit sootField) {
-        throw new UnsupportedOperationException(); //TODO
     }
 
     public static Expression getHeapAccess(final Expression base, final Expression reference) {

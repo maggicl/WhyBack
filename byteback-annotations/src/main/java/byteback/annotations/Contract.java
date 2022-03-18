@@ -32,7 +32,7 @@ public interface Contract {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.METHOD })
-    public static @interface Defined {
+    public static @interface Prelude {
         public String value();
     }
 

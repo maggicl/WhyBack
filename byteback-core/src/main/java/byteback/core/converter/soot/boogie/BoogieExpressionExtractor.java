@@ -104,7 +104,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
     public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
         final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
         final Optional<SootAnnotation> definedAnnotation = methodUnit
-                .getAnnotation("Lbyteback/annotations/Contract$Defined;");
+                .getAnnotation("Lbyteback/annotations/Contract$Prelude;");
         final Optional<String> definedValue = definedAnnotation.flatMap(SootAnnotation::getValue)
                 .flatMap((element) -> Optional.of(new StringElementExtractor().visit(element)));
         setFunctionReference(invocation, definedValue.orElseGet(() -> BoogieNameConverter.methodName(methodUnit)));

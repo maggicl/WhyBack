@@ -1,6 +1,6 @@
 package byteback.annotations;
 
-import byteback.annotations.Contract.Defined;
+import byteback.annotations.Contract.Prelude;
 import byteback.annotations.Contract.Pure;
 
 /**
@@ -20,7 +20,7 @@ public interface Operator {
      * @return {@code true} if {@code a -> b}.
      */
     @Pure
-    @Defined("implies")
+    @Prelude("implies")
     public static boolean implies(final boolean a, final boolean b) {
         return !a || b;
     }
@@ -33,7 +33,7 @@ public interface Operator {
      * @return {@code true} if {@code a <-> b}.
      */
     @Pure
-    @Defined("iff")
+    @Prelude("iff")
     public static boolean iff(final boolean a, final boolean b) {
         return a == b;
     }
@@ -46,7 +46,7 @@ public interface Operator {
      * @return {@code true} if {@code a && b}.
      */
     @Pure
-    @Defined("and")
+    @Prelude("and")
     public static boolean and(final boolean a, final boolean b) {
         return a && b;
     }
@@ -59,7 +59,7 @@ public interface Operator {
      * @return {@code true} if {@code a || b}.
      */
     @Pure
-    @Defined("or")
+    @Prelude("or")
     public static boolean or(final boolean a, final boolean b) {
         return a || b;
     }
@@ -71,7 +71,7 @@ public interface Operator {
      * @return {@code true} if {@code !o}.
      */
     @Pure
-    @Defined("not")
+    @Prelude("not")
     public static boolean not(final boolean a) {
         return !a;
     }
@@ -84,7 +84,7 @@ public interface Operator {
      * @return {@code true} if {@code a || b}.
      */
     @Pure
-    @Defined("eq")
+    @Prelude("eq")
     public static boolean eq(final Object a, final Object b) {
         return a.equals(b);
     }
@@ -93,7 +93,7 @@ public interface Operator {
      * Equality overloaded for boolean types to avoid auto-boxing of booleans.
      */
     @Pure
-    @Defined("eq")
+    @Prelude("eq")
     public static boolean eq(final boolean a, final boolean b) {
         return a == b;
     }
@@ -102,7 +102,7 @@ public interface Operator {
      * Equality overloaded for byte types to avoid auto-boxing of bytes.
      */
     @Pure
-    @Defined("eq")
+    @Prelude("eq")
     public static boolean eq(final byte a, final byte b) {
         return a == b;
     }
@@ -111,7 +111,7 @@ public interface Operator {
      * Equality overloaded for int types to avoid auto-boxing of integers.
      */
     @Pure
-    @Defined("eq")
+    @Prelude("eq")
     public static boolean eq(final int a, final int b) {
         return a == b;
     }
@@ -120,7 +120,7 @@ public interface Operator {
      * Equality overloaded for boolean types to avoid auto-boxing of booleans.
      */
     @Pure
-    @Defined("eq")
+    @Prelude("eq")
     public static boolean eq(final char a, final char b) {
         return a == b;
     }
@@ -129,7 +129,7 @@ public interface Operator {
      * Equality overloaded for double types to avoid auto-boxing of doubles.
      */
     @Pure
-    @Defined("eq")
+    @Prelude("eq")
     public static boolean eq(final double a, final double b) {
         return a == b;
     }
@@ -138,7 +138,7 @@ public interface Operator {
      * Equality overloaded for float types to avoid auto-boxing of floats.
      */
     @Pure
-    @Defined("eq")
+    @Prelude("eq")
     public static boolean eq(final float a, final float b) {
         return a == b;
     }
@@ -147,7 +147,7 @@ public interface Operator {
      * Equality overloaded for long types to avoid auto-boxing of longs.
      */
     @Pure
-    @Defined("eq")
+    @Prelude("eq")
     public static boolean eq(final long a, final long b) {
         return a == b;
     }
@@ -156,7 +156,7 @@ public interface Operator {
      * Equality overloaded for short types to avoid auto-boxing of shorts.
      */
     @Pure
-    @Defined("eq")
+    @Prelude("eq")
     public static boolean eq(final short a, final short b) {
         return a == b;
     }

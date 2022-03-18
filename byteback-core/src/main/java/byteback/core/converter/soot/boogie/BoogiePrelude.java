@@ -16,6 +16,7 @@ import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.RealType;
 import byteback.frontend.boogie.ast.Type;
 import byteback.frontend.boogie.ast.TypeDefinition;
+import byteback.frontend.boogie.ast.Variable;
 import byteback.frontend.boogie.util.ParserUtil;
 
 public class BoogiePrelude {
@@ -71,6 +72,12 @@ public class BoogiePrelude {
 
     public static Type getRealType() {
         return RealType.instance();
+    }
+
+    public static Variable getHeapVariable() {
+        return loadProgram().lookupVariable("~heap").orElseThrow(() -> {
+            throw new IllegalStateException("Missing definition for ~heap variable");
+        });
     }
 
 }

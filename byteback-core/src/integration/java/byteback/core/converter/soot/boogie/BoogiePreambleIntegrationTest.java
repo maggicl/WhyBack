@@ -10,24 +10,24 @@ public class BoogiePreambleIntegrationTest {
 
     @Test
     public void InitializeProgram_GivenPreamble_DoesNotThrowExceptions() {
-        BoogiePreamble.initializeProgram();
+        BoogiePrelude.initializeProgram();
     }
 
     @Test
     public void LoadProgram_CalledTwice_ReturnsTheSameInstance() {
-        final Program a = BoogiePreamble.loadProgram();
-        final Program b = BoogiePreamble.loadProgram();
+        final Program a = BoogiePrelude.loadProgram();
+        final Program b = BoogiePrelude.loadProgram();
         assertEquals(b, a);
     }
 
     @Test
     public void GetReferenceType_GivenPreamble_DoesNotThrowException() {
-        BoogiePreamble.getReferenceType();
+        BoogiePrelude.getReferenceType();
     }
 
     @Test
     public void GetHeapType_GivenPreamble_DoesNotThrowException() {
-        BoogiePreamble.getHeapType();
+        BoogiePrelude.getHeapType();
     }
 
 }

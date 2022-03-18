@@ -19,27 +19,27 @@ public class BoogieTypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
 
     @Override
     public void caseIntType(final IntType integerType) {
-        setTypeAccess(BoogiePreamble.getIntegerType().getTypeAccess());
+        setTypeAccess(BoogiePrelude.getIntegerType().getTypeAccess());
     }
 
     @Override
     public void caseDoubleType(final DoubleType doubleType) {
-        setTypeAccess(BoogiePreamble.getRealType().getTypeAccess());
+        setTypeAccess(BoogiePrelude.getRealType().getTypeAccess());
     }
 
     @Override
     public void caseFloatType(final FloatType floatType) {
-        setTypeAccess(BoogiePreamble.getRealType().getTypeAccess());
+        setTypeAccess(BoogiePrelude.getRealType().getTypeAccess());
     }
 
     @Override
     public void caseBooleanType(final BooleanType booleanType) {
-        setTypeAccess(BoogiePreamble.getBooleanType().getTypeAccess());
+        setTypeAccess(BoogiePrelude.getBooleanType().getTypeAccess());
     }
 
     @Override
     public void caseRefType(final RefType referenceType) {
-        setTypeAccess(BoogiePreamble.getReferenceType().getTypeAccess());
+        setTypeAccess(BoogiePrelude.getReferenceType().getTypeAccess());
     }
 
     @Override

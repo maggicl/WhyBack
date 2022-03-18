@@ -224,14 +224,14 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
     public void caseLeExpr(final LeExpr lessEquals) {
         setBinaryExpression(lessEquals, new LessThanEqualsOperation());
     }
-
+    
     @Override
     public void caseIntConstant(final IntConstant intConstant) {
         type.apply(new SootTypeVisitor<>() {
 
             @Override
             public void caseBooleanType(final BooleanType type) {
-                setExpression(new BooleanLiteral(intConstant.value == 0 ? "false" : "true"));
+                setExpression(intConstant.value != 0 ? BooleanLiteral.getTrue() : BooleanLiteral.getFalse());
             }
 
             @Override
@@ -264,7 +264,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
         final Expression boogieBase = subExpressionExtractor(new SootType(RefType.v())).visit(sootBase);
         final Expression boogieFieldReference = new ValueReference(
                 new Accessor(BoogieNameConverter.fieldName(sootField)));
-        setExpression(BoogiePrelude.getHeapAccess(boogieBase, boogieFieldReference));
+        setExpression(BoogiePrelude.getHeapAccessExpression(boogieBase, boogieFieldReference));
     }
 
     @Override

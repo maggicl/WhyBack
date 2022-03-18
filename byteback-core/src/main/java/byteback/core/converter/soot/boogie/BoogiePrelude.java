@@ -12,6 +12,7 @@ import beaver.Parser;
 import byteback.core.util.Lazy;
 import byteback.frontend.boogie.ast.BooleanType;
 import byteback.frontend.boogie.ast.Expression;
+import byteback.frontend.boogie.ast.Function;
 import byteback.frontend.boogie.ast.IntegerType;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.RealType;
@@ -81,8 +82,14 @@ public class BoogiePrelude {
         });
     }
 
-    public static Expression getHeapAccess(final Expression base, final Expression reference) {
-        throw new UnsupportedOperationException(); //TODO
+    public static Function getHeapAccessFunction() {
+        return loadProgram().lookupFunction("~read").orElseThrow(() -> {
+            throw new IllegalStateException("Missing definition for the ~readvariable");
+        });
+    }
+
+    public static Expression getHeapAccessExpression(Expression base, Expression field) {
+        throw new UnsupportedOperationException();
     }
 
 }

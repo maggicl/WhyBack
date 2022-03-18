@@ -23,7 +23,7 @@ public class BoogieFunctionExtractorIntegrationTest extends BoogieFunctionExtrac
 
         return programs.flatMap((program) -> program.functions().stream().flatMap((function) -> {
             try {
-                final FunctionDeclaration declaration = function.declaration();
+                final FunctionDeclaration declaration = function.getDeclaration();
                 final String javaName = toJavaMethodName(declaration.getDeclarator().getName());
                 final MethodIdentifier javaIdentifier = javaMethodIdentifier(javaName);
                 final SootMethodUnit methodUnit = getMethodUnit("java8", javaIdentifier.className,

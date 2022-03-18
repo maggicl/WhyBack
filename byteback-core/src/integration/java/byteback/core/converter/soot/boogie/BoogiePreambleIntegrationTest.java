@@ -9,7 +9,7 @@ import byteback.frontend.boogie.ast.Program;
 public class BoogiePreambleIntegrationTest {
 
     @Test
-    public void InitializeProgram_GivenPreamble_DoesNotThrowExceptions() {
+    public void InitializeProgram_GivenPrelude_DoesNotThrowExceptions() {
         BoogiePrelude.initializeProgram();
     }
 
@@ -21,13 +21,18 @@ public class BoogiePreambleIntegrationTest {
     }
 
     @Test
-    public void GetReferenceType_GivenPreamble_DoesNotThrowException() {
+    public void GetReferenceType_GivenPrelude_DoesNotThrowException() {
         BoogiePrelude.getReferenceType();
     }
 
     @Test
-    public void GetHeapType_GivenPreamble_DoesNotThrowException() {
+    public void GetHeapType_GivenPrelude_DoesNotThrowException() {
         BoogiePrelude.getHeapType();
+    }
+
+    @Test
+    public void GetHeapVariable_GivenPrelude_DoesNotThrowException() {
+        BoogiePrelude.getHeapVariable();
     }
 
 }

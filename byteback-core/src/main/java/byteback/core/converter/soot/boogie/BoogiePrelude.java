@@ -18,11 +18,11 @@ import byteback.frontend.boogie.ast.Type;
 import byteback.frontend.boogie.ast.TypeDefinition;
 import byteback.frontend.boogie.util.ParserUtil;
 
-public class BoogiePreamble {
+public class BoogiePrelude {
 
-    private static final Logger log = LoggerFactory.getLogger(BoogiePreamble.class);
+    private static final Logger log = LoggerFactory.getLogger(BoogiePrelude.class);
 
-    private static final Lazy<Program> preamble = Lazy.from(BoogiePreamble::initializeProgram);
+    private static final Lazy<Program> preamble = Lazy.from(BoogiePrelude::initializeProgram);
 
     public static Program loadProgram() {
         return preamble.get();

@@ -7,6 +7,7 @@ import byteback.core.representation.body.soot.SootExpressionVisitor;
 import byteback.core.representation.type.soot.SootType;
 import byteback.core.representation.type.soot.SootTypeVisitor;
 import byteback.core.representation.unit.soot.SootAnnotation;
+import byteback.core.representation.unit.soot.SootFieldUnit;
 import byteback.core.representation.unit.soot.SootMethodUnit;
 import byteback.core.representation.unit.soot.SootAnnotationElement.StringElementExtractor;
 import byteback.frontend.boogie.ast.Accessor;
@@ -30,9 +31,11 @@ import byteback.frontend.boogie.ast.NumberLiteral;
 import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
+import byteback.frontend.boogie.ast.SymbolicReference;
 import byteback.frontend.boogie.ast.ValueReference;
 import soot.BooleanType;
 import soot.Local;
+import soot.RefType;
 import soot.Type;
 import soot.Value;
 import soot.jimple.AddExpr;
@@ -41,9 +44,12 @@ import soot.jimple.BinopExpr;
 import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
 import soot.jimple.EqExpr;
+import soot.jimple.Expr;
+import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
 import soot.jimple.GeExpr;
 import soot.jimple.GtExpr;
+import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.LeExpr;
@@ -228,7 +234,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 
             @Override
             public void caseBooleanType(final BooleanType type) {
-                setExpression(new BooleanLiteral(intConstant.value == 0 ? "true" : "false"));
+                setExpression(new BooleanLiteral(intConstant.value == 0 ? "false" : "true"));
             }
 
             @Override
@@ -252,6 +258,15 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
     @Override
     public void caseLocal(final Local local) {
         setExpression(new ValueReference(new Accessor(local.getName())));
+    }
+
+    @Override
+    public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
+        final SootFieldUnit sootField = new SootFieldUnit(instanceFieldReference.getField());
+        final SootExpression sootBase = new SootExpression(instanceFieldReference.getBase());
+        final Expression boogieBase = subExpressionExtractor(new SootType(RefType.v())).visit(sootBase);
+        final Expression boogieFieldReference = BoogiePrelude.getFieldReference(sootField).getValueReference();
+        setExpression(BoogiePrelude.getHeapAccess(boogieBase, boogieFieldReference));
     }
 
     @Override

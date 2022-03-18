@@ -20,15 +20,15 @@ import byteback.frontend.boogie.util.ParserUtil;
 
 public class BoogiePreamble {
 
-    static private final Logger log = LoggerFactory.getLogger(BoogiePreamble.class);
+    private static final Logger log = LoggerFactory.getLogger(BoogiePreamble.class);
 
-    static private final Lazy<Program> preamble = Lazy.from(BoogiePreamble::initializeProgram);
+    private static final Lazy<Program> preamble = Lazy.from(BoogiePreamble::initializeProgram);
 
-    static public Program loadProgram() {
+    public static Program loadProgram() {
         return preamble.get();
     }
 
-    static public Program initializeProgram() {
+    public static Program initializeProgram() {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         final InputStream stream = loader.getResourceAsStream("boogie/BytebackPrelude.bpl");
         final Reader reader = new InputStreamReader(stream);
@@ -45,7 +45,7 @@ public class BoogiePreamble {
         }
     }
 
-    static public Type getReferenceType() {
+    public static Type getReferenceType() {
         final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Reference").orElseThrow(() -> {
             throw new IllegalStateException("Missing definition for Reference type");
         });
@@ -53,7 +53,7 @@ public class BoogiePreamble {
         return typeDefinition.getType();
     }
 
-    static public Type getHeapType() {
+    public static Type getHeapType() {
         final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Store").orElseThrow(() -> {
             throw new IllegalStateException("Missing definition for heap Store type");
         });
@@ -61,15 +61,15 @@ public class BoogiePreamble {
         return typeDefinition.getType();
     }
 
-    static public Type getBooleanType() {
+    public static Type getBooleanType() {
         return BooleanType.instance();
     }
 
-    static public Type getIntegerType() {
+    public static Type getIntegerType() {
         return IntegerType.instance();
     }
 
-    static public Type getRealType() {
+    public static Type getRealType() {
         return RealType.instance();
     }
 

@@ -3,21 +3,21 @@ aspect Singleton {
     /**
      * Type singletons.
      */
-    static private final BooleanType BooleanType.instance = new BooleanType();
+    private static final BooleanType BooleanType.instance = new BooleanType();
     
-    static public BooleanType BooleanType.instance() {
+    public static BooleanType BooleanType.instance() {
         return instance;
     }
 
-    static private final IntegerType IntegerType.instance = new IntegerType();
+    private static final IntegerType IntegerType.instance = new IntegerType();
     
-    static public IntegerType IntegerType.instance() {
+    public static IntegerType IntegerType.instance() {
         return instance;
     }
 
-    static private final RealType RealType.instance = new RealType();
+    private static final RealType RealType.instance = new RealType();
     
-    static public RealType RealType.instance() {
+    public static RealType RealType.instance() {
         return instance;
     }
     

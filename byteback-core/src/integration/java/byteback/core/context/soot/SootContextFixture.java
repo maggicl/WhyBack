@@ -6,13 +6,17 @@ public class SootContextFixture {
 
     private static final SootContext context = SootContext.instance();
 
-    @After
-    public void resetContext() {
+    public static void resetContext() {
         context.reset();
     }
 
-    public SootContext getContext() {
+    public static SootContext getContext() {
         return context;
+    }
+
+    @After
+    public void after() {
+        resetContext();
     }
 
 }

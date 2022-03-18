@@ -8,15 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import byteback.core.ResourcesUtil;
-import byteback.core.representation.unit.soot.SootMethodUnit;
 import byteback.core.representation.unit.soot.SootMethodUnitFixture;
-import byteback.frontend.boogie.ast.FunctionDeclaration;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.util.ParserUtil;
 
 public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
 
-    private final Logger log = LoggerFactory.getLogger(BoogieFunctionExtractorFixture.class);
+    private static final Logger log = LoggerFactory.getLogger(BoogieFunctionExtractorFixture.class);
 
     public static class MethodIdentifier {
 
@@ -63,7 +61,7 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
         return new MethodIdentifier(className, methodIdentifier);
     }
 
-    public Stream<Program> getExpectedBoogiePrograms(final String jarName) {
+    public static Stream<Program> getExpectedBoogiePrograms(final String jarName) {
         try {
             final Stream<Path> paths = ResourcesUtil.getBoogiePaths(jarName);
 
@@ -79,30 +77,6 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
         } catch (final Exception exception) {
             throw new RuntimeException(exception);
         }
-    }
-
-    public Stream<RegressionEntry<FunctionDeclaration>> getFunctionEntries() {
-        final Stream<Program> programs = getExpectedBoogiePrograms("java8");
-
-        return programs.flatMap((program) -> {
-            return program.functions().stream().flatMap((function) -> {
-                try {
-                    final FunctionDeclaration declaration = function.declaration();
-                    final String javaName = toJavaMethodName(declaration.getDeclarator().getName());
-                    final MethodIdentifier javaIdentifier = javaMethodIdentifier(javaName);
-                    final SootMethodUnit methodUnit = getMethodUnit("java8", javaIdentifier.className,
-                            javaIdentifier.methodName);
-                    final RegressionEntry<FunctionDeclaration> entry = new RegressionEntry<>(declaration,
-                            new BoogieFunctionExtractor(methodUnit).convert());
-
-                    return Stream.of(entry);
-                } catch (final RuntimeException exception) {
-                    log.error("Error while loading function", exception);
-
-                    return Stream.empty();
-                }
-            });
-        });
     }
 
 }

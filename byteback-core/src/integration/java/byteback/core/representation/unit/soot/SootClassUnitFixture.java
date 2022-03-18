@@ -5,7 +5,7 @@ import byteback.core.context.soot.SootContextFixture;
 
 public class SootClassUnitFixture extends SootContextFixture {
 
-    public SootClassUnit getClassUnit(final String jarName, final String className) {
+    public static SootClassUnit getClassUnit(final String jarName, final String className) {
         try {
             getContext().prependClassPath(ResourcesUtil.getJarPath(jarName));
 

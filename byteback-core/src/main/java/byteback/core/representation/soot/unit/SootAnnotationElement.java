@@ -1,4 +1,4 @@
-package byteback.core.representation.unit.soot;
+package byteback.core.representation.soot.unit;
 
 import byteback.core.representation.Visitable;
 import soot.tagkit.AnnotationElem;
@@ -22,7 +22,12 @@ public class SootAnnotationElement implements Visitable<SootAnnotationElementVis
 
         @Override
         public String result() {
-            return value;
+
+            if (value == null) {
+                throw new IllegalStateException("Cannot retrieve String value");
+            } else {
+                return value;
+            }
         }
         
     }

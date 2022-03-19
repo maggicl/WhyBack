@@ -1,32 +1,33 @@
 package byteback.core.util;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class Lazy<T> {
 
     public static <T> Lazy<T> from(final Supplier<T> supplier) {
-        return new Lazy<T>(supplier);
+        return new Lazy<>(supplier);
     }
 
     private final Supplier<T> supplier;
 
-    private Optional<T> value;
+    private T value;
 
     private Lazy(final Supplier<T> supplier) {
         this.supplier = supplier;
-        this.value = Optional.empty();
     }
 
     public synchronized T get() {
-        return value.orElseGet(() -> initialize());
+        if (value != null) {
+            return value;
+        } else {
+            return initialize();
+        }
     }
 
     private T initialize() {
-        final T result = supplier.get();
-        value = Optional.of(result);
+        value = supplier.get();
 
-        return result;
+        return value;
     }
 
 }

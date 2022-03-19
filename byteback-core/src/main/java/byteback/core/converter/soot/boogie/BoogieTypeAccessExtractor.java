@@ -1,6 +1,6 @@
 package byteback.core.converter.soot.boogie;
 
-import byteback.core.representation.type.soot.SootTypeVisitor;
+import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.frontend.boogie.ast.TypeAccess;
 import soot.BooleanType;
 import soot.DoubleType;

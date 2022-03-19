@@ -1,6 +1,6 @@
-package byteback.core.representation.body.soot;
+package byteback.core.representation.soot.body;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import byteback.core.representation.Visitable;
 import soot.Body;
@@ -14,8 +14,12 @@ public class SootBody implements Visitable<SootStatementVisitor<?>> {
         this.sootBody = sootBody;
     }
 
-    public Collection<Unit> getUnits() {
-        return sootBody.getUnits();
+    public Stream<SootStatement> statements() {
+        return sootBody.getUnits().stream().map(SootStatement::new);
+    }
+
+    public int getStatementCount() {
+        return sootBody.getUnits().size();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package byteback.core.representation.unit.soot;
+package byteback.core.representation.soot.unit;
 
 import byteback.core.ResourcesUtil;
 import byteback.core.context.soot.SootContextFixture;

@@ -1,8 +1,8 @@
-package byteback.core.representation.unit.soot;
+package byteback.core.representation.soot.unit;
 
 import java.util.stream.Stream;
 
-import byteback.core.representation.type.soot.SootType;
+import byteback.core.representation.soot.type.SootType;
 import soot.SootClass;
 
 /**
@@ -56,10 +56,6 @@ public class SootClassUnit {
         return new SootType(sootClass.getType());
     }
 
-    public SootClass getSootClass() {
-        return sootClass;
-    }
-
     /**
      * Yields the stream of Soot methods present in the class.
      *
@@ -79,7 +75,7 @@ public class SootClassUnit {
     public Stream<SootFieldUnit> fields() {
         assert !isPhantomClass();
 
-        throw new UnsupportedOperationException();
+        return sootClass.getFields().stream().map(SootFieldUnit::new);
     }
 
 }

@@ -1,4 +1,4 @@
-package byteback.core.representation.unit.soot;
+package byteback.core.representation.soot.unit;
 
 import soot.SootField;
 
@@ -16,10 +16,6 @@ public class SootFieldUnit {
 
     public SootClassUnit getClassUnit() {
         return new SootClassUnit(sootField.getDeclaringClass());
-    }
-
-    public SootField getSootField() {
-        return sootField;
     }
 
 }

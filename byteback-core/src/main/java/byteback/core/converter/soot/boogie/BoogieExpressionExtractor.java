@@ -2,14 +2,14 @@ package byteback.core.converter.soot.boogie;
 
 import java.util.Optional;
 
-import byteback.core.representation.body.soot.SootExpression;
-import byteback.core.representation.body.soot.SootExpressionVisitor;
-import byteback.core.representation.type.soot.SootType;
-import byteback.core.representation.type.soot.SootTypeVisitor;
-import byteback.core.representation.unit.soot.SootAnnotation;
-import byteback.core.representation.unit.soot.SootFieldUnit;
-import byteback.core.representation.unit.soot.SootMethodUnit;
-import byteback.core.representation.unit.soot.SootAnnotationElement.StringElementExtractor;
+import byteback.core.representation.soot.body.SootExpression;
+import byteback.core.representation.soot.body.SootExpressionVisitor;
+import byteback.core.representation.soot.type.SootType;
+import byteback.core.representation.soot.type.SootTypeVisitor;
+import byteback.core.representation.soot.unit.SootAnnotation;
+import byteback.core.representation.soot.unit.SootFieldUnit;
+import byteback.core.representation.soot.unit.SootMethodUnit;
+import byteback.core.representation.soot.unit.SootAnnotationElement.StringElementExtractor;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.AdditionOperation;
 import byteback.frontend.boogie.ast.AndOperation;
@@ -109,7 +109,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
         final Optional<SootAnnotation> definedAnnotation = methodUnit
                 .getAnnotation("Lbyteback/annotations/Contract$Prelude;");
         final Optional<String> definedValue = definedAnnotation.flatMap(SootAnnotation::getValue)
-                .flatMap((element) -> Optional.of(new StringElementExtractor().visit(element)));
+                .map((element) -> new StringElementExtractor().visit(element));
         setFunctionReference(invocation, definedValue.orElseGet(() -> BoogieNameConverter.methodName(methodUnit)));
     }
 

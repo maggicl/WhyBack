@@ -1,4 +1,4 @@
-package byteback.core.representation.body.soot;
+package byteback.core.representation.soot.body;
 
 import byteback.core.representation.Visitor;
 import soot.Value;

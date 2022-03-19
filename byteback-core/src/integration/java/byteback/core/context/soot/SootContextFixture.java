@@ -1,7 +1,5 @@
 package byteback.core.context.soot;
 
-import org.junit.After;
-
 public class SootContextFixture {
 
     private static final SootContext context = SootContext.instance();
@@ -12,11 +10,6 @@ public class SootContextFixture {
 
     public static SootContext getContext() {
         return context;
-    }
-
-    @After
-    public void after() {
-        resetContext();
     }
 
 }

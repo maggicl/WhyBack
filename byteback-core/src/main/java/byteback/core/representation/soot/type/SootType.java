@@ -1,4 +1,4 @@
-package byteback.core.representation.type.soot;
+package byteback.core.representation.soot.type;
 
 import byteback.core.representation.Visitable;
 

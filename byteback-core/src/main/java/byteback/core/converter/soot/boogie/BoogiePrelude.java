@@ -34,11 +34,11 @@ public class BoogiePrelude {
     public static Program initializeProgram() {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         final InputStream stream = loader.getResourceAsStream("boogie/BytebackPrelude.bpl");
+        assert stream != null;
         final Reader reader = new InputStreamReader(stream);
 
         try {
-            final Program program = ParserUtil.parseBoogieProgram(reader);
-            return program;
+            return ParserUtil.parseBoogieProgram(reader);
         } catch (final IOException exception) {
             log.error("Exception while opening the preamble");
             throw new RuntimeException(exception);

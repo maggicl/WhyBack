@@ -3,16 +3,16 @@ package byteback.core.converter.soot.boogie;
 import java.util.Map;
 import java.util.Optional;
 
-import byteback.core.representation.body.soot.SootExpression;
-import byteback.core.representation.type.soot.SootType;
+import byteback.core.converter.soot.SootLocalExtractor;
+import byteback.core.representation.soot.body.SootExpression;
+import byteback.core.representation.soot.type.SootType;
 import byteback.frontend.boogie.ast.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import byteback.core.util.CountingMap;
-import byteback.core.representation.body.soot.SootExpressionVisitor;
-import byteback.core.representation.body.soot.SootStatementVisitor;
-import byteback.core.representation.unit.soot.SootMethodUnit;
+import byteback.core.representation.soot.body.SootStatementVisitor;
+import byteback.core.representation.soot.unit.SootMethodUnit;
 import byteback.frontend.boogie.builder.FunctionDeclarationBuilder;
 import byteback.frontend.boogie.builder.FunctionSignatureBuilder;
 import soot.*;
@@ -21,31 +21,6 @@ import soot.jimple.*;
 public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclaration> {
 
     private static final Logger log = LoggerFactory.getLogger(BoogieFunctionExtractor.class);
-
-    private static class LocalExtractor extends SootExpressionVisitor<Local> {
-
-        private Local local;
-
-        @Override
-        public void caseLocal(final Local local) {
-            this.local = local;
-        }
-
-        @Override
-        public void caseDefault(final Value expression) {
-            throw new IllegalArgumentException("Expected local definition, got " + expression);
-        }
-
-        @Override
-        public Local result() {
-            if (local == null) {
-                throw new IllegalStateException("Could not retrieve local reference");
-            } else {
-                return local;
-            }
-        }
-
-    }
 
     private final SootMethodUnit methodUnit;
 
@@ -65,23 +40,20 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
     public FunctionDeclaration convert() {
         functionBuilder.name(BoogieNameConverter.methodName(methodUnit));
         methodUnit.getBody().apply(this);
-        return result();
-    }
 
-    public void buildImplicitBindings() {
-        // TODO
+        return result();
     }
 
     @Override
     public void caseIdentityStmt(final IdentityStmt identity) {
         final SootExpression left = new SootExpression(identity.getLeftOp());
-        final Local local = new LocalExtractor().visit(left);
-        final SootType type = new SootType(local.getType()); 
-        final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(type);
-        final OptionalBinding binding = new OptionalBinding();
-        binding.setDeclarator(new Declarator(local.getName()));
-        binding.setTypeAccess(typeAccess);
-        signatureBuilder.addInputBinding(binding);
+        final Local local = new SootLocalExtractor().visit(left);
+        final SootType type = new SootType(local.getType());
+        final TypeAccess boogieTypeAccess = new BoogieTypeAccessExtractor().visit(type);
+        final OptionalBinding boogieBinding = new OptionalBinding();
+        boogieBinding.setDeclarator(new Declarator(local.getName()));
+        boogieBinding.setTypeAccess(boogieTypeAccess);
+        signatureBuilder.addInputBinding(boogieBinding);
         localExpressionIndex.put(local, Optional.empty());
     }
 
@@ -89,19 +61,19 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
     public void caseAssignStmt(final AssignStmt assignment) {
         final SootExpression left = new SootExpression(assignment.getLeftOp());
         final SootExpression right = new SootExpression(assignment.getRightOp());
-        final Local local = new LocalExtractor().visit(left);
-        final Expression expression = new BoogieInlineExtractor(new SootType(local.getType()), localExpressionIndex)
+        final Local local = new SootLocalExtractor().visit(left);
+        final Expression boogieExpression = new BoogieInlineExtractor(new SootType(local.getType()), localExpressionIndex)
                 .visit(right);
-        localExpressionIndex.put(local, Optional.of(expression));
+        localExpressionIndex.put(local, Optional.of(boogieExpression));
     }
 
     @Override
     public void caseReturnStmt(final ReturnStmt returns) {
         final SootExpression operand = new SootExpression(returns.getOp());
-        final Expression expression = new BoogieInlineExtractor(methodUnit.getReturnType(), localExpressionIndex)
+        final Expression boogieExpression = new BoogieInlineExtractor(methodUnit.getReturnType(), localExpressionIndex)
                 .visit(operand);
-        final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(methodUnit.getReturnType());
-        final OptionalBinding binding = new OptionalBinding();
+        final TypeAccess boogieTypeAccess = new BoogieTypeAccessExtractor().visit(methodUnit.getReturnType());
+        final OptionalBinding boogieBinding = new OptionalBinding();
 
         for (Map.Entry<Local, Integer> entry : localExpressionIndex.getAccessCount().entrySet()) {
             if (entry.getValue() == 0) {
@@ -109,14 +81,14 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
             }
         }
 
-        binding.setTypeAccess(typeAccess);
-        signatureBuilder.outputBinding(binding);
-        functionBuilder.signature(signatureBuilder.build()).expression(expression);
+        boogieBinding.setTypeAccess(boogieTypeAccess);
+        signatureBuilder.outputBinding(boogieBinding);
+        functionBuilder.signature(signatureBuilder.build()).expression(boogieExpression);
     }
 
     @Override
     public void caseDefault(final Unit unit) {
-        throw new UnsupportedOperationException("Cannot inline statements of type " + unit.getClass());
+        throw new UnsupportedOperationException("Cannot inline statements of type " + unit.getClass().getName());
     }
 
     @Override

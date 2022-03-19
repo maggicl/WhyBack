@@ -1,4 +1,4 @@
-package byteback.core.representation.unit.soot;
+package byteback.core.representation.soot.unit;
 
 import java.util.Optional;
 import java.util.stream.Stream;

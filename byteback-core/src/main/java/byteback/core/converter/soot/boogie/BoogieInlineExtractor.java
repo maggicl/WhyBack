@@ -3,7 +3,7 @@ package byteback.core.converter.soot.boogie;
 import java.util.Map;
 import java.util.Optional;
 
-import byteback.core.representation.type.soot.SootType;
+import byteback.core.representation.soot.type.SootType;
 import byteback.frontend.boogie.ast.Expression;
 import soot.Local;
 

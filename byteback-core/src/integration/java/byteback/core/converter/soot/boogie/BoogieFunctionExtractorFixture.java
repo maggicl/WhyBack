@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import byteback.core.ResourcesUtil;
-import byteback.core.representation.unit.soot.SootMethodUnitFixture;
+import byteback.core.representation.soot.unit.SootMethodUnitFixture;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.util.ParserUtil;
 

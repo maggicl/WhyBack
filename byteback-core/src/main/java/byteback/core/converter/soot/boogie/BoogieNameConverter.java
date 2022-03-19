@@ -2,9 +2,9 @@ package byteback.core.converter.soot.boogie;
 
 import java.util.Iterator;
 
-import byteback.core.representation.unit.soot.SootFieldUnit;
-import byteback.core.representation.unit.soot.SootMethodUnit;
-import byteback.core.representation.type.soot.SootType;
+import byteback.core.representation.soot.unit.SootFieldUnit;
+import byteback.core.representation.soot.unit.SootMethodUnit;
+import byteback.core.representation.soot.type.SootType;
 
 public class BoogieNameConverter {
 

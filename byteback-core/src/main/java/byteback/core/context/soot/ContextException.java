@@ -1,19 +1,18 @@
-package byteback.core.context;
+package byteback.core.context.soot;
 
 /**
  * Represents any possible exception that may concern the services provided by a
- * {@link Context} class.
+ * {@link SootContext} class.
  */
 public abstract class ContextException extends Exception {
 
     /**
      * Constructs a basic context exception.
      *
-     * @param context The context in which the exception occurred.
      * @param message The message of the exception.
      */
-    public ContextException(Context<?> context, String message) {
-        super(context.getName() + " : " + message);
+    public ContextException(String message) {
+        super(message);
     }
 
 }

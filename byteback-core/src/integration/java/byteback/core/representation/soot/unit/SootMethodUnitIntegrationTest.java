@@ -1,4 +1,4 @@
-package byteback.core.representation.unit.soot;
+package byteback.core.representation.soot.unit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,7 +24,7 @@ public class SootMethodUnitIntegrationTest extends SootMethodUnitFixture {
     public void GetBody_GivenIdentityIdentityMethod_ReturnsTwoStatementsBody() {
         final SootMethodUnit methodUnit = getMethodUnit("java8", "byteback.dummy.Identity",
                 "identity(java.lang.Object)");
-        assertEquals(2, methodUnit.getBody().getUnits().size());
+        assertEquals(2, methodUnit.getBody().getStatementCount());
     }
 
 }

@@ -7,13 +7,18 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import byteback.core.context.ClassLoadException;
-import byteback.core.representation.unit.soot.SootClassUnit;
+import byteback.core.representation.soot.unit.SootClassUnit;
+import org.junit.After;
 import org.junit.Test;
 
 import byteback.core.ResourcesUtil;
 
 public class SootContextIntegrationTest extends SootContextFixture {
+
+    @After
+    public void after() {
+        resetContext();
+    }
 
     @Test
     public void PrependClasspath_WithValidClasspath_ModifiesSootClasspath() {

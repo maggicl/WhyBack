@@ -1,4 +1,4 @@
-package byteback.core.representation.unit.soot;
+package byteback.core.representation.soot.unit;
 
 import soot.SootMethod;
 import soot.Type;
@@ -10,8 +10,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import byteback.core.representation.body.soot.SootBody;
-import byteback.core.representation.type.soot.SootType;
+import byteback.core.representation.soot.body.SootBody;
+import byteback.core.representation.soot.type.SootType;
 
 public class SootMethodUnit {
 
@@ -20,7 +20,6 @@ public class SootMethodUnit {
     /**
      * Constructor for the Soot method intermediate representation.
      *
-     * @param classUnit The class unit corresponding to the method.
      * @param sootMethod The wrapped {@code SootMethod} instance.
      */
     public SootMethodUnit(final SootMethod sootMethod) {
@@ -51,7 +50,7 @@ public class SootMethodUnit {
     }
 
     public List<SootType> getParameterTypes() {
-        return sootMethod.getParameterTypes().stream().map((type) -> new SootType(type)).collect(Collectors.toList());
+        return sootMethod.getParameterTypes().stream().map(SootType::new).collect(Collectors.toList());
     }
 
     public SootType getReturnType() {
@@ -66,8 +65,8 @@ public class SootMethodUnit {
         return new SootClassUnit(sootMethod.getDeclaringClass());
     }
 
-    public SootMethod getSootMethod() {
-        return sootMethod;
+    public Optional<SootAnnotation> getAnnotation(final String type) {
+        return annotations().filter((tag) -> tag.getTypeName().equals(type)).findFirst();
     }
 
     public Stream<SootAnnotation> annotations() {
@@ -78,14 +77,6 @@ public class SootMethodUnit {
         } else {
             return Stream.empty();
         }
-    }
-
-    public Optional<SootAnnotation> getAnnotation(final String type) {
-        return annotations().filter((tag) -> tag.getTypeName().equals(type)).findFirst();
-    }
-
-    public boolean hasAnnotation(final String type) {
-        return getAnnotation(type).isPresent();
     }
 
 }

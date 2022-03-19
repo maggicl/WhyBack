@@ -1,6 +1,6 @@
-package byteback.core.representation.unit.soot;
+package byteback.core.representation.soot.unit;
 
-import byteback.core.representation.type.soot.SootTypeVisitor;
+import byteback.core.representation.soot.type.SootTypeVisitor;
 import org.junit.Test;
 
 import soot.RefType;

@@ -8,9 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import byteback.core.context.ClassLoadException;
-import byteback.core.context.Context;
-import byteback.core.representation.unit.soot.SootClassUnit;
+import byteback.core.representation.soot.unit.SootClassUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +30,7 @@ import soot.options.Options;
  * principle also allow us to keep multiple Soot contexts at the same time,
  * without being constrained to the singleton pattern.
  */
-public class SootContext implements Context<SootClassUnit> {
+public class SootContext {
 
     private static final Logger log = LoggerFactory.getLogger(SootContext.class);
 
@@ -101,7 +99,7 @@ public class SootContext implements Context<SootClassUnit> {
      */
     public void prependClassPath(final Path path) {
         final String classPath = scene().getSootClassPath();
-        scene().setSootClassPath(path.toAbsolutePath().toString() + ":" + classPath);
+        scene().setSootClassPath(path.toAbsolutePath() + ":" + classPath);
     }
 
     /**
@@ -121,16 +119,15 @@ public class SootContext implements Context<SootClassUnit> {
      * @param className Qualified name of a class present in the Soot's classpath.
      * @return The Soot intermediate representation of the loaded class.
      */
-    @Override
     public SootClassUnit loadClass(final String className) throws ClassLoadException {
         try {
-            final SootClass sootClass = scene().loadClass(className.toString(), SootClass.BODIES);
+            final SootClass sootClass = scene().loadClass(className, SootClass.BODIES);
             log.info("Loaded {} in context", className);
 
             return new SootClassUnit(sootClass);
         } catch (AssertionError exception) {
             log.error("Failed to load {}", className, exception);
-            throw new ClassLoadException(this, className);
+            throw new ClassLoadException(className);
         }
     }
 
@@ -141,7 +138,6 @@ public class SootContext implements Context<SootClassUnit> {
      *                  classpath.
      * @return The Soot intermediate representation of the loaded root class.
      */
-    @Override
     public SootClassUnit loadClassAndSupport(final String className) throws ClassLoadException {
         try {
             final SootClass sootClass = scene().loadClassAndSupport(className);
@@ -150,7 +146,7 @@ public class SootContext implements Context<SootClassUnit> {
             return new SootClassUnit(sootClass);
         } catch (AssertionError exception) {
             log.error("Failed to load {}", className, exception);
-            throw new ClassLoadException(this, className);
+            throw new ClassLoadException(className);
         }
     }
 
@@ -175,7 +171,6 @@ public class SootContext implements Context<SootClassUnit> {
      *
      * @return Total number of classes in the Soot scene.
      */
-    @Override
     public int getClassesCount() {
         return scene().getClasses().size();
     }
@@ -185,19 +180,8 @@ public class SootContext implements Context<SootClassUnit> {
      *
      * @return The stream of loaded classes in the current context.
      */
-    @Override
     public Stream<SootClassUnit> classes() {
         return scene().getClasses().stream().map(SootClassUnit::new);
-    }
-
-    /**
-     * Getter for the predefined identifier of this context.
-     *
-     * @return The {@link SootContext} identifier.
-     */
-    @Override
-    public String getName() {
-        return "SOOT_CONTEXT";
     }
 
 }

@@ -44,14 +44,14 @@ aspect Function {
     /**
      * Get declaration from function entity.
      */
-    inh lazy FunctionDeclaration Function.getDeclaration();
+    inh lazy FunctionDeclaration Function.getFunctionDeclaration();
 
-    eq FunctionDeclaration.getChild().getDeclaration() = this;
+    eq FunctionDeclaration.getChild().getFunctionDeclaration() = this;
 
     /**
      * Create a function reference with unbound arguments.
      */
     syn FunctionReference Function.getReference();
 
-    eq Function.getReference() = new FunctionReference(getDeclaration().getDeclarator().getAccessor(), new List<>());
+    eq Function.getReference() = new FunctionReference(getFunctionDeclaration().getDeclarator().getAccessor(), new List<>());
 }

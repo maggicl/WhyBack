@@ -12,7 +12,7 @@ aspect Entity {
 
         public Optional<T> getFirst(String name) {
             for (T entity : this) {
-                if (entity.getDeclarator().getName().equals(name)) {
+                if (entity.getName().equals(name)) {
                     return Optional.of(entity);
                 }
             }
@@ -24,7 +24,7 @@ aspect Entity {
             final Collection<T> entities = new LinkedList<>();
 
             for (T entity : this) {
-                if (entity.getDeclarator().getName().equals(name)) {
+                if (entity.getName().equals(name)) {
                     entities.add(entity);
                 }
             }
@@ -33,5 +33,33 @@ aspect Entity {
         }
         
     }
+
+    inh Declaration Entity.getDeclaration();
+
+    eq VariableDeclaration.getChild().getDeclaration() = this;
+
+    eq ConstantDeclaration.getChild().getDeclaration() = this;
+
+    eq FunctionDeclaration.getChild().getDeclaration() = this;
+
+    eq ProcedureDeclaration.getChild().getDeclaration() = this;
+
+    eq ImplementationDeclaration.getChild().getDeclaration() = this;
+
+    syn lazy Optional<Attribute> Entity.lookupAttribute(String key);
+
+    eq Entity.lookupAttribute(String key) {
+        for (Attribute attribute : getDeclaration().getAttributeList()) {
+            if (attribute.getName().equals(key)) {
+                return Optional.of(attribute);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    syn String Entity.getName();
+
+    eq Entity.getName() = getDeclarator().getName();
     
 }

@@ -63,11 +63,6 @@ aspect Variable {
     }
 
     /**
-     * Variable attributes.
-     */
-    // TODO
-
-    /**
      * Lookup variables in program.
      */
     syn lazy Optional<Variable> Program.lookupVariable(String name);

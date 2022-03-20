@@ -19,8 +19,6 @@ aspect Implementation {
             final Implementation implementation = new Implementation();
             final Signature signature = getSignature();
             implementation.setDeclarator(getDeclarator());
-            implementation.setInputVariableList(signature.getInputVariableList());
-            implementation.setOutputVariableList(signature.getOutputVariableList());
             implementation.setBody(body);
             implementations.add(implementation);
         }

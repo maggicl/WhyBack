@@ -77,10 +77,10 @@ aspect Type {
      */
     inh lazy Accessor DefinedType.getAccessor();
 
-    eq TypeDeclaration.getTypeDefinition().getAccessor() = new Accessor(getDeclarator().getName());
+    eq TypeDeclaration.getChild().getAccessor() = new Accessor(getDeclarator().getName());
 
     inh lazy List<TypeParameter> DefinedType.getTypeParameterList();
 
-    eq TypeDeclaration.getTypeDefinition().getTypeParameterList() = getTypeParameterList();
+    eq TypeDeclaration.getChild().getTypeParameterList() = getTypeParameterList();
 
 }

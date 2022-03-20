@@ -81,14 +81,14 @@ AxiomDeclaration : Declaration ::= Expression;
 FunctionDeclaration : Declaration ::= Declarator Signature:FunctionSignature [Expression] /Function/;
 
 // Constant declaration
-ConstantDeclaration : Declaration ::= Binding:SetBinding <Unique:Boolean> [OrderSpecification] /Variable*/;
+ConstantDeclaration : Declaration ::= Binding:SetBinding <Unique:Boolean> [OrderSpecification];
 
 OrderSpecification ::= ParentEdge* <Complete:Boolean>;
 
 ParentEdge ::= ParentConstant:Accessor <Unique:Boolean>;
 
 // Variable declaration
-VariableDeclaration : Declaration ::= Binding:BoundedBinding* /Variable*/;
+VariableDeclaration : Declaration ::= Binding:BoundedBinding*;
 
 // Procedure declaration
 ProcedureDeclaration : Declaration ::= Declarator Signature:ProcedureSignature Specification* [Body] /Procedure/;

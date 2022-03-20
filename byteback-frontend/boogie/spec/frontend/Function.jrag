@@ -15,11 +15,9 @@ aspect Function {
     syn nta Function FunctionDeclaration.getFunction();
 
     eq FunctionDeclaration.getFunction() {
-        Function function = new Function();
-        Signature signature = getSignature();
+        final Function function = new Function();
+        final Signature signature = getSignature();
         function.setDeclarator(getDeclarator());
-        function.setInputVariableList(signature.getInputVariableList());
-        function.setOutputVariableList(signature.getOutputVariableList());
         function.setExpressionOpt(getExpressionOpt());
 
         return function;
@@ -48,7 +46,7 @@ aspect Function {
      */
     inh lazy FunctionDeclaration Function.getDeclaration();
 
-    eq FunctionDeclaration.getFunction().getDeclaration() = this;
+    eq FunctionDeclaration.getChild().getDeclaration() = this;
 
     /**
      * Create a function reference with unbound arguments.

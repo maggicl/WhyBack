@@ -2,54 +2,40 @@ import java.util.LinkedList;
 
 aspect Variable {
 
+    interface Scope {
+        EntityTable<Variable> variables();
+    }
+
+    Program implements Scope;
+
+    Function implements Scope;
+
+    Procedure implements Scope;
+
+    Implementation implements Scope;
+
+    Body implements Scope;
+
     /**
      * Scope collections.
      */
-    coll EntityTable<Variable> Program.variables();
+    coll EntityTable<Variable> Scope.variables();
 
-    VariableDeclaration contributes
-        each getVariableList() to Program.variables();
+    Binding contributes
+        each getVariableList() to Scope.variables()
+        for each getScopes();
 
-    ConstantDeclaration contributes
-        each getVariableList() to Program.variables();
+    inh List Binding.getScopes();
 
-    coll LinkedList<Variable> SignedEntity.variables();
+    eq Program.getChild().getScopes() = new List(this);
 
-    FunctionDeclaration contributes
-        each getSignature().getVariableList() to SignedEntity.variables()
-        for getFunction();
+    eq FunctionDeclaration.getChild().getScopes() = new List(getFunction());
 
-    ProcedureDeclaration contributes
-        each getSignature().getVariableList() to SignedEntity.variables()
-        for getProcedure();
+    eq ProcedureDeclaration.getChild().getScopes() = new List(getProcedure());
 
-    ImplementationDeclaration contributes
-        each getSignature().getVariableList() to SignedEntity.variables()
-        for each getImplementationList();
+    eq ImplementationDeclaration.getChild().getScopes() = getImplementationList();
 
-    SignedEntity contributes {} to Program.variables();
-
-    coll EntityTable<Variable> Body.variables(); 
-
-    Body contributes
-        each getVariableList() to Body.variables()
-        for this;
-
-    Body contributes {} to SignedEntity.variables();
-
-    Body contributes {} to Program.variables();
-
-    coll EntityTable<Variable> QuantifierExpression.variables(); 
-
-    QuantifierExpression contributes
-        each getVariableList() to QuantifierExpression.variables()
-        for this;
-
-    QuantifierExpression contributes {} to Body.variables();
-
-    QuantifierExpression contributes {} to SignedEntity.variables();
-
-    QuantifierExpression contributes {} to Program.variables();
+    eq Body.getChild().getScopes() = new List(this);
 
     /**
      * NTA definitions.
@@ -76,98 +62,10 @@ aspect Variable {
         return variables;
     }
 
-    syn nta List<Variable> Signature.getInputVariableList();
-
-    eq Signature.getInputVariableList() {
-        final List<Variable> variables = new List<>();
-
-        for (Binding binding : getInputBindingList()) {
-            variables.addAll(binding.getVariableList());
-        }
-
-        return variables;
-    }
-
-    syn nta List<Variable> Signature.getOutputVariableList();
-
-    eq Signature.getOutputVariableList() {
-        final List<Variable> variables = new List<>();
-
-        for (Binding binding : getOutputBindingList()) {
-            variables.addAll(binding.getVariableList());
-        }
-
-        return variables;
-    }
-
-    syn nta List<Variable> Signature.getVariableList();
-
-    eq Signature.getVariableList() {
-        List<Variable> variables = new List<>();
-
-        return variables
-            .addAll(getInputVariableList())
-            .addAll(getOutputVariableList());
-    }
-
-    syn nta List<Variable> VariableDeclaration.getVariableList();
-
-    eq VariableDeclaration.getVariableList() {
-        List<Variable> variables = new List<>();
-
-        for (Binding binding : getBindingList()) {
-            variables.addAll(binding.getVariableList());
-        }
-
-        return variables;
-    }
-
-    syn nta List<Variable> ConstantDeclaration.getVariableList();
-
-    eq ConstantDeclaration.getVariableList() {
-        List<Variable> variables = getBinding().getVariableList();
-
-        return variables;
-    }
-
-    syn nta List<Variable> Body.getVariableList() {
-        final List<Variable> variables = new List<>();
-
-        for (VariableDeclaration declaration : getLocalDeclarationList()) {
-            variables.addAll(declaration.getVariableList());
-        }
-
-        return variables;
-    }
-
-    syn nta List<Variable> QuantifierExpression.getVariableList();
-
-    eq QuantifierExpression.getVariableList() {
-        final List<Variable> variables = new List<>();
-
-        for (Binding binding : getBindingList()) {
-            variables.addAll(binding.getVariableList());
-        }
-
-        return variables;
-    }
-
     /**
      * Variable attributes.
      */
-    inh boolean Variable.isMutable();
-
-    eq VariableDeclaration.getVariable().isMutable() = true;
-
-    eq ConstantDeclaration.getVariable().isMutable() = false;
-
-    eq FunctionDeclaration.getSignature().isMutable() = false;
-    
-    eq ProcedureDeclaration.getSignature().isMutable() = true;
-
-    eq ImplementationDeclaration.getSignature().isMutable() = true;
-
-    eq QuantifierExpression.getBinding().isMutable() = false;
+    // TODO
 
     /**
      * Lookup variables in program.

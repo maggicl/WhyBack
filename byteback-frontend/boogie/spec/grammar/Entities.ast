@@ -1,7 +1,7 @@
 // Entities
 abstract Entity ::= Declarator;
 
-abstract SignedEntity : Entity ::= InputVariable:Variable* OutputVariable:Variable*;
+abstract SignedEntity : Entity;
 
 Variable : Entity ::= TypeAccess;
 

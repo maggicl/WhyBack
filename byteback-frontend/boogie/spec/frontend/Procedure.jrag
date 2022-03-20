@@ -18,8 +18,6 @@ aspect Procedure {
         Procedure procedure = new Procedure();
         Signature signature = getSignature();
         procedure.setDeclarator(getDeclarator());
-        procedure.setInputVariableList(signature.getInputVariableList());
-        procedure.setOutputVariableList(signature.getOutputVariableList());
         procedure.setBodyOpt(getBodyOpt());
 
         return procedure;

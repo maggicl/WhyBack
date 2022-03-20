@@ -29,19 +29,6 @@ public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
 
     }
 
-    public static class RegressionEntry<T> {
-
-        public final T actual;
-
-        public final T expected;
-
-        public RegressionEntry(final T actual, final T expected) {
-            this.actual = actual;
-            this.expected = expected;
-        }
-
-    }
-
     public static String toJavaMethodName(final String boogieMethodName) {
         final char[] nameArray = boogieMethodName.toCharArray();
         final int start = boogieMethodName.indexOf("#");

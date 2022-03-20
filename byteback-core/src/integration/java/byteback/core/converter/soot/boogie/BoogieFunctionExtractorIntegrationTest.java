@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.stream.Stream;
 
+import byteback.core.RegressionParameter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -18,7 +19,7 @@ import byteback.frontend.boogie.ast.Program;
 public class BoogieFunctionExtractorIntegrationTest extends BoogieFunctionExtractorFixture {
 
     @Parameters
-    public static Iterable<RegressionEntry<FunctionDeclaration>> getFunctionEntries() {
+    public static Iterable<RegressionParameter<FunctionDeclaration>> getFunctionEntries() {
         final Stream<Program> programs = getExpectedBoogiePrograms("java8");
 
         return programs.flatMap((program) -> program.functions().stream().flatMap((function) -> {
@@ -28,7 +29,7 @@ public class BoogieFunctionExtractorIntegrationTest extends BoogieFunctionExtrac
                 final MethodIdentifier javaIdentifier = javaMethodIdentifier(javaName);
                 final SootMethodUnit methodUnit = getMethodUnit("java8", javaIdentifier.className,
                         javaIdentifier.methodName);
-                final RegressionEntry<FunctionDeclaration> entry = new RegressionEntry<>(declaration,
+                final RegressionParameter<FunctionDeclaration> entry = new RegressionParameter<>(declaration,
                         new BoogieFunctionExtractor(methodUnit).convert());
 
                 return Stream.of(entry);
@@ -38,9 +39,9 @@ public class BoogieFunctionExtractorIntegrationTest extends BoogieFunctionExtrac
         }))::iterator;
     }
 
-    private final RegressionEntry<FunctionDeclaration> entry;
+    private final RegressionParameter<FunctionDeclaration> entry;
 
-    public BoogieFunctionExtractorIntegrationTest(final RegressionEntry<FunctionDeclaration> entry) {
+    public BoogieFunctionExtractorIntegrationTest(final RegressionParameter<FunctionDeclaration> entry) {
         this.entry = entry;
     }
 

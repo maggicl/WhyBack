@@ -1,5 +1,6 @@
 package byteback.core.representation.soot.unit;
 
+import byteback.core.representation.soot.annotation.SootAnnotation;
 import soot.SootMethod;
 import soot.Type;
 import soot.tagkit.VisibilityAnnotationTag;

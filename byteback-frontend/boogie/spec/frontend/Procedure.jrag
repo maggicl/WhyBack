@@ -7,21 +7,15 @@ aspect Procedure {
      */
     coll EntityTable<Procedure> Program.procedures();
 
-    ProcedureDeclaration contributes getProcedure() to Program.procedures();
+    ProcedureDeclaration contributes
+        getProcedure() to Program.procedures();
 
     /**
      * NTA definitions.
      */
     syn nta Procedure ProcedureDeclaration.getProcedure();
 
-    eq ProcedureDeclaration.getProcedure() {
-        Procedure procedure = new Procedure();
-        Signature signature = getSignature();
-        procedure.setDeclarator(getDeclarator());
-        procedure.setBodyOpt(getBodyOpt());
-
-        return procedure;
-    }
+    eq ProcedureDeclaration.getProcedure() = new Procedure(getDeclarator());
 
     /**
      * Looking up procedures.
@@ -30,9 +24,6 @@ aspect Procedure {
 
     eq Accessor.procedure() = lookupProcedure(getName());
 
-    /**
-     * Lookup procedure in program.
-     */
     syn lazy Optional<Procedure> Program.lookupProcedure(String name);
 
     eq Program.lookupProcedure(String name) = procedures().getFirst(name);
@@ -40,5 +31,12 @@ aspect Procedure {
     inh lazy Optional<Procedure> Accessor.lookupProcedure(String name);
 
     eq Program.getChild().lookupProcedure(String name) = lookupProcedure(name);
+
+    /**
+     * Link procedure to body.
+     */
+    inh lazy Body Procedure.getBody();
+
+    eq ProcedureDeclaration.getProcedure().getBody() = getBody();
     
 }

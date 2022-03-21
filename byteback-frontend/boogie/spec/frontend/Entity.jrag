@@ -34,31 +34,7 @@ aspect Entity {
         
     }
 
-    inh Declaration Entity.getDeclaration();
-
-    eq VariableDeclaration.getChild().getDeclaration() = this;
-
-    eq ConstantDeclaration.getChild().getDeclaration() = this;
-
-    eq FunctionDeclaration.getChild().getDeclaration() = this;
-
-    eq ProcedureDeclaration.getChild().getDeclaration() = this;
-
-    eq ImplementationDeclaration.getChild().getDeclaration() = this;
-
-    syn lazy Optional<Attribute> Entity.lookupAttribute(String key);
-
-    eq Entity.lookupAttribute(String key) {
-        for (Attribute attribute : getDeclaration().getAttributeList()) {
-            if (attribute.getName().equals(key)) {
-                return Optional.of(attribute);
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    syn String Entity.getName();
+    syn lazy String Entity.getName();
 
     eq Entity.getName() = getDeclarator().getName();
     

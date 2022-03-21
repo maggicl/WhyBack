@@ -94,7 +94,7 @@ VariableDeclaration : Declaration ::= Binding:BoundedBinding*;
 ProcedureDeclaration : Declaration ::= Declarator Signature:ProcedureSignature Specification* [Body] /Procedure/;
 
 // Implementation declaration
-ImplementationDeclaration : Declaration ::= Declarator Signature:ImplementationSignature Body* /Implementation*/;
+ImplementationDeclaration : Declaration ::= Declarator Signature:ImplementationSignature Body* /Implementation/;
 
 Body ::= LocalDeclaration:VariableDeclaration* Statement*;
 

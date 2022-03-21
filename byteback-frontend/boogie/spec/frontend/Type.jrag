@@ -17,8 +17,8 @@ aspect Type {
     eq TypeDeclaration.getTypeDefinition() {
         final DefinedType type = new DefinedType();
         final TypeDefinition typeDefinition = new TypeDefinition();
-        typeDefinition.setDefinedType(type);
         typeDefinition.setDeclarator(getDeclarator());
+        typeDefinition.setDefinedType(type);
 
         return typeDefinition;
     }

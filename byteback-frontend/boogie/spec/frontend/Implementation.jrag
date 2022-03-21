@@ -5,26 +5,15 @@ aspect Implementation {
      */
     coll EntityTable<Implementation> Program.implementations();
 
-    ImplementationDeclaration contributes each getImplementationList() to Program.implementations();
+    ImplementationDeclaration contributes
+        getImplementation() to Program.implementations();
 
     /**
      * NTA definitions.
      */
-    syn nta List<Implementation> ImplementationDeclaration.getImplementationList();
+    syn nta Implementation ImplementationDeclaration.getImplementation();
 
-    eq ImplementationDeclaration.getImplementationList() {
-        final List<Implementation> implementations = new List<>();
-
-        for (Body body : getBodyList()) {
-            final Implementation implementation = new Implementation();
-            final Signature signature = getSignature();
-            implementation.setDeclarator(getDeclarator());
-            implementation.setBody(body);
-            implementations.add(implementation);
-        }
-
-        return implementations;
-    }
+    eq ImplementationDeclaration.getImplementation() = new Implementation(getDeclarator());
 
     /**
      * Looking up implementations.

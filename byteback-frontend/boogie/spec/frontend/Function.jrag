@@ -14,14 +14,7 @@ aspect Function {
      */
     syn nta Function FunctionDeclaration.getFunction();
 
-    eq FunctionDeclaration.getFunction() {
-        final Function function = new Function();
-        final Signature signature = getSignature();
-        function.setDeclarator(getDeclarator());
-        function.setExpressionOpt(getExpressionOpt());
-
-        return function;
-    }
+    eq FunctionDeclaration.getFunction() = new Function(getDeclarator());
 
     /**
      * Looking up functions.
@@ -30,9 +23,6 @@ aspect Function {
 
     eq Accessor.function() = lookupFunction(getName());
 
-    /**
-     * Lookup function in program.
-     */
     syn lazy Optional<Function> Program.lookupFunction(String name);
 
     eq Program.lookupFunction(String name) = functions().getFirst(name);

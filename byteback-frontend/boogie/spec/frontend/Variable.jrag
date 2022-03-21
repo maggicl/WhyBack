@@ -23,19 +23,19 @@ aspect Variable {
 
     Binding contributes
         each getVariableList() to Scope.variables()
-        for each getScopes();
+        for getScope();
 
-    inh List Binding.getScopes();
+    inh Scope Binding.getScope();
 
-    eq Program.getChild().getScopes() = new List(this);
+    eq Program.getChild().getScope() = this;
 
-    eq FunctionDeclaration.getChild().getScopes() = new List(getFunction());
+    eq FunctionDeclaration.getChild().getScope() = getFunction();
 
-    eq ProcedureDeclaration.getChild().getScopes() = new List(getProcedure());
+    eq ProcedureDeclaration.getChild().getScope() = getProcedure();
 
-    eq ImplementationDeclaration.getChild().getScopes() = getImplementationList();
+    eq ImplementationDeclaration.getChild().getScope() = getImplementation();
 
-    eq Body.getChild().getScopes() = new List(this);
+    eq Body.getChild().getScope() = this;
 
     /**
      * NTA definitions.
@@ -46,7 +46,7 @@ aspect Variable {
         final List<Variable> variables = new List<>();
 
         if (hasDeclarator()) {
-            variables.add(new Variable(getDeclarator(), getTypeAccess()));
+            variables.add(new Variable(getDeclarator()));
         }
 
         return variables;
@@ -56,7 +56,7 @@ aspect Variable {
         final List<Variable> variables = new List<>();
 
         for (Declarator declarator : getDeclaratorList()) {
-            variables.add(new Variable(declarator, getTypeAccess()));
+            variables.add(new Variable(declarator));
         }
 
         return variables;
@@ -72,6 +72,13 @@ aspect Variable {
     inh lazy Optional<Variable> Accessor.lookupVariable(String name);
 
     eq Program.getChild().lookupVariable(String name) = lookupVariable(name);
+
+    /**
+     * Get type access used in variable.
+     */
+    inh lazy TypeAccess Variable.getTypeAccess();
+
+    eq Binding.getVariable().getTypeAccess() = getTypeAccess();
 
     /**
      * Get reference to variable.

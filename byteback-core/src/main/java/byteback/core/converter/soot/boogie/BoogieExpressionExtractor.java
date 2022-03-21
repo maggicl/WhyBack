@@ -58,6 +58,7 @@ import soot.jimple.OrExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.SubExpr;
+import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 
 public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression> {
@@ -90,10 +91,21 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
         setExpression(boogieBinary);
     }
 
-    public void setFunctionReference(final InvokeExpr invocation, final String methodName) {
-        final FunctionReference functionReference = new FunctionReference();
+    public void setFunctionReference(final InvokeExpr invocation, final FunctionReference functionReference,
+            final Expression... ghostParameters) {
+
+        final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
+        final Optional<SootAnnotation> definedAnnotation = methodUnit
+                .getAnnotation("Lbyteback/annotations/Contract$Prelude;");
+        final Optional<String> definedValue = definedAnnotation.flatMap(SootAnnotation::getValue)
+                .map((element) -> new StringElementExtractor().visit(element));
+        final String methodName = definedValue.orElseGet(() -> BoogieNameConverter.methodName(methodUnit));
         functionReference.setAccessor(new Accessor(methodName));
         functionReference.addArgument(BoogiePrelude.getHeapVariable().getValueReference());
+
+        for (Expression parameter : ghostParameters) {
+            functionReference.addArgument(parameter);
+        }
 
         for (Value argument : invocation.getArgs()) {
             final SootExpression expression = new SootExpression(argument);
@@ -106,12 +118,16 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 
     @Override
     public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
-        final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
-        final Optional<SootAnnotation> definedAnnotation = methodUnit
-                .getAnnotation("Lbyteback/annotations/Contract$Prelude;");
-        final Optional<String> definedValue = definedAnnotation.flatMap(SootAnnotation::getValue)
-                .map((element) -> new StringElementExtractor().visit(element));
-        setFunctionReference(invocation, definedValue.orElseGet(() -> BoogieNameConverter.methodName(methodUnit)));
+        final FunctionReference functionReference = new FunctionReference();
+        setFunctionReference(invocation, functionReference);
+    }
+
+    @Override
+    public void caseVirtualInvokeExpr(final VirtualInvokeExpr invocation) {
+        final FunctionReference functionReference = new FunctionReference();
+        final SootExpression base = new SootExpression(invocation.getBase());
+        final Expression target = new BoogieExpressionExtractor(new SootType(RefType.v())).visit(base);
+        setFunctionReference(invocation, functionReference, target);
     }
 
     @Override
@@ -225,7 +241,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
     public void caseLeExpr(final LeExpr lessEquals) {
         setBinaryExpression(lessEquals, new LessThanEqualsOperation());
     }
-    
+
     @Override
     public void caseIntConstant(final IntConstant intConstant) {
         type.apply(new SootTypeVisitor<>() {

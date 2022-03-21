@@ -9,15 +9,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import beaver.Parser;
+
 import byteback.core.ResourcesUtil;
 import byteback.core.representation.soot.unit.SootClassUnit;
-import byteback.core.representation.soot.unit.SootMethodUnitFixture;
+import byteback.core.representation.soot.unit.SootClassUnitFixture;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.util.ParserUtil;
 
-public class BoogieFunctionExtractorFixture extends SootMethodUnitFixture {
+public class BoogieConverterFixture extends SootClassUnitFixture {
 
-    private static final Logger log = LoggerFactory.getLogger(BoogieFunctionExtractorFixture.class);
+    private static final Logger log = LoggerFactory.getLogger(BoogieConverterFixture.class);
 
     public static Stream<Entry<SootClassUnit, Program>> getRegressionEntries(final String jarName) throws IOException {
         return ResourcesUtil.getBoogiePaths(jarName).flatMap((path) -> {

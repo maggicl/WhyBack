@@ -18,7 +18,7 @@ import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.Variable;
 
 @RunWith(Parameterized.class)
-public class BoogieFieldExtractorIntegrationTest extends BoogieFunctionExtractorFixture {
+public class BoogieFieldConverterIntegrationTest extends BoogieConverterFixture {
 
     @Parameters
     public static Iterable<RegressionParameter<ConstantDeclaration>> getParameters() throws IOException {
@@ -38,12 +38,12 @@ public class BoogieFieldExtractorIntegrationTest extends BoogieFunctionExtractor
 
     private final RegressionParameter<ConstantDeclaration> parameter;
 
-    public BoogieFieldExtractorIntegrationTest(final RegressionParameter<ConstantDeclaration> parameter) {
+    public BoogieFieldConverterIntegrationTest(final RegressionParameter<ConstantDeclaration> parameter) {
         this.parameter = parameter;
     }
 
     @Test
-    public void test() {
+    public void Convert_GivenRegressionSet_ReturnsExpectedCode() {
         assertEquals(PrintUtil.toString(parameter.actual), PrintUtil.toString(parameter.expected));
     }
 

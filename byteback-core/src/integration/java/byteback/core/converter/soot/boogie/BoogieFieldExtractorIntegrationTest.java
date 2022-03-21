@@ -30,8 +30,7 @@ public class BoogieFieldExtractorIntegrationTest extends BoogieFunctionExtractor
                 final String boogieName = BoogieNameConverter.fieldName(fieldUnit);
                 final ConstantDeclaration expected = program.lookupVariable(boogieName)
                         .flatMap(Variable::getConstantDeclaration).get();
-                final ConstantDeclaration actual = new BoogieFieldExtractor(fieldUnit).convert();
-
+                final ConstantDeclaration actual = BoogieFieldConverter.instance().convert(fieldUnit);
                 return new RegressionParameter<>(expected, actual);
             });
         })::iterator;

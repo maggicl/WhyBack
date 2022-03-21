@@ -6,15 +6,15 @@ import byteback.frontend.boogie.ast.Declarator;
 import byteback.frontend.boogie.ast.SetBinding;
 import byteback.frontend.boogie.ast.TypeAccess;
 
-public class BoogieFieldExtractor {
+public class BoogieFieldConverter {
 
-    final SootFieldUnit fieldUnit;
+    private static final BoogieFieldConverter instance = new BoogieFieldConverter();
 
-    public BoogieFieldExtractor(final SootFieldUnit fieldUnit) {
-        this.fieldUnit = fieldUnit;
+    public static BoogieFieldConverter instance() {
+        return instance;
     }
 
-    public ConstantDeclaration convert() {
+    public ConstantDeclaration convert(final SootFieldUnit fieldUnit) {
         final ConstantDeclaration boogieConstantDeclaration = new ConstantDeclaration();
         final SetBinding boogieBinding = new SetBinding();
         final TypeAccess boogieBaseTypeAccess = new BoogieTypeAccessExtractor().visit(fieldUnit.getType());

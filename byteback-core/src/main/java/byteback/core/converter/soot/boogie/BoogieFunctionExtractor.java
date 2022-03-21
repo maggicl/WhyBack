@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import byteback.core.util.CountingMap;
 import byteback.core.representation.soot.body.SootStatementVisitor;
-import byteback.core.representation.soot.unit.SootMethodUnit;
 import byteback.frontend.boogie.builder.FunctionDeclarationBuilder;
 import byteback.frontend.boogie.builder.FunctionSignatureBuilder;
 import soot.*;
@@ -22,27 +21,18 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 
     private static final Logger log = LoggerFactory.getLogger(BoogieFunctionExtractor.class);
 
-    private final SootMethodUnit methodUnit;
-
     private final FunctionDeclarationBuilder functionBuilder;
 
     private final FunctionSignatureBuilder signatureBuilder;
 
     private final CountingMap<Local, Optional<Expression>> localExpressionIndex;
 
-    public BoogieFunctionExtractor(final SootMethodUnit methodUnit) {
-        this.methodUnit = methodUnit;
-        this.functionBuilder = new FunctionDeclarationBuilder();
-        this.signatureBuilder = new FunctionSignatureBuilder();
+    public BoogieFunctionExtractor(final FunctionDeclarationBuilder functionBuilder,
+            final FunctionSignatureBuilder signatureBuilder) {
+
+        this.functionBuilder = functionBuilder;
+        this.signatureBuilder = signatureBuilder;
         this.localExpressionIndex = new CountingMap<>();
-    }
-
-    public FunctionDeclaration convert() {
-        signatureBuilder.addInputBinding(BoogiePrelude.getHeapVariable().makeOptionalBinding());
-        functionBuilder.name(BoogieNameConverter.methodName(methodUnit));
-        methodUnit.getBody().apply(this);
-
-        return result();
     }
 
     @Override
@@ -71,7 +61,7 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
     @Override
     public void caseReturnStmt(final ReturnStmt returns) {
         final SootExpression operand = new SootExpression(returns.getOp());
-        final SootType returnType = methodUnit.getReturnType();
+        final SootType returnType = new SootType(returns.getOp().getType());
         final Expression boogieExpression = new BoogieInlineExtractor(returnType, localExpressionIndex).visit(operand);
         final TypeAccess boogieReturnTypeAccess = new BoogieTypeAccessExtractor().visit(returnType);
         final OptionalBinding boogieReturnBinding = new OptionalBinding();

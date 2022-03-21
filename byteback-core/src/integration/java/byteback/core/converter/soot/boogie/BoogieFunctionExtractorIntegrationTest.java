@@ -31,7 +31,7 @@ public class BoogieFunctionExtractorIntegrationTest extends BoogieFunctionExtrac
                     final String boogieName = BoogieNameConverter.methodName(methodUnit);
                     final FunctionDeclaration expected = program.lookupFunction(boogieName).get()
                             .getFunctionDeclaration();
-                    final FunctionDeclaration actual = new BoogieFunctionExtractor(methodUnit).convert();
+                    final FunctionDeclaration actual = BoogieFunctionConverter.instance().convert(methodUnit);
 
                     return Stream.of(new RegressionParameter<>(expected, actual));
                 }

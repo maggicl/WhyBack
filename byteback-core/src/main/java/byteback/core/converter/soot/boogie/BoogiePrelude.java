@@ -120,7 +120,7 @@ public class BoogiePrelude {
     public static FunctionReference getOperator(final String name, final TypeAccess typeAccess) {
         final String typeName = PrintUtil.toString(typeAccess);
 
-        return loadProgram().lookupFunction(name + "#" + typeName + "#").orElseThrow(() -> {
+        return loadProgram().lookupFunction(name + "_" + typeName).orElseThrow(() -> {
             throw new IllegalStateException("Missing definition for the " + name + " operator of type " + typeName);
         }).getFunctionReference();
     }

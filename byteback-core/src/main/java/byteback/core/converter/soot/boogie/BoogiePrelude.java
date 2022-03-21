@@ -16,6 +16,7 @@ import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.Function;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.IntegerType;
+import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.RealType;
 import byteback.frontend.boogie.ast.Type;
@@ -100,7 +101,7 @@ public class BoogiePrelude {
         });
     }
 
-    public static Expression getHeapAccessExpression(Expression base, Expression field) {
+    public static Expression getHeapAccessExpression(final Expression base, final Expression field) {
         final FunctionReference reference = getHeapAccessFunction().getFunctionReference();
         reference.addArgument(getHeapVariable().getValueReference());
         reference.addArgument(base);
@@ -109,11 +110,19 @@ public class BoogiePrelude {
         return reference;
     }
 
-    public static TypeAccess getFieldTypeAccess(TypeAccess baseTypeAccess) {
+    public static TypeAccess getFieldTypeAccess(final TypeAccess baseTypeAccess) {
         final UnknownTypeAccess fieldTypeAccess = getFieldType().getTypeAccess();
         fieldTypeAccess.addArgument(baseTypeAccess);
 
         return fieldTypeAccess;
+    }
+
+    public static FunctionReference getOperator(final String name, final TypeAccess typeAccess) {
+        final String typeName = PrintUtil.toString(typeAccess);
+
+        return loadProgram().lookupFunction(name + "#" + typeName + "#").orElseThrow(() -> {
+            throw new IllegalStateException("Missing definition for the " + name + " operator of type " + typeName);
+        }).getFunctionReference();
     }
 
 }

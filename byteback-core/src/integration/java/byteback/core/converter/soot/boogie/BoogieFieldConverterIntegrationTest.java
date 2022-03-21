@@ -31,6 +31,7 @@ public class BoogieFieldConverterIntegrationTest extends BoogieConverterFixture 
                 final ConstantDeclaration expected = program.lookupVariable(boogieName)
                         .flatMap(Variable::getConstantDeclaration).get();
                 final ConstantDeclaration actual = BoogieFieldConverter.instance().convert(fieldUnit);
+
                 return new RegressionParameter<>(expected, actual);
             });
         })::iterator;

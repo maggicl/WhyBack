@@ -87,4 +87,13 @@ aspect Variable {
 
     eq Variable.makeOptionalBinding() = new OptionalBinding(getTypeAccess(), new Opt(getDeclarator()));
 
+    /**
+     * Fetch the constant declaration of the variable, if it has been defined as such.
+     */
+    inh lazy Optional<ConstantDeclaration> Variable.getConstantDeclaration();
+
+    eq ConstantDeclaration.getChild().getConstantDeclaration() = Optional.of(this);
+
+    eq Program.getChild().getConstantDeclaration() = Optional.empty();
+
 }

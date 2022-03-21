@@ -20,26 +20,40 @@ public class ASTTestFixture {
     }
 
     public Function getFunction(final String programName, final String functionName) {
-        Program program = getProgram(programName);
-        Function function = program.lookupFunction(functionName)
+        final Program program = getProgram(programName);
+        final Function function = program.lookupFunction(functionName)
             .orElseThrow(() -> new RuntimeException("No such function: " + functionName));
 
         return function;
     }
 
     public Procedure getProcedure(final String programName, final String procedureName) {
-        Program program = getProgram(programName);
-        Procedure procedure = program.lookupProcedure(procedureName)
+        final Program program = getProgram(programName);
+        final Procedure procedure = program.lookupProcedure(procedureName)
             .orElseThrow(() -> new RuntimeException("No such procedure: " + procedureName));
 
         return procedure;
     }
 
     public Collection<Implementation> getImplementations(final String programName, final String implementationName) {
-        Program program = getProgram(programName);
-        Collection<Implementation> implementations = program.lookupImplementations(implementationName);
+        final Program program = getProgram(programName);
+        final Collection<Implementation> implementations = program.lookupImplementations(implementationName);
 
         return implementations;
+    }
+
+    public Variable getVariable(final String programName, final String variableName) {
+        final Program program = getProgram(programName);
+        final Variable variable = program.lookupVariable(variableName).orElseThrow(() -> new RuntimeException("No such variable: " + variableName));
+
+        return variable;
+    }
+
+    public TypeDefinition getTypeDefinition(final String programName, final String typeName) {
+        final Program program = getProgram(programName);
+        final TypeDefinition typeDefinition = program.lookupTypeDefinition(typeName).orElseThrow(() -> new RuntimeException("No such type: " + typeName));
+
+        return typeDefinition;
     }
 
 }

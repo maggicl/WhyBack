@@ -185,7 +185,8 @@ FunctionDeclaration function_declaration
 FunctionDeclaration function_definition
     = function_prototype.fd SEMICOLON
     {: return fd; :}
-    | function_body
+    | function_body.fb
+    {: return fb; :}
     ;
 
 FunctionDeclaration function_body

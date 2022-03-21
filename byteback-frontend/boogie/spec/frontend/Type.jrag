@@ -51,7 +51,7 @@ aspect Type {
     /**
      * Link type definitions with concrete types.
      */
-    syn nta Type TypeDefinition.getType();
+    syn nta DefinedType TypeDefinition.getType();
 
     eq TypeDefinition.getType() = new DefinedType();
 
@@ -69,6 +69,8 @@ aspect Type {
     eq MapType.getTypeAccess() = new MapTypeAccess(); // TODO: Fetch constructor arguments
 
     eq BitvectorType.getTypeAccess() = new BitvectorTypeAccess();
+
+    syn lazy UnknownTypeAccess DefinedType.getTypeAccess();
 
     eq DefinedType.getTypeAccess() = new UnknownTypeAccess(getAccessor(), new List<>());
 

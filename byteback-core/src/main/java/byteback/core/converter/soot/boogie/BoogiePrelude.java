@@ -11,15 +11,17 @@ import org.slf4j.LoggerFactory;
 import beaver.Parser;
 import byteback.core.util.Lazy;
 import byteback.frontend.boogie.ast.BooleanType;
+import byteback.frontend.boogie.ast.DefinedType;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.Function;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.IntegerType;
-import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.RealType;
 import byteback.frontend.boogie.ast.Type;
+import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.TypeDefinition;
+import byteback.frontend.boogie.ast.UnknownTypeAccess;
 import byteback.frontend.boogie.ast.Variable;
 import byteback.frontend.boogie.util.ParserUtil;
 
@@ -66,6 +68,14 @@ public class BoogiePrelude {
         return typeDefinition.getType();
     }
 
+    public static DefinedType getFieldType() {
+        final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Field").orElseThrow(() -> {
+            throw new IllegalStateException("Missing definition for Field type");
+        });
+
+        return typeDefinition.getType();
+    }
+
     public static Type getBooleanType() {
         return BooleanType.instance();
     }
@@ -97,6 +107,13 @@ public class BoogiePrelude {
         reference.addArgument(field);
 
         return reference;
+    }
+
+    public static TypeAccess getFieldTypeAccess(TypeAccess baseTypeAccess) {
+        final UnknownTypeAccess fieldTypeAccess = getFieldType().getTypeAccess();
+        fieldTypeAccess.addArgument(baseTypeAccess);
+
+        return fieldTypeAccess;
     }
 
 }

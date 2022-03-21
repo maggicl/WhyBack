@@ -1,6 +1,7 @@
 package byteback.frontend.boogie.ast;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
@@ -51,6 +52,12 @@ public class VariableTest extends ASTTestFixture {
         for (Implementation implementation : implementations) {
             assertEquals(2, implementation.variables().size());
         }
+    }
+
+    @Test
+    public void GetConstantDeclaration_OnUnitUnitVariable_ReturnsConstantDeclaration() {
+        final Variable variable = getVariable("Unit", "unit");
+        assertTrue(variable.getConstantDeclaration().isPresent());
     }
 
 }

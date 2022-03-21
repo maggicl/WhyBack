@@ -82,10 +82,10 @@ aspect Print {
         builder.append("const ");
         super.printAttributes(builder);
 
-        if (getUnique()) {
+        if (getUnique() != null && getUnique()) {
             builder.append("unique ");
         }
-        
+
         getBinding().print(builder);
 
         if (hasOrderSpecification()) {
@@ -259,6 +259,7 @@ aspect Print {
 
     public void UnknownTypeAccess.print(final StringBuilder builder) {
         getAccessor().print(builder);
+        builder.append(" ");
         PrintUtil.listPrint(builder, " ", getArgumentList());
     }
 

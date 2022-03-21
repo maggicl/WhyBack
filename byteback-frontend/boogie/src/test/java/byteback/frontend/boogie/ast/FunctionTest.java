@@ -19,20 +19,20 @@ public class FunctionTest extends ASTTestFixture {
     }
 
     @Test
-    public void LookupFunction_OnArithmeticAdditionFunction_ReturnsFunction() {
+    public void LookupFunction_OnArithmeticAdditionFunction_ReturnsFunctionDeclaration() {
         final Program program = getProgram("Arithmetic");
         assertTrue(program.lookupFunction("addition").isPresent());
     }
 
     @Test
-    public void GetFunctionDeclaration_GivenArithmeticAdditionFunction_DoesNotThrowException() {
+    public void GetFunctionDeclaration_OnArithmeticAdditionFunction_DoesNotThrowException() {
         final Program program = getProgram("Arithmetic");
         final Function function = program.lookupFunction("addition").get();
         function.getFunctionDeclaration();
     }
 
     @Test
-    public void GetValueReference_GivenArithmeticAdditionFunction_DoesNotThrowException() {
+    public void GetValueReference_OnArithmeticAdditionFunction_DoesNotThrowException() {
         final Program program = getProgram("Arithmetic");
         final Function function = program.lookupFunction("addition").get();
         function.getFunctionReference();

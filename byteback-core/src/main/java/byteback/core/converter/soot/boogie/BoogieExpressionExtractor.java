@@ -93,6 +93,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
     public void setFunctionReference(final InvokeExpr invocation, final String methodName) {
         final FunctionReference functionReference = new FunctionReference();
         functionReference.setAccessor(new Accessor(methodName));
+        functionReference.addArgument(BoogiePrelude.getHeapVariable().getValueReference());
 
         for (Value argument : invocation.getArgs()) {
             final SootExpression expression = new SootExpression(argument);

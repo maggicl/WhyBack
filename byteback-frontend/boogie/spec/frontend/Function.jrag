@@ -51,7 +51,7 @@ aspect Function {
     /**
      * Create a function reference with unbound arguments.
      */
-    syn FunctionReference Function.getReference();
+    syn FunctionReference Function.getFunctionReference();
 
-    eq Function.getReference() = new FunctionReference(getFunctionDeclaration().getDeclarator().getAccessor(), new List<>());
+    eq Function.getFunctionReference() = new FunctionReference(getDeclarator().getAccessor(), new List<>());
 }

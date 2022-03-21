@@ -80,4 +80,11 @@ aspect Variable {
 
     eq Variable.getValueReference() = new ValueReference(getDeclarator().getAccessor());
 
+    /**
+     * Create optional binding from variable.
+     */
+    syn OptionalBinding Variable.makeOptionalBinding();
+
+    eq Variable.makeOptionalBinding() = new OptionalBinding(getTypeAccess(), new Opt(getDeclarator()));
+
 }

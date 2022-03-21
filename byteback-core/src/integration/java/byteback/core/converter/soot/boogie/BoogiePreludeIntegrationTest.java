@@ -2,11 +2,10 @@ package byteback.core.converter.soot.boogie;
 
 import static org.junit.Assert.assertEquals;
 
+import byteback.frontend.boogie.ast.*;
 import org.junit.Test;
 
-import byteback.frontend.boogie.ast.Program;
-
-public class BoogiePreambleIntegrationTest {
+public class BoogiePreludeIntegrationTest {
 
     @Test
     public void InitializeProgram_GivenPrelude_DoesNotThrowExceptions() {
@@ -33,6 +32,13 @@ public class BoogiePreambleIntegrationTest {
     @Test
     public void GetHeapVariable_GivenPrelude_DoesNotThrowException() {
         BoogiePrelude.getHeapVariable();
+    }
+
+    @Test
+    public void GetHeapAccessExpression_GivenPrelude_DoesNotThrowException() {
+        final Expression base = new ValueReference(new Accessor("reference"));
+        final Expression field = new ValueReference(new Accessor("Reference.field"));
+        BoogiePrelude.getHeapAccessExpression(base, field);
     }
 
 }

@@ -13,7 +13,9 @@ import byteback.core.util.Lazy;
 import byteback.frontend.boogie.ast.BooleanType;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.Function;
+import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.IntegerType;
+import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.RealType;
 import byteback.frontend.boogie.ast.Type;
@@ -84,12 +86,17 @@ public class BoogiePrelude {
 
     public static Function getHeapAccessFunction() {
         return loadProgram().lookupFunction("~read").orElseThrow(() -> {
-            throw new IllegalStateException("Missing definition for the ~readvariable");
+            throw new IllegalStateException("Missing definition for the ~read variable");
         });
     }
 
     public static Expression getHeapAccessExpression(Expression base, Expression field) {
-        throw new UnsupportedOperationException();
+        final FunctionReference reference = getHeapAccessFunction().getFunctionReference();
+        reference.addArgument(getHeapVariable().getValueReference());
+        reference.addArgument(base);
+        reference.addArgument(field);
+
+        return reference;
     }
 
 }

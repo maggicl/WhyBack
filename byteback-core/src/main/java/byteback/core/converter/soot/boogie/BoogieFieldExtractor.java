@@ -3,7 +3,6 @@ package byteback.core.converter.soot.boogie;
 import byteback.core.representation.soot.unit.SootFieldUnit;
 import byteback.frontend.boogie.ast.ConstantDeclaration;
 import byteback.frontend.boogie.ast.Declarator;
-import byteback.frontend.boogie.ast.Opt;
 import byteback.frontend.boogie.ast.SetBinding;
 import byteback.frontend.boogie.ast.TypeAccess;
 

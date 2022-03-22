@@ -24,7 +24,7 @@ import byteback.frontend.boogie.ast.VariableDeclaration;
 import byteback.frontend.boogie.builder.BoundedBindingBuilder;
 import byteback.frontend.boogie.builder.ProcedureDeclarationBuilder;
 import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
-
+import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import soot.Local;
 import soot.Unit;
 import soot.Value;
@@ -67,8 +67,10 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
         final SootType type = new SootType(local.getType());
         final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(type);
         final BoundedBinding boundedBinding = new BoundedBindingBuilder().addName(local.getName())
-            .typeAccess(typeAccess).build();
-        final VariableDeclaration variableDeclaration = new VariableDeclaration();
+                .typeAccess(typeAccess).build();
+        final VariableDeclaration variableDeclaration = new VariableDeclarationBuilder().addBinding(boundedBinding)
+                .build();
+
         body.addLocalDeclaration(variableDeclaration);
         initialized.add(local);
     }
@@ -130,6 +132,11 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
     @Override
     public void caseDefault(final Unit unit) {
         throw new UnsupportedOperationException("Cannot collect statements of type " + unit.getClass().getName());
+    }
+
+    @Override
+    public ProcedureDeclaration result() {
+        return procedureBuilder.signature(signatureBuilder.build()).build();
     }
 
 }

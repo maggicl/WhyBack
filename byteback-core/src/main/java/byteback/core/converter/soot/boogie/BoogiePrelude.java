@@ -12,7 +12,6 @@ import beaver.Parser;
 import byteback.core.util.Lazy;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.BooleanType;
-import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.DefinedType;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.Function;

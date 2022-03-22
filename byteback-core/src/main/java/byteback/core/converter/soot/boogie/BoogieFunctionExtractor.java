@@ -73,7 +73,7 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
         }
 
         signatureBuilder.outputBinding(boogieReturnBinding);
-        functionBuilder.signature(signatureBuilder.build()).expression(expression);
+        functionBuilder.expression(expression);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 
     @Override
     public FunctionDeclaration result() {
-        return functionBuilder.build();
+        return functionBuilder.signature(signatureBuilder.build()).build();
     }
 
 }

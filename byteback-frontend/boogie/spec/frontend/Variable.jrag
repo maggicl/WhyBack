@@ -99,7 +99,7 @@ aspect Variable {
      */
     inh lazy Optional<ConstantDeclaration> Variable.getConstantDeclaration();
 
-    eq ConstantDeclaration.getChild().getConstantDeclaration() = Optional.of(this);
+    eq ConstantDeclaration.getBinding().getConstantDeclaration() = Optional.of(this);
 
     eq Program.getChild().getConstantDeclaration() = Optional.empty();
 

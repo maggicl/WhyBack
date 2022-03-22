@@ -134,7 +134,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 
 	@Override
 	public ProcedureDeclaration result() {
-		return procedureBuilder.signature(signatureBuilder.build()).build();
+		return procedureBuilder.signature(signatureBuilder.build()).body(body).build();
 	}
 
 }

@@ -16,6 +16,7 @@ public class BoogieProcedureConverter {
 	public ProcedureDeclaration convert(final SootMethodUnit methodUnit) {
 		final ProcedureDeclarationBuilder procedureBuilder = new ProcedureDeclarationBuilder();
 		final ProcedureSignatureBuilder signatureBuilder = new ProcedureSignatureBuilder();
+		procedureBuilder.name(BoogieNameConverter.methodName(methodUnit));
 
 		return new BoogieProcedureExtractor(procedureBuilder, signatureBuilder).visit(methodUnit.getBody());
 	}

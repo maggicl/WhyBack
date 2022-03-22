@@ -35,13 +35,13 @@ public class BoundedBindingBuilder extends BindingBuilder {
 	public BoundedBinding build() {
 		final TypeAccess typeAccess = typeAccessParameter
 				.orElseThrow(() -> new IllegalArgumentException("Bounded binding must include a type access"));
-		final WhereClause whereClause = whereClauseParameter.orElse(null);
+		final Opt<WhereClause> whereClause = whereClauseParameter.map(Opt::new).orElse(new Opt<>());
 
 		if (declarators.getNumChild() == 0) {
 			throw new IllegalArgumentException("Bounded binding must declare at least one name");
 		}
 
-		return new BoundedBinding(typeAccess, declarators, new Opt<>(whereClause));
+		return new BoundedBinding(typeAccess, declarators, whereClause);
 	}
 
 }

@@ -18,5 +18,15 @@ public class BooleanMethods {
 	public static boolean xor(boolean a, boolean b) {
 		return a ^ b;
 	}
+  
+  @Pure
+  public static boolean returnsTrue() {
+    return true;
+  }
+
+  @Pure
+  public static boolean returnsFalse() {
+    return false;
+  }
 
 }

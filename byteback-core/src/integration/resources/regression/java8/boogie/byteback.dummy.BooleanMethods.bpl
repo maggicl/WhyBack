@@ -12,3 +12,13 @@ function byteback.dummy.BooleanMethods.xor#boolean#boolean#(~heap: Store, a: boo
 {
     a != b
 }
+
+function byteback.dummy.BooleanMethods.returnsTrue##(~heap: Store, a: bool, b: bool) returns(bool)
+{
+    true
+}
+
+function byteback.dummy.BooleanMethods.returnsFalse##(~heap: Store, a: bool, b: bool) returns(bool)
+{
+    false
+}

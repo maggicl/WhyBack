@@ -79,3 +79,13 @@ function byteback.dummy.IntegerMethods.commonSubExpressionPlus#int#(~heap: Store
 {
     (a + 1) + (a + 1)
 }
+
+function byteback.dummy.IntegerMethods.returnsOne##(~heap: Store, a: bool, b: bool) returns(bool)
+{
+    1
+}
+
+function byteback.dummy.IntegerMethods.returnsZero##(~heap: Store, a: bool, b: bool) returns(bool)
+{
+    0
+}

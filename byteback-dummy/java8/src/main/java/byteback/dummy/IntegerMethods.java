@@ -110,4 +110,14 @@ public class IntegerMethods {
 		return b;
 	}
 
+  @Pure
+  public static int returnsOne() {
+    return 1;
+  }
+
+  @Pure
+  public static int returnsZero() {
+    return 0;
+  }
+
 }

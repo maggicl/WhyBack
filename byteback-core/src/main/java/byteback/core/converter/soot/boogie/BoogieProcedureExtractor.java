@@ -29,6 +29,7 @@ import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.IdentityStmt;
+import soot.jimple.IfStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 
@@ -65,10 +66,9 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 	public void addLocal(final Local local) {
 		final SootType type = new SootType(local.getType());
 		final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(type);
-		final BoundedBinding boundedBinding = new BoundedBindingBuilder().addName(local.getName())
-				.typeAccess(typeAccess).build();
-		final VariableDeclaration variableDeclaration = new VariableDeclarationBuilder().addBinding(boundedBinding)
+		final BoundedBinding binding = new BoundedBindingBuilder().addName(local.getName()).typeAccess(typeAccess)
 				.build();
+		final VariableDeclaration variableDeclaration = new VariableDeclarationBuilder().addBinding(binding).build();
 
 		body.addLocalDeclaration(variableDeclaration);
 		initialized.add(local);
@@ -126,6 +126,10 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 		addSingleAssignment(assignee, expression);
 		addReturnStatement();
 	}
+
+  @Override
+  public void caseIfStmt(final IfStmt ifStatement) {
+  }
 
 	@Override
 	public void caseDefault(final Unit unit) {

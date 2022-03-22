@@ -17,6 +17,13 @@ application {
     mainClass = 'byteback.core.Main'
 }
 
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+    }
+}
+
 def copyResources = tasks.register("copyResources", Copy) {
     def jars = []
     project(":byteback-dummy").subprojects.each { dummy ->

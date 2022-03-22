@@ -3,15 +3,13 @@ package byteback.core.context.soot;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import byteback.core.ResourcesUtil;
+import byteback.core.representation.soot.unit.SootClassUnit;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import byteback.core.representation.soot.unit.SootClassUnit;
 import org.junit.After;
 import org.junit.Test;
-
-import byteback.core.ResourcesUtil;
 
 public class SootContextIntegrationTest extends SootContextFixture {
 

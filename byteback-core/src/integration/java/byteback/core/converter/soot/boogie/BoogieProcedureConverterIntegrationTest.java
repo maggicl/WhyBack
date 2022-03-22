@@ -2,12 +2,16 @@ package byteback.core.converter.soot.boogie;
 
 import static org.junit.Assert.assertEquals;
 
+import byteback.core.RegressionParameter;
+import byteback.core.representation.soot.unit.SootClassUnit;
+import byteback.frontend.boogie.ast.ConstantDeclaration;
+import byteback.frontend.boogie.ast.PrintUtil;
+import byteback.frontend.boogie.ast.Procedure;
+import byteback.frontend.boogie.ast.ProcedureDeclaration;
+import byteback.frontend.boogie.ast.Program;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import byteback.core.RegressionParameter;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -15,17 +19,10 @@ import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import byteback.core.representation.soot.unit.SootClassUnit;
-import byteback.frontend.boogie.ast.ConstantDeclaration;
-import byteback.frontend.boogie.ast.PrintUtil;
-import byteback.frontend.boogie.ast.Procedure;
-import byteback.frontend.boogie.ast.ProcedureDeclaration;
-import byteback.frontend.boogie.ast.Program;
-
 @RunWith(Parameterized.class)
 public class BoogieProcedureConverterIntegrationTest extends BoogieConverterFixture {
 
-    final private static Logger log = LoggerFactory.getLogger(BoogieProcedureConverter.class);
+    final private static Logger log = LoggerFactory.getLogger(BoogieProcedureConverterIntegrationTest.class);
 
     @Parameters
     public static Iterable<RegressionParameter<ProcedureDeclaration>> getParameters() throws IOException {
@@ -43,6 +40,7 @@ public class BoogieProcedureConverterIntegrationTest extends BoogieConverterFixt
 
                     return Stream.of(new RegressionParameter<>(expected.get(), actual));
                 } else {
+                    log.info("Skipping " + methodUnit.getName());
                     return Stream.empty();
                 }
             });

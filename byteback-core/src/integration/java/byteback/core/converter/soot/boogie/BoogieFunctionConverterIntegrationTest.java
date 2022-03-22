@@ -2,20 +2,17 @@ package byteback.core.converter.soot.boogie;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.util.stream.Stream;
-
 import byteback.core.RegressionParameter;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
 import byteback.core.representation.soot.unit.SootClassUnit;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
 import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Program;
+import java.io.IOException;
+import java.util.stream.Stream;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class BoogieFunctionConverterIntegrationTest extends BoogieConverterFixture {
@@ -35,6 +32,7 @@ public class BoogieFunctionConverterIntegrationTest extends BoogieConverterFixtu
 
                     return Stream.of(new RegressionParameter<>(expected, actual));
                 }
+
                 return Stream.empty();
             });
         })::iterator;

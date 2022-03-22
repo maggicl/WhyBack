@@ -1,12 +1,11 @@
 package byteback.core.representation.soot.unit;
 
-import byteback.core.representation.soot.type.SootTypeVisitor;
-import org.junit.Test;
-
-import soot.RefType;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
+import byteback.core.representation.soot.type.SootTypeVisitor;
+import org.junit.Test;
+import soot.RefType;
 
 public class SootClassUnitIntegrationTest extends SootClassUnitFixture {
 

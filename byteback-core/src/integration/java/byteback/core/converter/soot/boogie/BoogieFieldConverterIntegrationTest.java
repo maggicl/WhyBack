@@ -2,20 +2,17 @@ package byteback.core.converter.soot.boogie;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-
 import byteback.core.RegressionParameter;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
 import byteback.core.representation.soot.unit.SootClassUnit;
 import byteback.frontend.boogie.ast.ConstantDeclaration;
 import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.Variable;
+import java.io.IOException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class BoogieFieldConverterIntegrationTest extends BoogieConverterFixture {

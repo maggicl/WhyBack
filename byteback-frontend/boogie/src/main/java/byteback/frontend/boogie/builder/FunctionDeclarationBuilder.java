@@ -18,12 +18,6 @@ public class FunctionDeclarationBuilder extends DeclarationBuilder {
         this.expressionParameter = Optional.empty();
     }
 
-    public FunctionDeclarationBuilder addAttribute(final Attribute attribute) {
-        super.addAttribute(attribute);
-
-        return this;
-    }
-
     public FunctionDeclarationBuilder name(final String name) {
         this.declaratorParameter = Optional.of(new Declarator(name));
 

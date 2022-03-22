@@ -2,6 +2,8 @@ package byteback.core.converter.soot.boogie;
 
 import byteback.core.representation.soot.unit.SootMethodUnit;
 import byteback.frontend.boogie.ast.ProcedureDeclaration;
+import byteback.frontend.boogie.builder.ProcedureDeclarationBuilder;
+import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
 
 public class BoogieProcedureConverter {
 
@@ -12,7 +14,10 @@ public class BoogieProcedureConverter {
     }
 
     public ProcedureDeclaration convert(final SootMethodUnit methodUnit) {
-        return new BoogieProcedureExtractor().visit(methodUnit.getBody());
+        final ProcedureDeclarationBuilder procedureBuilder = new ProcedureDeclarationBuilder();
+        final ProcedureSignatureBuilder signatureBuilder = new ProcedureSignatureBuilder();
+
+        return new BoogieProcedureExtractor(procedureBuilder, signatureBuilder).visit(methodUnit.getBody());
     }
 
 }

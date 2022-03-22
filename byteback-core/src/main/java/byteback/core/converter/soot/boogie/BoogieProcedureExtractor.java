@@ -120,11 +120,10 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 
     @Override
     public void caseReturnStmt(final ReturnStmt returns) {
-        final SootType type = new SootType(returns.getOp().getType());
         final SootExpression operand = new SootExpression(returns.getOp());
         final ValueReference valueReference = BoogiePrelude.getReturnValueReference();
         final Assignee assignee = new Assignee(valueReference);
-        final Expression expression = new BoogieExpressionExtractor(type).visit(operand);
+        final Expression expression = new BoogieExpressionExtractor(operand.getType()).visit(operand);
         addSingleAssignment(assignee, expression);
         addReturnStatement();
     }

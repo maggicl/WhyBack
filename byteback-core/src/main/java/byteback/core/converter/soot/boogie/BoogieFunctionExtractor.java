@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 
 import byteback.core.converter.soot.SootLocalExtractor;
 import byteback.core.representation.soot.body.SootExpression;
-import byteback.core.representation.soot.type.SootType;
 import byteback.frontend.boogie.ast.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,26 +25,25 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 
     private final FunctionSignatureBuilder signatureBuilder;
 
-    private final CountingMap<Local, Optional<Expression>> localExpressionIndex;
+    private final CountingMap<Local, Optional<Expression>> expressionIndex;
 
     public BoogieFunctionExtractor(final FunctionDeclarationBuilder functionBuilder,
             final FunctionSignatureBuilder signatureBuilder) {
 
         this.functionBuilder = functionBuilder;
         this.signatureBuilder = signatureBuilder;
-        this.localExpressionIndex = new CountingMap<>();
+        this.expressionIndex = new CountingMap<>();
     }
 
     @Override
     public void caseIdentityStmt(final IdentityStmt identity) {
         final SootExpression left = new SootExpression(identity.getLeftOp());
         final Local local = new SootLocalExtractor().visit(left);
-        final SootType type = new SootType(local.getType());
-        final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(type);
-        final OptionalBinding boogieBinding = new OptionalBindingBuilder().name(local.getName()).typeAccess(typeAccess)
+        final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(left.getType());
+        final OptionalBinding binding = new OptionalBindingBuilder().name(local.getName()).typeAccess(typeAccess)
                 .build();
-        signatureBuilder.addInputBinding(boogieBinding);
-        localExpressionIndex.put(local, Optional.empty());
+        signatureBuilder.addInputBinding(binding);
+        expressionIndex.put(local, Optional.empty());
     }
 
     @Override
@@ -53,20 +51,18 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
         final SootExpression left = new SootExpression(assignment.getLeftOp());
         final SootExpression right = new SootExpression(assignment.getRightOp());
         final Local local = new SootLocalExtractor().visit(left);
-        final SootType localType = new SootType(local.getType());
-        final Expression expression = new BoogieInlineExtractor(localType, localExpressionIndex).visit(right);
-        localExpressionIndex.put(local, Optional.of(expression));
+        final Expression expression = new BoogieInlineExtractor(left.getType(), expressionIndex).visit(right);
+        expressionIndex.put(local, Optional.of(expression));
     }
 
     @Override
     public void caseReturnStmt(final ReturnStmt returns) {
         final SootExpression operand = new SootExpression(returns.getOp());
-        final SootType returnType = new SootType(returns.getOp().getType());
-        final Expression expression = new BoogieInlineExtractor(returnType, localExpressionIndex).visit(operand);
-        final TypeAccess returnTypeAccess = new BoogieTypeAccessExtractor().visit(returnType);
+        final Expression expression = new BoogieInlineExtractor(operand.getType(), expressionIndex).visit(operand);
+        final TypeAccess returnTypeAccess = new BoogieTypeAccessExtractor().visit(operand.getType());
         final OptionalBinding boogieReturnBinding = new OptionalBindingBuilder().typeAccess(returnTypeAccess).build();
 
-        for (Entry<Local, Integer> entry : localExpressionIndex.getAccessCount().entrySet()) {
+        for (Entry<Local, Integer> entry : expressionIndex.getAccessCount().entrySet()) {
             if (entry.getValue() == 0) {
                 log.warn("Local assignment {} unused in final expansion", entry.getKey());
             }

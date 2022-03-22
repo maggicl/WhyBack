@@ -33,6 +33,13 @@ aspect Procedure {
     eq Program.getChild().lookupProcedure(String name) = lookupProcedure(name);
 
     /**
+     * Link procedure to declaration.
+     */
+    inh lazy ProcedureDeclaration Procedure.getProcedureDeclaration();
+
+    eq ProcedureDeclaration.getProcedure().getProcedureDeclaration() = this;
+
+    /**
      * Link procedure to body.
      */
     inh lazy Body Procedure.getBody();

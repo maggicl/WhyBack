@@ -16,6 +16,13 @@ public class VariableDeclarationBuilder extends DeclarationBuilder {
         return this;
     }
 
+    @Override
+    public VariableDeclarationBuilder addAttribute(final Attribute attribute) {
+        super.addAttribute(attribute);
+
+        return this;
+    }
+
     public VariableDeclaration build() {
         if (bindings.getNumChild() == 0) {
             throw new IllegalArgumentException("Variable declaration must contain at least one binding");

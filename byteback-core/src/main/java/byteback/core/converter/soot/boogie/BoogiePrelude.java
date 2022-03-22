@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import beaver.Parser;
 import byteback.core.util.Lazy;
+import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.BooleanType;
+import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.DefinedType;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.Function;
@@ -23,7 +25,9 @@ import byteback.frontend.boogie.ast.Type;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.TypeDefinition;
 import byteback.frontend.boogie.ast.UnknownTypeAccess;
+import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.Variable;
+import byteback.frontend.boogie.builder.BoundedBindingBuilder;
 import byteback.frontend.boogie.util.ParserUtil;
 
 public class BoogiePrelude {
@@ -123,6 +127,14 @@ public class BoogiePrelude {
         return loadProgram().lookupFunction(name + "_" + typeName).orElseThrow(() -> {
             throw new IllegalStateException("Missing definition for the " + name + " operator of type " + typeName);
         }).getFunctionReference();
+    }
+
+    public static BoundedBindingBuilder getReturnBindingBuilder() {
+        return new BoundedBindingBuilder().addName("~ret");
+    }
+
+    public static ValueReference getReturnValueReference() {
+        return new ValueReference(new Accessor("~ret"));
     }
 
 }

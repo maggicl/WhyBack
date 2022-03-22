@@ -27,9 +27,9 @@ public class OptionalBindingBuilder extends BindingBuilder {
     public OptionalBinding build() {
         final TypeAccess typeAccess = typeAccessParameter
                 .orElseThrow(() -> new IllegalArgumentException("Optional binding must include a type access"));
-        final Declarator declarator = declaratorParameter.orElse(null);
+        final Opt<Declarator> declarator = declaratorParameter.map(Opt::new).orElse(new Opt<>());
 
-        return new OptionalBinding(typeAccess, new Opt<>(declarator));
+        return new OptionalBinding(typeAccess, declarator);
     }
 
 }

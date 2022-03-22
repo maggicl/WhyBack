@@ -2,6 +2,7 @@ plugins {
     id 'byteback.java-common-conventions'
     id 'byteback.java-integration-conventions'
     id 'application'
+    id "com.diffplug.spotless" version "6.3.0"
 }
 
 dependencies {

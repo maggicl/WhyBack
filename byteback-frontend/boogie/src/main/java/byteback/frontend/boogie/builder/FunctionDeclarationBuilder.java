@@ -36,6 +36,13 @@ public class FunctionDeclarationBuilder extends DeclarationBuilder {
         return this;
     }
 
+    @Override
+    public FunctionDeclarationBuilder addAttribute(final Attribute attribute) {
+        super.addAttribute(attribute);
+
+        return this;
+    }
+
     public FunctionDeclaration build() {
         final Declarator declarator = declaratorParameter
                 .orElseThrow(() -> new IllegalArgumentException("Function declaration must include a name"));

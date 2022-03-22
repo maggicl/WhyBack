@@ -14,6 +14,7 @@ import byteback.core.util.CountingMap;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.frontend.boogie.builder.FunctionDeclarationBuilder;
 import byteback.frontend.boogie.builder.FunctionSignatureBuilder;
+import byteback.frontend.boogie.builder.OptionalBindingBuilder;
 import soot.*;
 import soot.jimple.*;
 
@@ -40,10 +41,9 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
         final SootExpression left = new SootExpression(identity.getLeftOp());
         final Local local = new SootLocalExtractor().visit(left);
         final SootType type = new SootType(local.getType());
-        final TypeAccess boogieTypeAccess = new BoogieTypeAccessExtractor().visit(type);
-        final OptionalBinding boogieBinding = new OptionalBinding();
-        boogieBinding.setDeclarator(new Declarator(local.getName()));
-        boogieBinding.setTypeAccess(boogieTypeAccess);
+        final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(type);
+        final OptionalBinding boogieBinding = new OptionalBindingBuilder().name(local.getName()).typeAccess(typeAccess)
+                .build();
         signatureBuilder.addInputBinding(boogieBinding);
         localExpressionIndex.put(local, Optional.empty());
     }
@@ -54,17 +54,17 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
         final SootExpression right = new SootExpression(assignment.getRightOp());
         final Local local = new SootLocalExtractor().visit(left);
         final SootType localType = new SootType(local.getType());
-        final Expression boogieExpression = new BoogieInlineExtractor(localType, localExpressionIndex).visit(right);
-        localExpressionIndex.put(local, Optional.of(boogieExpression));
+        final Expression expression = new BoogieInlineExtractor(localType, localExpressionIndex).visit(right);
+        localExpressionIndex.put(local, Optional.of(expression));
     }
 
     @Override
     public void caseReturnStmt(final ReturnStmt returns) {
         final SootExpression operand = new SootExpression(returns.getOp());
         final SootType returnType = new SootType(returns.getOp().getType());
-        final Expression boogieExpression = new BoogieInlineExtractor(returnType, localExpressionIndex).visit(operand);
-        final TypeAccess boogieReturnTypeAccess = new BoogieTypeAccessExtractor().visit(returnType);
-        final OptionalBinding boogieReturnBinding = new OptionalBinding();
+        final Expression expression = new BoogieInlineExtractor(returnType, localExpressionIndex).visit(operand);
+        final TypeAccess returnTypeAccess = new BoogieTypeAccessExtractor().visit(returnType);
+        final OptionalBinding boogieReturnBinding = new OptionalBindingBuilder().typeAccess(returnTypeAccess).build();
 
         for (Entry<Local, Integer> entry : localExpressionIndex.getAccessCount().entrySet()) {
             if (entry.getValue() == 0) {
@@ -72,9 +72,8 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
             }
         }
 
-        boogieReturnBinding.setTypeAccess(boogieReturnTypeAccess);
         signatureBuilder.outputBinding(boogieReturnBinding);
-        functionBuilder.signature(signatureBuilder.build()).expression(boogieExpression);
+        functionBuilder.signature(signatureBuilder.build()).expression(expression);
     }
 
     @Override

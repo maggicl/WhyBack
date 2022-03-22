@@ -5,22 +5,22 @@ import soot.SootField;
 
 public class SootFieldUnit {
 
-    private final SootField sootField;
+	private final SootField sootField;
 
-    public SootFieldUnit(final SootField sootField) {
-        this.sootField = sootField;
-    }
+	public SootFieldUnit(final SootField sootField) {
+		this.sootField = sootField;
+	}
 
-    public String getName() {
-        return sootField.getName();
-    }
+	public String getName() {
+		return sootField.getName();
+	}
 
-    public SootClassUnit getClassUnit() {
-        return new SootClassUnit(sootField.getDeclaringClass());
-    }
+	public SootClassUnit getClassUnit() {
+		return new SootClassUnit(sootField.getDeclaringClass());
+	}
 
-    public SootType getType() {
-        return new SootType(sootField.getType());
-    }
+	public SootType getType() {
+		return new SootType(sootField.getType());
+	}
 
 }

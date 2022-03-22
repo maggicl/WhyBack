@@ -7,19 +7,19 @@ import byteback.frontend.boogie.builder.FunctionSignatureBuilder;
 
 public class BoogieFunctionConverter {
 
-    private static final BoogieFunctionConverter instance = new BoogieFunctionConverter();
+	private static final BoogieFunctionConverter instance = new BoogieFunctionConverter();
 
-    public static BoogieFunctionConverter instance() {
-        return instance;
-    }
+	public static BoogieFunctionConverter instance() {
+		return instance;
+	}
 
-    public FunctionDeclaration convert(final SootMethodUnit methodUnit) {
-        final FunctionSignatureBuilder signatureBuilder = new FunctionSignatureBuilder();
-        final FunctionDeclarationBuilder functionBuilder = new FunctionDeclarationBuilder();
-        signatureBuilder.addInputBinding(BoogiePrelude.getHeapVariable().makeOptionalBinding());
-        functionBuilder.name(BoogieNameConverter.methodName(methodUnit));
+	public FunctionDeclaration convert(final SootMethodUnit methodUnit) {
+		final FunctionSignatureBuilder signatureBuilder = new FunctionSignatureBuilder();
+		final FunctionDeclarationBuilder functionBuilder = new FunctionDeclarationBuilder();
+		signatureBuilder.addInputBinding(BoogiePrelude.getHeapVariable().makeOptionalBinding());
+		functionBuilder.name(BoogieNameConverter.methodName(methodUnit));
 
-        return new BoogieFunctionExtractor(functionBuilder, signatureBuilder).visit(methodUnit.getBody());
-    }
+		return new BoogieFunctionExtractor(functionBuilder, signatureBuilder).visit(methodUnit.getBody());
+	}
 
 }

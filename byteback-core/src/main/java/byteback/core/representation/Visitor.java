@@ -2,17 +2,17 @@ package byteback.core.representation;
 
 public interface Visitor<T, R> {
 
-    void caseDefault(T argument);
+	void caseDefault(T argument);
 
-    default R result() {
-        return null;
-    }
+	default R result() {
+		return null;
+	}
 
-    @SuppressWarnings("unchecked")
-    default <S extends Visitor<T, ?>> R visit(final Visitable<S> visitable) {
-        visitable.apply((S) this);
+	@SuppressWarnings("unchecked")
+	default <S extends Visitor<T, ?>> R visit(final Visitable<S> visitable) {
+		visitable.apply((S) this);
 
-        return result();
-    }
+		return result();
+	}
 
 }

@@ -1,5 +1,6 @@
 package byteback.core.context.soot;
 
+import byteback.core.representation.soot.unit.SootClassUnit;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -7,11 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import byteback.core.representation.soot.unit.SootClassUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import soot.G;
 import soot.Scene;
 import soot.SootClass;
@@ -32,156 +30,159 @@ import soot.options.Options;
  */
 public class SootContext {
 
-    private static final Logger log = LoggerFactory.getLogger(SootContext.class);
+	private static final Logger log = LoggerFactory.getLogger(SootContext.class);
 
-    /**
-     * Singleton instance.
-     */
-    private static final SootContext instance = new SootContext();
+	/**
+	 * Singleton instance.
+	 */
+	private static final SootContext instance = new SootContext();
 
-    /**
-     * Accessor for the singleton instance.
-     *
-     * @return Singleton context instance.
-     */
-    public static SootContext instance() {
-        return instance;
-    }
+	/**
+	 * Accessor for the singleton instance.
+	 *
+	 * @return Singleton context instance.
+	 */
+	public static SootContext instance() {
+		return instance;
+	}
 
-    /**
-     * Yields the soot.Scene singleton.
-     *
-     * @return Soot's {@link Scene} singleton.
-     */
-    private static Scene scene() {
-        return Scene.v();
-    }
+	/**
+	 * Yields the soot.Scene singleton.
+	 *
+	 * @return Soot's {@link Scene} singleton.
+	 */
+	private static Scene scene() {
+		return Scene.v();
+	}
 
-    /**
-     * Yields the soot.Options singleton.
-     *
-     * @return Soot's {@link Options} singleton.
-     */
-    private static Options options() {
-        return Options.v();
-    }
+	/**
+	 * Yields the soot.Options singleton.
+	 *
+	 * @return Soot's {@link Options} singleton.
+	 */
+	private static Options options() {
+		return Options.v();
+	}
 
-    /**
-     * Initializes fields with the singletons and sets the global Soot options.
-     */
-    private SootContext() {
-        configure();
-    }
+	/**
+	 * Initializes fields with the singletons and sets the global Soot options.
+	 */
+	private SootContext() {
+		configure();
+	}
 
-    /**
-     * Configures Soot's parameters.
-     */
-    private void configure() {
-        options().setPhaseOption("jb", "use-original-names:true");
-        options().set_output_format(Options.output_format_jimple);
-        options().set_whole_program(true);
-        scene().loadBasicClasses();
-        log.info("Soot context initialized successfully");
-    }
+	/**
+	 * Configures Soot's parameters.
+	 */
+	private void configure() {
+		options().setPhaseOption("jb", "use-original-names:true");
+		options().set_output_format(Options.output_format_jimple);
+		options().set_whole_program(true);
+		scene().loadBasicClasses();
+		log.info("Soot context initialized successfully");
+	}
 
-    /**
-     * Resets Soot's globals.
-     */
-    public void reset() {
-        G.reset();
-        configure();
-    }
+	/**
+	 * Resets Soot's globals.
+	 */
+	public void reset() {
+		G.reset();
+		configure();
+	}
 
-    /**
-     * Setter that prepends the classpath of the {@link Scene}.
-     *
-     * @param path Path to be prepended to the classpath.
-     */
-    public void prependClassPath(final Path path) {
-        final String classPath = scene().getSootClassPath();
-        scene().setSootClassPath(path.toAbsolutePath() + ":" + classPath);
-    }
+	/**
+	 * Setter that prepends the classpath of the {@link Scene}.
+	 *
+	 * @param path
+	 *            Path to be prepended to the classpath.
+	 */
+	public void prependClassPath(final Path path) {
+		final String classPath = scene().getSootClassPath();
+		scene().setSootClassPath(path.toAbsolutePath() + ":" + classPath);
+	}
 
-    /**
-     * Getter for the classpath loaded in the {@link Scene}.
-     *
-     * @return Current classpath loaded in the scene.
-     */
-    public List<Path> getClassPath() {
-        final String[] parts = scene().getSootClassPath().split(":");
+	/**
+	 * Getter for the classpath loaded in the {@link Scene}.
+	 *
+	 * @return Current classpath loaded in the scene.
+	 */
+	public List<Path> getClassPath() {
+		final String[] parts = scene().getSootClassPath().split(":");
 
-        return Arrays.stream(parts).map(Paths::get).collect(Collectors.toList());
-    }
+		return Arrays.stream(parts).map(Paths::get).collect(Collectors.toList());
+	}
 
-    /**
-     * Loads a class in the {@link Scene}.
-     *
-     * @param className Qualified name of a class present in the Soot's classpath.
-     * @return The Soot intermediate representation of the loaded class.
-     */
-    public SootClassUnit loadClass(final String className) throws ClassLoadException {
-        try {
-            final SootClass sootClass = scene().loadClass(className, SootClass.BODIES);
-            log.info("Loaded {} in context", className);
+	/**
+	 * Loads a class in the {@link Scene}.
+	 *
+	 * @param className
+	 *            Qualified name of a class present in the Soot's classpath.
+	 * @return The Soot intermediate representation of the loaded class.
+	 */
+	public SootClassUnit loadClass(final String className) throws ClassLoadException {
+		try {
+			final SootClass sootClass = scene().loadClass(className, SootClass.BODIES);
+			log.info("Loaded {} in context", className);
 
-            return new SootClassUnit(sootClass);
-        } catch (AssertionError exception) {
-            log.error("Failed to load {}", className, exception);
-            throw new ClassLoadException(className);
-        }
-    }
+			return new SootClassUnit(sootClass);
+		} catch (AssertionError exception) {
+			log.error("Failed to load {}", className, exception);
+			throw new ClassLoadException(className);
+		}
+	}
 
-    /**
-     * Loads a root class and its supporting classes in the {@link Scene}.
-     *
-     * @param className Qualified name of the root class present in the Soot's
-     *                  classpath.
-     * @return The Soot intermediate representation of the loaded root class.
-     */
-    public SootClassUnit loadClassAndSupport(final String className) throws ClassLoadException {
-        try {
-            final SootClass sootClass = scene().loadClassAndSupport(className);
-            log.info("Loaded {} and support classes in context", className);
+	/**
+	 * Loads a root class and its supporting classes in the {@link Scene}.
+	 *
+	 * @param className
+	 *            Qualified name of the root class present in the Soot's classpath.
+	 * @return The Soot intermediate representation of the loaded root class.
+	 */
+	public SootClassUnit loadClassAndSupport(final String className) throws ClassLoadException {
+		try {
+			final SootClass sootClass = scene().loadClassAndSupport(className);
+			log.info("Loaded {} and support classes in context", className);
 
-            return new SootClassUnit(sootClass);
-        } catch (AssertionError exception) {
-            log.error("Failed to load {}", className, exception);
-            throw new ClassLoadException(className);
-        }
-    }
+			return new SootClassUnit(sootClass);
+		} catch (AssertionError exception) {
+			log.error("Failed to load {}", className, exception);
+			throw new ClassLoadException(className);
+		}
+	}
 
-    /**
-     * Returns a class unit that was already loaded into the context
-     *
-     * @param className Qualified name of the class.
-     * @return The class corresponding to the given {@code className}.
-     */
-    public Optional<SootClassUnit> getClass(final String className) {
-        final SootClass sootClass = scene().getSootClass(className);
+	/**
+	 * Returns a class unit that was already loaded into the context
+	 *
+	 * @param className
+	 *            Qualified name of the class.
+	 * @return The class corresponding to the given {@code className}.
+	 */
+	public Optional<SootClassUnit> getClass(final String className) {
+		final SootClass sootClass = scene().getSootClass(className);
 
-        if (sootClass == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(new SootClassUnit(sootClass));
-        }
-    }
+		if (sootClass == null) {
+			return Optional.empty();
+		} else {
+			return Optional.of(new SootClassUnit(sootClass));
+		}
+	}
 
-    /**
-     * Getter for the number of classes loaded in the {@link Scene}.
-     *
-     * @return Total number of classes in the Soot scene.
-     */
-    public int getClassesCount() {
-        return scene().getClasses().size();
-    }
+	/**
+	 * Getter for the number of classes loaded in the {@link Scene}.
+	 *
+	 * @return Total number of classes in the Soot scene.
+	 */
+	public int getClassesCount() {
+		return scene().getClasses().size();
+	}
 
-    /**
-     * Getter for the stream of Soot representations loaded in the context.
-     *
-     * @return The stream of loaded classes in the current context.
-     */
-    public Stream<SootClassUnit> classes() {
-        return scene().getClasses().stream().map(SootClassUnit::new);
-    }
+	/**
+	 * Getter for the stream of Soot representations loaded in the context.
+	 *
+	 * @return The stream of loaded classes in the current context.
+	 */
+	public Stream<SootClassUnit> classes() {
+		return scene().getClasses().stream().map(SootClassUnit::new);
+	}
 
 }

@@ -6,25 +6,25 @@ import soot.Value;
 
 public class SootExpression implements Visitable<SootExpressionVisitor<?>> {
 
-    private final Value sootExpression;
+	private final Value sootExpression;
 
-    public SootExpression(final Value sootExpression) {
-        this.sootExpression = sootExpression;
-    }
+	public SootExpression(final Value sootExpression) {
+		this.sootExpression = sootExpression;
+	}
 
-    public SootType getType() {
-        return new SootType(sootExpression.getType());
-    }
+	public SootType getType() {
+		return new SootType(sootExpression.getType());
+	}
 
-    @Override
-    public void apply(final SootExpressionVisitor<?> visitor) {
-        sootExpression.apply(visitor);
-    }
+	@Override
+	public void apply(final SootExpressionVisitor<?> visitor) {
+		sootExpression.apply(visitor);
+	}
 
-    @Override
-    public boolean equals(final Object expression) {
-        return expression instanceof SootExpression
-                && ((SootExpression) expression).sootExpression.equals(sootExpression);
-    }
+	@Override
+	public boolean equals(final Object expression) {
+		return expression instanceof SootExpression
+				&& ((SootExpression) expression).sootExpression.equals(sootExpression);
+	}
 
 }

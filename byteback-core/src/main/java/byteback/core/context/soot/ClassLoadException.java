@@ -5,13 +5,14 @@ package byteback.core.context.soot;
  */
 public class ClassLoadException extends ContextException {
 
-    /**
-     * Constructs a {@link ClassLoadException}.
-     *
-     * @param className The name of the class that could not be loaded.
-     */
-    public ClassLoadException(String className) {
-        super("Could not load class " + className);
-    }
+	/**
+	 * Constructs a {@link ClassLoadException}.
+	 *
+	 * @param className
+	 *            The name of the class that could not be loaded.
+	 */
+	public ClassLoadException(String className) {
+		super("Could not load class " + className);
+	}
 
 }

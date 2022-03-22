@@ -6,13 +6,14 @@ package byteback.core.context.soot;
  */
 public abstract class ContextException extends Exception {
 
-    /**
-     * Constructs a basic context exception.
-     *
-     * @param message The message of the exception.
-     */
-    public ContextException(String message) {
-        super(message);
-    }
+	/**
+	 * Constructs a basic context exception.
+	 *
+	 * @param message
+	 *            The message of the exception.
+	 */
+	public ContextException(String message) {
+		super(message);
+	}
 
 }

@@ -4,20 +4,20 @@ import byteback.frontend.boogie.ast.*;
 
 public class ProgramBuilder {
 
-    private final Program program;
+	private final Program program;
 
-    public ProgramBuilder() {
-        this.program = new Program();
-    }
+	public ProgramBuilder() {
+		this.program = new Program();
+	}
 
-    public ProgramBuilder addDeclaration(final Declaration declaration) {
-        program.addDeclaration(declaration);
+	public ProgramBuilder addDeclaration(final Declaration declaration) {
+		program.addDeclaration(declaration);
 
-        return this;
-    }
+		return this;
+	}
 
-    public Program build() {
-        return program;
-    }
+	public Program build() {
+		return program;
+	}
 
 }

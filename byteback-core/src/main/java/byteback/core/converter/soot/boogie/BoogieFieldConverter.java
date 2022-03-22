@@ -8,22 +8,22 @@ import byteback.frontend.boogie.ast.TypeAccess;
 
 public class BoogieFieldConverter {
 
-    private static final BoogieFieldConverter instance = new BoogieFieldConverter();
+	private static final BoogieFieldConverter instance = new BoogieFieldConverter();
 
-    public static BoogieFieldConverter instance() {
-        return instance;
-    }
+	public static BoogieFieldConverter instance() {
+		return instance;
+	}
 
-    public ConstantDeclaration convert(final SootFieldUnit fieldUnit) {
-        final ConstantDeclaration boogieConstantDeclaration = new ConstantDeclaration();
-        final SetBinding boogieBinding = new SetBinding();
-        final TypeAccess boogieBaseTypeAccess = new BoogieTypeAccessExtractor().visit(fieldUnit.getType());
-        final TypeAccess boogieFieldTypeAccess = BoogiePrelude.getFieldTypeAccess(boogieBaseTypeAccess);
-        boogieConstantDeclaration.setBinding(boogieBinding);
-        boogieBinding.setTypeAccess(boogieFieldTypeAccess);
-        boogieBinding.addDeclarator(new Declarator(BoogieNameConverter.fieldName(fieldUnit)));
+	public ConstantDeclaration convert(final SootFieldUnit fieldUnit) {
+		final ConstantDeclaration boogieConstantDeclaration = new ConstantDeclaration();
+		final SetBinding boogieBinding = new SetBinding();
+		final TypeAccess boogieBaseTypeAccess = new BoogieTypeAccessExtractor().visit(fieldUnit.getType());
+		final TypeAccess boogieFieldTypeAccess = BoogiePrelude.getFieldTypeAccess(boogieBaseTypeAccess);
+		boogieConstantDeclaration.setBinding(boogieBinding);
+		boogieBinding.setTypeAccess(boogieFieldTypeAccess);
+		boogieBinding.addDeclarator(new Declarator(BoogieNameConverter.fieldName(fieldUnit)));
 
-        return boogieConstantDeclaration;
-    }
+		return boogieConstantDeclaration;
+	}
 
 }

@@ -4,16 +4,16 @@ import byteback.frontend.boogie.ast.*;
 
 public class SignatureBuilder extends DeclarationBuilder {
 
-    final protected List<TypeParameter> typeParameters;
+	final protected List<TypeParameter> typeParameters;
 
-    public SignatureBuilder() {
-        this.typeParameters = new List<>();
-    }
+	public SignatureBuilder() {
+		this.typeParameters = new List<>();
+	}
 
-    public SignatureBuilder addTypeParameter(final TypeParameter typeParameter) {
-        this.typeParameters.add(typeParameter);
+	public SignatureBuilder addTypeParameter(final TypeParameter typeParameter) {
+		this.typeParameters.add(typeParameter);
 
-        return this;
-    }
+		return this;
+	}
 
 }

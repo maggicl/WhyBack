@@ -1,6 +1,7 @@
 plugins {
     id 'byteback.java-common-conventions'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'com.diffplug.spotless' version '6.3.0'
 }
 
 java {
@@ -8,6 +9,14 @@ java {
 
     compileJava {
         options.debug = true
+    }
+}
+
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        eclipse()
     }
 }
 

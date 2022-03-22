@@ -17,32 +17,32 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class BoogieFieldConverterIntegrationTest extends BoogieConverterFixture {
 
-    @Parameters
-    public static Iterable<RegressionParameter<ConstantDeclaration>> getParameters() throws IOException {
-        return getRegressionEntries("java8").flatMap((entry) -> {
-            final SootClassUnit classUnit = entry.getKey();
-            final Program program = entry.getValue();
+	@Parameters
+	public static Iterable<RegressionParameter<ConstantDeclaration>> getParameters() throws IOException {
+		return getRegressionEntries("java8").flatMap((entry) -> {
+			final SootClassUnit classUnit = entry.getKey();
+			final Program program = entry.getValue();
 
-            return classUnit.fields().map((fieldUnit) -> {
-                final String boogieName = BoogieNameConverter.fieldName(fieldUnit);
-                final ConstantDeclaration expected = program.lookupVariable(boogieName)
-                        .flatMap(Variable::getConstantDeclaration).get();
-                final ConstantDeclaration actual = BoogieFieldConverter.instance().convert(fieldUnit);
+			return classUnit.fields().map((fieldUnit) -> {
+				final String boogieName = BoogieNameConverter.fieldName(fieldUnit);
+				final ConstantDeclaration expected = program.lookupVariable(boogieName)
+						.flatMap(Variable::getConstantDeclaration).get();
+				final ConstantDeclaration actual = BoogieFieldConverter.instance().convert(fieldUnit);
 
-                return new RegressionParameter<>(expected, actual);
-            });
-        })::iterator;
-    }
+				return new RegressionParameter<>(expected, actual);
+			});
+		})::iterator;
+	}
 
-    private final RegressionParameter<ConstantDeclaration> parameter;
+	private final RegressionParameter<ConstantDeclaration> parameter;
 
-    public BoogieFieldConverterIntegrationTest(final RegressionParameter<ConstantDeclaration> parameter) {
-        this.parameter = parameter;
-    }
+	public BoogieFieldConverterIntegrationTest(final RegressionParameter<ConstantDeclaration> parameter) {
+		this.parameter = parameter;
+	}
 
-    @Test
-    public void Convert_GivenRegressionSet_ReturnsExpectedCode() {
-        assertEquals(PrintUtil.toString(parameter.actual), PrintUtil.toString(parameter.expected));
-    }
+	@Test
+	public void Convert_GivenRegressionSet_ReturnsExpectedCode() {
+		assertEquals(PrintUtil.toString(parameter.actual), PrintUtil.toString(parameter.expected));
+	}
 
 }

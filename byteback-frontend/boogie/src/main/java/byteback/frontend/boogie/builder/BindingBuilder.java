@@ -1,21 +1,20 @@
 package byteback.frontend.boogie.builder;
 
-import java.util.Optional;
-
 import byteback.frontend.boogie.ast.*;
+import java.util.Optional;
 
 public abstract class BindingBuilder {
 
-    protected Optional<TypeAccess> typeAccessParameter;
+	protected Optional<TypeAccess> typeAccessParameter;
 
-    public BindingBuilder() {
-        this.typeAccessParameter = Optional.empty();
-    }
+	public BindingBuilder() {
+		this.typeAccessParameter = Optional.empty();
+	}
 
-    public BindingBuilder typeAccess(final TypeAccess typeAccess) {
-        this.typeAccessParameter = Optional.of(typeAccess);
+	public BindingBuilder typeAccess(final TypeAccess typeAccess) {
+		this.typeAccessParameter = Optional.of(typeAccess);
 
-        return this;
-    }
-    
+		return this;
+	}
+
 }

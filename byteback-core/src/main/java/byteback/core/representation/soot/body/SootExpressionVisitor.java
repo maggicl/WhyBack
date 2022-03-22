@@ -6,8 +6,8 @@ import soot.jimple.AbstractJimpleValueSwitch;
 
 public abstract class SootExpressionVisitor<R> extends AbstractJimpleValueSwitch implements Visitor<Value, R> {
 
-    public void defaultCase(Object object) {
-        caseDefault((Value) object);
-    }
+	public void defaultCase(Object object) {
+		caseDefault((Value) object);
+	}
 
 }

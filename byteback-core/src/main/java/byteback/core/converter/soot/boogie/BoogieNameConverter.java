@@ -1,38 +1,37 @@
 package byteback.core.converter.soot.boogie;
 
-import java.util.Iterator;
-
+import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootFieldUnit;
 import byteback.core.representation.soot.unit.SootMethodUnit;
-import byteback.core.representation.soot.type.SootType;
+import java.util.Iterator;
 
 public class BoogieNameConverter {
 
-    static String methodName(SootMethodUnit methodUnit) {
-        final StringBuilder builder = new StringBuilder();
-        final Iterator<SootType> typeIterator = methodUnit.getParameterTypes().iterator();
-        builder.append(methodUnit.getClassUnit().getName());
-        builder.append(".");
-        builder.append(methodUnit.getName());
-        builder.append("#");
+	static String methodName(SootMethodUnit methodUnit) {
+		final StringBuilder builder = new StringBuilder();
+		final Iterator<SootType> typeIterator = methodUnit.getParameterTypes().iterator();
+		builder.append(methodUnit.getClassUnit().getName());
+		builder.append(".");
+		builder.append(methodUnit.getName());
+		builder.append("#");
 
-        while (typeIterator.hasNext()) {
-            builder.append(typeIterator.next());
-            builder.append("#");
-        }
+		while (typeIterator.hasNext()) {
+			builder.append(typeIterator.next());
+			builder.append("#");
+		}
 
-        if (methodUnit.getParameterTypes().size() == 0) {
-            builder.append("#");
-        }
+		if (methodUnit.getParameterTypes().size() == 0) {
+			builder.append("#");
+		}
 
-        return builder.toString();
-    }
+		return builder.toString();
+	}
 
-    static String fieldName(final SootFieldUnit fieldUnit) {
-        final String fieldName = fieldUnit.getName();
-        final String className = fieldUnit.getClassUnit().getName();
+	static String fieldName(final SootFieldUnit fieldUnit) {
+		final String fieldName = fieldUnit.getName();
+		final String className = fieldUnit.getClassUnit().getName();
 
-        return className + "." + fieldName;
-    }
-    
+		return className + "." + fieldName;
+	}
+
 }

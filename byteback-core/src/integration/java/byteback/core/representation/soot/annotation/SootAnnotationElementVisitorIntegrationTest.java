@@ -7,11 +7,11 @@ import org.junit.Test;
 
 public class SootAnnotationElementVisitorIntegrationTest {
 
-    @Test
-    public void DefaultCase_CallsCaseDefault() {
-        final SootAnnotationElementVisitor<?> visitor = spy(SootAnnotationElementVisitor.class);
-        visitor.defaultCase(null);
-        verify(visitor).caseDefault(null);
-    }
+	@Test
+	public void DefaultCase_CallsCaseDefault() {
+		final SootAnnotationElementVisitor<?> visitor = spy(SootAnnotationElementVisitor.class);
+		visitor.defaultCase(null);
+		verify(visitor).caseDefault(null);
+	}
 
 }

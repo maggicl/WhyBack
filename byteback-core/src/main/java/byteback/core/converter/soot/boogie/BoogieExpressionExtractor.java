@@ -275,11 +275,11 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 
 	@Override
 	public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
-		final SootFieldUnit sootField = new SootFieldUnit(instanceFieldReference.getField());
-		final SootExpression sootBase = new SootExpression(instanceFieldReference.getBase());
-		final Expression boogieBase = subExpressionExtractor(new SootType(RefType.v())).visit(sootBase);
+		final SootFieldUnit field = new SootFieldUnit(instanceFieldReference.getField());
+		final SootExpression base = new SootExpression(instanceFieldReference.getBase());
+		final Expression boogieBase = subExpressionExtractor(new SootType(RefType.v())).visit(base);
 		final Expression boogieFieldReference = new ValueReference(
-				new Accessor(BoogieNameConverter.fieldName(sootField)));
+				new Accessor(BoogieNameConverter.fieldName(field)));
 		setExpression(BoogiePrelude.getHeapAccessExpression(boogieBase, boogieFieldReference));
 	}
 

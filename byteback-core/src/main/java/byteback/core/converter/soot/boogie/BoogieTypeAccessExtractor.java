@@ -3,6 +3,7 @@ package byteback.core.converter.soot.boogie;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.frontend.boogie.ast.TypeAccess;
 import soot.BooleanType;
+import soot.ByteType;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
@@ -16,6 +17,11 @@ public class BoogieTypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
 	public void setTypeAccess(final TypeAccess typeAccess) {
 		this.typeAccess = typeAccess;
 	}
+
+  @Override
+  public void caseByteType(final ByteType byteType) {
+		setTypeAccess(BoogiePrelude.getIntegerType().getTypeAccess());
+  }
 
 	@Override
 	public void caseIntType(final IntType integerType) {

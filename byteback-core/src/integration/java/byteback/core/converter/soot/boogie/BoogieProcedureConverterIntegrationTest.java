@@ -30,32 +30,33 @@ public class BoogieProcedureConverterIntegrationTest extends BoogieConverterFixt
 			final SootClassUnit classUnit = entry.getKey();
 			final Program program = entry.getValue();
 
-			return classUnit.methods().flatMap((methodUnit) -> {
-				final String boogieName = BoogieNameConverter.methodName(methodUnit);
-				final Optional<ProcedureDeclaration> expected = program.lookupProcedure(boogieName)
-						.map(Procedure::getProcedureDeclaration);
+      return classUnit.methods().flatMap((methodUnit) -> {
+          System.out.println(methodUnit.getBody());
+          final String boogieName = BoogieNameConverter.methodName(methodUnit);
+          final Optional<ProcedureDeclaration> expected = program.lookupProcedure(boogieName)
+            .map(Procedure::getProcedureDeclaration);
 
-				if (expected.isPresent()) {
-					final ProcedureDeclaration actual = BoogieProcedureConverter.instance().convert(methodUnit);
+          if (expected.isPresent()) {
+            final ProcedureDeclaration actual = BoogieProcedureConverter.instance().convert(methodUnit);
 
-					return Stream.of(new RegressionParameter<>(expected.get(), actual));
-				} else {
-					log.info("Skipping " + methodUnit.getName());
-					return Stream.empty();
-				}
-			});
-		})::iterator;
-	}
+            return Stream.of(new RegressionParameter<>(expected.get(), actual));
+          } else {
+            log.info("Skipping " + methodUnit.getName());
+            return Stream.empty();
+          }
+        });
+      })::iterator;
+  }
 
-	private final RegressionParameter<ConstantDeclaration> parameter;
+  private final RegressionParameter<ConstantDeclaration> parameter;
 
-	public BoogieProcedureConverterIntegrationTest(final RegressionParameter<ConstantDeclaration> parameter) {
-		this.parameter = parameter;
-	}
+  public BoogieProcedureConverterIntegrationTest(final RegressionParameter<ConstantDeclaration> parameter) {
+    this.parameter = parameter;
+  }
 
-	@Test
-	public void Convert_GivenRegressionSet_ReturnsExpectedCode() {
-		assertEquals(PrintUtil.toString(parameter.actual), PrintUtil.toString(parameter.expected));
+  @Test
+  public void Convert_GivenRegressionSet_ReturnsExpectedCode() {
+    assertEquals(PrintUtil.toString(parameter.expected), PrintUtil.toString(parameter.actual));
 	}
 
 }

@@ -18,7 +18,7 @@ public class BoogieProcedureConverter {
 		final ProcedureSignatureBuilder signatureBuilder = new ProcedureSignatureBuilder();
 		procedureBuilder.name(BoogieNameConverter.methodName(methodUnit));
 
-		return new BoogieProcedureExtractor(procedureBuilder, signatureBuilder).visit(methodUnit.getBody());
-	}
+    return new BoogieProcedureExtractor(methodUnit, procedureBuilder, signatureBuilder).visit(methodUnit.getBody());
+  }
 
 }

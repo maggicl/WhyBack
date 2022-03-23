@@ -5,6 +5,7 @@ import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
+import byteback.core.representation.soot.unit.SootMethodUnit;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.Assignee;
 import byteback.frontend.boogie.ast.AssignmentStatement;
@@ -35,6 +36,8 @@ import soot.jimple.ReturnVoidStmt;
 
 public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDeclaration> {
 
+  private final SootMethodUnit methodUnit;
+
 	private final ProcedureDeclarationBuilder procedureBuilder;
 
 	private final ProcedureSignatureBuilder signatureBuilder;
@@ -43,25 +46,26 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 
 	private final Set<Local> initialized = new HashSet<>();
 
-	public BoogieProcedureExtractor(final ProcedureDeclarationBuilder procedureBuilder,
-			final ProcedureSignatureBuilder signatureBuilder) {
+  public BoogieProcedureExtractor(final SootMethodUnit methodUnit, final ProcedureDeclarationBuilder procedureBuilder,
+                                  final ProcedureSignatureBuilder signatureBuilder) {
 
-		this.procedureBuilder = procedureBuilder;
-		this.signatureBuilder = signatureBuilder;
-		this.body = new Body();
-	}
+    this.methodUnit = methodUnit;
+    this.procedureBuilder = procedureBuilder;
+    this.signatureBuilder = signatureBuilder;
+    this.body = new Body();
+  }
 
-	public void addStatement(final Statement statement) {
-		body.addStatement(statement);
-	}
+  public void addStatement(final Statement statement) {
+    body.addStatement(statement);
+  }
 
-	public void addSingleAssignment(final Assignee assignee, final Expression expression) {
-		addStatement(new AssignmentStatement(new List<>(assignee), new List<>(expression)));
-	}
+  public void addSingleAssignment(final Assignee assignee, final Expression expression) {
+    addStatement(new AssignmentStatement(new List<>(assignee), new List<>(expression)));
+  }
 
-	public void addReturnStatement() {
-		addStatement(new ReturnStatement());
-	}
+  public void addReturnStatement() {
+    addStatement(new ReturnStatement());
+  }
 
   public BoundedBinding bind(final Local local) {
     final SootType type = new SootType(local.getType());
@@ -132,7 +136,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
     final SootExpression operand = new SootExpression(returns.getOp());
     final ValueReference valueReference = BoogiePrelude.getReturnValueReference();
     final Assignee assignee = new Assignee(valueReference);
-    final Expression expression = new BoogieExpressionExtractor(operand.getType()).visit(operand);
+    final Expression expression = new BoogieExpressionExtractor(methodUnit.getReturnType()).visit(operand);
     addSingleAssignment(assignee, expression);
     addReturnStatement();
   }
@@ -147,8 +151,8 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
   }
 
   @Override
-	public ProcedureDeclaration result() {
-		return procedureBuilder.signature(signatureBuilder.build()).body(body).build();
-	}
+  public ProcedureDeclaration result() {
+    return procedureBuilder.signature(signatureBuilder.build()).body(body).build();
+  }
 
 }

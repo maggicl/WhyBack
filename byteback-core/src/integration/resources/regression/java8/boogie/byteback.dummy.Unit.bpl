@@ -17,3 +17,29 @@ procedure byteback.dummy.Unit.doubleAssignmentMethod##(this: Reference) returns 
   a#2 := a + 42;
   return;
 }
+
+procedure byteback.dummy.Unit.emptyDoWhileMethod##(this: Reference) returns ()
+{
+  var a: bool;
+  a := false;
+
+label1:
+  if (a != false) {
+    goto label1;
+  }
+
+  return;
+}
+
+procedure byteback.dummy.Unit.emptyIfMethod##(this: Reference) returns ()
+{
+  var a: bool;
+  a := false;
+
+  if (a == false) {
+    goto label1;
+  }
+
+label1:
+  return;
+}

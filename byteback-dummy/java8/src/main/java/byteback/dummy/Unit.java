@@ -14,4 +14,18 @@ public class Unit {
 		a = a + 42;
 	}
 
+	public void emptyDoWhileMethod() {
+		boolean a = false;
+
+		do {
+		} while (a);
+	}
+
+	public void emptyIfMethod() {
+		boolean a = false;
+
+		if (a) {
+		}
+	}
+
 }

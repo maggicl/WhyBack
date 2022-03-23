@@ -12,6 +12,8 @@ import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Expression;
+import byteback.frontend.boogie.ast.Label;
+import byteback.frontend.boogie.ast.LabelStatement;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.ProcedureDeclaration;
 import byteback.frontend.boogie.ast.ReturnStatement;
@@ -23,7 +25,9 @@ import byteback.frontend.boogie.builder.BoundedBindingBuilder;
 import byteback.frontend.boogie.builder.ProcedureDeclarationBuilder;
 import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
 import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import soot.Local;
 import soot.Unit;
@@ -36,6 +40,8 @@ import soot.jimple.ReturnVoidStmt;
 
 public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDeclaration> {
 
+	private final Map<Unit, Label> labelIndex = new HashMap<>();
+
 	private final SootMethodUnit methodUnit;
 
 	private final ProcedureDeclarationBuilder procedureBuilder;
@@ -46,6 +52,8 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 
 	private final Set<Local> initialized = new HashSet<>();
 
+	private final InnerExtractor extractor;
+
 	public BoogieProcedureExtractor(final SootMethodUnit methodUnit, final ProcedureDeclarationBuilder procedureBuilder,
 			final ProcedureSignatureBuilder signatureBuilder) {
 
@@ -53,6 +61,77 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 		this.procedureBuilder = procedureBuilder;
 		this.signatureBuilder = signatureBuilder;
 		this.body = new Body();
+		this.extractor = new InnerExtractor();
+	}
+
+	private class InnerExtractor extends SootStatementVisitor<ProcedureDeclaration> {
+
+		@Override
+		public void caseIdentityStmt(final IdentityStmt identity) {
+			final SootExpression left = new SootExpression(identity.getLeftOp());
+			final Local local = new SootLocalExtractor().visit(left);
+			addParameter(local);
+		}
+
+		@Override
+		public void caseAssignStmt(final AssignStmt assignment) {
+			final SootExpression left = new SootExpression(assignment.getLeftOp());
+			final SootExpression right = new SootExpression(assignment.getRightOp());
+
+			left.apply(new SootExpressionVisitor<>() {
+
+				@Override
+				public void caseLocal(final Local local) {
+					final SootType type = new SootType(local.getType());
+					final Assignee assignee = new Assignee();
+					final Expression expression = new BoogieExpressionExtractor(type).visit(right);
+					assignee.setReference(new ValueReference(new Accessor(local.getName())));
+
+					if (!initialized.contains(local)) {
+						addLocal(local);
+					}
+
+					addSingleAssignment(assignee, expression);
+				}
+
+				@Override
+				public void caseDefault(final Value expression) {
+					throw new IllegalArgumentException("Conversion for assignee of type "
+							+ expression.getClass().getName() + " is currently not supported");
+				}
+
+			});
+
+		}
+
+		@Override
+		public void caseReturnVoidStmt(final ReturnVoidStmt returns) {
+			addReturnStatement();
+		}
+
+		@Override
+		public void caseReturnStmt(final ReturnStmt returns) {
+			final SootExpression operand = new SootExpression(returns.getOp());
+			final ValueReference valueReference = BoogiePrelude.getReturnValueReference();
+			final Assignee assignee = new Assignee(valueReference);
+			final Expression expression = new BoogieExpressionExtractor(methodUnit.getReturnType()).visit(operand);
+			addSingleAssignment(assignee, expression);
+			addReturnStatement();
+		}
+
+		@Override
+		public void caseIfStmt(final IfStmt ifStatement) {
+		}
+
+		@Override
+		public void caseDefault(final Unit unit) {
+			throw new UnsupportedOperationException("Cannot collect statements of type " + unit.getClass().getName());
+		}
+
+		@Override
+		public ProcedureDeclaration result() {
+			return procedureBuilder.signature(signatureBuilder.build()).body(body).build();
+		}
 	}
 
 	public void addStatement(final Statement statement) {
@@ -89,70 +168,17 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 	}
 
 	@Override
-	public void caseIdentityStmt(final IdentityStmt identity) {
-		final SootExpression left = new SootExpression(identity.getLeftOp());
-		final Local local = new SootLocalExtractor().visit(left);
-		addParameter(local);
-	}
-
-	@Override
-	public void caseAssignStmt(final AssignStmt assignment) {
-		final SootExpression left = new SootExpression(assignment.getLeftOp());
-		final SootExpression right = new SootExpression(assignment.getRightOp());
-
-		left.apply(new SootExpressionVisitor<>() {
-
-			@Override
-			public void caseLocal(final Local local) {
-				final SootType type = new SootType(local.getType());
-				final Assignee assignee = new Assignee();
-				final Expression expression = new BoogieExpressionExtractor(type).visit(right);
-				assignee.setReference(new ValueReference(new Accessor(local.getName())));
-
-				if (!initialized.contains(local)) {
-					addLocal(local);
-				}
-
-				addSingleAssignment(assignee, expression);
-			}
-
-			@Override
-			public void caseDefault(final Value expression) {
-				throw new IllegalArgumentException("Conversion for assignee of type " + expression.getClass().getName()
-						+ " is currently not supported");
-			}
-
-		});
-
-	}
-
-	@Override
-	public void caseReturnVoidStmt(final ReturnVoidStmt returns) {
-		addReturnStatement();
-	}
-
-	@Override
-	public void caseReturnStmt(final ReturnStmt returns) {
-		final SootExpression operand = new SootExpression(returns.getOp());
-		final ValueReference valueReference = BoogiePrelude.getReturnValueReference();
-		final Assignee assignee = new Assignee(valueReference);
-		final Expression expression = new BoogieExpressionExtractor(methodUnit.getReturnType()).visit(operand);
-		addSingleAssignment(assignee, expression);
-		addReturnStatement();
-	}
-
-	@Override
-	public void caseIfStmt(final IfStmt ifStatement) {
-	}
-
-	@Override
 	public void caseDefault(final Unit unit) {
-		throw new UnsupportedOperationException("Cannot collect statements of type " + unit.getClass().getName());
+		if (labelIndex.containsKey(unit)) {
+			addStatement(new LabelStatement(labelIndex.get(unit)));
+		}
+
+		unit.apply(extractor);
 	}
 
 	@Override
 	public ProcedureDeclaration result() {
-		return procedureBuilder.signature(signatureBuilder.build()).body(body).build();
+		return extractor.result();
 	}
 
 }

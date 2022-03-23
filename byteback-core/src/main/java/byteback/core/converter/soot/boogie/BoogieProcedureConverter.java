@@ -7,18 +7,18 @@ import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
 
 public class BoogieProcedureConverter {
 
-	private static final BoogieProcedureConverter instance = new BoogieProcedureConverter();
+  private static final BoogieProcedureConverter instance = new BoogieProcedureConverter();
 
-	public static BoogieProcedureConverter instance() {
-		return instance;
-	}
+  public static BoogieProcedureConverter instance() {
+    return instance;
+  }
 
-	public ProcedureDeclaration convert(final SootMethodUnit methodUnit) {
-		final ProcedureDeclarationBuilder procedureBuilder = new ProcedureDeclarationBuilder();
-		final ProcedureSignatureBuilder signatureBuilder = new ProcedureSignatureBuilder();
-		procedureBuilder.name(BoogieNameConverter.methodName(methodUnit));
+  public ProcedureDeclaration convert(final SootMethodUnit methodUnit) {
+    final ProcedureDeclarationBuilder procedureBuilder = new ProcedureDeclarationBuilder();
+    final ProcedureSignatureBuilder signatureBuilder = new ProcedureSignatureBuilder();
+    procedureBuilder.name(BoogieNameConverter.methodName(methodUnit));
 
-		return new BoogieProcedureExtractor(methodUnit, procedureBuilder, signatureBuilder).visit(methodUnit.getBody());
-	}
+    return new BoogieProcedureExtractor(methodUnit, procedureBuilder, signatureBuilder).visit(methodUnit.getBody());
+  }
 
 }

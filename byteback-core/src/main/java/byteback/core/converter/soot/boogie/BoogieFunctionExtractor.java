@@ -3,6 +3,7 @@ package byteback.core.converter.soot.boogie;
 import byteback.core.converter.soot.SootLocalExtractor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootStatementVisitor;
+import byteback.core.representation.soot.unit.SootMethodUnit;
 import byteback.core.util.CountingMap;
 import byteback.frontend.boogie.ast.*;
 import byteback.frontend.boogie.builder.FunctionDeclarationBuilder;
@@ -19,15 +20,18 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 
 	private static final Logger log = LoggerFactory.getLogger(BoogieFunctionExtractor.class);
 
+  private final SootMethodUnit methodUnit;
+
 	private final FunctionDeclarationBuilder functionBuilder;
 
 	private final FunctionSignatureBuilder signatureBuilder;
 
 	private final CountingMap<Local, Optional<Expression>> expressionIndex;
 
-	public BoogieFunctionExtractor(final FunctionDeclarationBuilder functionBuilder,
+	public BoogieFunctionExtractor(final SootMethodUnit methodUnit, final FunctionDeclarationBuilder functionBuilder,
 			final FunctionSignatureBuilder signatureBuilder) {
 
+    this.methodUnit = methodUnit;
 		this.functionBuilder = functionBuilder;
 		this.signatureBuilder = signatureBuilder;
 		this.expressionIndex = new CountingMap<>();
@@ -56,8 +60,8 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 	@Override
 	public void caseReturnStmt(final ReturnStmt returns) {
 		final SootExpression operand = new SootExpression(returns.getOp());
-		final Expression expression = new BoogieInlineExtractor(operand.getType(), expressionIndex).visit(operand);
-		final TypeAccess returnTypeAccess = new BoogieTypeAccessExtractor().visit(operand.getType());
+		final Expression expression = new BoogieInlineExtractor(methodUnit.getReturnType(), expressionIndex).visit(operand);
+		final TypeAccess returnTypeAccess = new BoogieTypeAccessExtractor().visit(methodUnit.getReturnType());
 		final OptionalBinding boogieReturnBinding = new OptionalBindingBuilder().typeAccess(returnTypeAccess).build();
 
 		for (Entry<Local, Integer> entry : expressionIndex.getAccessCount().entrySet()) {

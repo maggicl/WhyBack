@@ -19,7 +19,7 @@ public class BoogieFunctionConverter {
 		signatureBuilder.addInputBinding(BoogiePrelude.getHeapVariable().makeOptionalBinding());
 		functionBuilder.name(BoogieNameConverter.methodName(methodUnit));
 
-		return new BoogieFunctionExtractor(functionBuilder, signatureBuilder).visit(methodUnit.getBody());
-	}
+    return new BoogieFunctionExtractor(methodUnit, functionBuilder, signatureBuilder).visit(methodUnit.getBody());
+  }
 
 }

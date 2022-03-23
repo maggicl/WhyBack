@@ -16,13 +16,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RunWith(Parameterized.class)
 public class BoogieProcedureConverterIntegrationTest extends BoogieConverterFixture {
-
-	final private static Logger log = LoggerFactory.getLogger(BoogieProcedureConverterIntegrationTest.class);
 
 	@Parameters
 	public static Iterable<RegressionParameter<ProcedureDeclaration>> getParameters() throws IOException {

@@ -9,9 +9,12 @@ import byteback.core.representation.soot.unit.SootMethodUnit;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.Assignee;
 import byteback.frontend.boogie.ast.AssignmentStatement;
+import byteback.frontend.boogie.ast.BlockStatement;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Expression;
+import byteback.frontend.boogie.ast.GotoStatement;
+import byteback.frontend.boogie.ast.IfStatement;
 import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.LabelStatement;
 import byteback.frontend.boogie.ast.List;
@@ -29,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import soot.BooleanType;
 import soot.Local;
 import soot.Unit;
 import soot.Value;
@@ -39,8 +43,6 @@ import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 
 public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDeclaration> {
-
-	private final Map<Unit, Label> labelIndex = new HashMap<>();
 
 	private final SootMethodUnit methodUnit;
 
@@ -54,14 +56,19 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 
 	private final InnerExtractor extractor;
 
+	private int labelCounter;
+
+	private final Map<Unit, Label> labelIndex;
+
 	public BoogieProcedureExtractor(final SootMethodUnit methodUnit, final ProcedureDeclarationBuilder procedureBuilder,
 			final ProcedureSignatureBuilder signatureBuilder) {
-
 		this.methodUnit = methodUnit;
 		this.procedureBuilder = procedureBuilder;
 		this.signatureBuilder = signatureBuilder;
 		this.body = new Body();
 		this.extractor = new InnerExtractor();
+		this.labelCounter = 0;
+		this.labelIndex = new HashMap<>();
 	}
 
 	private class InnerExtractor extends SootStatementVisitor<ProcedureDeclaration> {
@@ -121,6 +128,21 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 
 		@Override
 		public void caseIfStmt(final IfStmt ifStatement) {
+			final Unit thenUnit = ifStatement.getTarget();
+			final SootExpression condition = new SootExpression(ifStatement.getCondition());
+			final Expression boogieCondition = new BoogieExpressionExtractor(new SootType(BooleanType.v()))
+					.visit(condition);
+			final IfStatement boogieIfStatement = new IfStatement();
+			Label label = labelIndex.get(thenUnit);
+
+			if (label == null) {
+				label = nextLabel();
+			}
+
+			final BlockStatement boogieThenBlock = buildUnitBlock(new GotoStatement(label));
+
+			boogieIfStatement.setCondition(boogieCondition);
+			boogieIfStatement.setThen(boogieThenBlock);
 		}
 
 		@Override
@@ -132,6 +154,19 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 		public ProcedureDeclaration result() {
 			return procedureBuilder.signature(signatureBuilder.build()).body(body).build();
 		}
+	}
+
+	public Label nextLabel() {
+		final String name = "label" + (labelCounter++);
+
+		return new Label(name);
+	}
+
+	public BlockStatement buildUnitBlock(final Statement statement) {
+		final BlockStatement blockStatement = new BlockStatement();
+		blockStatement.addStatement(statement);
+
+		return blockStatement;
 	}
 
 	public void addStatement(final Statement statement) {

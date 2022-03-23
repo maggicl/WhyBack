@@ -31,7 +31,6 @@ public class BoogieProcedureConverterIntegrationTest extends BoogieConverterFixt
 			final Program program = entry.getValue();
 
       return classUnit.methods().flatMap((methodUnit) -> {
-          System.out.println(methodUnit.getBody());
           final String boogieName = BoogieNameConverter.methodName(methodUnit);
           final Optional<ProcedureDeclaration> expected = program.lookupProcedure(boogieName)
             .map(Procedure::getProcedureDeclaration);
@@ -41,7 +40,6 @@ public class BoogieProcedureConverterIntegrationTest extends BoogieConverterFixt
 
             return Stream.of(new RegressionParameter<>(expected.get(), actual));
           } else {
-            log.info("Skipping " + methodUnit.getName());
             return Stream.empty();
           }
         });

@@ -42,7 +42,7 @@ public class BoogieFieldConverterIntegrationTest extends BoogieConverterFixture 
 
 	@Test
 	public void Convert_GivenRegressionSet_ReturnsExpectedCode() {
-		assertEquals(PrintUtil.toString(parameter.actual), PrintUtil.toString(parameter.expected));
+		assertEquals(PrintUtil.toString(parameter.expected), PrintUtil.toString(parameter.actual));
 	}
 
 }

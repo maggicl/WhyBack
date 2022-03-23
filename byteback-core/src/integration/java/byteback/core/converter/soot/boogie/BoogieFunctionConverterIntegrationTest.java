@@ -46,7 +46,6 @@ public class BoogieFunctionConverterIntegrationTest extends BoogieConverterFixtu
 
 	@Test
 	public void Convert_GivenRegressionSet_ReturnsExpectedCode() {
-    System.out.println(PrintUtil.toString(parameter.expected));
 		assertEquals(PrintUtil.toString(parameter.expected), PrintUtil.toString(parameter.actual));
 	}
 

@@ -28,7 +28,6 @@ import byteback.frontend.boogie.builder.BoundedBindingBuilder;
 import byteback.frontend.boogie.builder.ProcedureDeclarationBuilder;
 import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
 import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +36,7 @@ import soot.Local;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
+import soot.jimple.GotoStmt;
 import soot.jimple.IdentityStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.ReturnStmt;
@@ -46,29 +46,27 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 
 	private final SootMethodUnit methodUnit;
 
+	private final Map<Unit, Label> labelIndex;
+
 	private final ProcedureDeclarationBuilder procedureBuilder;
 
 	private final ProcedureSignatureBuilder signatureBuilder;
 
 	private final Body body;
 
-	private final Set<Local> initialized = new HashSet<>();
-
 	private final InnerExtractor extractor;
 
-	private int labelCounter;
+	private final Set<Local> initialized;
 
-	private final Map<Unit, Label> labelIndex;
-
-	public BoogieProcedureExtractor(final SootMethodUnit methodUnit, final ProcedureDeclarationBuilder procedureBuilder,
-			final ProcedureSignatureBuilder signatureBuilder) {
+	public BoogieProcedureExtractor(final SootMethodUnit methodUnit, final Map<Unit, Label> labelIndex,
+			final ProcedureDeclarationBuilder procedureBuilder, final ProcedureSignatureBuilder signatureBuilder) {
+		this.labelIndex = labelIndex;
 		this.methodUnit = methodUnit;
 		this.procedureBuilder = procedureBuilder;
 		this.signatureBuilder = signatureBuilder;
 		this.body = new Body();
+		this.initialized = new HashSet<>();
 		this.extractor = new InnerExtractor();
-		this.labelCounter = 0;
-		this.labelIndex = new HashMap<>();
 	}
 
 	private class InnerExtractor extends SootStatementVisitor<ProcedureDeclaration> {
@@ -127,39 +125,39 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 		}
 
 		@Override
+		public void caseGotoStmt(final GotoStmt gotoStatement) {
+			final Unit targetUnit = gotoStatement.getTarget();
+			final Label label = labelIndex.get(targetUnit);
+
+			addStatement(new GotoStatement(label));
+		}
+
+		@Override
 		public void caseIfStmt(final IfStmt ifStatement) {
 			final Unit thenUnit = ifStatement.getTarget();
 			final SootExpression condition = new SootExpression(ifStatement.getCondition());
 			final Expression boogieCondition = new BoogieExpressionExtractor(new SootType(BooleanType.v()))
 					.visit(condition);
 			final IfStatement boogieIfStatement = new IfStatement();
-			Label label = labelIndex.get(thenUnit);
-
-			if (label == null) {
-				label = nextLabel();
-			}
+			final Label label = labelIndex.get(thenUnit);
 
 			final BlockStatement boogieThenBlock = buildUnitBlock(new GotoStatement(label));
 
 			boogieIfStatement.setCondition(boogieCondition);
 			boogieIfStatement.setThen(boogieThenBlock);
+			addStatement(boogieIfStatement);
 		}
 
 		@Override
 		public void caseDefault(final Unit unit) {
-			throw new UnsupportedOperationException("Cannot collect statements of type " + unit.getClass().getName());
+			throw new IllegalArgumentException("Cannot extract statement of type " + unit.getClass().getName());
 		}
 
 		@Override
 		public ProcedureDeclaration result() {
-			return procedureBuilder.signature(signatureBuilder.build()).body(body).build();
+			return procedureBuilder.body(body).signature(signatureBuilder.build()).build();
 		}
-	}
 
-	public Label nextLabel() {
-		final String name = "label" + (labelCounter++);
-
-		return new Label(name);
 	}
 
 	public BlockStatement buildUnitBlock(final Statement statement) {

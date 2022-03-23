@@ -9,6 +9,7 @@ import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.Function;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.IntegerType;
+import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.RealType;
@@ -132,6 +133,10 @@ public class BoogiePrelude {
 
 	public static ValueReference getReturnValueReference() {
 		return new ValueReference(new Accessor("~ret"));
+	}
+
+	public static Label getLabel(final int index) {
+		return new Label("label" + index);
 	}
 
 }

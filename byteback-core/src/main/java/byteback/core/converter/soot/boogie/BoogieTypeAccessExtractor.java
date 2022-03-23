@@ -18,10 +18,10 @@ public class BoogieTypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
 		this.typeAccess = typeAccess;
 	}
 
-  @Override
-  public void caseByteType(final ByteType byteType) {
+	@Override
+	public void caseByteType(final ByteType byteType) {
 		setTypeAccess(BoogiePrelude.getIntegerType().getTypeAccess());
-  }
+	}
 
 	@Override
 	public void caseIntType(final IntType integerType) {

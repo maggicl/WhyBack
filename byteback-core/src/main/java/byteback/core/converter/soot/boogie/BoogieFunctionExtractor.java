@@ -20,7 +20,7 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 
 	private static final Logger log = LoggerFactory.getLogger(BoogieFunctionExtractor.class);
 
-  private final SootMethodUnit methodUnit;
+	private final SootMethodUnit methodUnit;
 
 	private final FunctionDeclarationBuilder functionBuilder;
 
@@ -31,7 +31,7 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 	public BoogieFunctionExtractor(final SootMethodUnit methodUnit, final FunctionDeclarationBuilder functionBuilder,
 			final FunctionSignatureBuilder signatureBuilder) {
 
-    this.methodUnit = methodUnit;
+		this.methodUnit = methodUnit;
 		this.functionBuilder = functionBuilder;
 		this.signatureBuilder = signatureBuilder;
 		this.expressionIndex = new CountingMap<>();
@@ -60,7 +60,8 @@ public class BoogieFunctionExtractor extends SootStatementVisitor<FunctionDeclar
 	@Override
 	public void caseReturnStmt(final ReturnStmt returns) {
 		final SootExpression operand = new SootExpression(returns.getOp());
-		final Expression expression = new BoogieInlineExtractor(methodUnit.getReturnType(), expressionIndex).visit(operand);
+		final Expression expression = new BoogieInlineExtractor(methodUnit.getReturnType(), expressionIndex)
+				.visit(operand);
 		final TypeAccess returnTypeAccess = new BoogieTypeAccessExtractor().visit(methodUnit.getReturnType());
 		final OptionalBinding boogieReturnBinding = new OptionalBindingBuilder().typeAccess(returnTypeAccess).build();
 

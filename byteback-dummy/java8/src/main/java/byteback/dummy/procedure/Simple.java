@@ -2,55 +2,38 @@ package byteback.dummy.procedure;
 
 public class Simple {
 
-	public void empty() {
+	public static void empty() {
 	}
 
-	public void singleAssignment() {
-		int a = 1;
+	public static void singleAssignment() {
+		int a = 42;
 	}
 
-	public void doubleAssignment() {
+	public static void doubleAssignment() {
 		int a = 0;
 		a = a + 42;
 	}
 
-	public void emptyDoWhile() {
+	public static void emptyDoWhile() {
 		boolean a = false;
 
 		do {
 		} while (a);
 	}
 
-	public void emptyIf() {
+	public static void emptyIf() {
 		boolean a = false;
 
 		if (a) {
 		}
 	}
 
-	public void assignIf() {
+	public static void assignIf() {
 		boolean a = false;
 
 		if (!a) {
 			a = true;
 		}
-	}
-
-	public void shortCircuitingAnd() {
-		boolean a = true;
-		boolean b = true;
-		boolean c = a && b;
-	}
-
-	public void shortCircuitingOr() {
-		boolean a = true;
-		boolean b = true;
-		boolean c = a || b;
-	}
-
-	public void shortCircuitingNot() {
-		boolean a = true;
-		boolean c = !a;
 	}
 
 }

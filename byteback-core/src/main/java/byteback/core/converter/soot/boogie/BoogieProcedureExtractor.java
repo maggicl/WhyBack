@@ -44,31 +44,6 @@ import soot.jimple.ReturnVoidStmt;
 
 public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDeclaration> {
 
-	private final SootMethodUnit methodUnit;
-
-	private final Map<Unit, Label> labelIndex;
-
-	private final ProcedureDeclarationBuilder procedureBuilder;
-
-	private final ProcedureSignatureBuilder signatureBuilder;
-
-	private final Body body;
-
-	private final InnerExtractor extractor;
-
-	private final Set<Local> initialized;
-
-	public BoogieProcedureExtractor(final SootMethodUnit methodUnit, final Map<Unit, Label> labelIndex,
-			final ProcedureDeclarationBuilder procedureBuilder, final ProcedureSignatureBuilder signatureBuilder) {
-		this.labelIndex = labelIndex;
-		this.methodUnit = methodUnit;
-		this.procedureBuilder = procedureBuilder;
-		this.signatureBuilder = signatureBuilder;
-		this.body = new Body();
-		this.initialized = new HashSet<>();
-		this.extractor = new InnerExtractor();
-	}
-
 	private class InnerExtractor extends SootStatementVisitor<ProcedureDeclaration> {
 
 		@Override
@@ -128,7 +103,6 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 		public void caseGotoStmt(final GotoStmt gotoStatement) {
 			final Unit targetUnit = gotoStatement.getTarget();
 			final Label label = labelIndex.get(targetUnit);
-
 			addStatement(new GotoStatement(label));
 		}
 
@@ -140,9 +114,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 					.visit(condition);
 			final IfStatement boogieIfStatement = new IfStatement();
 			final Label label = labelIndex.get(thenUnit);
-
 			final BlockStatement boogieThenBlock = buildUnitBlock(new GotoStatement(label));
-
 			boogieIfStatement.setCondition(boogieCondition);
 			boogieIfStatement.setThen(boogieThenBlock);
 			addStatement(boogieIfStatement);
@@ -158,6 +130,31 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 			return procedureBuilder.body(body).signature(signatureBuilder.build()).build();
 		}
 
+	}
+
+	private final SootMethodUnit methodUnit;
+
+	private final Map<Unit, Label> labelIndex;
+
+	private final ProcedureDeclarationBuilder procedureBuilder;
+
+	private final ProcedureSignatureBuilder signatureBuilder;
+
+	private final Body body;
+
+	private final Set<Local> initialized;
+
+	private final InnerExtractor extractor;
+
+	public BoogieProcedureExtractor(final SootMethodUnit methodUnit, final Map<Unit, Label> labelIndex,
+			final ProcedureDeclarationBuilder procedureBuilder, final ProcedureSignatureBuilder signatureBuilder) {
+		this.labelIndex = labelIndex;
+		this.methodUnit = methodUnit;
+		this.procedureBuilder = procedureBuilder;
+		this.signatureBuilder = signatureBuilder;
+		this.body = new Body();
+		this.initialized = new HashSet<>();
+		this.extractor = new InnerExtractor();
 	}
 
 	public BlockStatement buildUnitBlock(final Statement statement) {

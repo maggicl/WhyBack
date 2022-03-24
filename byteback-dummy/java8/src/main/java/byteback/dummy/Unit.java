@@ -28,4 +28,18 @@ public class Unit {
 		}
 	}
 
+  public void assignIfMethod() {
+    boolean a = false;
+
+    if (!a) {
+      a = true;
+    }
+  }
+
+  public void shortCircuitingAnd() {
+    boolean a = true;
+    boolean b = true;
+    boolean c = a && b;
+  }
+
 }

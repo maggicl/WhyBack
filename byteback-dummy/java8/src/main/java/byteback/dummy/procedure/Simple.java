@@ -14,6 +14,13 @@ public class Simple {
 		a = a + 42;
 	}
 
+	public static void emptyWhile() {
+		boolean a = false;
+
+		while (a) {
+		}
+	}
+
 	public static void emptyDoWhile() {
 		boolean a = false;
 
@@ -34,6 +41,10 @@ public class Simple {
 		if (!a) {
 			a = true;
 		}
+	}
+
+	public static void assignParameter(int a) {
+		a = 1;
 	}
 
 }

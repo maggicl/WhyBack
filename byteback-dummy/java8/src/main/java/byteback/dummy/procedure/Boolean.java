@@ -7,11 +7,11 @@ public class Boolean {
 	}
 
 	public static boolean shortCircuitingOr(boolean a, boolean b) {
-    return a || b;
+		return a || b;
 	}
 
 	public static boolean shortCircuitingNot(boolean a) {
-    return !a;
+		return !a;
 	}
 
 }

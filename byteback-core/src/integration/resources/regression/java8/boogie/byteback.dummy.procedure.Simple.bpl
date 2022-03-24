@@ -19,6 +19,22 @@ procedure byteback.dummy.procedure.Simple.doubleAssignment##() returns ()
   return;
 }
 
+procedure byteback.dummy.procedure.Simple.emptyWhile##() returns ()
+{
+  var a: bool;
+  a := false;
+
+label2:
+  if (a == false) {
+    goto label1;
+  }
+
+  goto label2;
+
+label1:
+  return;
+}
+
 procedure byteback.dummy.procedure.Simple.emptyDoWhile##() returns ()
 {
   var a: bool;
@@ -56,5 +72,12 @@ procedure byteback.dummy.procedure.Simple.assignIf##() returns ()
 
   a := true;
 label1:
+  return;
+}
+
+procedure byteback.dummy.procedure.Simple.assignParameter#int#(a: int) returns ()
+{
+  var a#2: bool;
+  a#2 := true;
   return;
 }

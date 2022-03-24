@@ -148,6 +148,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 
 	public BoogieProcedureExtractor(final SootMethodUnit methodUnit, final Map<Unit, Label> labelIndex,
 			final ProcedureDeclarationBuilder procedureBuilder, final ProcedureSignatureBuilder signatureBuilder) {
+
 		this.labelIndex = labelIndex;
 		this.methodUnit = methodUnit;
 		this.procedureBuilder = procedureBuilder;

@@ -81,3 +81,19 @@ procedure byteback.dummy.procedure.Simple.assignParameter#int#(a: int) returns (
   a#2 := true;
   return;
 }
+
+procedure byteback.dummy.procedure.Simple.emptyFor##() returns ()
+{
+  var i: int;
+  i := 0;
+
+label2:
+  if (i >= 10) {
+    goto label1;
+  }
+  i := i + 1;
+  goto label2;
+
+label1:
+  return;
+}

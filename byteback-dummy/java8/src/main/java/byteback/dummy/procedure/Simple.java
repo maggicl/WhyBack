@@ -47,4 +47,9 @@ public class Simple {
 		a = 1;
 	}
 
+	public static void emptyFor() {
+		for (int i = 0; i < 10; ++i) {
+		}
+	}
+
 }

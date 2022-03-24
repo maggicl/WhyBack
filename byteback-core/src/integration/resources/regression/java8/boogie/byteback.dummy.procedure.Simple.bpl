@@ -1,15 +1,15 @@
-procedure byteback.dummy.procedure.Simple.voidMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.empty##(this: Reference) returns ()
 {
   return;
 }
 
-procedure byteback.dummy.procedure.Simple.singleAssignmentMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.singleAssignment##(this: Reference) returns ()
 {
   var a: int;
   a := 1;
 }
 
-procedure byteback.dummy.procedure.Simple.doubleAssignmentMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.doubleAssignment##(this: Reference) returns ()
 {
   var a: int;
   var a#2: int;
@@ -18,7 +18,7 @@ procedure byteback.dummy.procedure.Simple.doubleAssignmentMethod##(this: Referen
   return;
 }
 
-procedure byteback.dummy.procedure.Simple.emptyDoWhileMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.emptyDoWhile##(this: Reference) returns ()
 {
   var a: bool;
   a := false;
@@ -31,7 +31,7 @@ label1:
   return;
 }
 
-procedure byteback.dummy.procedure.Simple.emptyIfMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.emptyIf##(this: Reference) returns ()
 {
   var a: bool;
   a := false;
@@ -44,7 +44,7 @@ label1:
   return;
 }
 
-procedure byteback.dummy.procedure.Simple.assignIfMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.assignIf##(this: Reference) returns ()
 {
   var a: bool;
   a := false;
@@ -84,6 +84,60 @@ label2:
 
 label3:
   c := $stack4;
+
+  return;
+}
+
+procedure byteback.dummy.procedure.Simple.shortCircuitingOr##(this: Reference) returns ()
+{
+  var a: bool;
+  var b: bool;
+  var $stack4: bool;
+  var c: bool;
+
+  a := true;
+  b := true;
+
+  if (a != false) {
+    goto label1;
+  }
+
+  if (b == false) {
+    goto label2;
+  }
+
+label1:
+  $stack4 := true;
+  goto label3;
+
+label2:
+  $stack4 := false;
+
+label3:
+  c := $stack4;
+
+  return;
+}
+
+procedure byteback.dummy.procedure.Simple.shortCircuitingNot##(this: Reference) returns ()
+{
+  var a: bool;
+  var $stack3: bool;
+  var c: bool;
+  a := true;
+
+  if (a != false) {
+    goto label1;
+  }
+
+  $stack3 := true;
+  goto label2;
+
+label1:
+  $stack3 := false;
+
+label2:
+  c := $stack3;
 
   return;
 }

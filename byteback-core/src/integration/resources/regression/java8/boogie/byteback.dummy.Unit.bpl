@@ -43,3 +43,47 @@ procedure byteback.dummy.Unit.emptyIfMethod##(this: Reference) returns ()
 label1:
   return;
 }
+
+procedure byteback.dummy.Unit.assignIfMethod##(this: Reference) returns ()
+{
+  var a: bool;
+  a := false;
+
+  if (a != false) {
+    goto label1;
+  }
+
+  a := true;
+label1:
+  return;
+}
+
+procedure byteback.dummy.Unit.shortCircuitingAnd##(this: Reference) returns ()
+{
+  var a: bool;
+  var b: bool;
+  var $stack4: bool;
+  var c: bool;
+
+  a := true;
+  b := true;
+
+  if (a == false) {
+    goto label2;
+  }
+
+  if (b == false) {
+    goto label2;
+  }
+
+  $stack4 := true;
+  goto label3;
+
+label2:
+  $stack4 := false;
+
+label3:
+  c := $stack4;
+
+  return;
+}

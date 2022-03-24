@@ -1,8 +1,8 @@
-package byteback.dummy;
+package byteback.dummy.function;
 
 import byteback.annotations.Contract.Pure;
 
-public class RealMethods {
+public class Real {
 
 	@Pure
 	public static double division(double a, double b) {

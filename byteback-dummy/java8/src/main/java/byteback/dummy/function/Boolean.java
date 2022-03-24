@@ -1,8 +1,8 @@
-package byteback.dummy;
+package byteback.dummy.function;
 
 import byteback.annotations.Contract.Pure;
 
-public class BooleanMethods {
+public class Boolean {
 
 	@Pure
 	public static boolean or(boolean a, boolean b) {

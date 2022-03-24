@@ -1,6 +1,6 @@
-package byteback.dummy;
+package byteback.dummy.procedure;
 
-public class Unit {
+public class Simple {
 
 	public void voidMethod() {
 	}
@@ -28,18 +28,18 @@ public class Unit {
 		}
 	}
 
-  public void assignIfMethod() {
-    boolean a = false;
+	public void assignIfMethod() {
+		boolean a = false;
 
-    if (!a) {
-      a = true;
-    }
-  }
+		if (!a) {
+			a = true;
+		}
+	}
 
-  public void shortCircuitingAnd() {
-    boolean a = true;
-    boolean b = true;
-    boolean c = a && b;
-  }
+	public void shortCircuitingAnd() {
+		boolean a = true;
+		boolean b = true;
+		boolean c = a && b;
+	}
 
 }

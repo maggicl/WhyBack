@@ -1,4 +1,4 @@
-package byteback.dummy;
+package byteback.dummy.context;
 
 public class StaticInitializer {
 

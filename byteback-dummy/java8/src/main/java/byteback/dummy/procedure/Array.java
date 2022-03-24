@@ -1,6 +1,6 @@
-package byteback.dummy;
+package byteback.dummy.procedure;
 
-public class ArrayMethods {
+public class Array {
 
 	public static int arraySum(int[] as) {
 

@@ -1,15 +1,15 @@
-procedure byteback.dummy.Unit.voidMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.voidMethod##(this: Reference) returns ()
 {
   return;
 }
 
-procedure byteback.dummy.Unit.singleAssignmentMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.singleAssignmentMethod##(this: Reference) returns ()
 {
   var a: int;
   a := 1;
 }
 
-procedure byteback.dummy.Unit.doubleAssignmentMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.doubleAssignmentMethod##(this: Reference) returns ()
 {
   var a: int;
   var a#2: int;
@@ -18,7 +18,7 @@ procedure byteback.dummy.Unit.doubleAssignmentMethod##(this: Reference) returns 
   return;
 }
 
-procedure byteback.dummy.Unit.emptyDoWhileMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.emptyDoWhileMethod##(this: Reference) returns ()
 {
   var a: bool;
   a := false;
@@ -31,7 +31,7 @@ label1:
   return;
 }
 
-procedure byteback.dummy.Unit.emptyIfMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.emptyIfMethod##(this: Reference) returns ()
 {
   var a: bool;
   a := false;
@@ -44,7 +44,7 @@ label1:
   return;
 }
 
-procedure byteback.dummy.Unit.assignIfMethod##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.assignIfMethod##(this: Reference) returns ()
 {
   var a: bool;
   a := false;
@@ -58,7 +58,7 @@ label1:
   return;
 }
 
-procedure byteback.dummy.Unit.shortCircuitingAnd##(this: Reference) returns ()
+procedure byteback.dummy.procedure.Simple.shortCircuitingAnd##(this: Reference) returns ()
 {
   var a: bool;
   var b: bool;

@@ -1,8 +1,8 @@
-package byteback.dummy;
+package byteback.dummy.function;
 
 import byteback.annotations.Contract.Pure;
 
-public class FieldReferences {
+public class Field {
 
 	public int field;
 

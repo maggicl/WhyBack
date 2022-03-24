@@ -1,11 +1,11 @@
-package byteback.dummy;
+package byteback.dummy.function;
 
 import static byteback.annotations.Operator.eq;
 import static byteback.annotations.Operator.not;
 
 import byteback.annotations.Contract.Pure;
 
-public class IntegerMethods {
+public class Integer {
 
 	@Pure
 	public static int addition(int a, int b) {

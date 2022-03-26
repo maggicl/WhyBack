@@ -25,7 +25,7 @@ procedure byteback.dummy.procedure.Simple.emptyWhile##() returns ()
   a := false;
 
 label2:
-  if (a == false) {
+  if (~int(a) == 0) {
     goto label1;
   }
 
@@ -41,7 +41,7 @@ procedure byteback.dummy.procedure.Simple.emptyDoWhile##() returns ()
   a := false;
 
 label1:
-  if (a != false) {
+  if (~int(a) != 0) {
     goto label1;
   }
 
@@ -53,7 +53,7 @@ procedure byteback.dummy.procedure.Simple.emptyIf##() returns ()
   var a: bool;
   a := false;
 
-  if (a == false) {
+  if (~int(a) == 0) {
     goto label1;
   }
 
@@ -66,7 +66,7 @@ procedure byteback.dummy.procedure.Simple.assignIf##() returns ()
   var a: bool;
   a := false;
 
-  if (a != false) {
+  if (~int(a) != 0) {
     goto label1;
   }
 
@@ -91,6 +91,7 @@ label2:
   if (i >= 10) {
     goto label1;
   }
+
   i := i + 1;
   goto label2;
 

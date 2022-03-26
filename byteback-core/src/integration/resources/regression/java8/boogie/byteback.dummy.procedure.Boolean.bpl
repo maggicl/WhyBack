@@ -2,11 +2,11 @@ procedure byteback.dummy.procedure.Simple.shortCircuitingAnd##(a: bool, b: bool)
 {
   var $stack4: bool;
 
-  if (a == false) {
+  if (~int(a) == 0) {
     goto label2;
   }
 
-  if (b == false) {
+  if (~int(b) == 0) {
     goto label2;
   }
 
@@ -26,11 +26,11 @@ procedure byteback.dummy.procedure.Simple.shortCircuitingOr##(a: bool, b: bool) 
 {
   var $stack4: bool;
 
-  if (a != false) {
+  if (~int(a) != 0) {
     goto label1;
   }
 
-  if (b == false) {
+  if (~int(b) == 0) {
     goto label2;
   }
 
@@ -52,7 +52,7 @@ procedure byteback.dummy.procedure.Simple.shortCircuitingNot##(a: bool) returns 
 {
   var $stack3: bool;
 
-  if (a != false) {
+  if (~int(a) != 0) {
     goto label1;
   }
 

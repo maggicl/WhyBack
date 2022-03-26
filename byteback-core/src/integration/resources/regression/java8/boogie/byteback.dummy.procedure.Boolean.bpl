@@ -1,4 +1,11 @@
+function ~int<a>(a) returns (int);
+
+// bool -> int
+axiom ~int(false) == 0;
+axiom ~int(true) == 1;
+
 procedure byteback.dummy.procedure.Simple.shortCircuitingAnd##(a: bool, b: bool) returns (~ret: bool)
+  ensures a && b ==> ~ret;
 {
   var $stack4: bool;
 
@@ -23,6 +30,7 @@ label3:
 }
 
 procedure byteback.dummy.procedure.Simple.shortCircuitingOr##(a: bool, b: bool) returns (~ret: bool)
+  ensures a || b ==> ~ret;
 {
   var $stack4: bool;
 
@@ -48,7 +56,7 @@ label3:
 }
 
 procedure byteback.dummy.procedure.Simple.shortCircuitingNot##(a: bool) returns (~ret: bool)
-  ensures a == true ==> ~ret == false;
+  ensures a ==> !~ret;
 {
   var $stack3: bool;
 

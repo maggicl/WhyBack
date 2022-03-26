@@ -65,8 +65,8 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
           @Override
           public void caseBooleanType(final BooleanType booleanType) {
             final FunctionReference caster = BoogiePrelude.getIntCaster();
-            caster.addArgument(expression);
-            setExpression(caster);
+            caster.addArgument(operands.pop());
+            pushExpression(caster);
           }
 
           @Override
@@ -79,7 +79,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
     }
       
     @Override
-    public BoogieExpressionExtractor subExpressionExtractor(final SootType type) {
+    public BoogieExpressionExtractor argumentExtractor(final SootType type) {
       return new IntegerExpressionExtractor();
     }
 

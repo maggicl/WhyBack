@@ -16,14 +16,14 @@ public class BoogieInlineExtractor extends BoogieExpressionExtractor {
 	}
 
 	@Override
-	public BoogieInlineExtractor subExpressionExtractor(final SootType type) {
+	public BoogieInlineExtractor argumentExtractor(final SootType type) {
 		return new BoogieInlineExtractor(type, expressionIndex);
 	}
 
 	@Override
 	public void caseLocal(final Local local) {
 		final Optional<Expression> expression = expressionIndex.get(local);
-		expression.ifPresentOrElse(this::setExpression, () -> super.caseLocal(local));
+		expression.ifPresentOrElse(this::pushExpression, () -> super.caseLocal(local));
 	}
 
 }

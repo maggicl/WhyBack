@@ -33,7 +33,6 @@ import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import soot.BooleanType;
 import soot.IntType;
 import soot.Local;
@@ -49,207 +48,210 @@ import soot.jimple.ReturnVoidStmt;
 
 public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDeclaration> {
 
-  private class IntegerExpressionExtractor extends BoogieExpressionExtractor {
+	private class IntegerExpressionExtractor extends BoogieExpressionExtractor {
 
-    public IntegerExpressionExtractor() {
-      super(new SootType(IntType.v()));
-    }
+		public IntegerExpressionExtractor() {
+			super(new SootType(IntType.v()));
+		}
 
-    @Override
-    public void caseLocal(final Local local) {
-      super.caseLocal(local);
-      final SootType type = new SootType(local.getType());
+		@Override
+		public void caseLocal(final Local local) {
+			super.caseLocal(local);
+			final SootType type = new SootType(local.getType());
 
-      type.apply(new SootTypeVisitor<>(){
+			type.apply(new SootTypeVisitor<>() {
 
-          @Override
-          public void caseBooleanType(final BooleanType booleanType) {
-            final FunctionReference caster = BoogiePrelude.getIntCaster();
-            caster.addArgument(operands.pop());
-            pushExpression(caster);
-          }
+				@Override
+				public void caseBooleanType(final BooleanType booleanType) {
+					final FunctionReference caster = BoogiePrelude.getIntCaster();
+					caster.addArgument(operands.pop());
+					pushExpression(caster);
+				}
 
-          @Override
-          public void caseDefault(final Type type) {
-            // No need to convert this local.
-          }
+				@Override
+				public void caseDefault(final Type type) {
+					// No need to convert this local.
+				}
 
-        });
+			});
 
-    }
-      
-    @Override
-    public BoogieExpressionExtractor argumentExtractor(final SootType type) {
-      return new IntegerExpressionExtractor();
-    }
+		}
 
-  }
+		@Override
+		public BoogieExpressionExtractor argumentExtractor(final SootType type) {
+			return new IntegerExpressionExtractor();
+		}
 
-  private class InnerExtractor extends SootStatementVisitor<ProcedureDeclaration> {
+	}
 
-    @Override
-    public void caseIdentityStmt(final IdentityStmt identity) {
-      final SootExpression left = new SootExpression(identity.getLeftOp());
-      final Local local = new SootLocalExtractor().visit(left);
-      addParameter(local);
-    }
+	private class InnerExtractor extends SootStatementVisitor<ProcedureDeclaration> {
 
-    @Override
-    public void caseAssignStmt(final AssignStmt assignment) {
-      final SootExpression left = new SootExpression(assignment.getLeftOp());
-      final SootExpression right = new SootExpression(assignment.getRightOp());
+		@Override
+		public void caseIdentityStmt(final IdentityStmt identity) {
+			final SootExpression left = new SootExpression(identity.getLeftOp());
+			final Local local = new SootLocalExtractor().visit(left);
+			addParameter(local);
+		}
 
-      left.apply(new SootExpressionVisitor<>() {
+		@Override
+		public void caseAssignStmt(final AssignStmt assignment) {
+			final SootExpression left = new SootExpression(assignment.getLeftOp());
+			final SootExpression right = new SootExpression(assignment.getRightOp());
 
-          @Override
-          public void caseLocal(final Local local) {
-            final SootType type = new SootType(local.getType());
-            final Assignee assignee = new Assignee();
-            final Expression expression = new BoogieExpressionExtractor(type).visit(right);
-            assignee.setReference(new ValueReference(new Accessor(local.getName())));
+			left.apply(new SootExpressionVisitor<>() {
 
-            if (!initialized.contains(local)) {
-              addLocal(local);
-            }
+				@Override
+				public void caseLocal(final Local local) {
+					final SootType type = new SootType(local.getType());
+					final Assignee assignee = new Assignee();
+					final Expression expression = new BoogieExpressionExtractor(type).visit(right);
+					assignee.setReference(new ValueReference(new Accessor(local.getName())));
 
-            addSingleAssignment(assignee, expression);
-          }
+					if (!initialized.contains(local)) {
+						addLocal(local);
+					}
 
-          @Override
-          public void caseDefault(final Value expression) {
-            throw new IllegalArgumentException("Conversion for assignee of type "
-                                               + expression.getClass().getName() + " is currently not supported");
-          }
+					addSingleAssignment(assignee, expression);
+				}
 
-        });
+				@Override
+				public void caseDefault(final Value expression) {
+					throw new IllegalArgumentException("Conversion for assignee of type "
+							+ expression.getClass().getName() + " is currently not supported");
+				}
 
-    }
+			});
 
-    @Override
-    public void caseReturnVoidStmt(final ReturnVoidStmt returns) {
-      addReturnStatement();
-    }
+		}
 
-    @Override
-    public void caseReturnStmt(final ReturnStmt returns) {
-      final SootExpression operand = new SootExpression(returns.getOp());
-      final ValueReference valueReference = BoogiePrelude.getReturnValueReference();
-      final Assignee assignee = new Assignee(valueReference);
-      final Expression expression = new BoogieExpressionExtractor(methodUnit.getReturnType()).visit(operand);
-      addSingleAssignment(assignee, expression);
-      addReturnStatement();
-    }
+		@Override
+		public void caseReturnVoidStmt(final ReturnVoidStmt returns) {
+			addReturnStatement();
+		}
 
-    @Override
-    public void caseGotoStmt(final GotoStmt gotoStatement) {
-      final Unit targetUnit = gotoStatement.getTarget();
-      final Label label = labelIndex.get(targetUnit);
-      addStatement(new GotoStatement(label));
-    }
+		@Override
+		public void caseReturnStmt(final ReturnStmt returns) {
+			final SootExpression operand = new SootExpression(returns.getOp());
+			final SootType returnType = methodUnit.getReturnType();
+			final ValueReference valueReference = BoogiePrelude.getReturnValueReference();
+			final Assignee assignee = new Assignee(valueReference);
+			final Expression expression = new BoogieExpressionExtractor(methodUnit.getReturnType()).visit(operand);
+			signatureBuilder.addOutputBinding(BoogiePrelude.getReturnBindingBuilder()
+					.typeAccess(new BoogieTypeAccessExtractor().visit(returnType)).build());
+			addSingleAssignment(assignee, expression);
+			addReturnStatement();
+		}
 
-    @Override
-    public void caseIfStmt(final IfStmt ifStatement) {
-      final Unit thenUnit = ifStatement.getTarget();
-      final SootExpression condition = new SootExpression(ifStatement.getCondition());
-      final Expression boogieCondition = new IntegerExpressionExtractor().visit(condition);
-      final IfStatement boogieIfStatement = new IfStatement();
-      final Label label = labelIndex.get(thenUnit);
-      final BlockStatement boogieThenBlock = buildUnitBlock(new GotoStatement(label));
-      boogieIfStatement.setCondition(boogieCondition);
-      boogieIfStatement.setThen(boogieThenBlock);
-      addStatement(boogieIfStatement);
-    }
+		@Override
+		public void caseGotoStmt(final GotoStmt gotoStatement) {
+			final Unit targetUnit = gotoStatement.getTarget();
+			final Label label = labelIndex.get(targetUnit);
+			addStatement(new GotoStatement(label));
+		}
 
-    @Override
-    public void caseDefault(final Unit unit) {
-      throw new IllegalArgumentException("Cannot extract statement of type " + unit.getClass().getName());
-    }
+		@Override
+		public void caseIfStmt(final IfStmt ifStatement) {
+			final Unit thenUnit = ifStatement.getTarget();
+			final SootExpression condition = new SootExpression(ifStatement.getCondition());
+			final Expression boogieCondition = new IntegerExpressionExtractor().visit(condition);
+			final IfStatement boogieIfStatement = new IfStatement();
+			final Label label = labelIndex.get(thenUnit);
+			final BlockStatement boogieThenBlock = buildUnitBlock(new GotoStatement(label));
+			boogieIfStatement.setCondition(boogieCondition);
+			boogieIfStatement.setThen(boogieThenBlock);
+			addStatement(boogieIfStatement);
+		}
 
-    @Override
-    public ProcedureDeclaration result() {
-      return procedureBuilder.body(body).signature(signatureBuilder.build()).build();
-    }
+		@Override
+		public void caseDefault(final Unit unit) {
+			throw new IllegalArgumentException("Cannot extract statement of type " + unit.getClass().getName());
+		}
 
-  }
+		@Override
+		public ProcedureDeclaration result() {
+			return procedureBuilder.body(body).signature(signatureBuilder.build()).build();
+		}
 
-  private final SootMethodUnit methodUnit;
+	}
 
-  private final Map<Unit, Label> labelIndex;
+	private final SootMethodUnit methodUnit;
 
-  private final ProcedureDeclarationBuilder procedureBuilder;
+	private final Map<Unit, Label> labelIndex;
 
-  private final ProcedureSignatureBuilder signatureBuilder;
+	private final ProcedureDeclarationBuilder procedureBuilder;
 
-  private final Body body;
+	private final ProcedureSignatureBuilder signatureBuilder;
 
-  private final Set<Local> initialized;
+	private final Body body;
 
-  private final InnerExtractor extractor;
+	private final Set<Local> initialized;
 
-  public BoogieProcedureExtractor(final SootMethodUnit methodUnit, final Map<Unit, Label> labelIndex,
-                                  final ProcedureDeclarationBuilder procedureBuilder, final ProcedureSignatureBuilder signatureBuilder) {
+	private final InnerExtractor extractor;
 
-    this.labelIndex = labelIndex;
-    this.methodUnit = methodUnit;
-    this.procedureBuilder = procedureBuilder;
-    this.signatureBuilder = signatureBuilder;
-    this.body = new Body();
-    this.initialized = new HashSet<>();
-    this.extractor = new InnerExtractor();
-  }
+	public BoogieProcedureExtractor(final SootMethodUnit methodUnit, final Map<Unit, Label> labelIndex,
+			final ProcedureDeclarationBuilder procedureBuilder, final ProcedureSignatureBuilder signatureBuilder) {
 
-  public BlockStatement buildUnitBlock(final Statement statement) {
-    final BlockStatement blockStatement = new BlockStatement();
-    blockStatement.addStatement(statement);
+		this.labelIndex = labelIndex;
+		this.methodUnit = methodUnit;
+		this.procedureBuilder = procedureBuilder;
+		this.signatureBuilder = signatureBuilder;
+		this.body = new Body();
+		this.initialized = new HashSet<>();
+		this.extractor = new InnerExtractor();
+	}
 
-    return blockStatement;
-  }
+	public BlockStatement buildUnitBlock(final Statement statement) {
+		final BlockStatement blockStatement = new BlockStatement();
+		blockStatement.addStatement(statement);
 
-  public void addStatement(final Statement statement) {
-    body.addStatement(statement);
-  }
+		return blockStatement;
+	}
 
-  public void addSingleAssignment(final Assignee assignee, final Expression expression) {
-    addStatement(new AssignmentStatement(new List<>(assignee), new List<>(expression)));
-  }
+	public void addStatement(final Statement statement) {
+		body.addStatement(statement);
+	}
 
-  public void addReturnStatement() {
-    addStatement(new ReturnStatement());
-  }
+	public void addSingleAssignment(final Assignee assignee, final Expression expression) {
+		addStatement(new AssignmentStatement(new List<>(assignee), new List<>(expression)));
+	}
 
-  public BoundedBinding bind(final Local local) {
-    final SootType type = new SootType(local.getType());
-    final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(type);
-    final BoundedBinding binding = new BoundedBindingBuilder().addName(local.getName()).typeAccess(typeAccess)
-      .build();
-    initialized.add(local);
+	public void addReturnStatement() {
+		addStatement(new ReturnStatement());
+	}
 
-    return binding;
-  }
+	public BoundedBinding bind(final Local local) {
+		final SootType type = new SootType(local.getType());
+		final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(type);
+		final BoundedBinding binding = new BoundedBindingBuilder().addName(local.getName()).typeAccess(typeAccess)
+				.build();
+		initialized.add(local);
 
-  public void addLocal(final Local local) {
-    final BoundedBinding binding = bind(local);
-    final VariableDeclaration variableDeclaration = new VariableDeclarationBuilder().addBinding(binding).build();
-    body.addLocalDeclaration(variableDeclaration);
-  }
+		return binding;
+	}
 
-  public void addParameter(final Local local) {
-    final BoundedBinding binding = bind(local);
-    signatureBuilder.addInputBinding(binding);
-  }
+	public void addLocal(final Local local) {
+		final BoundedBinding binding = bind(local);
+		final VariableDeclaration variableDeclaration = new VariableDeclarationBuilder().addBinding(binding).build();
+		body.addLocalDeclaration(variableDeclaration);
+	}
 
-  @Override
-  public void caseDefault(final Unit unit) {
-    if (labelIndex.containsKey(unit)) {
-      addStatement(new LabelStatement(labelIndex.get(unit)));
-    }
+	public void addParameter(final Local local) {
+		final BoundedBinding binding = bind(local);
+		signatureBuilder.addInputBinding(binding);
+	}
 
-    unit.apply(extractor);
-  }
+	@Override
+	public void caseDefault(final Unit unit) {
+		if (labelIndex.containsKey(unit)) {
+			addStatement(new LabelStatement(labelIndex.get(unit)));
+		}
 
-  @Override
-  public ProcedureDeclaration result() {
-    return extractor.result();
-  }
+		unit.apply(extractor);
+	}
+
+	@Override
+	public ProcedureDeclaration result() {
+		return extractor.result();
+	}
 
 }

@@ -52,4 +52,8 @@ public class Simple {
 		}
 	}
 
+	public static Object returnsNull() {
+		return null;
+	}
+
 }

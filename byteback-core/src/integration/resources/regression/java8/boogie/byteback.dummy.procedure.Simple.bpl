@@ -98,3 +98,10 @@ label2:
 label1:
   return;
 }
+
+
+procedure byteback.dummy.procedure.Simple.returnsNull##() returns (~ret: Reference)  
+{
+  ~ret := ~null;
+  return;
+}

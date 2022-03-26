@@ -32,7 +32,6 @@ import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
 import java.util.Optional;
 import java.util.Stack;
-
 import soot.BooleanType;
 import soot.Local;
 import soot.RefType;
@@ -55,6 +54,7 @@ import soot.jimple.LtExpr;
 import soot.jimple.MulExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.NegExpr;
+import soot.jimple.NullConstant;
 import soot.jimple.OrExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.StaticInvokeExpr;
@@ -69,12 +69,12 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 	protected final SootType type;
 
 	public BoogieExpressionExtractor(final SootType type) {
-    this.operands = new Stack<>();
+		this.operands = new Stack<>();
 		this.type = type;
 	}
 
 	public void pushExpression(final Expression expression) {
-    operands.push(expression);
+		operands.push(expression);
 	}
 
 	public void pushBinaryExpression(final BinopExpr sootExpression, final BinaryExpression boogieBinary) {
@@ -85,9 +85,9 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 		pushExpression(boogieBinary);
 	}
 
-  public BoogieExpressionExtractor argumentExtractor(final SootType type) {
-    return new BoogieExpressionExtractor(type);
-  }
+	public BoogieExpressionExtractor argumentExtractor(final SootType type) {
+		return new BoogieExpressionExtractor(type);
+	}
 
 	public void setFunctionReference(final InvokeExpr invocation, final FunctionReference functionReference,
 			final Expression... ghostParameters) {
@@ -268,6 +268,11 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 	}
 
 	@Override
+	public void caseNullConstant(final NullConstant nullConstant) {
+		pushExpression(BoogiePrelude.getNullConstant().getValueReference());
+	}
+
+	@Override
 	public void caseLocal(final Local local) {
 		pushExpression(new ValueReference(new Accessor(local.getName())));
 	}
@@ -289,7 +294,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 
 	@Override
 	public Expression result() {
-    assert operands.size() == 1;
+		assert operands.size() == 1;
 
 		if (operands.isEmpty()) {
 			throw new IllegalStateException("Could not retrieve expression");

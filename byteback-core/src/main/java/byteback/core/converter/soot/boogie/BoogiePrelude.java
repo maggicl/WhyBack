@@ -97,6 +97,12 @@ public class BoogiePrelude {
 		});
 	}
 
+	public static Variable getNullConstant() {
+		return loadProgram().lookupVariable("~null").orElseThrow(() -> {
+			throw new IllegalStateException("Missing definition for the ~null variable");
+		});
+	}
+
 	public static Function getHeapAccessFunction() {
 		return loadProgram().lookupFunction("~read").orElseThrow(() -> {
 			throw new IllegalStateException("Missing definition for the ~read variable");
@@ -122,9 +128,9 @@ public class BoogiePrelude {
 	public static FunctionReference getOperator(final String name, final TypeAccess typeAccess) {
 		final String typeName = PrintUtil.toString(typeAccess);
 
-		return loadProgram().lookupFunction(name + "_" + typeName).orElseThrow(() ->
-			new IllegalStateException("Missing definition for the " + name + " operator of type " + typeName)
-		).getFunctionReference();
+		return loadProgram().lookupFunction(name + "_" + typeName).orElseThrow(
+				() -> new IllegalStateException("Missing definition for the " + name + " operator of type " + typeName))
+				.getFunctionReference();
 	}
 
 	public static BoundedBindingBuilder getReturnBindingBuilder() {
@@ -139,8 +145,10 @@ public class BoogiePrelude {
 		return new Label("label" + index);
 	}
 
-  public static FunctionReference getIntCaster() {
-    return loadProgram().lookupFunction("~int").orElseThrow(() -> new IllegalStateException("Missing definition for integercasting function")).getFunctionReference();
-  }
+	public static FunctionReference getIntCaster() {
+		return loadProgram().lookupFunction("~int")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for integercasting function"))
+				.getFunctionReference();
+	}
 
 }

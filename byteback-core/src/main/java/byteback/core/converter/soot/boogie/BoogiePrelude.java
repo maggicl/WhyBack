@@ -153,8 +153,7 @@ public class BoogiePrelude {
 
 	public static FunctionReference getCmpReference() {
 		return loadProgram().lookupFunction("~cmp")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp"))
-				.getFunctionReference();
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp")).getFunctionReference();
 	}
 
 }

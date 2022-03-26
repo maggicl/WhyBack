@@ -56,11 +56,11 @@ public class Simple {
 		return null;
 	}
 
-  public static void realCondition() {
-    double r = 3.14;
+	public static void realCondition() {
+		double r = 3.14;
 
-    if (r < 2.72)  {
-    }
-  }
+		if (r < 2.72) {
+		}
+	}
 
 }

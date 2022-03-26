@@ -136,8 +136,6 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 			final ValueReference valueReference = BoogiePrelude.getReturnValueReference();
 			final Assignee assignee = new Assignee(valueReference);
 			final Expression expression = new BoogieExpressionExtractor(methodUnit.getReturnType()).visit(operand);
-			signatureBuilder.addOutputBinding(BoogiePrelude.getReturnBindingBuilder()
-					.typeAccess(new BoogieTypeAccessExtractor().visit(returnType)).build());
 			addSingleAssignment(assignee, expression);
 			addReturnStatement();
 		}

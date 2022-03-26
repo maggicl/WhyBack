@@ -79,14 +79,14 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 		operands.push(expression);
 	}
 
-  public void pushCmpExpression(final BinopExpr cmp) {
-    final FunctionReference cmpReference = BoogiePrelude.getCmpReference();
+	public void pushCmpExpression(final BinopExpr cmp) {
+		final FunctionReference cmpReference = BoogiePrelude.getCmpReference();
 		final SootExpression left = new SootExpression(cmp.getOp1());
 		final SootExpression right = new SootExpression(cmp.getOp2());
-    cmpReference.addArgument(visit(left));
-    cmpReference.addArgument(visit(right));
-    pushExpression(cmpReference);
-  }
+		cmpReference.addArgument(visit(left));
+		cmpReference.addArgument(visit(right));
+		pushExpression(cmpReference);
+	}
 
 	public void pushBinaryExpression(final BinopExpr sootExpression, final BinaryExpression boogieBinary) {
 		final SootExpression left = new SootExpression(sootExpression.getOp1());
@@ -221,15 +221,15 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 		});
 	}
 
-  @Override
-  public void caseCmplExpr(final CmplExpr cmpl) {
-    pushCmpExpression(cmpl);
-  }
+	@Override
+	public void caseCmplExpr(final CmplExpr cmpl) {
+		pushCmpExpression(cmpl);
+	}
 
-  @Override
-  public void caseCmpgExpr(final CmpgExpr cmpg) {
-    pushCmpExpression(cmpg);
-  }
+	@Override
+	public void caseCmpgExpr(final CmpgExpr cmpg) {
+		pushCmpExpression(cmpg);
+	}
 
 	@Override
 	public void caseEqExpr(final EqExpr equals) {

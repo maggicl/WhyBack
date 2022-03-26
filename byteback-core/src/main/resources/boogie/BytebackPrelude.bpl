@@ -19,9 +19,15 @@ function ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
 // -------------------------------------------------------------------
 // Binary operators
 // -------------------------------------------------------------------
-function ~or_int(int, int) returns (int);
-function ~and_int(int, int) returns (int);
-function ~xor_int(int, int) returns (int);
+function ~cmp<a>(a, a) returns (int);
+
+axiom (forall i: int, j: int :: i < j ==> ~cmp(i, j) == -1);
+axiom (forall i: int, j: int :: i > j ==> ~cmp(i, j) == 1);
+axiom (forall i: int, j: int :: i == j ==> ~cmp(i, j) == 0);
+
+axiom (forall i: real, j: real :: i < j ==> ~cmp(i, j) == -1);
+axiom (forall i: real, j: real :: i > j ==> ~cmp(i, j) == 1);
+axiom (forall i: real, j: real :: i == j ==> ~cmp(i, j) == 0);
 
 // -------------------------------------------------------------------
 // Casting operators

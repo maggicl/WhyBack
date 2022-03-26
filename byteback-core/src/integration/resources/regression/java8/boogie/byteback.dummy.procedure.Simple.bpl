@@ -105,3 +105,19 @@ procedure byteback.dummy.procedure.Simple.returnsNull##() returns (~ret: Referen
   ~ret := ~null;
   return;
 }
+
+procedure byteback.dummy.procedure.Simple.realCondition##() returns ()
+{
+  var r: real;
+  var $stack2 : int;
+
+  r := 3.14;
+  $stack2 := ~cmp(r, 2.72);
+
+  if ($stack2 >= 0) {
+    goto label1;
+  }
+
+label1:
+  return;
+}

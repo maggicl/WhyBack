@@ -15,5 +15,6 @@ procedure byteback.dummy.procedure.Real.sumIfSmaller#double#double#(a: real, b: 
 
 label1:
   ~ret := 0.0;
+
   return;
 }

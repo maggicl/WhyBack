@@ -29,7 +29,7 @@ public class BoogieProcedureConverter {
 
 			@Override
 			public void caseVoidType(final VoidType type) {
-				// Do not add output parameters
+				// Do not add output parameter
 			}
 
 			@Override

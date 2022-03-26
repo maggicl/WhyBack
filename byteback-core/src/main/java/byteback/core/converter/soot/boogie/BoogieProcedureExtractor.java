@@ -1,6 +1,7 @@
 package byteback.core.converter.soot.boogie;
 
 import byteback.core.converter.soot.SootLocalExtractor;
+import byteback.core.representation.soot.annotation.SootAnnotation;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
@@ -23,6 +24,7 @@ import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.ProcedureDeclaration;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
+import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.VariableDeclaration;
@@ -32,6 +34,7 @@ import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
 import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import soot.BooleanType;
 import soot.IntType;
@@ -45,6 +48,7 @@ import soot.jimple.IdentityStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
+import soot.jimple.StaticInvokeExpr;
 
 public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDeclaration> {
 
@@ -103,15 +107,46 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 				@Override
 				public void caseLocal(final Local local) {
 					final SootType type = new SootType(local.getType());
-					final Assignee assignee = new Assignee();
-					final Expression expression = new BoogieExpressionExtractor(type).visit(right);
-					assignee.setReference(new ValueReference(new Accessor(local.getName())));
+					final ValueReference reference = new ValueReference(new Accessor(local.getName()));
+					final BoogieExpressionExtractor extractor = new BoogieExpressionExtractor(type);
+
+					right.apply(new SootExpressionVisitor<>() {
+
+						@Override
+						public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
+							final SootMethodUnit target = new SootMethodUnit(invocation.getMethod());
+							final Optional<SootAnnotation> pureAnnotation = target
+									.getAnnotation("Lbyteback/annotations/Contract$Pure;");
+
+							if (pureAnnotation.isPresent()) {
+								extractor.caseStaticInvokeExpr(invocation);
+								addSingleAssignment(new Assignee(reference), extractor.result());
+							} else {
+								final TargetedCallStatement callStatement = new TargetedCallStatement();
+								callStatement.setAccessor(new Accessor(BoogieNameConverter.methodName(target)));
+
+								for (Value argument : invocation.getArgs()) {
+									final SootExpression expression = new SootExpression(argument);
+									final SootType type = new SootType(argument.getType());
+									callStatement.addArgument(extractor.argumentExtractor(type).visit(expression));
+								}
+
+								callStatement.addTarget(reference);
+								addStatement(callStatement);
+							}
+						}
+
+						@Override
+						public void caseDefault(final Value value) {
+							addSingleAssignment(new Assignee(reference), extractor.visit(new SootExpression(value)));
+						}
+
+					});
 
 					if (!initialized.contains(local)) {
 						addLocal(local);
 					}
 
-					addSingleAssignment(assignee, expression);
 				}
 
 				@Override
@@ -132,7 +167,6 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 		@Override
 		public void caseReturnStmt(final ReturnStmt returns) {
 			final SootExpression operand = new SootExpression(returns.getOp());
-			final SootType returnType = methodUnit.getReturnType();
 			final ValueReference valueReference = BoogiePrelude.getReturnValueReference();
 			final Assignee assignee = new Assignee(valueReference);
 			final Expression expression = new BoogieExpressionExtractor(methodUnit.getReturnType()).visit(operand);

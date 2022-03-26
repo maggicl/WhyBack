@@ -63,4 +63,8 @@ public class Simple {
 		}
 	}
 
+	public static void assignsProcedureResult() {
+		Object a = returnsNull();
+	}
+
 }

@@ -121,3 +121,10 @@ procedure byteback.dummy.procedure.Simple.realCondition##() returns ()
 label1:
   return;
 }
+
+procedure byteback.dummy.procedure.Simple.assignsProcedureResult##() returns ()
+{
+  var a: Reference;
+  call a := byteback.dummy.procedure.Simple.returnsNull##();
+  return;
+}

@@ -121,7 +121,7 @@ Expression less_than_equals_operation
 
 Expression greater_than_equals_operation
     = expression4.lhs GTEQ expression4.rhs
-    {: return new EqualsOperation(lhs, rhs); :}
+    {: return new GreaterThanEqualsOperation(lhs, rhs); :}
     ;
 
 Expression partial_order_operation

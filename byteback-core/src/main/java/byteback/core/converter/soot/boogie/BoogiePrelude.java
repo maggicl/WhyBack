@@ -147,7 +147,13 @@ public class BoogiePrelude {
 
 	public static FunctionReference getIntCaster() {
 		return loadProgram().lookupFunction("~int")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for integercasting function"))
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~int casting function"))
+				.getFunctionReference();
+	}
+
+	public static FunctionReference getCmpReference() {
+		return loadProgram().lookupFunction("~cmp")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp"))
 				.getFunctionReference();
 	}
 

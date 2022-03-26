@@ -40,6 +40,8 @@ import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.BinopExpr;
+import soot.jimple.CmpgExpr;
+import soot.jimple.CmplExpr;
 import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
 import soot.jimple.EqExpr;
@@ -64,7 +66,7 @@ import soot.jimple.XorExpr;
 
 public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression> {
 
-	protected Stack<Expression> operands;
+	protected final Stack<Expression> operands;
 
 	protected final SootType type;
 
@@ -76,6 +78,15 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 	public void pushExpression(final Expression expression) {
 		operands.push(expression);
 	}
+
+  public void pushCmpExpression(final BinopExpr cmp) {
+    final FunctionReference cmpReference = BoogiePrelude.getCmpReference();
+		final SootExpression left = new SootExpression(cmp.getOp1());
+		final SootExpression right = new SootExpression(cmp.getOp2());
+    cmpReference.addArgument(visit(left));
+    cmpReference.addArgument(visit(right));
+    pushExpression(cmpReference);
+  }
 
 	public void pushBinaryExpression(final BinopExpr sootExpression, final BinaryExpression boogieBinary) {
 		final SootExpression left = new SootExpression(sootExpression.getOp1());
@@ -89,7 +100,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 		return new BoogieExpressionExtractor(type);
 	}
 
-	public void setFunctionReference(final InvokeExpr invocation, final FunctionReference functionReference,
+	public void pushFunctionReference(final InvokeExpr invocation, final FunctionReference functionReference,
 			final Expression... ghostParameters) {
 
 		final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
@@ -117,7 +128,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 	@Override
 	public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
 		final FunctionReference functionReference = new FunctionReference();
-		setFunctionReference(invocation, functionReference);
+		pushFunctionReference(invocation, functionReference);
 	}
 
 	@Override
@@ -125,7 +136,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 		final FunctionReference functionReference = new FunctionReference();
 		final SootExpression base = new SootExpression(invocation.getBase());
 		final Expression target = new BoogieExpressionExtractor(new SootType(RefType.v())).visit(base);
-		setFunctionReference(invocation, functionReference, target);
+		pushFunctionReference(invocation, functionReference, target);
 	}
 
 	@Override
@@ -209,6 +220,16 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 
 		});
 	}
+
+  @Override
+  public void caseCmplExpr(final CmplExpr cmpl) {
+    pushCmpExpression(cmpl);
+  }
+
+  @Override
+  public void caseCmpgExpr(final CmpgExpr cmpg) {
+    pushCmpExpression(cmpg);
+  }
 
 	@Override
 	public void caseEqExpr(final EqExpr equals) {

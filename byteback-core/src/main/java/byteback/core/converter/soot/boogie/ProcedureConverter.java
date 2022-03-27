@@ -20,17 +20,17 @@ import soot.Type;
 import soot.Unit;
 import soot.VoidType;
 
-public class BoogieProcedureConverter {
+public class ProcedureConverter {
 
-	private static final BoogieProcedureConverter instance = new BoogieProcedureConverter();
+	private static final ProcedureConverter instance = new ProcedureConverter();
 
-	public static BoogieProcedureConverter instance() {
+	public static ProcedureConverter instance() {
 		return instance;
 	}
 
 	public BoundedBinding makeBinding(final Local local) {
 		final SootType type = new SootType(local.getType());
-		final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(type);
+		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
 		final BoundedBindingBuilder bindingBuilder = new BoundedBindingBuilder();
 		bindingBuilder.addName(local.getName()).typeAccess(typeAccess);
 
@@ -55,8 +55,8 @@ public class BoogieProcedureConverter {
 
 			@Override
 			public void caseDefault(final Type type) {
-				signatureBuilder.addOutputBinding(BoogiePrelude.getReturnBindingBuilder()
-						.typeAccess(new BoogieTypeAccessExtractor().visit(methodUnit.getReturnType())).build());
+				final TypeAccess typeAccess = new TypeAccessExtractor().visit(methodUnit.getReturnType());
+				signatureBuilder.addOutputBinding(Prelude.getReturnBindingBuilder().typeAccess(typeAccess).build());
 			}
 
 		});
@@ -66,8 +66,8 @@ public class BoogieProcedureConverter {
 
 	public Body makeBody(final SootMethodUnit methodUnit) {
 		final Body body = new Body();
-		final Map<Unit, Label> labelIndex = new BoogieLabelExtractor().visit(methodUnit.getBody());
-		methodUnit.getBody().apply(new BoogieProcedureExtractor(body, labelIndex));
+		final Map<Unit, Label> labelIndex = new LabelCollector().visit(methodUnit.getBody());
+		methodUnit.getBody().apply(new ProcedureBodyExtractor(body, methodUnit.getReturnType(), labelIndex));
 
 		for (Local local : methodUnit.getBody().getLocals()) {
 			final VariableDeclarationBuilder variableBuilder = new VariableDeclarationBuilder();
@@ -81,7 +81,7 @@ public class BoogieProcedureConverter {
 		final ProcedureDeclarationBuilder procedureBuilder = new ProcedureDeclarationBuilder();
 		final ProcedureSignature signature = makeSignature(methodUnit);
 		final Body body = makeBody(methodUnit);
-		procedureBuilder.name(BoogieNameConverter.methodName(methodUnit));
+		procedureBuilder.name(NameConverter.methodName(methodUnit));
 		procedureBuilder.signature(signature);
 		procedureBuilder.body(body);
 

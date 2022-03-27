@@ -5,40 +5,40 @@ import static org.junit.Assert.assertEquals;
 import byteback.frontend.boogie.ast.*;
 import org.junit.Test;
 
-public class BoogiePreludeIntegrationTest {
+public class PreludeIntegrationTest {
 
 	@Test
 	public void InitializeProgram_GivenPrelude_DoesNotThrowExceptions() {
-		BoogiePrelude.initializeProgram();
+		Prelude.initializeProgram();
 	}
 
 	@Test
 	public void LoadProgram_CalledTwice_ReturnsTheSameInstance() {
-		final Program a = BoogiePrelude.loadProgram();
-		final Program b = BoogiePrelude.loadProgram();
+		final Program a = Prelude.loadProgram();
+		final Program b = Prelude.loadProgram();
 		assertEquals(b, a);
 	}
 
 	@Test
 	public void GetReferenceType_GivenPrelude_DoesNotThrowException() {
-		BoogiePrelude.getReferenceType();
+		Prelude.getReferenceType();
 	}
 
 	@Test
 	public void GetHeapType_GivenPrelude_DoesNotThrowException() {
-		BoogiePrelude.getHeapType();
+		Prelude.getHeapType();
 	}
 
 	@Test
 	public void GetHeapVariable_GivenPrelude_DoesNotThrowException() {
-		BoogiePrelude.getHeapVariable();
+		Prelude.getHeapVariable();
 	}
 
 	@Test
 	public void GetHeapAccessExpression_GivenPrelude_DoesNotThrowException() {
 		final Expression base = new ValueReference(new Accessor("reference"));
 		final Expression field = new ValueReference(new Accessor("Reference.field"));
-		BoogiePrelude.getHeapAccessExpression(base, field);
+		Prelude.getHeapAccessExpression(base, field);
 	}
 
 }

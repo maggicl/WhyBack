@@ -5,7 +5,7 @@ import byteback.core.representation.soot.unit.SootFieldUnit;
 import byteback.core.representation.soot.unit.SootMethodUnit;
 import java.util.Iterator;
 
-public class BoogieNameConverter {
+public class NameConverter {
 
 	static String methodName(SootMethodUnit methodUnit) {
 		final StringBuilder builder = new StringBuilder();

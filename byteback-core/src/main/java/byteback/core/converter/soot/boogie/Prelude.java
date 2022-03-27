@@ -28,11 +28,11 @@ import java.io.Reader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BoogiePrelude {
+public class Prelude {
 
-	private static final Logger log = LoggerFactory.getLogger(BoogiePrelude.class);
+	private static final Logger log = LoggerFactory.getLogger(Prelude.class);
 
-	private static final Lazy<Program> preamble = Lazy.from(BoogiePrelude::initializeProgram);
+	private static final Lazy<Program> preamble = Lazy.from(Prelude::initializeProgram);
 
 	public static Program loadProgram() {
 		return preamble.get();

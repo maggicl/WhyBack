@@ -64,13 +64,13 @@ import soot.jimple.SubExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 
-public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression> {
+public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	protected final Stack<Expression> operands;
 
 	protected final SootType type;
 
-	public BoogieExpressionExtractor(final SootType type) {
+	public ExpressionExtractor(final SootType type) {
 		this.operands = new Stack<>();
 		this.type = type;
 	}
@@ -80,7 +80,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 	}
 
 	public void pushCmpExpression(final BinopExpr cmp) {
-		final FunctionReference cmpReference = BoogiePrelude.getCmpReference();
+		final FunctionReference cmpReference = Prelude.getCmpReference();
 		final SootExpression left = new SootExpression(cmp.getOp1());
 		final SootExpression right = new SootExpression(cmp.getOp2());
 		cmpReference.addArgument(visit(left));
@@ -96,8 +96,8 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 		pushExpression(boogieBinary);
 	}
 
-	public BoogieExpressionExtractor argumentExtractor(final SootType type) {
-		return new BoogieExpressionExtractor(type);
+	public ExpressionExtractor argumentExtractor(final SootType type) {
+		return new ExpressionExtractor(type);
 	}
 
 	public void pushFunctionReference(final InvokeExpr invocation, final FunctionReference functionReference,
@@ -108,9 +108,9 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 				.getAnnotation("Lbyteback/annotations/Contract$Prelude;");
 		final Optional<String> definedValue = definedAnnotation.flatMap(SootAnnotation::getValue)
 				.map((element) -> new StringElementExtractor().visit(element));
-		final String methodName = definedValue.orElseGet(() -> BoogieNameConverter.methodName(methodUnit));
+		final String methodName = definedValue.orElseGet(() -> NameConverter.methodName(methodUnit));
 		functionReference.setAccessor(new Accessor(methodName));
-		functionReference.addArgument(BoogiePrelude.getHeapVariable().getValueReference());
+		functionReference.addArgument(Prelude.getHeapVariable().getValueReference());
 
 		for (Expression parameter : ghostParameters) {
 			functionReference.addArgument(parameter);
@@ -135,7 +135,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invocation) {
 		final FunctionReference functionReference = new FunctionReference();
 		final SootExpression base = new SootExpression(invocation.getBase());
-		final Expression target = new BoogieExpressionExtractor(new SootType(RefType.v())).visit(base);
+		final Expression target = new ExpressionExtractor(new SootType(RefType.v())).visit(base);
 		pushFunctionReference(invocation, functionReference, target);
 	}
 
@@ -290,7 +290,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 
 	@Override
 	public void caseNullConstant(final NullConstant nullConstant) {
-		pushExpression(BoogiePrelude.getNullConstant().getValueReference());
+		pushExpression(Prelude.getNullConstant().getValueReference());
 	}
 
 	@Override
@@ -303,8 +303,8 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 		final SootFieldUnit field = new SootFieldUnit(instanceFieldReference.getField());
 		final SootExpression base = new SootExpression(instanceFieldReference.getBase());
 		final Expression boogieBase = visit(base);
-		final Expression boogieFieldReference = new ValueReference(new Accessor(BoogieNameConverter.fieldName(field)));
-		pushExpression(BoogiePrelude.getHeapAccessExpression(boogieBase, boogieFieldReference));
+		final Expression boogieFieldReference = new ValueReference(new Accessor(NameConverter.fieldName(field)));
+		pushExpression(Prelude.getHeapAccessExpression(boogieBase, boogieFieldReference));
 	}
 
 	@Override

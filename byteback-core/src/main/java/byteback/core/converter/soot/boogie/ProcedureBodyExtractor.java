@@ -38,15 +38,17 @@ import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.StaticInvokeExpr;
 
-public class BoogieProcedureExtractor extends SootStatementVisitor<Body> {
+public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final Map<Unit, Label> labelIndex;
 
 	private final Body body;
 
+	private final SootType returnType;
+
 	private final InnerExtractor extractor;
 
-	private class IntegerExpressionExtractor extends BoogieExpressionExtractor {
+	private class IntegerExpressionExtractor extends ExpressionExtractor {
 
 		public IntegerExpressionExtractor() {
 			super(new SootType(IntType.v()));
@@ -61,7 +63,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<Body> {
 
 				@Override
 				public void caseBooleanType(final BooleanType booleanType) {
-					final FunctionReference caster = BoogiePrelude.getIntCaster();
+					final FunctionReference caster = Prelude.getIntCaster();
 					caster.addArgument(operands.pop());
 					pushExpression(caster);
 				}
@@ -76,7 +78,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<Body> {
 		}
 
 		@Override
-		public BoogieExpressionExtractor argumentExtractor(final SootType type) {
+		public ExpressionExtractor argumentExtractor(final SootType type) {
 			return new IntegerExpressionExtractor();
 		}
 
@@ -95,7 +97,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<Body> {
 				public void caseLocal(final Local local) {
 					final SootType type = new SootType(local.getType());
 					final ValueReference reference = new ValueReference(new Accessor(local.getName()));
-					final BoogieExpressionExtractor extractor = new BoogieExpressionExtractor(type);
+					final ExpressionExtractor extractor = new ExpressionExtractor(type);
 
 					right.apply(new SootExpressionVisitor<>() {
 
@@ -110,7 +112,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<Body> {
 								addSingleAssignment(new Assignee(reference), extractor.result());
 							} else {
 								final TargetedCallStatement callStatement = new TargetedCallStatement();
-								callStatement.setAccessor(new Accessor(BoogieNameConverter.methodName(target)));
+								callStatement.setAccessor(new Accessor(NameConverter.methodName(target)));
 
 								for (Value argument : invocation.getArgs()) {
 									final SootExpression expression = new SootExpression(argument);
@@ -148,11 +150,11 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<Body> {
 		}
 
 		@Override
-		public void caseReturnStmt(final ReturnStmt returns) {
-			final SootExpression operand = new SootExpression(returns.getOp());
-			final ValueReference valueReference = BoogiePrelude.getReturnValueReference();
+		public void caseReturnStmt(final ReturnStmt returnStatement) {
+			final SootExpression operand = new SootExpression(returnStatement.getOp());
+			final ValueReference valueReference = Prelude.getReturnValueReference();
 			final Assignee assignee = new Assignee(valueReference);
-			final Expression expression = new BoogieExpressionExtractor(operand.getType()).visit(operand);
+			final Expression expression = new ExpressionExtractor(returnType).visit(operand);
 			addSingleAssignment(assignee, expression);
 			addReturnStatement();
 		}
@@ -189,9 +191,10 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<Body> {
 
 	}
 
-	public BoogieProcedureExtractor(final Body body, final Map<Unit, Label> labelIndex) {
-		this.labelIndex = labelIndex;
+	public ProcedureBodyExtractor(final Body body, final SootType returnType, final Map<Unit, Label> labelIndex) {
 		this.body = body;
+		this.returnType = returnType;
+		this.labelIndex = labelIndex;
 		this.extractor = new InnerExtractor();
 	}
 

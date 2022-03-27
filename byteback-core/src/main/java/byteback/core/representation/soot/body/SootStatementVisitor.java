@@ -7,12 +7,12 @@ import soot.jimple.IdentityStmt;
 
 public abstract class SootStatementVisitor<R> extends AbstractStmtSwitch implements Visitor<Unit, R> {
 
-  @Override
-  public void caseIdentityStmt(final IdentityStmt identity) {
-  }
+	@Override
+	public void caseIdentityStmt(final IdentityStmt identity) {
+	}
 
-  public void defaultCase(Object object) {
-    caseDefault((Unit) object);
-  }
+	public void defaultCase(Object object) {
+		caseDefault((Unit) object);
+	}
 
 }

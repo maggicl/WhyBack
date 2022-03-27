@@ -8,19 +8,19 @@ import soot.Unit;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 
-public class BoogieLabelExtractor extends SootStatementVisitor<Map<Unit, Label>> {
+public class LabelCollector extends SootStatementVisitor<Map<Unit, Label>> {
 
 	private int labelCounter;
 
 	private final Map<Unit, Label> labelIndex;
 
-	public BoogieLabelExtractor() {
+	public LabelCollector() {
 		this.labelCounter = 0;
 		this.labelIndex = new HashMap<>();
 	}
 
 	public void branchTo(final Unit target) {
-		labelIndex.put(target, BoogiePrelude.getLabel(++labelCounter));
+		labelIndex.put(target, Prelude.getLabel(++labelCounter));
 	}
 
 	@Override

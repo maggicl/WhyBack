@@ -18,7 +18,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class BoogieProcedureConverterIntegrationTest extends BoogieConverterFixture {
+public class ProcedureConverterIntegrationTest extends BoogieConverterFixture {
 
 	@Parameters
 	public static Iterable<RegressionParameter<ProcedureDeclaration>> getParameters() throws IOException {
@@ -27,12 +27,12 @@ public class BoogieProcedureConverterIntegrationTest extends BoogieConverterFixt
 			final Program program = entry.getValue();
 
 			return classUnit.methods().flatMap((methodUnit) -> {
-				final String boogieName = BoogieNameConverter.methodName(methodUnit);
+				final String boogieName = NameConverter.methodName(methodUnit);
 				final Optional<ProcedureDeclaration> expected = program.lookupProcedure(boogieName)
 						.map(Procedure::getProcedureDeclaration);
 
 				if (expected.isPresent()) {
-					final ProcedureDeclaration actual = BoogieProcedureConverter.instance().convert(methodUnit);
+					final ProcedureDeclaration actual = ProcedureConverter.instance().convert(methodUnit);
 
 					return Stream.of(new RegressionParameter<>(expected.get(), actual));
 				} else {
@@ -44,7 +44,7 @@ public class BoogieProcedureConverterIntegrationTest extends BoogieConverterFixt
 
 	private final RegressionParameter<ConstantDeclaration> parameter;
 
-	public BoogieProcedureConverterIntegrationTest(final RegressionParameter<ConstantDeclaration> parameter) {
+	public ProcedureConverterIntegrationTest(final RegressionParameter<ConstantDeclaration> parameter) {
 		this.parameter = parameter;
 	}
 

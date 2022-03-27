@@ -10,7 +10,7 @@ import soot.IntType;
 import soot.RefType;
 import soot.Type;
 
-public class BoogieTypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
+public class TypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
 
 	private TypeAccess typeAccess;
 
@@ -20,32 +20,32 @@ public class BoogieTypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
 
 	@Override
 	public void caseByteType(final ByteType byteType) {
-		setTypeAccess(BoogiePrelude.getIntegerType().getTypeAccess());
+		setTypeAccess(Prelude.getIntegerType().getTypeAccess());
 	}
 
 	@Override
 	public void caseIntType(final IntType integerType) {
-		setTypeAccess(BoogiePrelude.getIntegerType().getTypeAccess());
+		setTypeAccess(Prelude.getIntegerType().getTypeAccess());
 	}
 
 	@Override
 	public void caseDoubleType(final DoubleType doubleType) {
-		setTypeAccess(BoogiePrelude.getRealType().getTypeAccess());
+		setTypeAccess(Prelude.getRealType().getTypeAccess());
 	}
 
 	@Override
 	public void caseFloatType(final FloatType floatType) {
-		setTypeAccess(BoogiePrelude.getRealType().getTypeAccess());
+		setTypeAccess(Prelude.getRealType().getTypeAccess());
 	}
 
 	@Override
 	public void caseBooleanType(final BooleanType booleanType) {
-		setTypeAccess(BoogiePrelude.getBooleanType().getTypeAccess());
+		setTypeAccess(Prelude.getBooleanType().getTypeAccess());
 	}
 
 	@Override
 	public void caseRefType(final RefType referenceType) {
-		setTypeAccess(BoogiePrelude.getReferenceType().getTypeAccess());
+		setTypeAccess(Prelude.getReferenceType().getTypeAccess());
 	}
 
 	@Override

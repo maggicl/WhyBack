@@ -13,9 +13,9 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BoogieConverterFixture extends SootClassUnitFixture {
+public class ConverterFixture extends SootClassUnitFixture {
 
-	private static final Logger log = LoggerFactory.getLogger(BoogieConverterFixture.class);
+	private static final Logger log = LoggerFactory.getLogger(ConverterFixture.class);
 
 	public static Stream<Entry<SootClassUnit, Program>> getRegressionEntries(final String jarName) throws IOException {
 		return ResourcesUtil.getBoogiePaths(jarName).flatMap((path) -> {

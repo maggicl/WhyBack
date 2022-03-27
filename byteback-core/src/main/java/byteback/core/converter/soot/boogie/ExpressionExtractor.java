@@ -21,6 +21,7 @@ import byteback.frontend.boogie.ast.GreaterThanEqualsOperation;
 import byteback.frontend.boogie.ast.GreaterThanOperation;
 import byteback.frontend.boogie.ast.LessThanEqualsOperation;
 import byteback.frontend.boogie.ast.LessThanOperation;
+import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.ModuloOperation;
 import byteback.frontend.boogie.ast.MultiplicationOperation;
 import byteback.frontend.boogie.ast.NegationOperation;
@@ -30,6 +31,7 @@ import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Stack;
 import soot.BooleanType;
@@ -100,43 +102,45 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		return new ExpressionExtractor(type);
 	}
 
-	public void pushFunctionReference(final InvokeExpr invocation, final FunctionReference functionReference,
-			final Expression... ghostParameters) {
+	public ArrayList<Expression> computeArguments(final InvokeExpr invocation) {
+		final ArrayList<Expression> expressions = new ArrayList<>();
 
+		for (Value argument : invocation.getArgs()) {
+			final SootExpression expression = new SootExpression(argument);
+			final SootType type = new SootType(argument.getType());
+			expressions.add(argumentExtractor(type).visit(expression));
+		}
+
+		return expressions;
+	}
+
+	public void pushFunctionReference(final InvokeExpr invocation, final ArrayList<Expression> arguments) {
+		final FunctionReference functionReference = new FunctionReference();
 		final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
 		final Optional<SootAnnotation> definedAnnotation = methodUnit
 				.getAnnotation("Lbyteback/annotations/Contract$Prelude;");
 		final Optional<String> definedValue = definedAnnotation.flatMap(SootAnnotation::getValue)
 				.map((element) -> new StringElementExtractor().visit(element));
 		final String methodName = definedValue.orElseGet(() -> NameConverter.methodName(methodUnit));
+		arguments.add(0, Prelude.getHeapVariable().getValueReference());
 		functionReference.setAccessor(new Accessor(methodName));
-		functionReference.addArgument(Prelude.getHeapVariable().getValueReference());
-
-		for (Expression parameter : ghostParameters) {
-			functionReference.addArgument(parameter);
-		}
-
-		for (Value argument : invocation.getArgs()) {
-			final SootExpression expression = new SootExpression(argument);
-			final SootType type = new SootType(argument.getType());
-			functionReference.addArgument(argumentExtractor(type).visit(expression));
-		}
-
+		functionReference.setArgumentList(new List<Expression>().addAll(arguments));
 		pushExpression(functionReference);
 	}
 
 	@Override
 	public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
-		final FunctionReference functionReference = new FunctionReference();
-		pushFunctionReference(invocation, functionReference);
+		final ArrayList<Expression> arguments = computeArguments(invocation);
+		pushFunctionReference(invocation, arguments);
 	}
 
 	@Override
 	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invocation) {
-		final FunctionReference functionReference = new FunctionReference();
+		final ArrayList<Expression> arguments = computeArguments(invocation);
 		final SootExpression base = new SootExpression(invocation.getBase());
 		final Expression target = new ExpressionExtractor(new SootType(RefType.v())).visit(base);
-		pushFunctionReference(invocation, functionReference, target);
+		arguments.add(0, target);
+		pushFunctionReference(invocation, arguments);
 	}
 
 	@Override

@@ -67,4 +67,13 @@ public class Simple {
 		Object a = returnsNull();
 	}
 
+	public static void assignsProcedureResultTwice() {
+		Object a = returnsNull();
+    a = returnsNull();
+	}
+
+  public static void callsVoidProcedure() {
+    emptyWhile();
+  }
+
 }

@@ -15,7 +15,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class FieldConverterIntegrationTest extends BoogieConverterFixture {
+public class FieldConverterIntegrationTest extends ConverterFixture {
 
 	@Parameters
 	public static Iterable<RegressionParameter<ConstantDeclaration>> getParameters() throws IOException {

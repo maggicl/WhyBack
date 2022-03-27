@@ -19,7 +19,9 @@ import byteback.frontend.boogie.ast.TypeDefinition;
 import byteback.frontend.boogie.ast.UnknownTypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.Variable;
+import byteback.frontend.boogie.ast.VariableDeclaration;
 import byteback.frontend.boogie.builder.BoundedBindingBuilder;
+import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import byteback.frontend.boogie.util.ParserUtil;
 import java.io.IOException;
 import java.io.InputStream;
@@ -143,6 +145,20 @@ public class Prelude {
 
 	public static Label getLabel(final int index) {
 		return new Label("label" + index);
+	}
+
+	public static VariableDeclaration generateVariableDeclaration(final int index, final TypeAccess typeAccess) {
+		final VariableDeclarationBuilder variableBuilder = new VariableDeclarationBuilder();
+		final BoundedBindingBuilder bindingBuilder = new BoundedBindingBuilder();
+		bindingBuilder.addName("~sym" + index);
+		bindingBuilder.typeAccess(typeAccess);
+		variableBuilder.addBinding(bindingBuilder.build());
+
+		return variableBuilder.build();
+	}
+
+	public static ValueReference generateVariableReference(final int index) {
+		return new ValueReference(new Accessor("~sym" + index));
 	}
 
 	public static FunctionReference getIntCaster() {

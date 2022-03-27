@@ -11,23 +11,8 @@ Unit tests should be provided for both the ~annotations~ and the ~core~ module. 
 The structure of ~byteback-dummy~ as for now will be divided based on the target version of the language features that will be supported by the ~core~ module. For instance  ~byteback-dummy:jdk1.8~ will be a test module compiled for version ~1.8~. As the necessity of supporting features present in other versions of the JDK will emerge, more similar submodules will be added.
 
 * Core
-** Wrapping Soot's interface
-*** DONE Wrap Soot's singletons in SootContext
-*** TODO Wrap SootClass in SootClassIR
-**** Add method to access type parameters.
-*** TODO Wrap SootMethod in SootMethodIR
-**** Add method to access type parameters.
-**** Add method to access annotations.
-*** TODO Wrap SootField in SootFieldIR
-**** Add method to access type parameters.
-**** Add method to access annotations.
-*** TODO Wrap soot.Local in SootLocalIR
-**** Add method to access type parameters.
-**** Add method to access annotations.
-** Create type abstraction
-*** TODO Structure primitive types
-*** TODO Structure reference types
-*** TODO Structure parametric types
-** Create enhanced visitor interface for traversing Jimple's units
-*** TODO Map Soot types to Byteback types
-*** TODO Map Soot entities to wrapped Byteback entities
+** DONE Implement conversion between methods and Boogie functions
+** TODO Implement conversion between methods and Boogie procedures
+** TODO Implement interprocedural calls in Boogie procedures
+** TODO Implement conversion between methods and Boogie conditions
+** TODO Implement basic array supportin procedures

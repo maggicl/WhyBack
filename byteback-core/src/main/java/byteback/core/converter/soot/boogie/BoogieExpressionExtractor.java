@@ -317,11 +317,7 @@ public class BoogieExpressionExtractor extends SootExpressionVisitor<Expression>
 	public Expression result() {
 		assert operands.size() == 1;
 
-		if (operands.isEmpty()) {
-			throw new IllegalStateException("Could not retrieve expression");
-		} else {
-			return operands.pop();
-		}
+		return operands.pop();
 	}
 
 }

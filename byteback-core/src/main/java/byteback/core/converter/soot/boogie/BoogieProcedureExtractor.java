@@ -1,6 +1,5 @@
 package byteback.core.converter.soot.boogie;
 
-import byteback.core.converter.soot.SootLocalExtractor;
 import byteback.core.representation.soot.annotation.SootAnnotation;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
@@ -13,7 +12,6 @@ import byteback.frontend.boogie.ast.Assignee;
 import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.BlockStatement;
 import byteback.frontend.boogie.ast.Body;
-import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.GotoStatement;
@@ -21,21 +19,12 @@ import byteback.frontend.boogie.ast.IfStatement;
 import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.LabelStatement;
 import byteback.frontend.boogie.ast.List;
-import byteback.frontend.boogie.ast.ProcedureDeclaration;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
-import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
-import byteback.frontend.boogie.ast.VariableDeclaration;
-import byteback.frontend.boogie.builder.BoundedBindingBuilder;
-import byteback.frontend.boogie.builder.ProcedureDeclarationBuilder;
-import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
-import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import soot.BooleanType;
 import soot.IntType;
 import soot.Local;
@@ -44,13 +33,18 @@ import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.GotoStmt;
-import soot.jimple.IdentityStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.StaticInvokeExpr;
 
-public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDeclaration> {
+public class BoogieProcedureExtractor extends SootStatementVisitor<Body> {
+
+	private final Map<Unit, Label> labelIndex;
+
+	private final Body body;
+
+	private final InnerExtractor extractor;
 
 	private class IntegerExpressionExtractor extends BoogieExpressionExtractor {
 
@@ -88,14 +82,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 
 	}
 
-	private class InnerExtractor extends SootStatementVisitor<ProcedureDeclaration> {
-
-		@Override
-		public void caseIdentityStmt(final IdentityStmt identity) {
-			final SootExpression left = new SootExpression(identity.getLeftOp());
-			final Local local = new SootLocalExtractor().visit(left);
-			addParameter(local);
-		}
+	private class InnerExtractor extends SootStatementVisitor<Body> {
 
 		@Override
 		public void caseAssignStmt(final AssignStmt assignment) {
@@ -143,10 +130,6 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 
 					});
 
-					if (!initialized.contains(local)) {
-						addLocal(local);
-					}
-
 				}
 
 				@Override
@@ -169,7 +152,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 			final SootExpression operand = new SootExpression(returns.getOp());
 			final ValueReference valueReference = BoogiePrelude.getReturnValueReference();
 			final Assignee assignee = new Assignee(valueReference);
-			final Expression expression = new BoogieExpressionExtractor(methodUnit.getReturnType()).visit(operand);
+			final Expression expression = new BoogieExpressionExtractor(operand.getType()).visit(operand);
 			addSingleAssignment(assignee, expression);
 			addReturnStatement();
 		}
@@ -200,35 +183,15 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 		}
 
 		@Override
-		public ProcedureDeclaration result() {
-			return procedureBuilder.body(body).signature(signatureBuilder.build()).build();
+		public Body result() {
+			return body;
 		}
 
 	}
 
-	private final SootMethodUnit methodUnit;
-
-	private final Map<Unit, Label> labelIndex;
-
-	private final ProcedureDeclarationBuilder procedureBuilder;
-
-	private final ProcedureSignatureBuilder signatureBuilder;
-
-	private final Body body;
-
-	private final Set<Local> initialized;
-
-	private final InnerExtractor extractor;
-
-	public BoogieProcedureExtractor(final SootMethodUnit methodUnit, final Map<Unit, Label> labelIndex,
-			final ProcedureDeclarationBuilder procedureBuilder, final ProcedureSignatureBuilder signatureBuilder) {
-
+	public BoogieProcedureExtractor(final Body body, final Map<Unit, Label> labelIndex) {
 		this.labelIndex = labelIndex;
-		this.methodUnit = methodUnit;
-		this.procedureBuilder = procedureBuilder;
-		this.signatureBuilder = signatureBuilder;
-		this.body = new Body();
-		this.initialized = new HashSet<>();
+		this.body = body;
 		this.extractor = new InnerExtractor();
 	}
 
@@ -251,27 +214,6 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 		addStatement(new ReturnStatement());
 	}
 
-	public BoundedBinding bind(final Local local) {
-		final SootType type = new SootType(local.getType());
-		final TypeAccess typeAccess = new BoogieTypeAccessExtractor().visit(type);
-		final BoundedBinding binding = new BoundedBindingBuilder().addName(local.getName()).typeAccess(typeAccess)
-				.build();
-		initialized.add(local);
-
-		return binding;
-	}
-
-	public void addLocal(final Local local) {
-		final BoundedBinding binding = bind(local);
-		final VariableDeclaration variableDeclaration = new VariableDeclarationBuilder().addBinding(binding).build();
-		body.addLocalDeclaration(variableDeclaration);
-	}
-
-	public void addParameter(final Local local) {
-		final BoundedBinding binding = bind(local);
-		signatureBuilder.addInputBinding(binding);
-	}
-
 	@Override
 	public void caseDefault(final Unit unit) {
 		if (labelIndex.containsKey(unit)) {
@@ -282,7 +224,7 @@ public class BoogieProcedureExtractor extends SootStatementVisitor<ProcedureDecl
 	}
 
 	@Override
-	public ProcedureDeclaration result() {
+	public Body result() {
 		return extractor.result();
 	}
 

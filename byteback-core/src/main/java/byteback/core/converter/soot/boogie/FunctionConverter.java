@@ -11,7 +11,6 @@ import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.builder.FunctionDeclarationBuilder;
 import byteback.frontend.boogie.builder.FunctionSignatureBuilder;
 import byteback.frontend.boogie.builder.OptionalBindingBuilder;
-import java.util.Optional;
 import soot.Local;
 import soot.Type;
 import soot.VoidType;
@@ -35,9 +34,7 @@ public class FunctionConverter {
 
 	public FunctionSignature makeSignature(final SootMethodUnit methodUnit) {
 		final FunctionSignatureBuilder signatureBuilder = new FunctionSignatureBuilder();
-		final Optional<OptionalBinding> thisBinding = methodUnit.getBody().getThisLocal().map(this::makeBinding);
 		signatureBuilder.addInputBinding(Prelude.getHeapVariable().makeOptionalBinding());
-		thisBinding.ifPresent(signatureBuilder::addInputBinding);
 
 		for (Local local : methodUnit.getBody().getParameterLocals()) {
 			signatureBuilder.addInputBinding(makeBinding(local));

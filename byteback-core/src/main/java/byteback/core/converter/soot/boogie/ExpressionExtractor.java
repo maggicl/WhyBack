@@ -90,8 +90,6 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	public Expression visit(final SootExpression expression, final SootType type) {
 		types.push(type);
 
-    
-
 		return super.visit(expression);
 	}
 

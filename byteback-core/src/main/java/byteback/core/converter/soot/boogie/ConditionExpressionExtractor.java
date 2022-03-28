@@ -10,31 +10,31 @@ import soot.Type;
 
 public class ConditionExpressionExtractor extends ExpressionExtractor {
 
-  public ConditionExpressionExtractor() {
-    super(new SootType(IntType.v()));
-  }
+	public ConditionExpressionExtractor() {
+		super(new SootType(IntType.v()));
+	}
 
-  @Override
-  public void caseLocal(final Local local) {
-    super.caseLocal(local);
-    final SootType type = new SootType(local.getType());
+	@Override
+	public void caseLocal(final Local local) {
+		super.caseLocal(local);
+		final SootType type = new SootType(local.getType());
 
-    type.apply(new SootTypeVisitor<>() {
+		type.apply(new SootTypeVisitor<>() {
 
-        @Override
-        public void caseBooleanType(final BooleanType booleanType) {
-          final FunctionReference caster = Prelude.getIntCaster();
-          caster.addArgument(operands.pop());
-          pushExpression(caster);
-        }
+			@Override
+			public void caseBooleanType(final BooleanType booleanType) {
+				final FunctionReference caster = Prelude.getIntCaster();
+				caster.addArgument(operands.pop());
+				pushExpression(caster);
+			}
 
-        @Override
-        public void caseDefault(final Type type) {
-          // No need to convert this local.
-        }
+			@Override
+			public void caseDefault(final Type type) {
+				// No need to convert this local.
+			}
 
-      });
+		});
 
-  }
+	}
 
 }

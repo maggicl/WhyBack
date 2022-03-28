@@ -107,14 +107,22 @@ BlockStatement block_statement
     ;
 
 Statement unit_statement
-    = assert_statement
-    | assume_statement
-    | havoc_statement
-    | assignment_statement
-    | call_statement
-    | break_statement
-    | return_statement
-    | goto_statement
+    = assert_statement.s
+    {: return s; :}
+    | assume_statement.s
+    {: return s; :}
+    | havoc_statement.s
+    {: return s; :}
+    | assignment_statement.s
+    {: return s; :}
+    | call_statement.s
+    {: return s; :}
+    | break_statement.s
+    {: return s; :}
+    | return_statement.s
+    {: return s; :}
+    | goto_statement.s
+    {: return s; :}
     ;
 
 AssertStatement assert_statement
@@ -145,8 +153,10 @@ AssignmentStatement assignment_statement
     ;
 
 Assignee assignee
-    = value_assignee
-    | map_assignee
+    = value_assignee.a
+    {: return a; :}
+    | map_assignee.a
+    {: return a; :}
     ;
 
 Assignee value_assignee
@@ -179,17 +189,24 @@ List assignee_comma_list
     ;
 
 CallStatement call_statement
-    = targeted_call_statement
-    | universal_call_statement
+    = targeted_call_statement.s
+    {: return s; :}
+    | universal_call_statement.s
+    {: return s; :}
+    ;
+
+List call_targets
+    = value_assignee_comma_list.asl COLONEQ
+    {: return asl; :}
     ;
 
 TargetedCallStatement targeted_call_statement
-    = CALL value_assignee_comma_list.asl COLONEQ accessor.a LPAREN expression_comma_list.el RPAREN
+    = CALL call_targets.asl? accessor.a LPAREN expression_comma_list.el? RPAREN
     {: return new TargetedCallStatement(a, asl, el); :}
     ;
 
 UniversalCallStatement universal_call_statement
-    = CALL FORALL accessor.a LPAREN meta_comma_list.ml RPAREN
+    = CALL FORALL accessor.a LPAREN meta_comma_list.ml? RPAREN
     {: return new UniversalCallStatement(a, ml); :}
     ;
 

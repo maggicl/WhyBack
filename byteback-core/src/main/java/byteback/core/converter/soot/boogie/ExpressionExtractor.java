@@ -76,25 +76,28 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	public ExpressionExtractor(final SootType type) {
 		this.operands = new Stack<>();
 		this.types = new Stack<>();
-    types.push(type);
+		types.push(type);
 	}
 
-  public ExpressionExtractor() {
-    this(new SootType(UnknownType.v()));
-  }
+	public ExpressionExtractor() {
+		this(new SootType(UnknownType.v()));
+	}
 
-  public Expression visit(final SootExpression expression) {
-    return visit(expression, types.peek());
-  }
+	public Expression visit(final SootExpression expression) {
+		return visit(expression, types.peek());
+	}
 
-  public Expression visit(final SootExpression expression, final SootType type) {
-    types.push(type);
-    return super.visit(expression);
-  }
+	public Expression visit(final SootExpression expression, final SootType type) {
+		types.push(type);
 
-  public SootType getCurrentType() {
-    return types.peek();
-  }
+    
+
+		return super.visit(expression);
+	}
+
+	public SootType getCurrentType() {
+		return types.peek();
+	}
 
 	public void pushExpression(final Expression expression) {
 		operands.push(expression);
@@ -334,7 +337,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public Expression result() {
-    types.pop();
+		types.pop();
 		return operands.pop();
 	}
 

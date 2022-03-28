@@ -48,37 +48,6 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private int seed;
 
-	private static class IntegerExpressionExtractor extends ExpressionExtractor {
-
-		public IntegerExpressionExtractor() {
-			super(new SootType(IntType.v()));
-		}
-
-		@Override
-		public void caseLocal(final Local local) {
-			super.caseLocal(local);
-			final SootType type = new SootType(local.getType());
-
-			type.apply(new SootTypeVisitor<>() {
-
-				@Override
-				public void caseBooleanType(final BooleanType booleanType) {
-					final FunctionReference caster = Prelude.getIntCaster();
-					caster.addArgument(operands.pop());
-					pushExpression(caster);
-				}
-
-				@Override
-				public void caseDefault(final Type type) {
-					// No need to convert this local.
-				}
-
-			});
-
-		}
-
-	}
-
 	private class InnerExtractor extends SootStatementVisitor<Body> {
 
 		@Override
@@ -142,7 +111,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseIfStmt(final IfStmt ifStatement) {
 			final Unit thenUnit = ifStatement.getTarget();
 			final SootExpression condition = new SootExpression(ifStatement.getCondition());
-			final Expression boogieCondition = new IntegerExpressionExtractor().visit(condition);
+			final Expression boogieCondition = new ConditionExpressionExtractor().visit(condition);
 			final IfStatement boogieIfStatement = new IfStatement();
 			final Label label = labelIndex.get(thenUnit);
 			final BlockStatement boogieThenBlock = buildUnitBlock(new GotoStatement(label));

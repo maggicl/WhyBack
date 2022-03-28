@@ -20,6 +20,7 @@ import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
+import java.util.ArrayList;
 import java.util.Map;
 import soot.BooleanType;
 import soot.IntType;
@@ -30,6 +31,7 @@ import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
+import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
@@ -88,7 +90,8 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseAssignStmt(final AssignStmt assignment) {
 			final SootExpression left = new SootExpression(assignment.getLeftOp());
 			final SootExpression right = new SootExpression(assignment.getRightOp());
-			final Expression rightExpression = new ProcedureExpressionExtractor(left.getType(), body, seed++).visit(right);
+			final Expression rightExpression = new ProcedureExpressionExtractor(left.getType(), body, seed++)
+					.visit(right);
 
 			left.apply(new SootExpressionVisitor<>() {
 
@@ -143,10 +146,12 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 			addStatement(boogieIfStatement);
 		}
 
-    @Override
-    public void caseInvokeStmt(final InvokeStmt invokeStatement) {
-      // addStatement(ProcedureExpressionExtractor.makeCallStatement(invokeStatement.getInvokeExpr()));
-    }
+		@Override
+		public void caseInvokeStmt(final InvokeStmt invokeStatement) {
+			final InvokeExpr invokeExpression = invokeStatement.getInvokeExpr();
+			final ArrayList<Expression> arguments = new ExpressionExtractor(returnType).makeArguments(invokeExpression);
+			addStatement(ProcedureExpressionExtractor.makeCallStatement(invokeExpression, arguments));
+		}
 
 		@Override
 		public void caseDefault(final Unit unit) {

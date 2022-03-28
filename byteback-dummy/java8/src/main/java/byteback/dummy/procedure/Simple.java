@@ -69,11 +69,11 @@ public class Simple {
 
 	public static void assignsProcedureResultTwice() {
 		Object a = returnsNull();
-    a = returnsNull();
+		a = returnsNull();
 	}
 
-  public static void callsVoidProcedure() {
-    emptyWhile();
-  }
+	public static void callsVoidProcedure() {
+		emptyWhile();
+	}
 
 }

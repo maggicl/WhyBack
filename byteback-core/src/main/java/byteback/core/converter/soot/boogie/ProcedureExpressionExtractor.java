@@ -12,21 +12,22 @@ import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.VariableDeclaration;
-import java.util.Optional;
 import java.util.ArrayList;
+import java.util.Optional;
 import soot.jimple.InvokeExpr;
 
 public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
-  public static TargetedCallStatement makeCallStatement(final InvokeExpr invocation, ArrayList<Expression> arguments) {
+	public static TargetedCallStatement makeCallStatement(final InvokeExpr invocation,
+			ArrayList<Expression> arguments) {
 		final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
 		final String methodName = NameConverter.methodName(methodUnit);
 		final TargetedCallStatement callStatement = new TargetedCallStatement();
 		callStatement.setAccessor(new Accessor(methodName));
 		callStatement.setArgumentList(new List<Expression>().addAll(arguments));
 
-    return callStatement;
-  }
+		return callStatement;
+	}
 
 	final Body body;
 
@@ -37,7 +38,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		this.body = body;
 		this.seed = seed;
 	}
-	
+
 	public void pushCallResult(final InvokeExpr invocation, final ArrayList<Expression> arguments) {
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
 		final VariableDeclaration variableDeclaration = Prelude.generateVariableDeclaration(seed, typeAccess);

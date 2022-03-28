@@ -102,7 +102,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		return new ExpressionExtractor(type);
 	}
 
-	public ArrayList<Expression> computeArguments(final InvokeExpr invocation) {
+	public ArrayList<Expression> makeArguments(final InvokeExpr invocation) {
 		final ArrayList<Expression> expressions = new ArrayList<>();
 
 		for (Value argument : invocation.getArgs()) {
@@ -130,13 +130,13 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
-		final ArrayList<Expression> arguments = computeArguments(invocation);
+		final ArrayList<Expression> arguments = makeArguments(invocation);
 		pushFunctionReference(invocation, arguments);
 	}
 
 	@Override
 	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invocation) {
-		final ArrayList<Expression> arguments = computeArguments(invocation);
+		final ArrayList<Expression> arguments = makeArguments(invocation);
 		final SootExpression base = new SootExpression(invocation.getBase());
 		final Expression target = new ExpressionExtractor(new SootType(RefType.v())).visit(base);
 		arguments.add(0, target);

@@ -200,5 +200,6 @@ procedure byteback.dummy.procedure.Simple.assignsProcedureResultTwice##() return
 
 procedure byteback.dummy.procedure.Simple.callsVoidProcedure##() returns ()
 {
+  call byteback.dummy.procedure.Simple.emptyWhile##();
   return;
 }

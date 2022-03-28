@@ -77,11 +77,6 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 		}
 
-		@Override
-		public ExpressionExtractor argumentExtractor(final SootType type) {
-			return new IntegerExpressionExtractor();
-		}
-
 	}
 
 	private class InnerExtractor extends SootStatementVisitor<Body> {

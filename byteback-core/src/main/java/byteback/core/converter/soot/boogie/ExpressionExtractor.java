@@ -38,6 +38,7 @@ import soot.BooleanType;
 import soot.Local;
 import soot.RefType;
 import soot.Type;
+import soot.UnknownType;
 import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -70,12 +71,30 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	protected final Stack<Expression> operands;
 
-	protected final SootType type;
+	protected final Stack<SootType> types;
 
 	public ExpressionExtractor(final SootType type) {
 		this.operands = new Stack<>();
-		this.type = type;
+		this.types = new Stack<>();
+    types.push(type);
 	}
+
+  public ExpressionExtractor() {
+    this(new SootType(UnknownType.v()));
+  }
+
+  public Expression visit(final SootExpression expression) {
+    return visit(expression, types.peek());
+  }
+
+  public Expression visit(final SootExpression expression, final SootType type) {
+    types.push(type);
+    return super.visit(expression);
+  }
+
+  public SootType getCurrentType() {
+    return types.peek();
+  }
 
 	public void pushExpression(final Expression expression) {
 		operands.push(expression);
@@ -98,17 +117,13 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		pushExpression(boogieBinary);
 	}
 
-	public ExpressionExtractor argumentExtractor(final SootType type) {
-		return new ExpressionExtractor(type);
-	}
-
 	public ArrayList<Expression> makeArguments(final InvokeExpr invocation) {
 		final ArrayList<Expression> expressions = new ArrayList<>();
 
 		for (Value argument : invocation.getArgs()) {
 			final SootExpression expression = new SootExpression(argument);
 			final SootType type = new SootType(argument.getType());
-			expressions.add(argumentExtractor(type).visit(expression));
+			expressions.add(visit(expression, type));
 		}
 
 		return expressions;
@@ -176,7 +191,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseOrExpr(final OrExpr or) {
-		type.apply(new SootTypeVisitor<>() {
+		getCurrentType().apply(new SootTypeVisitor<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
@@ -193,7 +208,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseAndExpr(final AndExpr and) {
-		type.apply(new SootTypeVisitor<>() {
+		getCurrentType().apply(new SootTypeVisitor<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
@@ -210,7 +225,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseXorExpr(final XorExpr xor) {
-		type.apply(new SootTypeVisitor<>() {
+		getCurrentType().apply(new SootTypeVisitor<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
@@ -267,7 +282,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseIntConstant(final IntConstant intConstant) {
-		type.apply(new SootTypeVisitor<>() {
+		getCurrentType().apply(new SootTypeVisitor<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
@@ -319,8 +334,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public Expression result() {
-		assert operands.size() == 1;
-
+    types.pop();
 		return operands.pop();
 	}
 

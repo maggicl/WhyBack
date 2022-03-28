@@ -40,6 +40,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 	}
 
 	public void pushCallResult(final InvokeExpr invocation, final ArrayList<Expression> arguments) {
+    final SootType type = new SootType(invocation.getType());
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
 		final VariableDeclaration variableDeclaration = Prelude.generateVariableDeclaration(seed, typeAccess);
 		final ValueReference resultReference = Prelude.generateVariableReference(seed);

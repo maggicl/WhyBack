@@ -16,11 +16,6 @@ public class InlineExtractor extends ExpressionExtractor {
 	}
 
 	@Override
-	public InlineExtractor argumentExtractor(final SootType type) {
-		return new InlineExtractor(type, expressionIndex);
-	}
-
-	@Override
 	public void caseLocal(final Local local) {
 		final Optional<Expression> expression = expressionIndex.getOrDefault(local, Optional.empty());
 		expression.ifPresentOrElse(this::pushExpression, () -> super.caseLocal(local));

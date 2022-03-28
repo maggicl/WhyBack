@@ -33,7 +33,8 @@ public class SootBody implements Visitable<SootStatementVisitor<?>> {
 	}
 
 	public Collection<Local> getParameterLocals() {
-		return sootBody.getParameterLocals();
+		return Stream.concat(getThisLocal().stream(), sootBody.getParameterLocals().stream())
+				.collect(Collectors.toList());
 	}
 
 	public Optional<Local> getThisLocal() {

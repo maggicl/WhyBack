@@ -14,7 +14,6 @@ import byteback.frontend.boogie.builder.ProcedureDeclarationBuilder;
 import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
 import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import java.util.Map;
-import java.util.Optional;
 import soot.Local;
 import soot.Type;
 import soot.Unit;
@@ -39,8 +38,6 @@ public class ProcedureConverter {
 
 	public ProcedureSignature makeSignature(final SootMethodUnit methodUnit) {
 		final ProcedureSignatureBuilder signatureBuilder = new ProcedureSignatureBuilder();
-		final Optional<BoundedBinding> thisBinding = methodUnit.getBody().getThisLocal().map(this::makeBinding);
-		thisBinding.ifPresent(signatureBuilder::addInputBinding);
 
 		for (Local local : methodUnit.getBody().getParameterLocals()) {
 			signatureBuilder.addInputBinding(makeBinding(local));

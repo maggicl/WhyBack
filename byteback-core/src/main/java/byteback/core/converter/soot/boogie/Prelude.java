@@ -3,6 +3,8 @@ package byteback.core.converter.soot.boogie;
 import beaver.Parser;
 import byteback.core.util.Lazy;
 import byteback.frontend.boogie.ast.Accessor;
+import byteback.frontend.boogie.ast.Assignee;
+import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.BooleanType;
 import byteback.frontend.boogie.ast.DefinedType;
 import byteback.frontend.boogie.ast.Expression;
@@ -10,9 +12,11 @@ import byteback.frontend.boogie.ast.Function;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.IntegerType;
 import byteback.frontend.boogie.ast.Label;
+import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.RealType;
+import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.Type;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.TypeDefinition;
@@ -58,25 +62,22 @@ public class Prelude {
 	}
 
 	public static Type getReferenceType() {
-		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Reference").orElseThrow(() -> {
-			throw new IllegalStateException("Missing definition for Reference type");
-		});
+		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Reference")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for Reference type"));
 
 		return typeDefinition.getType();
 	}
 
 	public static Type getHeapType() {
-		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Store").orElseThrow(() -> {
-			throw new IllegalStateException("Missing definition for heap Store type");
-		});
+		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Store")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for heap Store type"));
 
 		return typeDefinition.getType();
 	}
 
 	public static DefinedType getFieldType() {
-		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Field").orElseThrow(() -> {
-			throw new IllegalStateException("Missing definition for Field type");
-		});
+		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Field")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for Field type"));
 
 		return typeDefinition.getType();
 	}
@@ -94,21 +95,27 @@ public class Prelude {
 	}
 
 	public static Variable getHeapVariable() {
-		return loadProgram().lookupVariable("~heap").orElseThrow(() -> {
-			throw new IllegalStateException("Missing definition for the ~heap variable");
-		});
+		return loadProgram().lookupVariable("~heap")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap variable"));
 	}
 
 	public static Variable getNullConstant() {
-		return loadProgram().lookupVariable("~null").orElseThrow(() -> {
-			throw new IllegalStateException("Missing definition for the ~null variable");
-		});
+		return loadProgram().lookupVariable("~null")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~null variable"));
 	}
 
 	public static Function getHeapAccessFunction() {
-		return loadProgram().lookupFunction("~read").orElseThrow(() -> {
-			throw new IllegalStateException("Missing definition for the ~read variable");
-		});
+		return loadProgram().lookupFunction("~read")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~read variable"));
+	}
+
+	public static Function getHeapUpdateFunction() {
+		return loadProgram().lookupFunction("~update")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update variable"));
+	}
+
+	public static Statement makeSingleAssignment(final Assignee assignee, final Expression expression) {
+		return new AssignmentStatement(new List<>(assignee), new List<>(expression));
 	}
 
 	public static Expression getHeapAccessExpression(final Expression base, final Expression field) {
@@ -118,6 +125,19 @@ public class Prelude {
 		reference.addArgument(field);
 
 		return reference;
+	}
+
+	public static Statement getHeapUpdateStatement(final Expression base, final Expression field,
+			final Expression value) {
+		final FunctionReference updateReference = getHeapUpdateFunction().getFunctionReference();
+		final ValueReference heapReference = getHeapVariable().getValueReference();
+		final Assignee heapAssignee = new Assignee(heapReference);
+		updateReference.addArgument(heapReference);
+		updateReference.addArgument(base);
+		updateReference.addArgument(field);
+		updateReference.addArgument(value);
+
+		return makeSingleAssignment(heapAssignee, updateReference);
 	}
 
 	public static TypeAccess getFieldTypeAccess(final TypeAccess baseTypeAccess) {

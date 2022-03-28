@@ -5,9 +5,9 @@ import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
+import byteback.core.representation.soot.unit.SootFieldUnit;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.Assignee;
-import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.BlockStatement;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.Expression;
@@ -16,7 +16,6 @@ import byteback.frontend.boogie.ast.GotoStatement;
 import byteback.frontend.boogie.ast.IfStatement;
 import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.LabelStatement;
-import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
@@ -31,6 +30,7 @@ import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
+import soot.jimple.InstanceFieldRef;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.ReturnStmt;
@@ -100,6 +100,16 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 					final ValueReference valueReference = new ValueReference(new Accessor(local.getName()));
 					final Assignee assignee = new Assignee(valueReference);
 					addSingleAssignment(assignee, rightExpression);
+				}
+
+				@Override
+				public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
+					final SootFieldUnit field = new SootFieldUnit(instanceFieldReference.getField());
+					final SootExpression base = new SootExpression(instanceFieldReference.getBase());
+					final Expression boogieFieldReference = new ValueReference(
+							new Accessor(NameConverter.fieldName(field)));
+					final Expression boogieBase = new ExpressionExtractor(new SootType(null)).visit(base);
+					addStatement(Prelude.getHeapUpdateStatement(boogieBase, boogieFieldReference, rightExpression));
 				}
 
 				@Override
@@ -185,7 +195,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 	}
 
 	public void addSingleAssignment(final Assignee assignee, final Expression expression) {
-		addStatement(new AssignmentStatement(new List<>(assignee), new List<>(expression)));
+		addStatement(Prelude.makeSingleAssignment(assignee, expression));
 	}
 
 	public void addReturnStatement() {

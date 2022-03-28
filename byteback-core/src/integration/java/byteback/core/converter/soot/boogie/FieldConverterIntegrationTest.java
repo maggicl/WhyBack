@@ -42,6 +42,7 @@ public class FieldConverterIntegrationTest extends ConverterFixture {
 
 	@Test
 	public void Convert_GivenRegressionSet_ReturnsExpectedCode() {
+		System.out.println(PrintUtil.toString(parameter.actual));
 		assertEquals(PrintUtil.toString(parameter.expected), PrintUtil.toString(parameter.actual));
 	}
 

@@ -1,13 +1,6 @@
-function ~int<a>(a) returns (int);
-
-// bool -> int
-axiom ~int(false) == 0;
-axiom ~int(true) == 1;
-
-procedure byteback.dummy.procedure.Simple.shortCircuitingAnd##(a: bool, b: bool) returns (~ret: bool)
-  ensures a && b ==> ~ret;
+procedure byteback.dummy.procedure.Boolean.shortCircuitingAnd#boolean#boolean#(a: bool, b: bool) returns (~ret: bool)
 {
-  var $stack4: bool;
+  var $stack2: bool;
 
   if (~int(a) == 0) {
     goto label2;
@@ -17,22 +10,21 @@ procedure byteback.dummy.procedure.Simple.shortCircuitingAnd##(a: bool, b: bool)
     goto label2;
   }
 
-  $stack4 := true;
+  $stack2 := true;
   goto label3;
 
 label2:
-  $stack4 := false;
+  $stack2 := false;
 
 label3:
-  ~ret := $stack4;
+  ~ret := $stack2;
 
   return;
 }
 
-procedure byteback.dummy.procedure.Simple.shortCircuitingOr##(a: bool, b: bool) returns (~ret: bool)
-  ensures a || b ==> ~ret;
+procedure byteback.dummy.procedure.Boolean.shortCircuitingOr#boolean#boolean#(a: bool, b: bool) returns (~ret: bool)
 {
-  var $stack4: bool;
+  var $stack2: bool;
 
   if (~int(a) != 0) {
     goto label1;
@@ -43,35 +35,34 @@ procedure byteback.dummy.procedure.Simple.shortCircuitingOr##(a: bool, b: bool) 
   }
 
 label1:
-  $stack4 := true;
+  $stack2 := true;
   goto label3;
 
 label2:
-  $stack4 := false;
+  $stack2 := false;
 
 label3:
-  ~ret := $stack4;
+  ~ret := $stack2;
 
   return;
 }
 
-procedure byteback.dummy.procedure.Simple.shortCircuitingNot##(a: bool) returns (~ret: bool)
-  ensures a ==> !~ret;
+procedure byteback.dummy.procedure.Boolean.shortCircuitingNot#boolean#(a: bool) returns (~ret: bool)
 {
-  var $stack3: bool;
+  var $stack1: bool;
 
   if (~int(a) != 0) {
     goto label1;
   }
 
-  $stack3 := true;
+  $stack1 := true;
   goto label2;
 
 label1:
-  $stack3 := false;
+  $stack1 := false;
 
 label2:
-  ~ret := $stack3;
+  ~ret := $stack1;
 
   return;
 }

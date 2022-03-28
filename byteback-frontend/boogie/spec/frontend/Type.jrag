@@ -58,7 +58,7 @@ aspect Type {
     /**
      * Link concrete types with their accessors.
      */
-    syn lazy TypeAccess Type.getTypeAccess();
+    syn TypeAccess Type.getTypeAccess();
 
     eq BooleanType.getTypeAccess() = new BooleanTypeAccess();
 
@@ -66,11 +66,11 @@ aspect Type {
 
     eq RealType.getTypeAccess() = new RealTypeAccess();
 
-    eq MapType.getTypeAccess() = new MapTypeAccess(); // TODO: Fetch constructor arguments
+    eq MapType.getTypeAccess() = new MapTypeAccess();
 
     eq BitvectorType.getTypeAccess() = new BitvectorTypeAccess();
 
-    syn lazy UnknownTypeAccess DefinedType.getTypeAccess();
+    syn UnknownTypeAccess DefinedType.getTypeAccess();
 
     eq DefinedType.getTypeAccess() = new UnknownTypeAccess(getAccessor(), new List<>());
 

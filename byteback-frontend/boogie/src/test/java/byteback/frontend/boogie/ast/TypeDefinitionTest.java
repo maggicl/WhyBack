@@ -7,8 +7,8 @@ import org.junit.Test;
 public class TypeDefinitionTest extends ASTTestFixture {
 
 	@Test
-	public void TypeDefinitions_OnUnitProgram_ReturnsOneElementTable() {
-		final Program program = getProgram("Unit");
+	public void TypeDefinitions_OnSimpleProgram_ReturnsOneElementTable() {
+		final Program program = getProgram("Simple");
 		assertEquals(program.typeDefinitions().size(), 1);
 	}
 
@@ -19,8 +19,8 @@ public class TypeDefinitionTest extends ASTTestFixture {
 	}
 
 	@Test
-	public void getDefinedType_OnUnitUnitType_DoesNotThrowException() {
-		final TypeDefinition typeDefinition = getTypeDefinition("Unit", "Unit");
+	public void getDefinedType_OnSimpleUnitType_DoesNotThrowException() {
+		final TypeDefinition typeDefinition = getTypeDefinition("Simple", "Unit");
 		typeDefinition.getDefinedType();
 	}
 

@@ -1,9 +1,10 @@
 import java.util.Optional;
+import java.util.LinkedList;
 
 aspect Function {
 
   /**
-   * Scope collections.
+   * Scope collection.
    */
   coll EntityTable<Function> Program.functions();
 

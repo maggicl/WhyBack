@@ -7,8 +7,8 @@ import org.junit.Test;
 public class ProcedureTest extends ASTTestFixture {
 
 	@Test
-	public void Procedures_OnUnitProgram_Returns3ElementTable() {
-		final Program program = getProgram("Unit");
+	public void Procedures_OnSimpleProgram_Returns3ElementTable() {
+		final Program program = getProgram("Simple");
 		assertTrue(program.procedures().size() == 3);
 	}
 

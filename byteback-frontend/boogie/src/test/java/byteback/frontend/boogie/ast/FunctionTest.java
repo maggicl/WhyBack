@@ -7,8 +7,8 @@ import org.junit.Test;
 public class FunctionTest extends ASTTestFixture {
 
 	@Test
-	public void Functions_OnUnitProgram_ReturnsOneElementTable() {
-		final Program program = getProgram("Unit");
+	public void Functions_OnSimpleProgram_ReturnsOneElementTable() {
+		final Program program = getProgram("Simple");
 		assertTrue(program.functions().size() == 1);
 	}
 

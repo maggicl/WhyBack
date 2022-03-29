@@ -17,7 +17,7 @@ aspect Variable {
   Body implements Scope;
 
   /**
-   * Scope collections.
+   * Scope collections
    */
   coll EntityTable<Variable> Scope.variables();
 
@@ -36,6 +36,14 @@ aspect Variable {
   eq ImplementationDeclaration.getChild().getScope() = getImplementation();
 
   eq Body.getChild().getScope() = this;
+
+  /**
+   * References collection.
+   */
+  coll LinkedList<ValueReference> Variable.references();
+
+  // We might want to keep track of unresolved references in a separate collection
+  ValueReference contributes this to Variable.references() for getAccessor().lookupVariable().orElse(null);
 
   /**
    * NTA definitions.
@@ -69,9 +77,19 @@ aspect Variable {
 
   eq Program.lookupVariable(String name) = variables().getFirst(name);
 
+  syn lazy Optional<Variable> Function.lookupVariable(String name);
+
+  eq Function.lookupVariable(String name) = variables().getFirst(name);
+
+  syn lazy Optional<Variable> Accessor.lookupVariable();
+
+  eq Accessor.lookupVariable() = lookupVariable(getName());
+
   inh lazy Optional<Variable> Accessor.lookupVariable(String name);
 
   eq Program.getChild().lookupVariable(String name) = lookupVariable(name);
+
+  eq FunctionDeclaration.getChild().lookupVariable(String name) = getFunction().lookupVariable(name);
 
   /**
    * Get type access used in variable.

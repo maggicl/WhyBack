@@ -7,8 +7,8 @@ import org.junit.Test;
 public class ImplementationTest extends ASTTestFixture {
 
 	@Test
-	public void Implementations_OnUnitProgram_ReturnsOneElementTable() {
-		final Program program = getProgram("Unit");
+	public void Implementations_OnSimpleProgram_ReturnsOneElementTable() {
+		final Program program = getProgram("Simple");
 		assertTrue(program.implementations().size() == 1);
 	}
 

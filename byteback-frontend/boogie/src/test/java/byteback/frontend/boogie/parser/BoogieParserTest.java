@@ -8,9 +8,9 @@ import org.junit.Test;
 public class BoogieParserTest {
 
 	@Test
-	public void Parse_GivenUnitProgram_DoesNotThrowExceptions() throws Exception {
+	public void Parse_GivenSimpleProgram_DoesNotThrowExceptions() throws Exception {
 		final BoogieParser parser = new BoogieParser();
-		final Scanner scanner = new BoogieLexer(ResourcesUtil.getBoogieReader("Unit"));
+		final Scanner scanner = new BoogieLexer(ResourcesUtil.getBoogieReader("Simple"));
 		parser.parse(scanner);
 	}
 

@@ -19,4 +19,3 @@ procedure prototype<T>(arg: T) returns(ret: T);
 implementation prototype<T>(arg: T) returns(ret: T) {
     ret := arg;
 }
-

@@ -203,3 +203,21 @@ procedure byteback.dummy.procedure.Simple.callsVoidProcedure##() returns ()
   call byteback.dummy.procedure.Simple.emptyWhile##();
   return;
 }
+
+procedure byteback.dummy.procedure.Simple.callsInForLoop##() returns ()
+{
+  var i: int;
+  i := 0;
+
+label2:
+  if (i >= 10) {
+    goto label1;
+  }
+
+  call byteback.dummy.procedure.Simple.emptyFor##();
+  i := (i + 1);
+  goto label2;
+
+label1:
+  return;
+}

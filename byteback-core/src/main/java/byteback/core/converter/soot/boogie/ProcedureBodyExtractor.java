@@ -14,10 +14,10 @@ import byteback.frontend.boogie.ast.GotoStatement;
 import byteback.frontend.boogie.ast.IfStatement;
 import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.LabelStatement;
+import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
-import java.util.ArrayList;
 import java.util.Map;
 import soot.Local;
 import soot.Unit;
@@ -33,7 +33,7 @@ import soot.jimple.ReturnVoidStmt;
 
 public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
-	private final Map<Unit, Label> labelIndex;
+	private final Map<Unit, Label> labelTable;
 
 	private final Body body;
 
@@ -49,7 +49,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseAssignStmt(final AssignStmt assignment) {
 			final SootExpression left = new SootExpression(assignment.getLeftOp());
 			final SootExpression right = new SootExpression(assignment.getRightOp());
-			final Expression rightExpression = new ProcedureExpressionExtractor(left.getType(), body, seed++)
+			final Expression boogieRight = new ProcedureExpressionExtractor(left.getType(), body, seed++)
 					.visit(right);
 
 			left.apply(new SootExpressionVisitor<>() {
@@ -58,7 +58,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 				public void caseLocal(final Local local) {
 					final ValueReference valueReference = new ValueReference(new Accessor(local.getName()));
 					final Assignee assignee = new Assignee(valueReference);
-					addSingleAssignment(assignee, rightExpression);
+					addSingleAssignment(assignee, boogieRight);
 				}
 
 				@Override
@@ -67,8 +67,8 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 					final SootExpression base = new SootExpression(instanceFieldReference.getBase());
 					final Expression boogieFieldReference = new ValueReference(
 							new Accessor(NameConverter.fieldName(field)));
-					final Expression boogieBase = new ExpressionExtractor(new SootType(null)).visit(base);
-					addStatement(Prelude.getHeapUpdateStatement(boogieBase, boogieFieldReference, rightExpression));
+					final Expression boogieBase = new ExpressionExtractor().visit(base);
+					addStatement(Prelude.getHeapUpdateStatement(boogieBase, boogieFieldReference, boogieRight));
 				}
 
 				@Override
@@ -81,8 +81,8 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		}
 
 		@Override
-		public void caseReturnVoidStmt(final ReturnVoidStmt returns) {
-			addReturnStatement();
+		public void caseReturnVoidStmt(final ReturnVoidStmt returnStatement) {
+			addStatement(new ReturnStatement());
 		}
 
 		@Override
@@ -92,24 +92,24 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 			final Assignee assignee = new Assignee(valueReference);
 			final Expression expression = new ExpressionExtractor(returnType).visit(operand);
 			addSingleAssignment(assignee, expression);
-			addReturnStatement();
+			addStatement(new ReturnStatement());
 		}
 
 		@Override
 		public void caseGotoStmt(final GotoStmt gotoStatement) {
 			final Unit targetUnit = gotoStatement.getTarget();
-			final Label label = labelIndex.get(targetUnit);
+			final Label label = labelTable.get(targetUnit);
 			addStatement(new GotoStatement(label));
 		}
 
 		@Override
 		public void caseIfStmt(final IfStmt ifStatement) {
-			final Unit thenUnit = ifStatement.getTarget();
+			final Unit targetUnit = ifStatement.getTarget();
 			final SootExpression condition = new SootExpression(ifStatement.getCondition());
-			final Expression boogieCondition = new ConditionExpressionExtractor().visit(condition);
+			final Expression boogieCondition = new IntegerExpressionExtractor().visit(condition);
 			final IfStatement boogieIfStatement = new IfStatement();
-			final Label label = labelIndex.get(thenUnit);
-			final BlockStatement boogieThenBlock = buildUnitBlock(new GotoStatement(label));
+			final Label label = labelTable.get(targetUnit);
+			final BlockStatement boogieThenBlock = makeThenBlock(new GotoStatement(label));
 			boogieIfStatement.setCondition(boogieCondition);
 			boogieIfStatement.setThen(boogieThenBlock);
 			addStatement(boogieIfStatement);
@@ -118,8 +118,8 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		@Override
 		public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 			final InvokeExpr invokeExpression = invokeStatement.getInvokeExpr();
-			final ArrayList<Expression> arguments = new ExpressionExtractor(returnType).makeArguments(invokeExpression);
-			addStatement(ProcedureExpressionExtractor.makeCallStatement(invokeExpression, arguments));
+			final List<Expression> arguments = new ExpressionExtractor().makeArguments(invokeExpression);
+			addStatement(ProcedureExpressionExtractor.makeCall(invokeExpression, arguments));
 		}
 
 		@Override
@@ -134,15 +134,15 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	}
 
-	public ProcedureBodyExtractor(final Body body, final SootType returnType, final Map<Unit, Label> labelIndex) {
+	public ProcedureBodyExtractor(final Body body, final SootType returnType, final Map<Unit, Label> labelTable) {
 		this.body = body;
-		this.seed = 0;
 		this.returnType = returnType;
-		this.labelIndex = labelIndex;
+		this.labelTable = labelTable;
+		this.seed = 0;
 		this.extractor = new InnerExtractor();
 	}
 
-	public BlockStatement buildUnitBlock(final Statement statement) {
+	public BlockStatement makeThenBlock(final Statement statement) {
 		final BlockStatement blockStatement = new BlockStatement();
 		blockStatement.addStatement(statement);
 
@@ -157,14 +157,10 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		addStatement(Prelude.makeSingleAssignment(assignee, expression));
 	}
 
-	public void addReturnStatement() {
-		addStatement(new ReturnStatement());
-	}
-
 	@Override
 	public void caseDefault(final Unit unit) {
-		if (labelIndex.containsKey(unit)) {
-			addStatement(new LabelStatement(labelIndex.get(unit)));
+		if (labelTable.containsKey(unit)) {
+			addStatement(new LabelStatement(labelTable.get(unit)));
 		}
 
 		unit.apply(extractor);

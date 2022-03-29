@@ -10,17 +10,17 @@ import soot.jimple.IfStmt;
 
 public class LabelCollector extends SootStatementVisitor<Map<Unit, Label>> {
 
-	private int labelCounter;
+	private int counter;
 
-	private final Map<Unit, Label> labelIndex;
+	private final Map<Unit, Label> labelTable;
 
 	public LabelCollector() {
-		this.labelCounter = 0;
-		this.labelIndex = new HashMap<>();
+		this.counter = 0;
+		this.labelTable = new HashMap<>();
 	}
 
 	public void branchTo(final Unit target) {
-		labelIndex.put(target, Prelude.getLabel(++labelCounter));
+		labelTable.put(target, Prelude.getLabel(++counter));
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class LabelCollector extends SootStatementVisitor<Map<Unit, Label>> {
 
 	@Override
 	public Map<Unit, Label> result() {
-		return labelIndex;
+		return labelTable;
 	}
 
 }

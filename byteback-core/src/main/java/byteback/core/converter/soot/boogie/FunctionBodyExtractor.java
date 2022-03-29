@@ -17,7 +17,7 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 
 	private static final Logger log = LoggerFactory.getLogger(FunctionBodyExtractor.class);
 
-	private final CountingMap<Local, Optional<Expression>> expressionIndex;
+	private final CountingMap<Local, Optional<Expression>> expressionTable;
 
 	private final SootType returnType;
 
@@ -25,7 +25,7 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 
 	public FunctionBodyExtractor(final SootType returnType) {
 		this.returnType = returnType;
-		this.expressionIndex = new CountingMap<>();
+		this.expressionTable = new CountingMap<>();
 	}
 
 	@Override
@@ -33,27 +33,25 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 		final SootExpression left = new SootExpression(assignment.getLeftOp());
 		final SootExpression right = new SootExpression(assignment.getRightOp());
 		final Local local = new SootLocalExtractor().visit(left);
-		final Expression expression = new InlineExtractor(left.getType(), expressionIndex).visit(right);
-		expressionIndex.put(local, Optional.of(expression));
+		final Expression boogieExpression = new InlineExtractor(left.getType(), expressionTable).visit(right);
+		expressionTable.put(local, Optional.of(boogieExpression));
 	}
 
 	@Override
 	public void caseReturnStmt(final ReturnStmt returnStatement) {
 		final SootExpression operand = new SootExpression(returnStatement.getOp());
-		final Expression expression = new InlineExtractor(returnType, expressionIndex).visit(operand);
+		result = new InlineExtractor(returnType, expressionTable).visit(operand);
 
-		for (Entry<Local, Integer> entry : expressionIndex.getAccessCount().entrySet()) {
+		for (Entry<Local, Integer> entry : expressionTable.getAccessCount().entrySet()) {
 			if (entry.getValue() == 0) {
 				log.warn("Local assignment {} unused in final expansion", entry.getKey());
 			}
 		}
-
-		result = expression;
 	}
 
 	@Override
 	public void caseDefault(final Unit unit) {
-		throw new UnsupportedOperationException("Cannot inline statements of type " + unit.getClass().getName());
+		throw new UnsupportedOperationException("Cannot inline statement " + unit);
 	}
 
 	@Override

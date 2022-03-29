@@ -8,9 +8,9 @@ import soot.IntType;
 import soot.Local;
 import soot.Type;
 
-public class ConditionExpressionExtractor extends ExpressionExtractor {
+public class IntegerExpressionExtractor extends ExpressionExtractor {
 
-	public ConditionExpressionExtractor() {
+	public IntegerExpressionExtractor() {
 		super(new SootType(IntType.v()));
 	}
 

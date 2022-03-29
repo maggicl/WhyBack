@@ -31,12 +31,9 @@ import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
-import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Stack;
 import soot.BooleanType;
 import soot.Local;
-import soot.RefType;
 import soot.Type;
 import soot.UnknownType;
 import soot.Value;
@@ -93,12 +90,20 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		return super.visit(expression);
 	}
 
-	public SootType getCurrentType() {
+	public SootType getType() {
 		return types.peek();
 	}
 
 	public void pushExpression(final Expression expression) {
 		operands.push(expression);
+	}
+
+	public void pushBinaryExpression(final BinopExpr sootExpression, final BinaryExpression boogieBinary) {
+		final SootExpression left = new SootExpression(sootExpression.getOp1());
+		final SootExpression right = new SootExpression(sootExpression.getOp2());
+		boogieBinary.setLeftOperand(visit(left));
+		boogieBinary.setRightOperand(visit(right));
+		pushExpression(boogieBinary);
 	}
 
 	public void pushCmpExpression(final BinopExpr cmp) {
@@ -110,53 +115,43 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		pushExpression(cmpReference);
 	}
 
-	public void pushBinaryExpression(final BinopExpr sootExpression, final BinaryExpression boogieBinary) {
-		final SootExpression left = new SootExpression(sootExpression.getOp1());
-		final SootExpression right = new SootExpression(sootExpression.getOp2());
-		boogieBinary.setLeftOperand(visit(left));
-		boogieBinary.setRightOperand(visit(right));
-		pushExpression(boogieBinary);
-	}
-
-	public ArrayList<Expression> makeArguments(final InvokeExpr invocation) {
-		final ArrayList<Expression> expressions = new ArrayList<>();
-
-		for (Value argument : invocation.getArgs()) {
-			final SootExpression expression = new SootExpression(argument);
-			final SootType type = new SootType(argument.getType());
-			expressions.add(visit(expression, type));
-		}
-
-		return expressions;
-	}
-
-	public void pushFunctionReference(final InvokeExpr invocation, final ArrayList<Expression> arguments) {
+	public void pushFunctionReference(final InvokeExpr invoke, final List<Expression> arguments) {
 		final FunctionReference functionReference = new FunctionReference();
-		final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
-		final Optional<SootAnnotation> definedAnnotation = methodUnit
-				.getAnnotation("Lbyteback/annotations/Contract$Prelude;");
-		final Optional<String> definedValue = definedAnnotation.flatMap(SootAnnotation::getValue)
-				.map((element) -> new StringElementExtractor().visit(element));
-		final String methodName = definedValue.orElseGet(() -> NameConverter.methodName(methodUnit));
-		arguments.add(0, Prelude.getHeapVariable().getValueReference());
+		final SootMethodUnit methodUnit = new SootMethodUnit(invoke.getMethod());
+		final String methodName = methodUnit.getAnnotation("Lbyteback/annotations/Contract$Prelude;")
+				.flatMap(SootAnnotation::getValue).map((element) -> new StringElementExtractor().visit(element))
+				.orElseGet(() -> NameConverter.methodName(methodUnit));
+    arguments.insertChild(Prelude.getHeapVariable().getValueReference(), 0);
 		functionReference.setAccessor(new Accessor(methodName));
-		functionReference.setArgumentList(new List<Expression>().addAll(arguments));
+		functionReference.setArgumentList(arguments);
 		pushExpression(functionReference);
 	}
 
-	@Override
-	public void caseStaticInvokeExpr(final StaticInvokeExpr invocation) {
-		final ArrayList<Expression> arguments = makeArguments(invocation);
-		pushFunctionReference(invocation, arguments);
+	public List<Expression> makeArguments(final InvokeExpr invoke) {
+		final List<Expression> arguments = new List<>();
+
+		for (Value argument : invoke.getArgs()) {
+			final SootExpression expression = new SootExpression(argument);
+			final SootType type = new SootType(argument.getType());
+			arguments.add(visit(expression, type));
+		}
+
+		return arguments;
 	}
 
 	@Override
-	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invocation) {
-		final ArrayList<Expression> arguments = makeArguments(invocation);
-		final SootExpression base = new SootExpression(invocation.getBase());
-		final Expression target = new ExpressionExtractor(new SootType(RefType.v())).visit(base);
-		arguments.add(0, target);
-		pushFunctionReference(invocation, arguments);
+	public void caseStaticInvokeExpr(final StaticInvokeExpr invoke) {
+		final List<Expression> arguments = makeArguments(invoke);
+		pushFunctionReference(invoke, arguments);
+	}
+
+	@Override
+	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invoke) {
+		final List<Expression> arguments = makeArguments(invoke);
+		final SootExpression base = new SootExpression(invoke.getBase());
+		final Expression target = visit(base);
+		arguments.insertChild(target, 0);
+		pushFunctionReference(invoke, arguments);
 	}
 
 	@Override
@@ -192,7 +187,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseOrExpr(final OrExpr or) {
-		getCurrentType().apply(new SootTypeVisitor<>() {
+		getType().apply(new SootTypeVisitor<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
@@ -209,7 +204,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseAndExpr(final AndExpr and) {
-		getCurrentType().apply(new SootTypeVisitor<>() {
+		getType().apply(new SootTypeVisitor<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
@@ -226,7 +221,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseXorExpr(final XorExpr xor) {
-		getCurrentType().apply(new SootTypeVisitor<>() {
+		getType().apply(new SootTypeVisitor<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
@@ -283,7 +278,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseIntConstant(final IntConstant intConstant) {
-		getCurrentType().apply(new SootTypeVisitor<>() {
+		getType().apply(new SootTypeVisitor<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {

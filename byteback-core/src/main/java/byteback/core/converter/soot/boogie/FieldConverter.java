@@ -15,15 +15,16 @@ public class FieldConverter {
 	}
 
 	public ConstantDeclaration convert(final SootFieldUnit fieldUnit) {
-		final ConstantDeclaration boogieConstantDeclaration = new ConstantDeclaration();
-		final SetBinding boogieBinding = new SetBinding();
-		final TypeAccess boogieBaseTypeAccess = new TypeAccessExtractor().visit(fieldUnit.getType());
-		final TypeAccess boogieFieldTypeAccess = Prelude.getFieldTypeAccess(boogieBaseTypeAccess);
-		boogieConstantDeclaration.setBinding(boogieBinding);
-		boogieBinding.setTypeAccess(boogieFieldTypeAccess);
-		boogieBinding.addDeclarator(new Declarator(NameConverter.fieldName(fieldUnit)));
+		final ConstantDeclaration constantDeclaration = new ConstantDeclaration();
+    // TODO: SetBindingBuilder
+		final SetBinding binding = new SetBinding();
+		final TypeAccess baseTypeAccess = new TypeAccessExtractor().visit(fieldUnit.getType());
+		final TypeAccess fieldTypeAccess = Prelude.getFieldTypeAccess(baseTypeAccess);
+		constantDeclaration.setBinding(binding);
+		binding.setTypeAccess(fieldTypeAccess);
+		binding.addDeclarator(new Declarator(NameConverter.fieldName(fieldUnit)));
 
-		return boogieConstantDeclaration;
+		return constantDeclaration;
 	}
 
 }

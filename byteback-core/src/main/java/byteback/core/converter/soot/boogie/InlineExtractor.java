@@ -8,16 +8,16 @@ import soot.Local;
 
 public class InlineExtractor extends ExpressionExtractor {
 
-	private final Map<Local, Optional<Expression>> expressionIndex;
+	private final Map<Local, Optional<Expression>> expressionTable;
 
-	public InlineExtractor(final SootType type, final Map<Local, Optional<Expression>> expressionIndex) {
+	public InlineExtractor(final SootType type, final Map<Local, Optional<Expression>> expressionTable) {
 		super(type);
-		this.expressionIndex = expressionIndex;
+		this.expressionTable = expressionTable;
 	}
 
 	@Override
 	public void caseLocal(final Local local) {
-		final Optional<Expression> expression = expressionIndex.getOrDefault(local, Optional.empty());
+		final Optional<Expression> expression = expressionTable.getOrDefault(local, Optional.empty());
 		expression.ifPresentOrElse(this::pushExpression, () -> super.caseLocal(local));
 	}
 

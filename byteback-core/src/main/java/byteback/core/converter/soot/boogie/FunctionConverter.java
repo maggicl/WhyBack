@@ -1,5 +1,6 @@
 package byteback.core.converter.soot.boogie;
 
+import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.core.representation.soot.unit.SootMethodUnit;
@@ -49,8 +50,9 @@ public class FunctionConverter {
 
 			@Override
 			public void caseDefault(final Type type) {
-				final TypeAccess typeAccess = new TypeAccessExtractor().visit(methodUnit.getReturnType());
-				signatureBuilder.outputBinding(new OptionalBindingBuilder().typeAccess(typeAccess).build());
+				final TypeAccess boogieTypeAccess = new TypeAccessExtractor().visit(methodUnit.getReturnType());
+				final OptionalBinding boogieBinding = new OptionalBindingBuilder().typeAccess(boogieTypeAccess).build();
+				signatureBuilder.outputBinding(boogieBinding);
 			}
 
 		});
@@ -60,11 +62,13 @@ public class FunctionConverter {
 
 	public FunctionDeclaration convert(final SootMethodUnit methodUnit) {
 		final FunctionDeclarationBuilder functionBuilder = new FunctionDeclarationBuilder();
-		final FunctionSignature signature = makeSignature(methodUnit);
-		final Expression expression = new FunctionBodyExtractor(methodUnit.getReturnType()).visit(methodUnit.getBody());
+		final FunctionSignature boogieSignature = makeSignature(methodUnit);
+		final SootBody body = methodUnit.getBody();
+		final SootType returnType = methodUnit.getReturnType();
+		final Expression boogieExpression = new FunctionBodyExtractor(returnType).visit(body);
 		functionBuilder.name(NameConverter.methodName(methodUnit));
-		functionBuilder.signature(signature);
-		functionBuilder.expression(expression);
+		functionBuilder.signature(boogieSignature);
+		functionBuilder.expression(boogieExpression);
 
 		return functionBuilder.build();
 	}

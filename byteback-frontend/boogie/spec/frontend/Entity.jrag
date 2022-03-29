@@ -4,38 +4,38 @@ import java.util.LinkedList;
 
 aspect Entity {
 
-    public class EntityTable<T extends Entity> extends LinkedList<T> {
+  public class EntityTable<T extends Entity> extends LinkedList<T> {
 
-        public EntityTable() {
-            super();
-        }
-
-        public Optional<T> getFirst(String name) {
-            for (T entity : this) {
-                if (entity.getName().equals(name)) {
-                    return Optional.of(entity);
-                }
-            }
-
-            return Optional.empty();
-        }
-
-        public Collection<T> getAll(String name) {
-            final Collection<T> entities = new LinkedList<>();
-
-            for (T entity : this) {
-                if (entity.getName().equals(name)) {
-                    entities.add(entity);
-                }
-            }
-
-            return entities;
-        }
-        
+    public EntityTable() {
+      super();
     }
 
-    syn lazy String Entity.getName();
+    public Optional<T> getFirst(String name) {
+      for (T entity : this) {
+        if (entity.getName().equals(name)) {
+          return Optional.of(entity);
+        }
+      }
 
-    eq Entity.getName() = getDeclarator().getName();
+      return Optional.empty();
+    }
+
+    public Collection<T> getAll(String name) {
+      final Collection<T> entities = new LinkedList<>();
+
+      for (T entity : this) {
+        if (entity.getName().equals(name)) {
+          entities.add(entity);
+        }
+      }
+
+      return entities;
+    }
+        
+  }
+
+  syn lazy String Entity.getName();
+
+  eq Entity.getName() = getDeclarator().getName();
     
 }

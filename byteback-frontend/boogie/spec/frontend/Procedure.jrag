@@ -2,48 +2,48 @@ import java.util.LinkedList;
 
 aspect Procedure {
 
-    /**
-     * Scope collections.
-     */
-    coll EntityTable<Procedure> Program.procedures();
+  /**
+   * Scope collections.
+   */
+  coll EntityTable<Procedure> Program.procedures();
 
-    ProcedureDeclaration contributes
-        getProcedure() to Program.procedures();
+  ProcedureDeclaration contributes
+    getProcedure() to Program.procedures();
 
-    /**
-     * NTA definitions.
-     */
-    syn nta Procedure ProcedureDeclaration.getProcedure();
+  /**
+   * NTA definitions.
+   */
+  syn nta Procedure ProcedureDeclaration.getProcedure();
 
-    eq ProcedureDeclaration.getProcedure() = new Procedure(getDeclarator());
+  eq ProcedureDeclaration.getProcedure() = new Procedure(getDeclarator());
 
-    /**
-     * Looking up procedures.
-     */
-    syn lazy Optional<Procedure> Accessor.procedure();
+  /**
+   * Looking up procedures.
+   */
+  syn lazy Optional<Procedure> Accessor.procedure();
 
-    eq Accessor.procedure() = lookupProcedure(getName());
+  eq Accessor.procedure() = lookupProcedure(getName());
 
-    syn lazy Optional<Procedure> Program.lookupProcedure(String name);
+  syn lazy Optional<Procedure> Program.lookupProcedure(String name);
 
-    eq Program.lookupProcedure(String name) = procedures().getFirst(name);
+  eq Program.lookupProcedure(String name) = procedures().getFirst(name);
 
-    inh lazy Optional<Procedure> Accessor.lookupProcedure(String name);
+  inh lazy Optional<Procedure> Accessor.lookupProcedure(String name);
 
-    eq Program.getChild().lookupProcedure(String name) = lookupProcedure(name);
+  eq Program.getChild().lookupProcedure(String name) = lookupProcedure(name);
 
-    /**
-     * Link procedure to declaration.
-     */
-    inh lazy ProcedureDeclaration Procedure.getProcedureDeclaration();
+  /**
+   * Link procedure to declaration.
+   */
+  inh lazy ProcedureDeclaration Procedure.getProcedureDeclaration();
 
-    eq ProcedureDeclaration.getProcedure().getProcedureDeclaration() = this;
+  eq ProcedureDeclaration.getChild().getProcedureDeclaration() = this;
 
-    /**
-     * Link procedure to body.
-     */
-    inh lazy Body Procedure.getBody();
+  /**
+   * Link procedure to body.
+   */
+  inh lazy Body Procedure.getBody();
 
-    eq ProcedureDeclaration.getProcedure().getBody() = getBody();
+  eq ProcedureDeclaration.getChild().getBody() = getBody();
     
 }

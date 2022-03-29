@@ -1,13 +1,13 @@
 aspect Program {
 
-    syn Program Program.merge(Program program);
+  syn Program Program.merge(Program program);
 
-    eq Program.merge(Program program) {
-        final List declarations = new List<>()
-            .addAll(getDeclarationList())
-            .addAll(program.getDeclarationList());
+  eq Program.merge(Program program) {
+    final List declarations = new List<>()
+      .addAll(getDeclarationList())
+      .addAll(program.getDeclarationList());
 
-        return new Program(declarations);
-    }
+    return new Program(declarations);
+  }
 
 }

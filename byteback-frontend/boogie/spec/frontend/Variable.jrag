@@ -2,105 +2,105 @@ import java.util.LinkedList;
 
 aspect Variable {
 
-    interface Scope {
-        EntityTable<Variable> variables();
-    }
+  interface Scope {
+    EntityTable<Variable> variables();
+  }
 
-    Program implements Scope;
+  Program implements Scope;
 
-    Function implements Scope;
+  Function implements Scope;
 
-    Procedure implements Scope;
+  Procedure implements Scope;
 
-    Implementation implements Scope;
+  Implementation implements Scope;
 
-    Body implements Scope;
+  Body implements Scope;
 
-    /**
-     * Scope collections.
-     */
-    coll EntityTable<Variable> Scope.variables();
+  /**
+   * Scope collections.
+   */
+  coll EntityTable<Variable> Scope.variables();
 
-    Binding contributes
-        each getVariableList() to Scope.variables()
-        for getScope();
+  Binding contributes
+    each getVariableList() to Scope.variables()
+    for getScope();
 
-    inh Scope Binding.getScope();
+  inh Scope Binding.getScope();
 
-    eq Program.getChild().getScope() = this;
+  eq Program.getChild().getScope() = this;
 
-    eq FunctionDeclaration.getChild().getScope() = getFunction();
+  eq FunctionDeclaration.getChild().getScope() = getFunction();
 
-    eq ProcedureDeclaration.getChild().getScope() = getProcedure();
+  eq ProcedureDeclaration.getChild().getScope() = getProcedure();
 
-    eq ImplementationDeclaration.getChild().getScope() = getImplementation();
+  eq ImplementationDeclaration.getChild().getScope() = getImplementation();
 
-    eq Body.getChild().getScope() = this;
+  eq Body.getChild().getScope() = this;
 
-    /**
-     * NTA definitions.
-     */
-    syn nta List<Variable> Binding.getVariableList();
+  /**
+   * NTA definitions.
+   */
+  syn nta List<Variable> Binding.getVariableList();
     
-    eq OptionalBinding.getVariableList() {
-        final List<Variable> variables = new List<>();
+  eq OptionalBinding.getVariableList() {
+    final List<Variable> variables = new List<>();
 
-        if (hasDeclarator()) {
-            variables.add(new Variable(getDeclarator()));
-        }
-
-        return variables;
+    if (hasDeclarator()) {
+      variables.add(new Variable(getDeclarator()));
     }
 
-    eq SetBinding.getVariableList() {
-        final List<Variable> variables = new List<>();
+    return variables;
+  }
 
-        for (Declarator declarator : getDeclaratorList()) {
-            variables.add(new Variable(declarator));
-        }
+  eq SetBinding.getVariableList() {
+    final List<Variable> variables = new List<>();
 
-        return variables;
+    for (Declarator declarator : getDeclaratorList()) {
+      variables.add(new Variable(declarator));
     }
 
-    /**
-     * Lookup variables in program.
-     */
-    syn lazy Optional<Variable> Program.lookupVariable(String name);
+    return variables;
+  }
 
-    eq Program.lookupVariable(String name) = variables().getFirst(name);
+  /**
+   * Lookup variables in program.
+   */
+  syn lazy Optional<Variable> Program.lookupVariable(String name);
 
-    inh lazy Optional<Variable> Accessor.lookupVariable(String name);
+  eq Program.lookupVariable(String name) = variables().getFirst(name);
 
-    eq Program.getChild().lookupVariable(String name) = lookupVariable(name);
+  inh lazy Optional<Variable> Accessor.lookupVariable(String name);
 
-    /**
-     * Get type access used in variable.
-     */
-    inh lazy TypeAccess Variable.getTypeAccess();
+  eq Program.getChild().lookupVariable(String name) = lookupVariable(name);
 
-    eq Binding.getVariable().getTypeAccess() = getTypeAccess();
+  /**
+   * Get type access used in variable.
+   */
+  inh lazy TypeAccess Variable.getTypeAccess();
 
-    /**
-     * Get reference to variable.
-     */
-    syn ValueReference Variable.getValueReference();
+  eq Binding.getVariable().getTypeAccess() = getTypeAccess();
 
-    eq Variable.getValueReference() = new ValueReference(getDeclarator().getAccessor());
+  /**
+   * Get reference to variable.
+   */
+  syn ValueReference Variable.getValueReference();
 
-    /**
-     * Create optional binding from variable.
-     */
-    syn OptionalBinding Variable.makeOptionalBinding();
+  eq Variable.getValueReference() = new ValueReference(getDeclarator().getAccessor());
 
-    eq Variable.makeOptionalBinding() = new OptionalBinding(getTypeAccess(), new Opt(getDeclarator()));
+  /**
+   * Create optional binding from variable.
+   */
+  syn OptionalBinding Variable.makeOptionalBinding();
 
-    /**
-     * Fetch the constant declaration of the variable, if it has been defined as such.
-     */
-    inh lazy Optional<ConstantDeclaration> Variable.getConstantDeclaration();
+  eq Variable.makeOptionalBinding() = new OptionalBinding(getTypeAccess(), new Opt(getDeclarator()));
 
-    eq ConstantDeclaration.getBinding().getConstantDeclaration() = Optional.of(this);
+  /**
+   * Fetch the constant declaration of the variable, if it has been defined as such.
+   */
+  inh lazy Optional<ConstantDeclaration> Variable.getConstantDeclaration();
 
-    eq Program.getChild().getConstantDeclaration() = Optional.empty();
+  eq ConstantDeclaration.getBinding().getConstantDeclaration() = Optional.of(this);
+
+  eq Program.getChild().getConstantDeclaration() = Optional.empty();
 
 }

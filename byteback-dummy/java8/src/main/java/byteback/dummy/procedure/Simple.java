@@ -76,4 +76,10 @@ public class Simple {
 		emptyWhile();
 	}
 
+	public static void callsInForLoop() {
+		for (int i = 0; i < 10; ++i) {
+			emptyFor();
+		}
+	}
+
 }

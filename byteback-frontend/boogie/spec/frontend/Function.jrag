@@ -2,46 +2,47 @@ import java.util.Optional;
 
 aspect Function {
 
-    /**
-     * Scope collections.
-     */
-    coll EntityTable<Function> Program.functions();
+  /**
+   * Scope collections.
+   */
+  coll EntityTable<Function> Program.functions();
 
-    FunctionDeclaration contributes getFunction() to Program.functions();
+  FunctionDeclaration contributes getFunction() to Program.functions();
 
-    /**
-     * NTA definitions.
-     */
-    syn nta Function FunctionDeclaration.getFunction();
+  /**
+   * NTA definitions.
+   */
+  syn nta Function FunctionDeclaration.getFunction();
 
-    eq FunctionDeclaration.getFunction() = new Function(getDeclarator());
+  eq FunctionDeclaration.getFunction() = new Function(getDeclarator());
 
-    /**
-     * Looking up functions.
-     */
-    syn lazy Optional<Function> Accessor.function();
+  /**
+   * Looking up functions.
+   */
+  syn lazy Optional<Function> Accessor.function();
 
-    eq Accessor.function() = lookupFunction(getName());
+  eq Accessor.function() = lookupFunction(getName());
 
-    syn lazy Optional<Function> Program.lookupFunction(String name);
+  syn lazy Optional<Function> Program.lookupFunction(String name);
 
-    eq Program.lookupFunction(String name) = functions().getFirst(name);
+  eq Program.lookupFunction(String name) = functions().getFirst(name);
 
-    inh lazy Optional<Function> Accessor.lookupFunction(String name);
+  inh lazy Optional<Function> Accessor.lookupFunction(String name);
 
-    eq Program.getChild().lookupFunction(String name) = lookupFunction(name);
+  eq Program.getChild().lookupFunction(String name) = lookupFunction(name);
 
-    /**
-     * Get declaration from function entity.
-     */
-    inh lazy FunctionDeclaration Function.getFunctionDeclaration();
+  /**
+   * Get declaration from function entity.
+   */
+  inh lazy FunctionDeclaration Function.getFunctionDeclaration();
 
-    eq FunctionDeclaration.getChild().getFunctionDeclaration() = this;
+  eq FunctionDeclaration.getChild().getFunctionDeclaration() = this;
 
-    /**
-     * Create a function reference with unbound arguments.
-     */
-    syn FunctionReference Function.getFunctionReference();
+  /**
+   * Create a function reference with unbound arguments.
+   */
+  syn FunctionReference Function.getFunctionReference();
 
-    eq Function.getFunctionReference() = new FunctionReference(getDeclarator().getAccessor(), new List<>());
+  eq Function.getFunctionReference() = new FunctionReference(getDeclarator().getAccessor(), new List<>());
+
 }

@@ -1,24 +1,24 @@
 aspect Singleton {
 
-    /**
-     * Type singletons.
-     */
-    private static final BooleanType BooleanType.instance = new BooleanType();
+  /**
+   * Type singletons.
+   */
+  private static final BooleanType BooleanType.instance = new BooleanType();
     
-    public static BooleanType BooleanType.instance() {
-        return instance;
-    }
+  public static BooleanType BooleanType.instance() {
+    return instance;
+  }
 
-    private static final IntegerType IntegerType.instance = new IntegerType();
+  private static final IntegerType IntegerType.instance = new IntegerType();
     
-    public static IntegerType IntegerType.instance() {
-        return instance;
-    }
+  public static IntegerType IntegerType.instance() {
+    return instance;
+  }
 
-    private static final RealType RealType.instance = new RealType();
+  private static final RealType RealType.instance = new RealType();
     
-    public static RealType RealType.instance() {
-        return instance;
-    }
+  public static RealType RealType.instance() {
+    return instance;
+  }
     
 }

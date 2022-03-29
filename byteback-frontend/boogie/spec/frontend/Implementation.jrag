@@ -1,36 +1,36 @@
 aspect Implementation {
 
-    /**
-     * Scope collections.
-     */
-    coll EntityTable<Implementation> Program.implementations();
+  /**
+   * Scope collections.
+   */
+  coll EntityTable<Implementation> Program.implementations();
 
-    ImplementationDeclaration contributes
-        getImplementation() to Program.implementations();
+  ImplementationDeclaration contributes
+    getImplementation() to Program.implementations();
 
-    /**
-     * NTA definitions.
-     */
-    syn nta Implementation ImplementationDeclaration.getImplementation();
+  /**
+   * NTA definitions.
+   */
+  syn nta Implementation ImplementationDeclaration.getImplementation();
 
-    eq ImplementationDeclaration.getImplementation() = new Implementation(getDeclarator());
+  eq ImplementationDeclaration.getImplementation() = new Implementation(getDeclarator());
 
-    /**
-     * Looking up implementations.
-     */
-    syn lazy Collection<Implementation> Accessor.implementations();
+  /**
+   * Looking up implementations.
+   */
+  syn lazy Collection<Implementation> Accessor.implementations();
 
-    eq Accessor.implementations() = lookupImplementations(getName());
+  eq Accessor.implementations() = lookupImplementations(getName());
 
-    /**
-     * Lookup implementation in program.
-     */
-    syn lazy Collection<Implementation> Program.lookupImplementations(String name);
+  /**
+   * Lookup implementation in program.
+   */
+  syn lazy Collection<Implementation> Program.lookupImplementations(String name);
 
-    eq Program.lookupImplementations(String name) = implementations().getAll(name);
+  eq Program.lookupImplementations(String name) = implementations().getAll(name);
 
-    inh lazy Collection<Implementation> Accessor.lookupImplementations(String name);
+  inh lazy Collection<Implementation> Accessor.lookupImplementations(String name);
 
-    eq Program.getChild().lookupImplementations(String name) = lookupImplementations(name);
+  eq Program.getChild().lookupImplementations(String name) = lookupImplementations(name);
 
 }

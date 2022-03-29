@@ -2,87 +2,87 @@ import java.util.Optional;
 
 aspect Type {
 
-    /**
-     * Scope collections.
-     */
-    coll EntityTable<TypeDefinition> Program.typeDefinitions();
+  /**
+   * Scope collections.
+   */
+  coll EntityTable<TypeDefinition> Program.typeDefinitions();
 
-    TypeDeclaration contributes getTypeDefinition() to Program.typeDefinitions();
+  TypeDeclaration contributes getTypeDefinition() to Program.typeDefinitions();
 
-    /**
-     * NTA definitions.
-     */
-    syn nta TypeDefinition TypeDeclaration.getTypeDefinition();
+  /**
+   * NTA definitions.
+   */
+  syn nta TypeDefinition TypeDeclaration.getTypeDefinition();
 
-    eq TypeDeclaration.getTypeDefinition() {
-        final DefinedType type = new DefinedType();
-        final TypeDefinition typeDefinition = new TypeDefinition();
-        typeDefinition.setDeclarator(getDeclarator());
-        typeDefinition.setDefinedType(type);
+  eq TypeDeclaration.getTypeDefinition() {
+    final DefinedType type = new DefinedType();
+    final TypeDefinition typeDefinition = new TypeDefinition();
+    typeDefinition.setDeclarator(getDeclarator());
+    typeDefinition.setDefinedType(type);
 
-        return typeDefinition;
-    }
+    return typeDefinition;
+  }
 
-    eq TypeSynonymDeclaration.getTypeDefinition() {
-        final TypeDefinition typeDefinition = super.getTypeDefinition();
-        typeDefinition.setAliased(getAliased());
+  eq TypeSynonymDeclaration.getTypeDefinition() {
+    final TypeDefinition typeDefinition = super.getTypeDefinition();
+    typeDefinition.setAliased(getAliased());
 
-        return typeDefinition;
-    }
+    return typeDefinition;
+  }
 
-    /**
-     * Looking up type definitions.
-     */
-    syn lazy Optional<TypeDefinition> Accessor.type();
+  /**
+   * Looking up type definitions.
+   */
+  syn lazy Optional<TypeDefinition> Accessor.type();
 
-    eq Accessor.type() = lookupTypeDefinition(getName());
+  eq Accessor.type() = lookupTypeDefinition(getName());
 
-    /**
-     * Lookup type definition in program.
-     */
-    syn lazy Optional<TypeDefinition> Program.lookupTypeDefinition(String name);
+  /**
+   * Lookup type definition in program.
+   */
+  syn lazy Optional<TypeDefinition> Program.lookupTypeDefinition(String name);
 
-    eq Program.lookupTypeDefinition(String name) = typeDefinitions().getFirst(name);
+  eq Program.lookupTypeDefinition(String name) = typeDefinitions().getFirst(name);
 
-    inh lazy Optional<TypeDefinition> Accessor.lookupTypeDefinition(String name);
+  inh lazy Optional<TypeDefinition> Accessor.lookupTypeDefinition(String name);
 
-    eq Program.getChild().lookupTypeDefinition(String name) = lookupTypeDefinition(name);
+  eq Program.getChild().lookupTypeDefinition(String name) = lookupTypeDefinition(name);
 
-    /**
-     * Link type definitions with concrete types.
-     */
-    syn nta DefinedType TypeDefinition.getType();
+  /**
+   * Link type definitions with concrete types.
+   */
+  syn nta DefinedType TypeDefinition.getType();
 
-    eq TypeDefinition.getType() = new DefinedType();
+  eq TypeDefinition.getType() = new DefinedType();
 
-    /**
-     * Link concrete types with their accessors.
-     */
-    syn TypeAccess Type.getTypeAccess();
+  /**
+   * Link concrete types with their accessors.
+   */
+  syn TypeAccess Type.getTypeAccess();
 
-    eq BooleanType.getTypeAccess() = new BooleanTypeAccess();
+  eq BooleanType.getTypeAccess() = new BooleanTypeAccess();
 
-    eq IntegerType.getTypeAccess() = new IntegerTypeAccess();
+  eq IntegerType.getTypeAccess() = new IntegerTypeAccess();
 
-    eq RealType.getTypeAccess() = new RealTypeAccess();
+  eq RealType.getTypeAccess() = new RealTypeAccess();
 
-    eq MapType.getTypeAccess() = new MapTypeAccess();
+  eq MapType.getTypeAccess() = new MapTypeAccess();
 
-    eq BitvectorType.getTypeAccess() = new BitvectorTypeAccess();
+  eq BitvectorType.getTypeAccess() = new BitvectorTypeAccess();
 
-    syn UnknownTypeAccess DefinedType.getTypeAccess();
+  syn UnknownTypeAccess DefinedType.getTypeAccess();
 
-    eq DefinedType.getTypeAccess() = new UnknownTypeAccess(getAccessor(), new List<>());
+  eq DefinedType.getTypeAccess() = new UnknownTypeAccess(getAccessor(), new List<>());
 
-    /**
-     * Defined type attributes. 
-     */
-    inh lazy Accessor DefinedType.getAccessor();
+  /**
+   * Defined type attributes. 
+   */
+  inh lazy Accessor DefinedType.getAccessor();
 
-    eq TypeDeclaration.getChild().getAccessor() = new Accessor(getDeclarator().getName());
+  eq TypeDeclaration.getChild().getAccessor() = new Accessor(getDeclarator().getName());
 
-    inh lazy List<TypeParameter> DefinedType.getTypeParameterList();
+  inh lazy List<TypeParameter> DefinedType.getTypeParameterList();
 
-    eq TypeDeclaration.getChild().getTypeParameterList() = getTypeParameterList();
+  eq TypeDeclaration.getChild().getTypeParameterList() = getTypeParameterList();
 
 }

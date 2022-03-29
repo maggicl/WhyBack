@@ -12,7 +12,7 @@ The structure of ~byteback-dummy~ as for now will be divided based on the target
 
 * Core
 ** DONE Implement conversion between methods and Boogie functions
-** TODO Implement conversion between methods and Boogie procedures
-** TODO Implement interprocedural calls in Boogie procedures
+** DONE (kinda) Implement conversion between methods and Boogie procedures
+** DONE (kinda) Implement interprocedural calls in Boogie procedures
 ** TODO Implement conversion between methods and Boogie conditions
 ** TODO Implement basic array supportin procedures

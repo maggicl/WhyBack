@@ -24,7 +24,7 @@ public class FunctionConverter {
 		return instance;
 	}
 
-	public OptionalBinding makeBinding(final Local local) {
+	public static OptionalBinding makeBinding(final Local local) {
 		final SootType type = new SootType(local.getType());
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
 		final OptionalBindingBuilder bindingBuilder = new OptionalBindingBuilder();
@@ -33,7 +33,7 @@ public class FunctionConverter {
 		return bindingBuilder.build();
 	}
 
-	public FunctionSignature makeSignature(final SootMethodUnit methodUnit) {
+	public static FunctionSignature makeSignature(final SootMethodUnit methodUnit) {
 		final FunctionSignatureBuilder signatureBuilder = new FunctionSignatureBuilder();
 		signatureBuilder.addInputBinding(Prelude.getHeapVariable().makeOptionalBinding());
 

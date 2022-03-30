@@ -27,7 +27,7 @@ public class ProcedureConverter {
 		return instance;
 	}
 
-	public BoundedBinding makeBinding(final Local local) {
+	public static BoundedBinding makeBinding(final Local local) {
 		final SootType type = new SootType(local.getType());
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
 		final BoundedBindingBuilder bindingBuilder = new BoundedBindingBuilder();
@@ -36,7 +36,7 @@ public class ProcedureConverter {
 		return bindingBuilder.build();
 	}
 
-	public ProcedureSignature makeSignature(final SootMethodUnit methodUnit) {
+	public static ProcedureSignature makeSignature(final SootMethodUnit methodUnit) {
 		final ProcedureSignatureBuilder signatureBuilder = new ProcedureSignatureBuilder();
 
 		for (Local local : methodUnit.getBody().getParameterLocals()) {
@@ -62,7 +62,7 @@ public class ProcedureConverter {
 		return signatureBuilder.build();
 	}
 
-	public Body makeBody(final SootMethodUnit methodUnit) {
+	public static Body makeBody(final SootMethodUnit methodUnit) {
 		final Body body = new Body();
 		final Map<Unit, Label> labelTable = new LabelCollector().visit(methodUnit.getBody());
 		methodUnit.getBody().apply(new ProcedureBodyExtractor(body, methodUnit.getReturnType(), labelTable));

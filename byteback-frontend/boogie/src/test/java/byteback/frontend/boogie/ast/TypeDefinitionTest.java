@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import byteback.frontend.boogie.TestUtil;
+
 public class TypeDefinitionTest extends ASTTestFixture {
 
 	@Test
@@ -23,5 +25,13 @@ public class TypeDefinitionTest extends ASTTestFixture {
 		final TypeDefinition typeDefinition = getTypeDefinition("Simple", "Unit");
 		typeDefinition.getDefinedType();
 	}
+
+  @Test
+  public void makeTypeAccess_OnSimpleUnitType_ReturnsExpectedTypeAccess() {
+		final TypeDefinition typeDefinition = getTypeDefinition("Simple", "Unit");
+		final TypeAccess actual = typeDefinition.getDefinedType().makeTypeAccess();
+    final TypeAccess expected = new UnknownTypeAccess(typeDefinition.getDefinedType().makeAccessor(), new List<>());
+    TestUtil.assertAstEquals(expected, actual);
+  }
 
 }

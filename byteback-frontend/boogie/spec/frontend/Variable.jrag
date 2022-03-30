@@ -103,7 +103,7 @@ aspect Variable {
    */
   syn ValueReference Variable.getValueReference();
 
-  eq Variable.getValueReference() = new ValueReference(getDeclarator().getAccessor());
+  eq Variable.getValueReference() = new ValueReference(getDeclarator().makeAccessor());
 
   /**
    * Create optional binding from variable.

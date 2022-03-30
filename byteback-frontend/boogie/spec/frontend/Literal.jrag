@@ -1,10 +1,10 @@
 aspect Literal {
 
-  public static BooleanLiteral BooleanLiteral.getTrue() {
+  public static BooleanLiteral BooleanLiteral.makeTrue() {
     return new BooleanLiteral("true");
   }
 
-  public static BooleanLiteral BooleanLiteral.getFalse() {
+  public static BooleanLiteral BooleanLiteral.makeFalse() {
     return new BooleanLiteral("false");
   }
 

@@ -320,9 +320,9 @@ Literal literal
 
 BooleanLiteral boolean_literal
     = TRUE.n
-    {: return BooleanLiteral.getTrue(); :}
+    {: return BooleanLiteral.makeTrue(); :}
     | FALSE.n
-    {: return BooleanLiteral.getFalse(); :}
+    {: return BooleanLiteral.makeFalse(); :}
     ;
 
 NumberLiteral number_literal

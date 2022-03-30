@@ -35,20 +35,21 @@ public class FunctionTest extends ASTTestFixture {
 	}
 
 	@Test
-	public void GetValueReference_OnArithmeticAdditionFunction_DoesNotThrowException() {
+	public void makeFunctionReference_OnArithmeticAdditionFunction_DoesNotThrowException() {
 		final Program program = getProgram("Arithmetic");
 		final Function function = program.lookupFunction("addition").get();
-		function.getFunctionReference();
+		function.makeFunctionReference();
 	}
 
   @Test
-  public void Inline_GivenArithmeticAddReference_DoesNotThrowException() throws Exception {
+  public void Inline_GivenArithmeticAddReference_ReturnsExpectedExpression() throws Exception {
 		final Program program = getProgram("Arithmetic");
 		final Function function = program.lookupFunction("addition").get();
     final ValueReference c = new ValueReference(new Accessor("c"));
     final ValueReference d = new ValueReference(new Accessor("d"));
-    final Expression inlinedExpression = function.inline(new List<>(c, d));
-    TestUtil.assertAstEquals(inlinedExpression, new AdditionOperation(c, d));
+    final Expression expected = new AdditionOperation(c, d);
+    final Expression actual = function.inline(new List<>(c, d));
+    TestUtil.assertAstEquals(expected, actual);
   }
 
 }

@@ -20,32 +20,32 @@ public class TypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
 
 	@Override
 	public void caseByteType(final ByteType byteType) {
-		setTypeAccess(Prelude.getIntegerType().getTypeAccess());
+		setTypeAccess(Prelude.getIntegerType().makeTypeAccess());
 	}
 
 	@Override
 	public void caseIntType(final IntType integerType) {
-		setTypeAccess(Prelude.getIntegerType().getTypeAccess());
+		setTypeAccess(Prelude.getIntegerType().makeTypeAccess());
 	}
 
 	@Override
 	public void caseDoubleType(final DoubleType doubleType) {
-		setTypeAccess(Prelude.getRealType().getTypeAccess());
+		setTypeAccess(Prelude.getRealType().makeTypeAccess());
 	}
 
 	@Override
 	public void caseFloatType(final FloatType floatType) {
-		setTypeAccess(Prelude.getRealType().getTypeAccess());
+		setTypeAccess(Prelude.getRealType().makeTypeAccess());
 	}
 
 	@Override
 	public void caseBooleanType(final BooleanType booleanType) {
-		setTypeAccess(Prelude.getBooleanType().getTypeAccess());
+		setTypeAccess(Prelude.getBooleanType().makeTypeAccess());
 	}
 
 	@Override
 	public void caseRefType(final RefType referenceType) {
-		setTypeAccess(Prelude.getReferenceType().getTypeAccess());
+		setTypeAccess(Prelude.getReferenceType().makeTypeAccess());
 	}
 
 	@Override

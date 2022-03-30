@@ -1,7 +1,7 @@
 aspect Declarator {
 
-    syn Accessor Declarator.getAccessor();
+    syn Accessor Declarator.makeAccessor();
 
-    eq Declarator.getAccessor() = new Accessor(getName());
+    eq Declarator.makeAccessor() = new Accessor(getName());
 
 }

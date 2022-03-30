@@ -24,13 +24,13 @@ aspect Function {
 
   eq Accessor.function() = lookupFunction(getName());
 
-  syn lazy Optional<Function> Program.lookupFunction(String name);
-
-  eq Program.lookupFunction(String name) = functions().getFirst(name);
-
   inh lazy Optional<Function> Accessor.lookupFunction(String name);
 
   eq Program.getChild().lookupFunction(String name) = lookupFunction(name);
+
+  syn lazy Optional<Function> Program.lookupFunction(String name);
+
+  eq Program.lookupFunction(String name) = functions().getFirst(name);
 
   /**
    * Get declaration from function entity.
@@ -42,9 +42,9 @@ aspect Function {
   /**
    * Create a function reference with unbound arguments.
    */
-  syn FunctionReference Function.getFunctionReference();
+  syn FunctionReference Function.makeFunctionReference();
 
-  eq Function.getFunctionReference() = new FunctionReference(getDeclarator().getAccessor(), new List<>());
+  eq Function.makeFunctionReference() = new FunctionReference(getDeclarator().makeAccessor(), new List<>());
 
   /**
    * Function inlining.
@@ -60,15 +60,17 @@ aspect Function {
     program.addDeclaration(declaration);
 
     for (Variable variable : declaration.getFunction().variables()) {
-      for (ValueReference reference : variable.references()) {
-        if (arguments.getNumChild() == 0) {
-          throw new IllegalArgumentException("Arguments do not match");
-        }
+      if (arguments.getNumChild() == 0) {
+        throw new IllegalArgumentException("Argument count does not match");
+      }
 
+      final Expression argument = arguments.getChild(0);
+      arguments.removeChild(0);
+
+      for (ValueReference reference : variable.references()) {
         final ASTNode parent = reference.getParent();
         final int index = parent.getIndexOfChild(reference);
-        parent.setChild(arguments.getChild(0), index);
-        arguments.removeChild(0);
+        parent.setChild(argument.fullCopy(), index);
       }
     }
 

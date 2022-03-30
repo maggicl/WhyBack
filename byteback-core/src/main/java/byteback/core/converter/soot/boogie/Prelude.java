@@ -119,7 +119,7 @@ public class Prelude {
 	}
 
 	public static Expression getHeapAccessExpression(final Expression base, final Expression field) {
-		final FunctionReference reference = getHeapAccessFunction().getFunctionReference();
+		final FunctionReference reference = getHeapAccessFunction().makeFunctionReference();
 		reference.addArgument(getHeapVariable().getValueReference());
 		reference.addArgument(base);
 		reference.addArgument(field);
@@ -129,7 +129,7 @@ public class Prelude {
 
 	public static Statement getHeapUpdateStatement(final Expression base, final Expression field,
 			final Expression value) {
-		final FunctionReference updateReference = getHeapUpdateFunction().getFunctionReference();
+		final FunctionReference updateReference = getHeapUpdateFunction().makeFunctionReference();
 		final ValueReference heapReference = getHeapVariable().getValueReference();
 		final Assignee heapAssignee = new Assignee(heapReference);
 		updateReference.addArgument(heapReference);
@@ -141,7 +141,7 @@ public class Prelude {
 	}
 
 	public static TypeAccess getFieldTypeAccess(final TypeAccess baseTypeAccess) {
-		final UnknownTypeAccess fieldTypeAccess = getFieldType().getTypeAccess();
+		final UnknownTypeAccess fieldTypeAccess = getFieldType().makeTypeAccess();
 		fieldTypeAccess.addArgument(baseTypeAccess);
 
 		return fieldTypeAccess;
@@ -152,7 +152,7 @@ public class Prelude {
 
 		return loadProgram().lookupFunction(name + "_" + typeName).orElseThrow(
 				() -> new IllegalStateException("Missing definition for the " + name + " operator of type " + typeName))
-				.getFunctionReference();
+				.makeFunctionReference();
 	}
 
 	public static BoundedBindingBuilder getReturnBindingBuilder() {
@@ -184,12 +184,12 @@ public class Prelude {
 	public static FunctionReference getIntCaster() {
 		return loadProgram().lookupFunction("~int")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~int casting function"))
-				.getFunctionReference();
+				.makeFunctionReference();
 	}
 
 	public static FunctionReference getCmpReference() {
 		return loadProgram().lookupFunction("~cmp")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp")).getFunctionReference();
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp")).makeFunctionReference();
 	}
 
 }

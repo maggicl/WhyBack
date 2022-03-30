@@ -58,28 +58,28 @@ aspect Type {
   /**
    * Link concrete types with their accessors.
    */
-  syn TypeAccess Type.getTypeAccess();
+  syn TypeAccess Type.makeTypeAccess();
 
-  eq BooleanType.getTypeAccess() = new BooleanTypeAccess();
+  eq BooleanType.makeTypeAccess() = new BooleanTypeAccess();
 
-  eq IntegerType.getTypeAccess() = new IntegerTypeAccess();
+  eq IntegerType.makeTypeAccess() = new IntegerTypeAccess();
 
-  eq RealType.getTypeAccess() = new RealTypeAccess();
+  eq RealType.makeTypeAccess() = new RealTypeAccess();
 
-  eq MapType.getTypeAccess() = new MapTypeAccess();
+  eq MapType.makeTypeAccess() = new MapTypeAccess();
 
-  eq BitvectorType.getTypeAccess() = new BitvectorTypeAccess();
+  eq BitvectorType.makeTypeAccess() = new BitvectorTypeAccess();
 
-  syn UnknownTypeAccess DefinedType.getTypeAccess();
+  syn UnknownTypeAccess DefinedType.makeTypeAccess();
 
-  eq DefinedType.getTypeAccess() = new UnknownTypeAccess(getAccessor(), new List<>());
+  eq DefinedType.makeTypeAccess() = new UnknownTypeAccess(makeAccessor(), new List<>());
 
   /**
    * Defined type attributes. 
    */
-  inh lazy Accessor DefinedType.getAccessor();
+  inh Accessor DefinedType.makeAccessor();
 
-  eq TypeDeclaration.getChild().getAccessor() = new Accessor(getDeclarator().getName());
+  eq TypeDeclaration.getChild().makeAccessor() = new Accessor(getDeclarator().getName());
 
   inh lazy List<TypeParameter> DefinedType.getTypeParameterList();
 

@@ -22,13 +22,13 @@ aspect Print {
     }
 
     static void listPrint(final StringBuilder builder, final String separator,
-                          final List<? extends Printable> list) {
+                final List<? extends Printable> list) {
 
       indentedListPrint(builder, separator, 0, list);
     }
 
     static void indentedListPrint(final StringBuilder builder, final String separator, final int level,
-                                  final List<? extends Printable> list) {
+                final List<? extends Printable> list) {
 
       final Iterator<? extends Printable> iterator = list.iterator();
 

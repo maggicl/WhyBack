@@ -282,7 +282,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
-				pushExpression(intConstant.value != 0 ? BooleanLiteral.getTrue() : BooleanLiteral.getFalse());
+				pushExpression(intConstant.value != 0 ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse());
 			}
 
 			@Override

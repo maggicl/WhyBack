@@ -45,5 +45,5 @@ aspect Procedure {
   inh lazy Body Procedure.getBody();
 
   eq ProcedureDeclaration.getChild().getBody() = getBody();
-    
+
 }

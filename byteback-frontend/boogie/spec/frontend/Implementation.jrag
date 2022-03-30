@@ -25,12 +25,12 @@ aspect Implementation {
   /**
    * Lookup implementation in program.
    */
-  syn lazy Collection<Implementation> Program.lookupImplementations(String name);
-
-  eq Program.lookupImplementations(String name) = implementations().getAll(name);
-
   inh lazy Collection<Implementation> Accessor.lookupImplementations(String name);
 
   eq Program.getChild().lookupImplementations(String name) = lookupImplementations(name);
+
+  syn lazy Collection<Implementation> Program.lookupImplementations(String name);
+
+  eq Program.lookupImplementations(String name) = implementations().getAll(name);
 
 }

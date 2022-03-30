@@ -68,6 +68,7 @@ public class VariableTest extends ASTTestFixture {
   @Test
   public void References_OnArithmeticAdditionParameters_ReturnsListOfOne() {
     final Function function = getFunction("Arithmetic", "addition");
+    
     for (Variable variable : function.variables()) {
       assertEquals(1, variable.references().size());
     }

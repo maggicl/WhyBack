@@ -63,8 +63,8 @@ public class ProcedureConverter {
 
 	public Body makeBody(final SootMethodUnit methodUnit) {
 		final Body body = new Body();
-		final Map<Unit, Label> labelIndex = new LabelCollector().visit(methodUnit.getBody());
-		methodUnit.getBody().apply(new ProcedureBodyExtractor(body, methodUnit.getReturnType(), labelIndex));
+		final Map<Unit, Label> labelTable = new LabelCollector().visit(methodUnit.getBody());
+		methodUnit.getBody().apply(new ProcedureBodyExtractor(body, methodUnit.getReturnType(), labelTable));
 
 		for (Local local : methodUnit.getBody().getLocals()) {
 			final VariableDeclarationBuilder variableBuilder = new VariableDeclarationBuilder();

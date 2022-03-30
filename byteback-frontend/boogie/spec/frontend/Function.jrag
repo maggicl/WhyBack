@@ -46,4 +46,45 @@ aspect Function {
 
   eq Function.getFunctionReference() = new FunctionReference(getDeclarator().getAccessor(), new List<>());
 
+  /**
+   * Function inlining.
+   */
+  syn Expression Function.inline(List<Expression> arguments);
+
+  eq Function.inline(List<Expression> arguments) {
+    // Collections cannot be populated in an unrooted tree, therefore
+    // we need to manually create a new root.
+    final Program program = new Program();
+    final FunctionDeclaration declaration = getFunctionDeclaration().fullCopy();
+
+    program.addDeclaration(declaration);
+
+    for (Variable variable : declaration.getFunction().variables()) {
+      for (ValueReference reference : variable.references()) {
+        if (arguments.getNumChild() == 0) {
+          throw new IllegalArgumentException("Arguments do not match");
+        }
+
+        final ASTNode parent = reference.getParent();
+        final int index = parent.getIndexOfChild(reference);
+        parent.setChild(arguments.getChild(0), index);
+        arguments.removeChild(0);
+      }
+    }
+
+    final Expression inlinedExpression = declaration.getExpression();
+    inlinedExpression.setParent(null);
+
+    return inlinedExpression;
+  }
+
+  /**
+   * Inline at callsite.
+   */
+  syn Expression FunctionReference.inline();
+
+  eq FunctionReference.inline() = getAccessor().function()
+    .orElseThrow(() -> new RuntimeException("Unresolved function reference"))
+    .inline(getArgumentList());
+
 }

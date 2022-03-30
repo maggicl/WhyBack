@@ -7,6 +7,7 @@ import byteback.frontend.boogie.scanner.BoogieLexer;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.nio.file.Path;
 
 public class ParserUtil {
@@ -23,6 +24,12 @@ public class ParserUtil {
 		final Program program = (Program) parser.parse(lexer);
 
 		return program;
+	}
+
+	public static Program parseBoogieProgram(final String string) throws IOException, Parser.Exception {
+    final Reader reader = new StringReader(string);
+
+		return parseBoogieProgram(reader);
 	}
 
 }

@@ -43,7 +43,7 @@ aspect Variable {
   coll LinkedList<ValueReference> Variable.references();
 
   // We might want to keep track of unresolved references in a separate collection
-  ValueReference contributes this to Variable.references() for getAccessor().lookupVariable().orElse(null);
+  ValueReference contributes this to Variable.references() for getAccessor().variable().orElse(null);
 
   /**
    * NTA definitions.
@@ -81,9 +81,9 @@ aspect Variable {
 
   eq Function.lookupVariable(String name) = variables().getFirst(name);
 
-  syn lazy Optional<Variable> Accessor.lookupVariable();
+  syn lazy Optional<Variable> Accessor.variable();
 
-  eq Accessor.lookupVariable() = lookupVariable(getName());
+  eq Accessor.variable() = lookupVariable(getName());
 
   inh lazy Optional<Variable> Accessor.lookupVariable(String name);
 

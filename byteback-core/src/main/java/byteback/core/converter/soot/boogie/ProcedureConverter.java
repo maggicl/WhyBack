@@ -53,7 +53,8 @@ public class ProcedureConverter {
 			@Override
 			public void caseDefault(final Type type) {
 				final TypeAccess typeAccess = new TypeAccessExtractor().visit(methodUnit.getReturnType());
-				signatureBuilder.addOutputBinding(Prelude.getReturnBindingBuilder().typeAccess(typeAccess).build());
+        final BoundedBinding binding = Prelude.getReturnBindingBuilder().typeAccess(typeAccess).build();
+				signatureBuilder.addOutputBinding(binding);
 			}
 
 		});

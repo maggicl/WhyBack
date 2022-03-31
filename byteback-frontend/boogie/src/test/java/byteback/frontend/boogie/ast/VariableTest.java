@@ -59,19 +59,19 @@ public class VariableTest extends ASTTestFixture {
 		assertTrue(variable.getConstantDeclaration().isPresent());
 	}
 
-  @Test
-  public void References_OnSimpleUnitVariable_ReturnsListOfTwo() {
-    final Variable variable = getVariable("Simple", "unit");
-    assertEquals(2, variable.references().size());
-  }
+	@Test
+	public void References_OnSimpleUnitVariable_ReturnsListOfTwo() {
+		final Variable variable = getVariable("Simple", "unit");
+		assertEquals(2, variable.references().size());
+	}
 
-  @Test
-  public void References_OnArithmeticAdditionParameters_ReturnsListOfOne() {
-    final Function function = getFunction("Arithmetic", "addition");
-    
-    for (Variable variable : function.variables()) {
-      assertEquals(1, variable.references().size());
-    }
-  }
+	@Test
+	public void References_OnArithmeticAdditionParameters_ReturnsListOfOne() {
+		final Function function = getFunction("Arithmetic", "addition");
+
+		for (Variable variable : function.variables()) {
+			assertEquals(1, variable.references().size());
+		}
+	}
 
 }

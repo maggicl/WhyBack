@@ -38,6 +38,12 @@ public class ProcedureDeclarationBuilder extends DeclarationBuilder {
 		return this;
 	}
 
+	public ProcedureDeclarationBuilder specification(final List<Specification> specification) {
+		this.specification.addAll(specification);
+
+		return this;
+	}
+
 	public ProcedureDeclarationBuilder body(final Body body) {
 		this.bodyParameter = Optional.of(body);
 

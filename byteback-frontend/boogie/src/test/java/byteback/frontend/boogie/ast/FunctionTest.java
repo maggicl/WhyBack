@@ -3,9 +3,8 @@ package byteback.frontend.boogie.ast;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import byteback.frontend.boogie.TestUtil;
+import org.junit.Test;
 
 public class FunctionTest extends ASTTestFixture {
 
@@ -41,15 +40,15 @@ public class FunctionTest extends ASTTestFixture {
 		function.makeFunctionReference();
 	}
 
-  @Test
-  public void Inline_GivenArithmeticAddReference_ReturnsExpectedExpression() throws Exception {
+	@Test
+	public void Inline_GivenArithmeticAddReference_ReturnsExpectedExpression() throws Exception {
 		final Program program = getProgram("Arithmetic");
 		final Function function = program.lookupFunction("addition").get();
-    final ValueReference c = new ValueReference(new Accessor("c"));
-    final ValueReference d = new ValueReference(new Accessor("d"));
-    final Expression expected = new AdditionOperation(c, d);
-    final Expression actual = function.inline(new List<>(c, d));
-    TestUtil.assertAstEquals(expected, actual);
-  }
+		final ValueReference c = new ValueReference(new Accessor("c"));
+		final ValueReference d = new ValueReference(new Accessor("d"));
+		final Expression expected = new AdditionOperation(c, d);
+		final Expression actual = function.inline(new List<>(c, d));
+		TestUtil.assertAstEquals(expected, actual);
+	}
 
 }

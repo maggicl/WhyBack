@@ -1,6 +1,8 @@
 package byteback.core.representation.soot.unit;
 
 import byteback.core.representation.soot.type.SootType;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Stream;
 import soot.SootClass;
 
@@ -76,6 +78,14 @@ public class SootClassUnit {
 		assert !isPhantomClass();
 
 		return sootClass.getFields().stream().map(SootFieldUnit::new);
+	}
+
+	public Optional<SootMethodUnit> getMethodUnit(final String name, final Collection<SootType> parameterTypes,
+			final SootType returnType) {
+
+		final String signature = SootMethodUnit.formatSignature(name, parameterTypes, returnType);
+
+		return Optional.ofNullable(new SootMethodUnit(sootClass.getMethod(signature)));
 	}
 
 }

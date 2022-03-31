@@ -121,7 +121,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		final String methodName = methodUnit.getAnnotation("Lbyteback/annotations/Contract$Prelude;")
 				.flatMap(SootAnnotation::getValue).map((element) -> new StringElementExtractor().visit(element))
 				.orElseGet(() -> NameConverter.methodName(methodUnit));
-    arguments.insertChild(Prelude.getHeapVariable().getValueReference(), 0);
+		arguments.insertChild(Prelude.getHeapVariable().getValueReference(), 0);
 		functionReference.setAccessor(new Accessor(methodName));
 		functionReference.setArgumentList(arguments);
 		pushExpression(functionReference);

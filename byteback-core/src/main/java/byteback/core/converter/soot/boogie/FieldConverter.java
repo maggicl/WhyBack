@@ -16,7 +16,6 @@ public class FieldConverter {
 
 	public ConstantDeclaration convert(final SootFieldUnit fieldUnit) {
 		final ConstantDeclaration constantDeclaration = new ConstantDeclaration();
-    // TODO: SetBindingBuilder
 		final SetBinding binding = new SetBinding();
 		final TypeAccess baseTypeAccess = new TypeAccessExtractor().visit(fieldUnit.getType());
 		final TypeAccess fieldTypeAccess = Prelude.getFieldTypeAccess(baseTypeAccess);

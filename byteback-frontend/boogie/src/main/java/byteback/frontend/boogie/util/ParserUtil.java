@@ -27,7 +27,7 @@ public class ParserUtil {
 	}
 
 	public static Program parseBoogieProgram(final String string) throws IOException, Parser.Exception {
-    final Reader reader = new StringReader(string);
+		final Reader reader = new StringReader(string);
 
 		return parseBoogieProgram(reader);
 	}

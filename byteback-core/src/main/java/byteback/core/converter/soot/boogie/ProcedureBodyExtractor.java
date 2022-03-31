@@ -49,8 +49,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseAssignStmt(final AssignStmt assignment) {
 			final SootExpression left = new SootExpression(assignment.getLeftOp());
 			final SootExpression right = new SootExpression(assignment.getRightOp());
-			final Expression boogieRight = new ProcedureExpressionExtractor(left.getType(), body, seed++)
-					.visit(right);
+			final Expression boogieRight = new ProcedureExpressionExtractor(left.getType(), body, seed++).visit(right);
 
 			left.apply(new SootExpressionVisitor<>() {
 

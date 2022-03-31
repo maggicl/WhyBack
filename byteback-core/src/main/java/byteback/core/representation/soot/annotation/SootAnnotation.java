@@ -8,7 +8,7 @@ public class SootAnnotation {
 
 	private final AnnotationTag tag;
 
-	public SootAnnotation(AnnotationTag tag) {
+	public SootAnnotation(final AnnotationTag tag) {
 		this.tag = tag;
 	}
 

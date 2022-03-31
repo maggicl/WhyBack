@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import soot.SootMethod;
+
 import soot.tagkit.VisibilityAnnotationTag;
 
-public class SootMethodUnit {
+public class SootMethod {
 
 	static String formatSignature(final String name, final Collection<SootType> parameterTypes,
 			final SootType returnType) {
@@ -44,7 +44,7 @@ public class SootMethodUnit {
 		return builder.toString();
 	}
 
-	private final SootMethod sootMethod;
+	private final soot.SootMethod sootMethod;
 
 	/**
 	 * Constructor for the Soot method intermediate representation.
@@ -52,7 +52,7 @@ public class SootMethodUnit {
 	 * @param sootMethod
 	 *            The wrapped {@code SootMethod} instance.
 	 */
-	public SootMethodUnit(final SootMethod sootMethod) {
+	public SootMethod(final soot.SootMethod sootMethod) {
 		this.sootMethod = sootMethod;
 	}
 
@@ -80,8 +80,8 @@ public class SootMethodUnit {
 		return new SootBody(sootMethod.retrieveActiveBody());
 	}
 
-	public SootClassUnit getClassUnit() {
-		return new SootClassUnit(sootMethod.getDeclaringClass());
+	public SootClass getClassUnit() {
+		return new SootClass(sootMethod.getDeclaringClass());
 	}
 
 	public Optional<SootAnnotation> getAnnotation(final String type) {

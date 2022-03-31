@@ -1,9 +1,9 @@
 package byteback.core.representation.soot.unit;
 
-public class SootMethodUnitFixture extends SootClassUnitFixture {
+public class SootMethodFixture extends SootClassFixture {
 
-	public static SootMethodUnit getMethodUnit(final String jarName, final String className,
-			final String methodSignature) {
+	public static SootMethod getMethodUnit(final String jarName, final String className,
+                                           final String methodSignature) {
 
 		return getClassUnit(jarName, className).methods().filter((unit) -> unit.getIdentifier().equals(methodSignature))
 				.findFirst().orElseThrow(() -> {

@@ -1,13 +1,12 @@
 package byteback.core.representation.soot.unit;
 
 import byteback.core.representation.soot.type.SootType;
-import soot.SootField;
 
-public class SootFieldUnit {
+public class SootField {
 
-	private final SootField sootField;
+	private final soot.SootField sootField;
 
-	public SootFieldUnit(final SootField sootField) {
+	public SootField(final soot.SootField sootField) {
 		this.sootField = sootField;
 	}
 
@@ -15,8 +14,8 @@ public class SootFieldUnit {
 		return sootField.getName();
 	}
 
-	public SootClassUnit getClassUnit() {
-		return new SootClassUnit(sootField.getDeclaringClass());
+	public SootClass getClassUnit() {
+		return new SootClass(sootField.getDeclaringClass());
 	}
 
 	public SootType getType() {

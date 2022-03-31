@@ -2,7 +2,7 @@ package byteback.core.converter.soot.boogie;
 
 import byteback.core.representation.soot.annotation.SootAnnotation;
 import byteback.core.representation.soot.type.SootType;
-import byteback.core.representation.soot.unit.SootMethodUnit;
+import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.Expression;
@@ -18,7 +18,7 @@ import soot.jimple.InvokeExpr;
 public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	public static TargetedCallStatement makeCall(final InvokeExpr invoke, final List<Expression> arguments) {
-		final SootMethodUnit methodUnit = new SootMethodUnit(invoke.getMethod());
+		final SootMethod methodUnit = new SootMethod(invoke.getMethod());
 		final String methodName = NameConverter.methodName(methodUnit);
 		final TargetedCallStatement call = new TargetedCallStatement();
 		call.setAccessor(new Accessor(methodName));
@@ -54,7 +54,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	@Override
 	public void pushFunctionReference(final InvokeExpr invoke, final List<Expression> arguments) {
-		final SootMethodUnit methodUnit = new SootMethodUnit(invoke.getMethod());
+		final SootMethod methodUnit = new SootMethod(invoke.getMethod());
 		final Optional<SootAnnotation> annotation = methodUnit.getAnnotation("Lbyteback/annotations/Contract$Prelude;");
 
 		if (annotation.isPresent()) {

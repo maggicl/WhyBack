@@ -75,3 +75,17 @@ procedure byteback.dummy.condition.Simple.singleAssumption##()
   assume true;
   return;
 }
+
+procedure byteback.dummy.condition.Simple.wrongAssumption1##() returns ()
+{
+  assume false;
+  return;
+}
+
+procedure byteback.dummy.condition.Simple.wrongAssumption2##() returns ()
+{
+  var a: bool;
+  a := false;
+  assume a;
+  return;
+}

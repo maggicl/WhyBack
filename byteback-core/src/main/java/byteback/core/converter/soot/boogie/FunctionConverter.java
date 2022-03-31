@@ -3,7 +3,7 @@ package byteback.core.converter.soot.boogie;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
-import byteback.core.representation.soot.unit.SootMethodUnit;
+import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
 import byteback.frontend.boogie.ast.FunctionSignature;
@@ -33,7 +33,7 @@ public class FunctionConverter {
 		return bindingBuilder.build();
 	}
 
-	public static FunctionSignature makeSignature(final SootMethodUnit methodUnit) {
+	public static FunctionSignature makeSignature(final SootMethod methodUnit) {
 		final FunctionSignatureBuilder signatureBuilder = new FunctionSignatureBuilder();
 		signatureBuilder.addInputBinding(Prelude.getHeapVariable().makeOptionalBinding());
 
@@ -60,7 +60,7 @@ public class FunctionConverter {
 		return signatureBuilder.build();
 	}
 
-	public FunctionDeclaration convert(final SootMethodUnit methodUnit) {
+	public FunctionDeclaration convert(final SootMethod methodUnit) {
 		final FunctionDeclarationBuilder functionBuilder = new FunctionDeclarationBuilder();
 		final FunctionSignature boogieSignature = makeSignature(methodUnit);
 		final SootBody body = methodUnit.getBody();

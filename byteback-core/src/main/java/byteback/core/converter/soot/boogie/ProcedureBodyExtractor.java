@@ -4,8 +4,8 @@ import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
-import byteback.core.representation.soot.unit.SootFieldUnit;
-import byteback.core.representation.soot.unit.SootMethodUnit;
+import byteback.core.representation.soot.unit.SootField;
+import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.Assignee;
@@ -65,7 +65,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 				@Override
 				public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
-					final SootFieldUnit field = new SootFieldUnit(instanceFieldReference.getField());
+					final SootField field = new SootField(instanceFieldReference.getField());
 					final SootExpression base = new SootExpression(instanceFieldReference.getBase());
 					final Expression boogieFieldReference = new ValueReference(
 							new Accessor(NameConverter.fieldName(field)));
@@ -121,7 +121,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 			final InvokeExpr invokeExpression = invokeStatement.getInvokeExpr();
 			final List<Expression> arguments = new ExpressionExtractor().makeArguments(invokeExpression);
-      final SootMethodUnit methodUnit = new SootMethodUnit(invokeExpression.getMethod());
+      final SootMethod methodUnit = new SootMethod(invokeExpression.getMethod());
 
       if (methodUnit.getClassUnit().getName().equals("byteback.annotations.Contract")) {
         addSpecialStatement(methodUnit, arguments);
@@ -150,7 +150,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.extractor = new InnerExtractor();
 	}
 
-  public void addSpecialStatement(final SootMethodUnit methodUnit, final List<Expression> arguments) {
+  public void addSpecialStatement(final SootMethod methodUnit, final List<Expression> arguments) {
     if (methodUnit.getName().equals("assertion")) {
       assert arguments.getNumChild() == 1;
       addStatement(new AssertStatement(arguments.getChild(0)));

@@ -1,6 +1,6 @@
 package byteback.core.context.soot;
 
-import byteback.core.representation.soot.unit.SootClassUnit;
+import byteback.core.representation.soot.unit.SootClass;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.G;
 import soot.Scene;
-import soot.SootClass;
 import soot.options.Options;
 
 /**
@@ -119,12 +118,12 @@ public class SootContext {
 	 *            Qualified name of a class present in the Soot's classpath.
 	 * @return The Soot intermediate representation of the loaded class.
 	 */
-	public SootClassUnit loadClass(final String className) throws ClassLoadException {
+	public SootClass loadClass(final String className) throws ClassLoadException {
 		try {
-			final SootClass sootClass = scene().loadClass(className, SootClass.BODIES);
+			final soot.SootClass sootClass = scene().loadClass(className, soot.SootClass.BODIES);
 			log.info("Loaded {} in context", className);
 
-			return new SootClassUnit(sootClass);
+			return new SootClass(sootClass);
 		} catch (AssertionError exception) {
 			log.error("Failed to load {}", className, exception);
 			throw new ClassLoadException(className);
@@ -138,12 +137,12 @@ public class SootContext {
 	 *            Qualified name of the root class present in the Soot's classpath.
 	 * @return The Soot intermediate representation of the loaded root class.
 	 */
-	public SootClassUnit loadClassAndSupport(final String className) throws ClassLoadException {
+	public SootClass loadClassAndSupport(final String className) throws ClassLoadException {
 		try {
-			final SootClass sootClass = scene().loadClassAndSupport(className);
+			final soot.SootClass sootClass = scene().loadClassAndSupport(className);
 			log.info("Loaded {} and support classes in context", className);
 
-			return new SootClassUnit(sootClass);
+			return new SootClass(sootClass);
 		} catch (AssertionError exception) {
 			log.error("Failed to load {}", className, exception);
 			throw new ClassLoadException(className);
@@ -157,13 +156,13 @@ public class SootContext {
 	 *            Qualified name of the class.
 	 * @return The class corresponding to the given {@code className}.
 	 */
-	public Optional<SootClassUnit> getClass(final String className) {
-		final SootClass sootClass = scene().getSootClass(className);
+	public Optional<SootClass> getClass(final String className) {
+		final soot.SootClass sootClass = scene().getSootClass(className);
 
 		if (sootClass == null) {
 			return Optional.empty();
 		} else {
-			return Optional.of(new SootClassUnit(sootClass));
+			return Optional.of(new SootClass(sootClass));
 		}
 	}
 
@@ -181,8 +180,8 @@ public class SootContext {
 	 *
 	 * @return The stream of loaded classes in the current context.
 	 */
-	public Stream<SootClassUnit> classes() {
-		return scene().getClasses().stream().map(SootClassUnit::new);
+	public Stream<SootClass> classes() {
+		return scene().getClasses().stream().map(SootClass::new);
 	}
 
 }

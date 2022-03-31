@@ -1,6 +1,6 @@
 package byteback.core.converter.soot.boogie;
 
-import byteback.core.representation.soot.unit.SootFieldUnit;
+import byteback.core.representation.soot.unit.SootField;
 import byteback.frontend.boogie.ast.ConstantDeclaration;
 import byteback.frontend.boogie.ast.Declarator;
 import byteback.frontend.boogie.ast.SetBinding;
@@ -14,7 +14,7 @@ public class FieldConverter {
 		return instance;
 	}
 
-	public ConstantDeclaration convert(final SootFieldUnit fieldUnit) {
+	public ConstantDeclaration convert(final SootField fieldUnit) {
 		final ConstantDeclaration constantDeclaration = new ConstantDeclaration();
 		final SetBinding binding = new SetBinding();
 		final TypeAccess baseTypeAccess = new TypeAccessExtractor().visit(fieldUnit.getType());

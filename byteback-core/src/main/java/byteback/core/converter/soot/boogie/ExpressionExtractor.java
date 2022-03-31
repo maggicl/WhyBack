@@ -6,8 +6,8 @@ import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
-import byteback.core.representation.soot.unit.SootFieldUnit;
-import byteback.core.representation.soot.unit.SootMethodUnit;
+import byteback.core.representation.soot.unit.SootField;
+import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.AdditionOperation;
 import byteback.frontend.boogie.ast.AndOperation;
@@ -32,7 +32,6 @@ import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Stack;
 import soot.BooleanType;
@@ -120,7 +119,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	public void pushFunctionReference(final InvokeExpr invoke, final List<Expression> arguments) {
 		final FunctionReference functionReference = new FunctionReference();
-		final SootMethodUnit methodUnit = new SootMethodUnit(invoke.getMethod());
+		final SootMethod methodUnit = new SootMethod(invoke.getMethod());
 		final String methodName = methodUnit.getAnnotation("Lbyteback/annotations/Contract$Prelude;")
 				.flatMap(SootAnnotation::getValue).map((element) -> new StringElementExtractor().visit(element))
 				.orElseGet(() -> NameConverter.methodName(methodUnit));
@@ -318,7 +317,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
-		final SootFieldUnit field = new SootFieldUnit(instanceFieldReference.getField());
+		final SootField field = new SootField(instanceFieldReference.getField());
 		final SootExpression base = new SootExpression(instanceFieldReference.getBase());
 		final Expression boogieBase = visit(base);
 		final Expression boogieFieldReference = new ValueReference(new Accessor(NameConverter.fieldName(field)));

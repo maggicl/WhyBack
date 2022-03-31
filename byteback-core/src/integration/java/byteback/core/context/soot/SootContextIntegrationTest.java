@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import byteback.core.ResourcesUtil;
-import byteback.core.representation.soot.unit.SootClassUnit;
+import byteback.core.representation.soot.unit.SootClass;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,7 +67,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
 		final Path classPath = ResourcesUtil.getJarPath("java8");
 		final String unitName = "byteback.dummy.context.Unit";
 		getContext().prependClassPath(classPath);
-		final SootClassUnit classUnit = getContext().loadClass(unitName);
+		final SootClass classUnit = getContext().loadClass(unitName);
 		assertEquals(classUnit.getName(), unitName);
 	}
 
@@ -77,7 +77,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
 		final Path classPath = ResourcesUtil.getJarPath("java8");
 		final String unitName = "byteback.dummy.context.Unit";
 		getContext().prependClassPath(classPath);
-		final SootClassUnit classUnit = getContext().loadClassAndSupport("byteback.dummy.context.Unit");
+		final SootClass classUnit = getContext().loadClassAndSupport("byteback.dummy.context.Unit");
 		assertEquals(classUnit.getName(), unitName);
 	}
 
@@ -117,12 +117,12 @@ public class SootContextIntegrationTest extends SootContextFixture {
 
 	@Test
 	public void Classes_GivenUnloadedScene_ReturnsBasicClassesStream() {
-		assertTrue(getContext().classes().allMatch(SootClassUnit::isBasicClass));
+		assertTrue(getContext().classes().allMatch(SootClass::isBasicClass));
 	}
 
 	@Test
 	public void Classes_GivenUnloadedScene_ReturnsConcreteClassesStream() {
-		assertTrue(getContext().classes().noneMatch(SootClassUnit::isPhantomClass));
+		assertTrue(getContext().classes().noneMatch(SootClass::isPhantomClass));
 	}
 
 	@Test

@@ -3,7 +3,7 @@ package byteback.core.converter.soot.boogie;
 import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
-import byteback.core.representation.soot.unit.SootMethodUnit;
+import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
@@ -47,7 +47,7 @@ public class ProcedureConverter {
 		return bindingBuilder.build();
 	}
 
-	public static ProcedureSignature makeSignature(final SootMethodUnit methodUnit) {
+	public static ProcedureSignature makeSignature(final SootMethod methodUnit) {
 		final ProcedureSignatureBuilder signatureBuilder = new ProcedureSignatureBuilder();
 
 		for (Local local : methodUnit.getBody().getParameterLocals()) {
@@ -73,7 +73,7 @@ public class ProcedureConverter {
 		return signatureBuilder.build();
 	}
 
-	public static Body makeBody(final SootMethodUnit methodUnit) {
+	public static Body makeBody(final SootMethod methodUnit) {
 		final Body body = new Body();
 		final Map<Unit, Label> labelTable = new LabelCollector().visit(methodUnit.getBody());
 		methodUnit.getBody().apply(new ProcedureBodyExtractor(body, methodUnit.getReturnType(), labelTable));
@@ -86,7 +86,7 @@ public class ProcedureConverter {
 		return body;
 	}
 
-	public static Stream<Expression> makeConditions(final SootMethodUnit methodUnit, final String annotation) {
+	public static Stream<Expression> makeConditions(final SootMethod methodUnit, final String annotation) {
 		final Stream<String> sourceNames = methodUnit.getAnnotationValues(annotation)
 				.map((element) -> new StringElementExtractor().visit(element));
 		final List<Expression> arguments = makeArguments(methodUnit);
@@ -94,19 +94,19 @@ public class ProcedureConverter {
 		return sourceNames.map((sourceName) -> makeCondition(methodUnit, sourceName, arguments));
 	}
 
-	public static Expression makeCondition(final SootMethodUnit target, final String sourceName,
-			final List<Expression> arguments) {
+	public static Expression makeCondition(final SootMethod target, final String sourceName,
+										   final List<Expression> arguments) {
 
 		final Collection<SootType> parameterTypes = target.getParameterTypes();
 		parameterTypes.add(target.getReturnType());
 		final SootType returnType = new SootType(BooleanType.v());
-		final SootMethodUnit source = target.getClassUnit().getMethodUnit(sourceName, parameterTypes, returnType)
+		final SootMethod source = target.getClassUnit().getMethodUnit(sourceName, parameterTypes, returnType)
 				.orElseThrow(() -> new IllegalArgumentException("Could not find condition method " + sourceName));
 
 		return ConditionManager.instance().convert(source).getFunction().inline(arguments);
 	}
 
-	public static List<Expression> makeArguments(final SootMethodUnit methodUnit) {
+	public static List<Expression> makeArguments(final SootMethod methodUnit) {
 		final List<Expression> references = new List<>(Prelude.getHeapVariable().getValueReference());
 
 		for (Local local : methodUnit.getBody().getParameterLocals()) {
@@ -118,7 +118,7 @@ public class ProcedureConverter {
 		return references;
 	}
 
-	public static List<Specification> makeSpecifications(final SootMethodUnit methodUnit) {
+	public static List<Specification> makeSpecifications(final SootMethod methodUnit) {
 		final Stream<Specification> preconditions = makeConditions(methodUnit,
 				"Lbyteback/annotations/Contract$Require;").map((expression) -> new PreCondition(false, expression));
 		final Stream<Specification> postconditions = makeConditions(methodUnit,
@@ -128,7 +128,7 @@ public class ProcedureConverter {
 		return new List<Specification>().addAll(specifications);
 	}
 
-	public ProcedureDeclaration convert(final SootMethodUnit methodUnit) {
+	public ProcedureDeclaration convert(final SootMethod methodUnit) {
 		final ProcedureDeclarationBuilder procedureBuilder = new ProcedureDeclarationBuilder();
 		final ProcedureSignature signature = makeSignature(methodUnit);
 		final List<Specification> specifications = makeSpecifications(methodUnit);

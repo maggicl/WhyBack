@@ -3,7 +3,7 @@ package byteback.core.converter.soot.boogie;
 import static org.junit.Assert.assertEquals;
 
 import byteback.core.RegressionParameter;
-import byteback.core.representation.soot.unit.SootClassUnit;
+import byteback.core.representation.soot.unit.SootClass;
 import byteback.frontend.boogie.ast.ConstantDeclaration;
 import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Program;
@@ -20,7 +20,7 @@ public class FieldConverterIntegrationTest extends ConverterFixture {
 	@Parameters
 	public static Iterable<RegressionParameter<ConstantDeclaration>> getParameters() throws IOException {
 		return getRegressionEntries("java8").flatMap((entry) -> {
-			final SootClassUnit classUnit = entry.getKey();
+			final SootClass classUnit = entry.getKey();
 			final Program program = entry.getValue();
 
 			return classUnit.fields().map((fieldUnit) -> {

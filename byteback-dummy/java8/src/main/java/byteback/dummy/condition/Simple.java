@@ -37,4 +37,14 @@ public class Simple {
     assumption(true);
   }
 
+  public static void wrongAssumption1() {
+    assumption(false);
+  }
+
+  public static void wrongAssumption2() {
+    boolean a = false;
+
+    assumption(a);
+  }
+
 }

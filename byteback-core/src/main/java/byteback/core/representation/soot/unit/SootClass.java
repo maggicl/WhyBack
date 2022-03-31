@@ -4,22 +4,21 @@ import byteback.core.representation.soot.type.SootType;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
-import soot.SootClass;
 
 /**
- * Wraps a {@link SootClass} intermediate representation.
+ * Wraps a {@link soot.SootClass} intermediate representation.
  */
-public class SootClassUnit {
+public class SootClass {
 
-	private final SootClass sootClass;
+	private final soot.SootClass sootClass;
 
 	/**
 	 * Constructor the Soot class representation wrapper.
 	 *
 	 * @param sootClass
-	 *            The wrapped {@link SootClass} class.
+	 *            The wrapped {@link soot.SootClass} class.
 	 */
-	public SootClassUnit(final SootClass sootClass) {
+	public SootClass(final soot.SootClass sootClass) {
 		this.sootClass = sootClass;
 	}
 
@@ -63,10 +62,10 @@ public class SootClassUnit {
 	 *
 	 * @return The stream of method representations.
 	 */
-	public Stream<SootMethodUnit> methods() {
+	public Stream<SootMethod> methods() {
 		assert !isPhantomClass();
 
-		return sootClass.getMethods().stream().map(SootMethodUnit::new);
+		return sootClass.getMethods().stream().map(SootMethod::new);
 	}
 
 	/**
@@ -74,18 +73,18 @@ public class SootClassUnit {
 	 *
 	 * @return The stream of field representations.
 	 */
-	public Stream<SootFieldUnit> fields() {
+	public Stream<SootField> fields() {
 		assert !isPhantomClass();
 
-		return sootClass.getFields().stream().map(SootFieldUnit::new);
+		return sootClass.getFields().stream().map(SootField::new);
 	}
 
-	public Optional<SootMethodUnit> getMethodUnit(final String name, final Collection<SootType> parameterTypes,
-			final SootType returnType) {
+	public Optional<SootMethod> getMethodUnit(final String name, final Collection<SootType> parameterTypes,
+											  final SootType returnType) {
 
-		final String signature = SootMethodUnit.formatSignature(name, parameterTypes, returnType);
+		final String signature = SootMethod.formatSignature(name, parameterTypes, returnType);
 
-		return Optional.ofNullable(new SootMethodUnit(sootClass.getMethod(signature)));
+		return Optional.ofNullable(new SootMethod(sootClass.getMethod(signature)));
 	}
 
 }

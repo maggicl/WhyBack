@@ -1,5 +1,7 @@
 package byteback.dummy.procedure;
 
+import static byteback.annotations.Operator.eq;
+
 public class Simple {
 
 	public static void empty() {
@@ -81,5 +83,9 @@ public class Simple {
 			emptyFor();
 		}
 	}
+
+  public static void callsPureEq() {
+    boolean result = eq(1, 1);
+  }
 
 }

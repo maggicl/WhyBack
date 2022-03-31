@@ -40,38 +40,88 @@ function ~int<a>(a) returns (int);
 axiom ~int(false) == 0;
 axiom ~int(true) == 1;
 
+function eq(~heap: Store, a: int, b: int) returns (bool) { a == b }
+
+function implies(~heap: Store, a: bool, b: bool) returns (bool) { a ==> b }
+
+function not(~heap: Store, a: bool) returns (bool) { !a }
+
 // real -> int
 // TODO
-
-function eq(~heap: Store, a: int, b: int) returns (bool) { a == b }
 
 function ~real<a>(a) returns (real);
 
 // int -> real
 // TODO
 
-procedure byteback.dummy.condition.Simple.returnsOne##() returns (~ret: int)
-  ensures eq(~heap, ~ret, 1);
+procedure byteback.dummy.condition.Boolean.shortCircuitingAnd#boolean#boolean#(a: bool, b: bool) returns (~ret: bool)
+  ensures implies(~heap, a && b, ~ret);
 {
-  ~ret := 1;
+  var $stack2: bool;
+
+  if (~int(a) == 0) {
+    goto label2;
+  }
+
+  if (~int(b) == 0) {
+    goto label2;
+  }
+
+  $stack2 := true;
+  goto label3;
+
+label2:
+  $stack2 := false;
+
+label3:
+  ~ret := $stack2;
+
   return;
 }
 
-procedure byteback.dummy.condition.Simple.identity#int#(a: int) returns (~ret: int)
-  ensures eq(~heap, ~ret, a);
+procedure byteback.dummy.condition.Boolean.shortCircuitingOr#boolean#boolean#(a: bool, b: bool) returns (~ret: bool)
+  ensures implies(~heap, a || b, ~ret);
 {
-  ~ret := a;
+  var $stack2: bool;
+
+  if (~int(a) != 0) {
+    goto label1;
+  }
+
+  if (~int(b) == 0) {
+    goto label2;
+  }
+
+label1:
+  $stack2 := true;
+  goto label3;
+
+label2:
+  $stack2 := false;
+
+label3:
+  ~ret := $stack2;
+
   return;
 }
 
-procedure byteback.dummy.condition.Simple.singleAssertion##()
+procedure byteback.dummy.condition.Boolean.shortCircuitingNot#boolean#(a: bool) returns (~ret: bool)
+  ensures implies(~heap, a, not(~heap, ~ret));
 {
-  assert true;
-  return;
-}
+  var $stack1: bool;
 
-procedure byteback.dummy.condition.Simple.singleAssumption##()
-{
-  assume true;
+  if (~int(a) != 0) {
+    goto label1;
+  }
+
+  $stack1 := true;
+  goto label2;
+
+label1:
+  $stack1 := false;
+
+label2:
+  ~ret := $stack1;
+
   return;
 }

@@ -16,11 +16,6 @@ public interface Contract {
 	 * A predicate method is a completely pure static method containing boolean
 	 * statements verifying conditions on its inputs. A predicate method may only
 	 * indirectly call other static predicate methods.
-	 * <p>
-	 * There could possibly be exceptions for certain virtual or interface calls
-	 * needed for the specification of quantifiers.
-	 * <p>
-	 * TODO: delineate such exceptions here.
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
@@ -60,5 +55,9 @@ public interface Contract {
 	@Target({ElementType.METHOD})
 	public static @interface Condition {
 	}
+
+  public static void assertion(boolean condition) {}
+
+  public static void assumption(boolean condition) {}
 
 }

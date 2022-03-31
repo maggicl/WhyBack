@@ -5,8 +5,11 @@ import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootFieldUnit;
+import byteback.core.representation.soot.unit.SootMethodUnit;
 import byteback.frontend.boogie.ast.Accessor;
+import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.Assignee;
+import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.BlockStatement;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.Expression;
@@ -118,7 +121,13 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 			final InvokeExpr invokeExpression = invokeStatement.getInvokeExpr();
 			final List<Expression> arguments = new ExpressionExtractor().makeArguments(invokeExpression);
-			addStatement(ProcedureExpressionExtractor.makeCall(invokeExpression, arguments));
+      final SootMethodUnit methodUnit = new SootMethodUnit(invokeExpression.getMethod());
+
+      if (methodUnit.getClassUnit().getName().equals("byteback.annotations.Contract")) {
+        addSpecialStatement(methodUnit, arguments);
+      } else {
+        addStatement(ProcedureExpressionExtractor.makeCall(invokeExpression, arguments));
+      }
 		}
 
 		@Override
@@ -140,6 +149,18 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.seed = 0;
 		this.extractor = new InnerExtractor();
 	}
+
+  public void addSpecialStatement(final SootMethodUnit methodUnit, final List<Expression> arguments) {
+    if (methodUnit.getName().equals("assertion")) {
+      assert arguments.getNumChild() == 1;
+      addStatement(new AssertStatement(arguments.getChild(0)));
+    } else if (methodUnit.getName().equals("assumption")) {
+      assert arguments.getNumChild() == 1;
+      addStatement(new AssumeStatement(arguments.getChild(0)));
+    } else {
+      throw new IllegalArgumentException("Invalid special function " + methodUnit);
+    }
+  }
 
 	public BlockStatement makeThenBlock(final Statement statement) {
 		final BlockStatement blockStatement = new BlockStatement();

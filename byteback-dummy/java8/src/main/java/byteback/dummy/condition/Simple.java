@@ -4,6 +4,8 @@ import static byteback.annotations.Operator.eq;
 
 import byteback.annotations.Contract.Condition;
 import byteback.annotations.Contract.Ensure;
+import static byteback.annotations.Contract.assertion;
+import static byteback.annotations.Contract.assumption;
 
 public class Simple {
 
@@ -26,5 +28,13 @@ public class Simple {
 	public static int identity(int a) {
 		return a;
 	}
+
+  public static void singleAssertion() {
+    assertion(true);
+  }
+
+  public static void singleAssumption() {
+    assumption(true);
+  }
 
 }

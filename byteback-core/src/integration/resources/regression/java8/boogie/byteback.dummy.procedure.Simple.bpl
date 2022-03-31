@@ -221,3 +221,11 @@ label2:
 label1:
   return;
 }
+
+procedure byteback.dummy.procedure.Simple.callsPureEq##() returns ()
+{
+  var result: bool;
+  result := eq(~heap, 1, 1);
+
+  return;
+}

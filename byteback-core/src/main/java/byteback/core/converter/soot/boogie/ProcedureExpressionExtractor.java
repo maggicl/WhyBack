@@ -17,8 +17,8 @@ import soot.jimple.InvokeExpr;
 
 public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
-	public static TargetedCallStatement makeCall(final InvokeExpr invocation, final List<Expression> arguments) {
-		final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
+	public static TargetedCallStatement makeCall(final InvokeExpr invoke, final List<Expression> arguments) {
+		final SootMethodUnit methodUnit = new SootMethodUnit(invoke.getMethod());
 		final String methodName = NameConverter.methodName(methodUnit);
 		final TargetedCallStatement call = new TargetedCallStatement();
 		call.setAccessor(new Accessor(methodName));
@@ -37,27 +37,30 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		this.seed = seed;
 	}
 
-	public void pushCallResult(final InvokeExpr invocation, final List<Expression> arguments) {
-		final SootType type = new SootType(invocation.getType());
+	public void pushCallResult(final InvokeExpr invoke, final List<Expression> arguments) {
+		final SootType type = new SootType(invoke.getType());
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
 		final VariableDeclaration variableDeclaration = Prelude.generateVariableDeclaration(seed, typeAccess);
 		final ValueReference resultReference = Prelude.generateVariableReference(seed);
-		final TargetedCallStatement callStatement = makeCall(invocation, arguments);
+		final TargetedCallStatement callStatement = makeCall(invoke, arguments);
 		body.addLocalDeclaration(variableDeclaration);
 		callStatement.setTargetList(new List<SymbolicReference>(resultReference));
 		body.addStatement(callStatement);
 		pushExpression(resultReference);
 	}
 
+  public void pushSpecial(final InvokeExpr invoke, final List<Expression> arguments) {
+  }
+
 	@Override
-	public void pushFunctionReference(final InvokeExpr invocation, final List<Expression> arguments) {
-		final SootMethodUnit methodUnit = new SootMethodUnit(invocation.getMethod());
+	public void pushFunctionReference(final InvokeExpr invoke, final List<Expression> arguments) {
+		final SootMethodUnit methodUnit = new SootMethodUnit(invoke.getMethod());
 		final Optional<SootAnnotation> annotation = methodUnit.getAnnotation("Lbyteback/annotations/Contract$Prelude;");
 
 		if (annotation.isPresent()) {
-			super.pushFunctionReference(invocation, arguments);
+			super.pushFunctionReference(invoke, arguments);
 		} else {
-			pushCallResult(invocation, arguments);
+			pushCallResult(invoke, arguments);
 		}
 	}
 

@@ -100,7 +100,8 @@ public class ProcedureConverter {
 		final Collection<SootType> parameterTypes = target.getParameterTypes();
 		parameterTypes.add(target.getReturnType());
 		final SootType returnType = new SootType(BooleanType.v());
-		final SootMethodUnit source = target.getClassUnit().getMethodUnit(sourceName, parameterTypes, returnType).get();
+		final SootMethodUnit source = target.getClassUnit().getMethodUnit(sourceName, parameterTypes, returnType)
+				.orElseThrow(() -> new IllegalArgumentException("Could not find condition method " + sourceName));
 
 		return ConditionManager.instance().convert(source).getFunction().inline(arguments);
 	}

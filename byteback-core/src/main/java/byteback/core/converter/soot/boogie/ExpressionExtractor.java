@@ -31,6 +31,9 @@ import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
+
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Stack;
 import soot.BooleanType;
 import soot.Local;
@@ -129,12 +132,12 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	public List<Expression> makeArguments(final InvokeExpr invoke) {
 		final List<Expression> arguments = new List<>();
+    final Iterator<Type> type = invoke.getMethod().getParameterTypes().iterator();
+    final Iterator<Value> value = invoke.getArgs().iterator();
 
-		for (Value argument : invoke.getArgs()) {
-			final SootExpression expression = new SootExpression(argument);
-			final SootType type = new SootType(argument.getType());
-			arguments.add(visit(expression, type));
-		}
+    while (type.hasNext() && value.hasNext()) {
+      arguments.add(visit(new SootExpression(value.next()), new SootType(type.next())));
+    }
 
 		return arguments;
 	}

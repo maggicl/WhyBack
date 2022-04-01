@@ -114,50 +114,50 @@ public class SootContext {
 	/**
 	 * Loads a class in the {@link Scene}.
 	 *
-	 * @param className
+	 * @param name
 	 *            Qualified name of a class present in the Soot's classpath.
 	 * @return The Soot intermediate representation of the loaded class.
 	 */
-	public SootClass loadClass(final String className) throws ClassLoadException {
+	public SootClass loadClass(final String name) throws ClassLoadException {
 		try {
-			final soot.SootClass sootClass = scene().loadClass(className, soot.SootClass.BODIES);
-			log.info("Loaded {} in context", className);
+			final soot.SootClass sootClass = scene().loadClass(name, soot.SootClass.BODIES);
+			log.info("Loaded {} in context", name);
 
 			return new SootClass(sootClass);
 		} catch (AssertionError exception) {
-			log.error("Failed to load {}", className, exception);
-			throw new ClassLoadException(className);
+			log.error("Failed to load {}", name, exception);
+			throw new ClassLoadException(name);
 		}
 	}
 
 	/**
 	 * Loads a root class and its supporting classes in the {@link Scene}.
 	 *
-	 * @param className
+	 * @param name
 	 *            Qualified name of the root class present in the Soot's classpath.
 	 * @return The Soot intermediate representation of the loaded root class.
 	 */
-	public SootClass loadClassAndSupport(final String className) throws ClassLoadException {
+	public SootClass loadClassAndSupport(final String name) throws ClassLoadException {
 		try {
-			final soot.SootClass sootClass = scene().loadClassAndSupport(className);
-			log.info("Loaded {} and support classes in context", className);
+			final soot.SootClass sootClass = scene().loadClassAndSupport(name);
+			log.info("Loaded {} and support classes in context", name);
 
 			return new SootClass(sootClass);
 		} catch (AssertionError exception) {
-			log.error("Failed to load {}", className, exception);
-			throw new ClassLoadException(className);
+			log.error("Failed to load {}", name, exception);
+			throw new ClassLoadException(name);
 		}
 	}
 
 	/**
 	 * Returns a class unit that was already loaded into the context
 	 *
-	 * @param className
+	 * @param name
 	 *            Qualified name of the class.
-	 * @return The class corresponding to the given {@code className}.
+	 * @return The class corresponding to the given {@code name}.
 	 */
-	public Optional<SootClass> getSootClass(final String className) {
-		final soot.SootClass sootClass = scene().getSootClass(className);
+	public Optional<SootClass> getSootClass(final String name) {
+		final soot.SootClass sootClass = scene().getSootClass(name);
 
 		if (sootClass == null) {
 			return Optional.empty();

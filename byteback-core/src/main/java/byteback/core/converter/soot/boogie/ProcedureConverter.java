@@ -86,8 +86,8 @@ public class ProcedureConverter {
 		return body;
 	}
 
-	public static Stream<Expression> makeConditions(final SootMethod method, final String annotation) {
-		final Stream<String> sourceNames = method.getAnnotationValues(annotation)
+	public static Stream<Expression> makeConditions(final SootMethod method, final String typeName) {
+		final Stream<String> sourceNames = method.getAnnotationValues(typeName)
 				.map((element) -> new StringElementExtractor().visit(element));
 		final List<Expression> arguments = makeArguments(method);
 
@@ -119,13 +119,12 @@ public class ProcedureConverter {
 	}
 
 	public static List<Specification> makeSpecifications(final SootMethod method) {
-		final Stream<Specification> preconditions = makeConditions(method, "Lbyteback/annotations/Contract$Require;")
+		final Stream<Specification> preconditions = makeConditions(method, Contract.REQUIRE_ANNOTATION)
 				.map((expression) -> new PreCondition(false, expression));
-		final Stream<Specification> postconditions = makeConditions(method, "Lbyteback/annotations/Contract$Ensure;")
+		final Stream<Specification> postconditions = makeConditions(method, Contract.ENSURE_ANNOTATION)
 				.map((expression) -> new PostCondition(false, expression));
-		final Iterable<Specification> specifications = Stream.concat(preconditions, postconditions)::iterator;
 
-		return new List<Specification>().addAll(specifications);
+		return new List<Specification>().addAll(Stream.concat(preconditions, postconditions)::iterator);
 	}
 
 	public ProcedureDeclaration convert(final SootMethod method) {

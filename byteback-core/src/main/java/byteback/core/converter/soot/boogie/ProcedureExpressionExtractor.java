@@ -29,9 +29,12 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	final Body body;
 
+	final int seed;
+
 	public ProcedureExpressionExtractor(final SootType type, final Body body, final int seed) {
 		super(type);
 		this.body = body;
+		this.seed = seed;
 	}
 
 	public void pushCallResult(final InvokeExpr invoke, final List<Expression> arguments) {
@@ -52,7 +55,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 	@Override
 	public void pushFunctionReference(final InvokeExpr invoke, final List<Expression> arguments) {
 		final SootMethod method = new SootMethod(invoke.getMethod());
-		final Optional<SootAnnotation> annotation = method.getAnnotation("Lbyteback/annotations/Contract$Prelude;");
+		final Optional<SootAnnotation> annotation = method.getAnnotation(Contract.PURE_ANNOTATION);
 
 		if (annotation.isPresent()) {
 			super.pushFunctionReference(invoke, arguments);

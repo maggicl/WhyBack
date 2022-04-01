@@ -8,12 +8,12 @@ import byteback.core.representation.soot.unit.SootClass;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class SootContextIntegrationTest extends SootContextFixture {
 
-	@After
+	@Before
 	public void after() {
 		resetContext();
 	}
@@ -63,22 +63,21 @@ public class SootContextIntegrationTest extends SootContextFixture {
 	}
 
 	@Test
-	public void LoadClass_OnUnitClass_ReturnUnitClassRepresentation() throws FileNotFoundException, ClassLoadException {
+	public void LoadClass_OnUnitClass_ReturnsUnitClass() throws FileNotFoundException, ClassLoadException {
 		final Path classPath = ResourcesUtil.getJarPath("java8");
-		final String unitName = "byteback.dummy.context.Unit";
+		final String name = "byteback.dummy.context.Unit";
 		getContext().prependClassPath(classPath);
-		final SootClass clazz = getContext().loadClass(unitName);
-		assertEquals(clazz.getName(), unitName);
+		final SootClass clazz = getContext().loadClass(name);
+		assertEquals(clazz.getName(), name);
 	}
 
 	@Test
-	public void LoadClassAndSupport_OnUnitClass_ReturnUnitClassRepresentation()
-			throws FileNotFoundException, ClassLoadException {
+	public void LoadClassAndSupport_OnUnitClass_ReturnsUnitClass() throws FileNotFoundException, ClassLoadException {
 		final Path classPath = ResourcesUtil.getJarPath("java8");
-		final String unitName = "byteback.dummy.context.Unit";
+		final String name = "byteback.dummy.context.Unit";
 		getContext().prependClassPath(classPath);
 		final SootClass clazz = getContext().loadClassAndSupport("byteback.dummy.context.Unit");
-		assertEquals(clazz.getName(), unitName);
+		assertEquals(clazz.getName(), name);
 	}
 
 	@Test(expected = ClassLoadException.class)
@@ -129,10 +128,10 @@ public class SootContextIntegrationTest extends SootContextFixture {
 	public void Classes_AfterLoadingUnitClass_ReturnsStreamContainingUnitClass()
 			throws FileNotFoundException, ClassLoadException {
 		final Path classPath = ResourcesUtil.getJarPath("java8");
-		final String unitName = "byteback.dummy.context.StaticInitializer";
+		final String name = "byteback.dummy.context.StaticInitializer";
 		getContext().prependClassPath(classPath);
-		getContext().loadClass(unitName);
-		assertTrue(getContext().classes().anyMatch((clazz) -> clazz.getName().equals(unitName)));
+		getContext().loadClass(name);
+		assertTrue(getContext().classes().anyMatch((clazz) -> clazz.getName().equals(name)));
 	}
 
 }

@@ -119,8 +119,8 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	public void pushFunctionReference(final InvokeExpr invoke, final List<Expression> arguments) {
 		final FunctionReference functionReference = new FunctionReference();
 		final SootMethod method = new SootMethod(invoke.getMethod());
-		final String methodName = method.getAnnotation("Lbyteback/annotations/Contract$Prelude;")
-				.flatMap(SootAnnotation::getValue).map((element) -> new StringElementExtractor().visit(element))
+		final String methodName = method.getAnnotation(Contract.PRELUDE_ANNOTATION).flatMap(SootAnnotation::getValue)
+				.map((element) -> new StringElementExtractor().visit(element))
 				.orElseGet(() -> NameConverter.methodName(method));
 		arguments.insertChild(Prelude.getHeapVariable().getValueReference(), 0);
 		functionReference.setAccessor(new Accessor(methodName));
@@ -325,8 +325,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseDefault(final Value expression) {
-		throw new UnsupportedOperationException(
-				"Unable to convert Jimple expression " + expression + " to Boogie");
+		throw new UnsupportedOperationException("Unable to convert Jimple expression " + expression + " to Boogie");
 	}
 
 	@Override

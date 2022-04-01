@@ -21,11 +21,7 @@ import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
-import byteback.frontend.boogie.ast.VariableDeclaration;
-
 import java.util.Map;
-import java.util.function.Supplier;
-
 import soot.Local;
 import soot.Unit;
 import soot.Value;
@@ -40,12 +36,6 @@ import soot.jimple.ReturnVoidStmt;
 
 public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
-  private static Supplier<VariableDeclaration> makeVariableSupplier() {
-    final Integer counter = 0;
-
-    return () -> counter++;
-  }
-
 	private final Map<Unit, Label> labelTable;
 
 	private final Body body;
@@ -54,7 +44,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final InnerExtractor extractor;
 
-	private final Supplier<VariableDeclaration> variableSupplier;
+	private int seed = 0;
 
 	private class InnerExtractor extends SootStatementVisitor<Body> {
 
@@ -62,7 +52,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseAssignStmt(final AssignStmt assignment) {
 			final SootExpression left = new SootExpression(assignment.getLeftOp());
 			final SootExpression right = new SootExpression(assignment.getRightOp());
-			final Expression boogieRight = new ProcedureExpressionExtractor(left.getType(), body, variableSupplier.get()).visit(right);
+			final Expression boogieRight = new ProcedureExpressionExtractor(left.getType(), body, seed++).visit(right);
 
 			left.apply(new SootExpressionVisitor<>() {
 
@@ -85,8 +75,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 				@Override
 				public void caseDefault(final Value value) {
-					throw new IllegalArgumentException(
-							"Unknown left hand side argument in assignment: " + assignment);
+					throw new IllegalArgumentException("Unknown left hand side argument in assignment: " + assignment);
 				}
 
 			});
@@ -157,7 +146,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.returnType = returnType;
 		this.labelTable = labelTable;
 		this.extractor = new InnerExtractor();
-    this.variableSupplier = makeVariableSupplier();
+		this.seed = 0;
 	}
 
 	public void addSpecialStatement(final SootMethod method, final List<Expression> arguments) {

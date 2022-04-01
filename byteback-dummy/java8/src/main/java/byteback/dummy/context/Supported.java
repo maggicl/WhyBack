@@ -1,13 +1,11 @@
 package byteback.dummy.context;
 
-import byteback.dummy.procedure.Simple;
-
 public class Supported {
 
-	final Simple support;
+	final Unit support;
 
 	public Supported() {
-		this.support = new Simple();
+		this.support = new Unit();
 	}
 
 }

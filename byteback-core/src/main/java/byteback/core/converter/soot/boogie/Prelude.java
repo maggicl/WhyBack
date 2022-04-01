@@ -147,14 +147,6 @@ public class Prelude {
 		return fieldTypeAccess;
 	}
 
-	public static FunctionReference getOperator(final String name, final TypeAccess typeAccess) {
-		final String typeName = PrintUtil.toString(typeAccess);
-
-		return loadProgram().lookupFunction(name + "_" + typeName).orElseThrow(
-				() -> new IllegalStateException("Missing definition for the " + name + " operator of type " + typeName))
-				.makeFunctionReference();
-	}
-
 	public static BoundedBindingBuilder getReturnBindingBuilder() {
 		return new BoundedBindingBuilder().addName("~ret");
 	}

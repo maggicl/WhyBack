@@ -83,16 +83,16 @@ public class SootMethod {
 		return new SootClass(sootMethod.getDeclaringClass());
 	}
 
-	public Optional<SootAnnotation> getAnnotation(final String type) {
-		return getAnnotations(type).findFirst();
+	public Optional<SootAnnotation> getAnnotation(final String name) {
+		return getAnnotations(name).findFirst();
 	}
 
-	public Stream<SootAnnotation> getAnnotations(final String type) {
-		return annotations().filter((tag) -> tag.getTypeName().equals(type));
+	public Stream<SootAnnotation> getAnnotations(final String name) {
+		return annotations().filter((tag) -> tag.getTypeName().equals(name));
 	}
 
-	public Stream<SootAnnotationElement> getAnnotationValues(final String type) {
-		return getAnnotations(type).flatMap((annotation) -> annotation.getValue().stream());
+	public Stream<SootAnnotationElement> getAnnotationValues(final String name) {
+		return getAnnotations(name).flatMap((annotation) -> annotation.getValue().stream());
 	}
 
 	public Stream<SootAnnotation> annotations() {

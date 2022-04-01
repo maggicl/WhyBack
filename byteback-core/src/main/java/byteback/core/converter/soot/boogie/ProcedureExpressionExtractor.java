@@ -31,8 +31,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	final int seed;
 
-	public ProcedureExpressionExtractor(final SootType type, final Body body, final int seed) {
-		super(type);
+	public ProcedureExpressionExtractor(final Body body, final int seed) {
 		this.body = body;
 		this.seed = seed;
 	}

@@ -33,14 +33,14 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 		final SootExpression left = new SootExpression(assignment.getLeftOp());
 		final SootExpression right = new SootExpression(assignment.getRightOp());
 		final Local local = new SootLocalExtractor().visit(left);
-		final Expression boogieExpression = new InlineExtractor(left.getType(), expressionTable).visit(right);
+		final Expression boogieExpression = new InlineExtractor(expressionTable).visit(right, left.getType());
 		expressionTable.put(local, Optional.of(boogieExpression));
 	}
 
 	@Override
 	public void caseReturnStmt(final ReturnStmt returnStatement) {
 		final SootExpression operand = new SootExpression(returnStatement.getOp());
-		result = new InlineExtractor(returnType, expressionTable).visit(operand);
+		result = new InlineExtractor(expressionTable).visit(operand, returnType);
 
 		for (Entry<Local, Integer> entry : expressionTable.getAccessCount().entrySet()) {
 			if (entry.getValue() == 0) {

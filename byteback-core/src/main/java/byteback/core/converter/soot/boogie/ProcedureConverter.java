@@ -103,7 +103,7 @@ public class ProcedureConverter {
 		final SootMethod source = target.getSootClass().getSootMethod(sourceName, parameterTypes, returnType)
 				.orElseThrow(() -> new IllegalArgumentException("Could not find condition method " + sourceName));
 
-		return ConditionManager.instance().convert(source).getFunction().inline(arguments);
+		return FunctionManager.instance().convert(source).getFunction().inline(arguments);
 	}
 
 	public static List<Expression> makeArguments(final SootMethod method) {

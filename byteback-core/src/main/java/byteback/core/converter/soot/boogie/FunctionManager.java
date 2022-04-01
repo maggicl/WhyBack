@@ -5,17 +5,17 @@ import byteback.frontend.boogie.ast.FunctionDeclaration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ConditionManager {
+public class FunctionManager {
 
-	private static final ConditionManager instance = new ConditionManager();
+	private static final FunctionManager instance = new FunctionManager();
 
 	private final Map<SootMethod, FunctionDeclaration> cache;
 
-	public static ConditionManager instance() {
+	public static FunctionManager instance() {
 		return instance;
 	}
 
-	private ConditionManager() {
+	private FunctionManager() {
 		this.cache = new ConcurrentHashMap<>();
 	}
 

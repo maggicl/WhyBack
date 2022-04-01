@@ -71,18 +71,9 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	protected final Stack<SootType> types;
 
-	public ExpressionExtractor(final SootType type) {
+	public ExpressionExtractor() {
 		this.operands = new Stack<>();
 		this.types = new Stack<>();
-		types.push(type);
-	}
-
-	public ExpressionExtractor() {
-		this(new SootType(UnknownType.v()));
-	}
-
-	public Expression visit(final SootExpression expression) {
-		return visit(expression, types.peek());
 	}
 
 	public Expression visit(final SootExpression expression, final SootType type) {
@@ -90,6 +81,10 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 		return super.visit(expression);
 	}
+
+  public Expression visit(final SootExpression expression) {
+    return visit(expression, new SootType(UnknownType.v()));
+  }
 
 	public SootType getType() {
 		return types.peek();
@@ -102,8 +97,8 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	public void pushBinaryExpression(final BinopExpr sootExpression, final BinaryExpression boogieBinary) {
 		final SootExpression left = new SootExpression(sootExpression.getOp1());
 		final SootExpression right = new SootExpression(sootExpression.getOp2());
-		boogieBinary.setLeftOperand(visit(left));
-		boogieBinary.setRightOperand(visit(right));
+		boogieBinary.setLeftOperand(visit(left, getType()));
+		boogieBinary.setRightOperand(visit(right, getType()));
 		pushExpression(boogieBinary);
 	}
 

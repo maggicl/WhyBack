@@ -13,7 +13,6 @@ import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.IntegerType;
 import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.List;
-import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.RealType;
 import byteback.frontend.boogie.ast.Statement;

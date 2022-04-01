@@ -1,6 +1,5 @@
 package byteback.core.converter.soot.boogie;
 
-import byteback.core.representation.soot.type.SootType;
 import byteback.frontend.boogie.ast.Expression;
 import java.util.Map;
 import java.util.Optional;
@@ -10,8 +9,7 @@ public class InlineExtractor extends ExpressionExtractor {
 
 	private final Map<Local, Optional<Expression>> expressionTable;
 
-	public InlineExtractor(final SootType type, final Map<Local, Optional<Expression>> expressionTable) {
-		super(type);
+	public InlineExtractor(final Map<Local, Optional<Expression>> expressionTable) {
 		this.expressionTable = expressionTable;
 	}
 

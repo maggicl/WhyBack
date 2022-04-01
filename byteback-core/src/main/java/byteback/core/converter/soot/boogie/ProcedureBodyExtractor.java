@@ -22,6 +22,7 @@ import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
 import java.util.Map;
+import soot.IntType;
 import soot.Local;
 import soot.Unit;
 import soot.Value;
@@ -52,7 +53,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseAssignStmt(final AssignStmt assignment) {
 			final SootExpression left = new SootExpression(assignment.getLeftOp());
 			final SootExpression right = new SootExpression(assignment.getRightOp());
-			final Expression boogieRight = new ProcedureExpressionExtractor(left.getType(), body, seed++).visit(right);
+			final Expression boogieRight = new ProcedureExpressionExtractor(body, seed++).visit(right, left.getType());
 
 			left.apply(new SootExpressionVisitor<>() {
 
@@ -91,7 +92,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 			final SootExpression operand = new SootExpression(returnStatement.getOp());
 			final ValueReference valueReference = Prelude.getReturnValueReference();
 			final Assignee assignee = new Assignee(valueReference);
-			final Expression expression = new ExpressionExtractor(returnType).visit(operand);
+			final Expression expression = new ExpressionExtractor().visit(operand, returnType);
 			addSingleAssignment(assignee, expression);
 			addStatement(new ReturnStatement());
 		}
@@ -107,7 +108,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseIfStmt(final IfStmt ifStatement) {
 			final Unit targetUnit = ifStatement.getTarget();
 			final SootExpression condition = new SootExpression(ifStatement.getCondition());
-			final Expression boogieCondition = new IntegerExpressionExtractor().visit(condition);
+			final Expression boogieCondition = new CastingExtractor().visit(condition, new SootType(IntType.v()));
 			final IfStatement boogieIfStatement = new IfStatement();
 			final Label label = labelTable.get(targetUnit);
 			final BlockStatement boogieThenBlock = makeThenBlock(new GotoStatement(label));

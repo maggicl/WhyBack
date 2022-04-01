@@ -22,7 +22,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
 	public void PrependClasspath_WithValidClasspath_ModifiesSootClasspath() {
 		final Path classPath = Paths.get("test", "class", "path");
 		getContext().prependClassPath(classPath);
-		final Path prependedPath = getContext().getClassPath().get(0);
+		final Path prependedPath = getContext().getSootClassPath().get(0);
 		assertEquals(classPath.toAbsolutePath(), prependedPath);
 	}
 
@@ -30,7 +30,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
 	public void PrependClasspath_WithCurrentDirectoryPath_AppendsCurrentDirectoryToSootClasspath() {
 		final Path classPath = Paths.get(".");
 		getContext().prependClassPath(classPath);
-		final Path prependedPath = getContext().getClassPath().get(0);
+		final Path prependedPath = getContext().getSootClassPath().get(0);
 		assertEquals(classPath.toAbsolutePath(), prependedPath);
 	}
 
@@ -38,7 +38,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
 	public void PrependClasspath_WithEmptyPath_AppendsCurrentDirectoryToSootClasspath() {
 		final Path classPath = Paths.get("");
 		getContext().prependClassPath(classPath);
-		final Path prependedPath = getContext().getClassPath().get(0);
+		final Path prependedPath = getContext().getSootClassPath().get(0);
 		assertEquals(classPath.toAbsolutePath(), prependedPath);
 	}
 
@@ -67,8 +67,8 @@ public class SootContextIntegrationTest extends SootContextFixture {
 		final Path classPath = ResourcesUtil.getJarPath("java8");
 		final String unitName = "byteback.dummy.context.Unit";
 		getContext().prependClassPath(classPath);
-		final SootClass classUnit = getContext().loadClass(unitName);
-		assertEquals(classUnit.getName(), unitName);
+		final SootClass clazz = getContext().loadClass(unitName);
+		assertEquals(clazz.getName(), unitName);
 	}
 
 	@Test
@@ -77,8 +77,8 @@ public class SootContextIntegrationTest extends SootContextFixture {
 		final Path classPath = ResourcesUtil.getJarPath("java8");
 		final String unitName = "byteback.dummy.context.Unit";
 		getContext().prependClassPath(classPath);
-		final SootClass classUnit = getContext().loadClassAndSupport("byteback.dummy.context.Unit");
-		assertEquals(classUnit.getName(), unitName);
+		final SootClass clazz = getContext().loadClassAndSupport("byteback.dummy.context.Unit");
+		assertEquals(clazz.getName(), unitName);
 	}
 
 	@Test(expected = ClassLoadException.class)

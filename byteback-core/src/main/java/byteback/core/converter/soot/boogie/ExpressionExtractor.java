@@ -31,7 +31,6 @@ import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
-
 import java.util.Iterator;
 import java.util.Stack;
 import soot.BooleanType;
@@ -119,10 +118,10 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	public void pushFunctionReference(final InvokeExpr invoke, final List<Expression> arguments) {
 		final FunctionReference functionReference = new FunctionReference();
-		final SootMethod methodUnit = new SootMethod(invoke.getMethod());
-		final String methodName = methodUnit.getAnnotation("Lbyteback/annotations/Contract$Prelude;")
+		final SootMethod method = new SootMethod(invoke.getMethod());
+		final String methodName = method.getAnnotation("Lbyteback/annotations/Contract$Prelude;")
 				.flatMap(SootAnnotation::getValue).map((element) -> new StringElementExtractor().visit(element))
-				.orElseGet(() -> NameConverter.methodName(methodUnit));
+				.orElseGet(() -> NameConverter.methodName(method));
 		arguments.insertChild(Prelude.getHeapVariable().getValueReference(), 0);
 		functionReference.setAccessor(new Accessor(methodName));
 		functionReference.setArgumentList(arguments);
@@ -131,12 +130,12 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	public List<Expression> makeArguments(final InvokeExpr invoke) {
 		final List<Expression> arguments = new List<>();
-    final Iterator<Type> type = invoke.getMethod().getParameterTypes().iterator();
-    final Iterator<Value> value = invoke.getArgs().iterator();
+		final Iterator<Type> type = invoke.getMethod().getParameterTypes().iterator();
+		final Iterator<Value> value = invoke.getArgs().iterator();
 
-    while (type.hasNext() && value.hasNext()) {
-      arguments.add(visit(new SootExpression(value.next()), new SootType(type.next())));
-    }
+		while (type.hasNext() && value.hasNext()) {
+			arguments.add(visit(new SootExpression(value.next()), new SootType(type.next())));
+		}
 
 		return arguments;
 	}
@@ -327,7 +326,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	@Override
 	public void caseDefault(final Value expression) {
 		throw new UnsupportedOperationException(
-				"Unable to convert Jimple expression of type " + expression.getClass() + " to Boogie");
+				"Unable to convert Jimple expression " + expression + " to Boogie");
 	}
 
 	@Override

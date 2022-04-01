@@ -23,16 +23,16 @@ public class ProcedureConverterIntegrationTest extends ConverterFixture {
 	@Parameters
 	public static Iterable<RegressionParameter<ProcedureDeclaration>> getParameters() throws IOException {
 		return getRegressionEntries("java8").flatMap((entry) -> {
-			final SootClass classUnit = entry.getKey();
+			final SootClass clazz = entry.getKey();
 			final Program program = entry.getValue();
 
-			return classUnit.methods().flatMap((methodUnit) -> {
-				final String boogieName = NameConverter.methodName(methodUnit);
+			return clazz.methods().flatMap((method) -> {
+				final String boogieName = NameConverter.methodName(method);
 				final Optional<ProcedureDeclaration> expected = program.lookupProcedure(boogieName)
 						.map(Procedure::getProcedureDeclaration);
 
 				if (expected.isPresent()) {
-					final ProcedureDeclaration actual = ProcedureConverter.instance().convert(methodUnit);
+					final ProcedureDeclaration actual = ProcedureConverter.instance().convert(method);
 
 					return Stream.of(new RegressionParameter<>(expected.get(), actual));
 				} else {

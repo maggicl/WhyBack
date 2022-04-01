@@ -14,14 +14,14 @@ public class FieldConverter {
 		return instance;
 	}
 
-	public ConstantDeclaration convert(final SootField fieldUnit) {
+	public ConstantDeclaration convert(final SootField field) {
 		final ConstantDeclaration constantDeclaration = new ConstantDeclaration();
 		final SetBinding binding = new SetBinding();
-		final TypeAccess baseTypeAccess = new TypeAccessExtractor().visit(fieldUnit.getType());
+		final TypeAccess baseTypeAccess = new TypeAccessExtractor().visit(field.getType());
 		final TypeAccess fieldTypeAccess = Prelude.getFieldTypeAccess(baseTypeAccess);
 		constantDeclaration.setBinding(binding);
 		binding.setTypeAccess(fieldTypeAccess);
-		binding.addDeclarator(new Declarator(NameConverter.fieldName(fieldUnit)));
+		binding.addDeclarator(new Declarator(NameConverter.fieldName(field)));
 
 		return constantDeclaration;
 	}

@@ -84,8 +84,8 @@ public class Simple {
 		}
 	}
 
-  public static void callsPureEq() {
-    boolean result = eq(1, 1);
-  }
+	public static void callsPureEq() {
+		boolean result = eq(1, 1);
+	}
 
 }

@@ -20,14 +20,14 @@ public class FieldConverterIntegrationTest extends ConverterFixture {
 	@Parameters
 	public static Iterable<RegressionParameter<ConstantDeclaration>> getParameters() throws IOException {
 		return getRegressionEntries("java8").flatMap((entry) -> {
-			final SootClass classUnit = entry.getKey();
+			final SootClass clazz = entry.getKey();
 			final Program program = entry.getValue();
 
-			return classUnit.fields().map((fieldUnit) -> {
-				final String boogieName = NameConverter.fieldName(fieldUnit);
+			return clazz.fields().map((field) -> {
+				final String boogieName = NameConverter.fieldName(field);
 				final ConstantDeclaration expected = program.lookupVariable(boogieName)
 						.flatMap(Variable::getConstantDeclaration).get();
-				final ConstantDeclaration actual = FieldConverter.instance().convert(fieldUnit);
+				final ConstantDeclaration actual = FieldConverter.instance().convert(field);
 
 				return new RegressionParameter<>(expected, actual);
 			});

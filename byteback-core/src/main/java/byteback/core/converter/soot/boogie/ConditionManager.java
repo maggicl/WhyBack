@@ -19,8 +19,8 @@ public class ConditionManager {
 		this.cache = new ConcurrentHashMap<>();
 	}
 
-	public FunctionDeclaration convert(final SootMethod methodUnit) {
-		return cache.computeIfAbsent(methodUnit, FunctionConverter.instance()::convert);
+	public FunctionDeclaration convert(final SootMethod method) {
+		return cache.computeIfAbsent(method, FunctionConverter.instance()::convert);
 	}
 
 }

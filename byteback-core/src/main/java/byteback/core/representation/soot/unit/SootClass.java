@@ -79,12 +79,12 @@ public class SootClass {
 		return sootClass.getFields().stream().map(SootField::new);
 	}
 
-	public Optional<SootMethod> getMethodUnit(final String name, final Collection<SootType> parameterTypes,
-											  final SootType returnType) {
+	public Optional<SootMethod> getSootMethod(final String name, final Collection<SootType> parameterTypes,
+			final SootType returnType) {
 
 		final String signature = SootMethod.formatSignature(name, parameterTypes, returnType);
 
-		return Optional.ofNullable(new SootMethod(sootClass.getMethod(signature)));
+		return Optional.of(new SootMethod(sootClass.getMethod(signature)));
 	}
 
 }

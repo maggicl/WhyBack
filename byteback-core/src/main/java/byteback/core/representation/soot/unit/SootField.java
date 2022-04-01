@@ -14,7 +14,7 @@ public class SootField {
 		return sootField.getName();
 	}
 
-	public SootClass getClassUnit() {
+	public SootClass getSootClass() {
 		return new SootClass(sootField.getDeclaringClass());
 	}
 

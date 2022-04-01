@@ -7,12 +7,12 @@ import java.util.Iterator;
 
 public class NameConverter {
 
-	static String methodName(SootMethod methodUnit) {
+	static String methodName(SootMethod method) {
 		final StringBuilder builder = new StringBuilder();
-		final Iterator<SootType> typeIterator = methodUnit.getParameterTypes().iterator();
-		builder.append(methodUnit.getClassUnit().getName());
+		final Iterator<SootType> typeIterator = method.getParameterTypes().iterator();
+		builder.append(method.getSootClass().getName());
 		builder.append(".");
-		builder.append(methodUnit.getName());
+		builder.append(method.getName());
 		builder.append("#");
 
 		while (typeIterator.hasNext()) {
@@ -20,16 +20,16 @@ public class NameConverter {
 			builder.append("#");
 		}
 
-		if (methodUnit.getParameterTypes().size() == 0) {
+		if (method.getParameterTypes().size() == 0) {
 			builder.append("#");
 		}
 
 		return builder.toString();
 	}
 
-	static String fieldName(final SootField fieldUnit) {
-		final String fieldName = fieldUnit.getName();
-		final String className = fieldUnit.getClassUnit().getName();
+	static String fieldName(final SootField field) {
+		final String fieldName = field.getName();
+		final String className = field.getSootClass().getName();
 
 		return className + "." + fieldName;
 	}

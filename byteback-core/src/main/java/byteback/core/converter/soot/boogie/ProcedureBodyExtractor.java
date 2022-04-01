@@ -21,7 +21,11 @@ import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
+import byteback.frontend.boogie.ast.VariableDeclaration;
+
 import java.util.Map;
+import java.util.function.Supplier;
+
 import soot.Local;
 import soot.Unit;
 import soot.Value;
@@ -36,6 +40,12 @@ import soot.jimple.ReturnVoidStmt;
 
 public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
+  private static Supplier<VariableDeclaration> makeVariableSupplier() {
+    final Integer counter = 0;
+
+    return () -> counter++;
+  }
+
 	private final Map<Unit, Label> labelTable;
 
 	private final Body body;
@@ -44,7 +54,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final InnerExtractor extractor;
 
-	private int seed;
+	private final Supplier<VariableDeclaration> variableSupplier;
 
 	private class InnerExtractor extends SootStatementVisitor<Body> {
 
@@ -52,7 +62,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseAssignStmt(final AssignStmt assignment) {
 			final SootExpression left = new SootExpression(assignment.getLeftOp());
 			final SootExpression right = new SootExpression(assignment.getRightOp());
-			final Expression boogieRight = new ProcedureExpressionExtractor(left.getType(), body, seed++).visit(right);
+			final Expression boogieRight = new ProcedureExpressionExtractor(left.getType(), body, variableSupplier.get()).visit(right);
 
 			left.apply(new SootExpressionVisitor<>() {
 
@@ -76,7 +86,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 				@Override
 				public void caseDefault(final Value value) {
 					throw new IllegalArgumentException(
-							"Unknown lhs argument for assignment: " + value.getClass().getName());
+							"Unknown left hand side argument in assignment: " + assignment);
 				}
 
 			});
@@ -121,18 +131,18 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 			final InvokeExpr invokeExpression = invokeStatement.getInvokeExpr();
 			final List<Expression> arguments = new ExpressionExtractor().makeArguments(invokeExpression);
-      final SootMethod methodUnit = new SootMethod(invokeExpression.getMethod());
+			final SootMethod method = new SootMethod(invokeExpression.getMethod());
 
-      if (methodUnit.getClassUnit().getName().equals("byteback.annotations.Contract")) {
-        addSpecialStatement(methodUnit, arguments);
-      } else {
-        addStatement(ProcedureExpressionExtractor.makeCall(invokeExpression, arguments));
-      }
+			if (method.getSootClass().getName().equals("byteback.annotations.Contract")) {
+				addSpecialStatement(method, arguments);
+			} else {
+				addStatement(ProcedureExpressionExtractor.makeCall(invokeExpression, arguments));
+			}
 		}
 
 		@Override
 		public void caseDefault(final Unit unit) {
-			throw new IllegalArgumentException("Cannot extract statement of type " + unit.getClass().getName());
+			throw new IllegalArgumentException("Cannot extract procedure with statement " + unit);
 		}
 
 		@Override
@@ -146,21 +156,21 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.body = body;
 		this.returnType = returnType;
 		this.labelTable = labelTable;
-		this.seed = 0;
 		this.extractor = new InnerExtractor();
+    this.variableSupplier = makeVariableSupplier();
 	}
 
-  public void addSpecialStatement(final SootMethod methodUnit, final List<Expression> arguments) {
-    if (methodUnit.getName().equals("assertion")) {
-      assert arguments.getNumChild() == 1;
-      addStatement(new AssertStatement(arguments.getChild(0)));
-    } else if (methodUnit.getName().equals("assumption")) {
-      assert arguments.getNumChild() == 1;
-      addStatement(new AssumeStatement(arguments.getChild(0)));
-    } else {
-      throw new IllegalArgumentException("Invalid special function " + methodUnit);
-    }
-  }
+	public void addSpecialStatement(final SootMethod method, final List<Expression> arguments) {
+		if (method.getName().equals("assertion")) {
+			assert arguments.getNumChild() == 1;
+			addStatement(new AssertStatement(arguments.getChild(0)));
+		} else if (method.getName().equals("assumption")) {
+			assert arguments.getNumChild() == 1;
+			addStatement(new AssumeStatement(arguments.getChild(0)));
+		} else {
+			throw new IllegalArgumentException("Invalid special function " + method);
+		}
+	}
 
 	public BlockStatement makeThenBlock(final Statement statement) {
 		final BlockStatement blockStatement = new BlockStatement();

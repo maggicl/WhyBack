@@ -20,15 +20,15 @@ public class FunctionConverterIntegrationTest extends ConverterFixture {
 	@Parameters
 	public static Iterable<RegressionParameter<FunctionDeclaration>> getParameters() throws IOException {
 		return getRegressionEntries("java8").flatMap((entry) -> {
-			final SootClass classUnit = entry.getKey();
+			final SootClass clazz = entry.getKey();
 			final Program program = entry.getValue();
 
-			return classUnit.methods().flatMap((methodUnit) -> {
-				if (methodUnit.getAnnotation("Lbyteback/annotations/Contract$Pure;").isPresent()) {
-					final String boogieName = NameConverter.methodName(methodUnit);
+			return clazz.methods().flatMap((method) -> {
+				if (method.getAnnotation("Lbyteback/annotations/Contract$Pure;").isPresent()) {
+					final String boogieName = NameConverter.methodName(method);
 					final FunctionDeclaration expected = program.lookupFunction(boogieName).get()
 							.getFunctionDeclaration();
-					final FunctionDeclaration actual = FunctionConverter.instance().convert(methodUnit);
+					final FunctionDeclaration actual = FunctionConverter.instance().convert(method);
 
 					return Stream.of(new RegressionParameter<>(expected, actual));
 				}

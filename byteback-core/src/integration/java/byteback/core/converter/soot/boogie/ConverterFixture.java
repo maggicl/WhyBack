@@ -21,11 +21,11 @@ public class ConverterFixture extends SootClassFixture {
 		return ResourcesUtil.getBoogiePaths(jarName).flatMap((path) -> {
 			final String fileName = path.getFileName().toString();
 			final String className = fileName.substring(0, fileName.lastIndexOf("."));
-			final SootClass classUnit = getClassUnit(jarName, className);
+			final SootClass clazz = getSootClass(jarName, className);
 
 			try {
 				final Program program = ParserUtil.parseBoogieProgram(path);
-				return Stream.of(new SimpleEntry<>(classUnit, program));
+				return Stream.of(new SimpleEntry<>(clazz, program));
 			} catch (final IOException exception) {
 				log.error("Error while opening Boogie file {}", path, exception);
 			} catch (final Parser.Exception exception) {

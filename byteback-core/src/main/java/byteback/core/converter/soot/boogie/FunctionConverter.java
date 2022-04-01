@@ -33,15 +33,15 @@ public class FunctionConverter {
 		return bindingBuilder.build();
 	}
 
-	public static FunctionSignature makeSignature(final SootMethod methodUnit) {
+	public static FunctionSignature makeSignature(final SootMethod method) {
 		final FunctionSignatureBuilder signatureBuilder = new FunctionSignatureBuilder();
 		signatureBuilder.addInputBinding(Prelude.getHeapVariable().makeOptionalBinding());
 
-		for (Local local : methodUnit.getBody().getParameterLocals()) {
+		for (Local local : method.getBody().getParameterLocals()) {
 			signatureBuilder.addInputBinding(makeBinding(local));
 		}
 
-		methodUnit.getReturnType().apply(new SootTypeVisitor<>() {
+		method.getReturnType().apply(new SootTypeVisitor<>() {
 
 			@Override
 			public void caseVoidType(final VoidType type) {
@@ -50,7 +50,7 @@ public class FunctionConverter {
 
 			@Override
 			public void caseDefault(final Type type) {
-				final TypeAccess boogieTypeAccess = new TypeAccessExtractor().visit(methodUnit.getReturnType());
+				final TypeAccess boogieTypeAccess = new TypeAccessExtractor().visit(method.getReturnType());
 				final OptionalBinding boogieBinding = new OptionalBindingBuilder().typeAccess(boogieTypeAccess).build();
 				signatureBuilder.outputBinding(boogieBinding);
 			}
@@ -60,13 +60,13 @@ public class FunctionConverter {
 		return signatureBuilder.build();
 	}
 
-	public FunctionDeclaration convert(final SootMethod methodUnit) {
+	public FunctionDeclaration convert(final SootMethod method) {
 		final FunctionDeclarationBuilder functionBuilder = new FunctionDeclarationBuilder();
-		final FunctionSignature boogieSignature = makeSignature(methodUnit);
-		final SootBody body = methodUnit.getBody();
-		final SootType returnType = methodUnit.getReturnType();
+		final FunctionSignature boogieSignature = makeSignature(method);
+		final SootBody body = method.getBody();
+		final SootType returnType = method.getReturnType();
 		final Expression boogieExpression = new FunctionBodyExtractor(returnType).visit(body);
-		functionBuilder.name(NameConverter.methodName(methodUnit));
+		functionBuilder.name(NameConverter.methodName(method));
 		functionBuilder.signature(boogieSignature);
 		functionBuilder.expression(boogieExpression);
 

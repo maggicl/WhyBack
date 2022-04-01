@@ -105,7 +105,7 @@ public class SootContext {
 	 *
 	 * @return Current classpath loaded in the scene.
 	 */
-	public List<Path> getClassPath() {
+	public List<Path> getSootClassPath() {
 		final String[] parts = scene().getSootClassPath().split(":");
 
 		return Arrays.stream(parts).map(Paths::get).collect(Collectors.toList());
@@ -156,7 +156,7 @@ public class SootContext {
 	 *            Qualified name of the class.
 	 * @return The class corresponding to the given {@code className}.
 	 */
-	public Optional<SootClass> getClass(final String className) {
+	public Optional<SootClass> getSootClass(final String className) {
 		final soot.SootClass sootClass = scene().getSootClass(className);
 
 		if (sootClass == null) {

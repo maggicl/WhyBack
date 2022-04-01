@@ -8,23 +8,21 @@ public class SootMethodIntegrationTest extends SootMethodFixture {
 
 	@Test
 	public void GetName_GivenUnitIdentityMethod_ReturnsMatchingName() {
-		final SootMethod methodUnit = getMethodUnit("java8", "byteback.dummy.context.Unit",
-				"identity(java.lang.Object)");
-		assertEquals("identity", methodUnit.getName());
+		final SootMethod method = getSootMethod("java8", "byteback.dummy.context.Unit", "identity(java.lang.Object)");
+		assertEquals("identity", method.getName());
 	}
 
 	@Test
 	public void GetIdentifier_GivenUnitIdentityMethod_ReturnsMatchingIdentifier() {
 		final String identifier = "identity(java.lang.Object)";
-		final SootMethod methodUnit = getMethodUnit("java8", "byteback.dummy.context.Unit", identifier);
-		assertEquals(identifier, methodUnit.getIdentifier());
+		final SootMethod method = getSootMethod("java8", "byteback.dummy.context.Unit", identifier);
+		assertEquals(identifier, method.getIdentifier());
 	}
 
 	@Test
 	public void GetBody_GivenUnitIdentityMethod_ReturnsTwoStatementsBody() {
-		final SootMethod methodUnit = getMethodUnit("java8", "byteback.dummy.context.Unit",
-				"identity(java.lang.Object)");
-		assertEquals(2, methodUnit.getBody().getStatementCount());
+		final SootMethod method = getSootMethod("java8", "byteback.dummy.context.Unit", "identity(java.lang.Object)");
+		assertEquals(2, method.getBody().getStatementCount());
 	}
 
 }

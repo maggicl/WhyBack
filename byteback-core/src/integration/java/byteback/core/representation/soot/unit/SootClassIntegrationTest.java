@@ -12,47 +12,47 @@ public class SootClassIntegrationTest extends SootClassFixture {
 	@Test
 	public void GetName_GivenUnitClass_ReturnsCorrectName() {
 		final String unitName = "byteback.dummy.context.Unit";
-		final SootClass classUnit = getClassUnit("java8", unitName);
-		assertEquals(classUnit.getName(), unitName);
+		final SootClass clazz = getSootClass("java8", unitName);
+		assertEquals(clazz.getName(), unitName);
 	}
 
 	@Test
 	public void GetType_GivenUnitClass_ReturnsCorrectSootType() {
 		final String unitName = "byteback.dummy.context.Unit";
-		final SootClass classUnit = getClassUnit("java8", unitName);
+		final SootClass clazz = getSootClass("java8", unitName);
 		final SootTypeVisitor<?> visitor = mock(SootTypeVisitor.class);
-		classUnit.getType().apply(visitor);
+		clazz.getType().apply(visitor);
 		verify(visitor).caseRefType(RefType.v(unitName));
 	}
 
 	@Test
 	public void GetType_GivenSupportedClass_ReturnsCorrectSootType() {
 		final String supportedName = "byteback.dummy.context.Supported";
-		final SootClass classUnit = getClassUnit("java8", supportedName);
+		final SootClass clazz = getSootClass("java8", supportedName);
 		final SootTypeVisitor<?> visitor = mock(SootTypeVisitor.class);
-		classUnit.getType().apply(visitor);
+		clazz.getType().apply(visitor);
 		verify(visitor).caseRefType(RefType.v("byteback.dummy.context.Supported"));
 	}
 
 	@Test
 	public void Methods_GivenUnitClass_ReturnsStreamWithConstructor() {
 		final String unitName = "byteback.dummy.context.Unit";
-		final SootClass classUnit = getClassUnit("java8", unitName);
-		assertTrue(classUnit.methods().anyMatch((method) -> method.getName().equals("<init>")));
+		final SootClass clazz = getSootClass("java8", unitName);
+		assertTrue(clazz.methods().anyMatch((method) -> method.getName().equals("<init>")));
 	}
 
 	@Test
 	public void Methods_GivenStaticInitializerClass_ReturnsStreamWithClassInitializer() {
 		final String unitName = "byteback.dummy.context.StaticInitializer";
-		final SootClass classUnit = getClassUnit("java8", unitName);
-		assertTrue(classUnit.methods().anyMatch((method) -> method.getName().equals("<clinit>")));
+		final SootClass clazz = getSootClass("java8", unitName);
+		assertTrue(clazz.methods().anyMatch((method) -> method.getName().equals("<clinit>")));
 	}
 
 	@Test
 	public void GetName_GivenUnitClass_ReturnsUnitName() {
 		final String unitName = "byteback.dummy.context.Unit";
-		final SootClass classUnit = getClassUnit("java8", unitName);
-		assertEquals(unitName, classUnit.getName());
+		final SootClass clazz = getSootClass("java8", unitName);
+		assertEquals(unitName, clazz.getName());
 	}
 
 }

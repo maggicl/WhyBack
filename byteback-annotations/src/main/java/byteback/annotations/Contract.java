@@ -56,8 +56,10 @@ public interface Contract {
 	public static @interface Condition {
 	}
 
-  public static void assertion(boolean condition) {}
+	public static void assertion(boolean condition) {
+	}
 
-  public static void assumption(boolean condition) {}
+	public static void assumption(boolean condition) {
+	}
 
 }

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import soot.tagkit.VisibilityAnnotationTag;
 
 public class SootMethod {
@@ -80,7 +79,7 @@ public class SootMethod {
 		return new SootBody(sootMethod.retrieveActiveBody());
 	}
 
-	public SootClass getClassUnit() {
+	public SootClass getSootClass() {
 		return new SootClass(sootMethod.getDeclaringClass());
 	}
 
@@ -93,15 +92,7 @@ public class SootMethod {
 	}
 
 	public Stream<SootAnnotationElement> getAnnotationValues(final String type) {
-		return getAnnotations(type).flatMap((annotation) -> {
-			final Optional<SootAnnotationElement> element = annotation.getValue();
-
-			if (element.isPresent()) {
-				return Stream.of(element.get());
-			} else {
-				return Stream.empty();
-			}
-		});
+		return getAnnotations(type).flatMap((annotation) -> annotation.getValue().stream());
 	}
 
 	public Stream<SootAnnotation> annotations() {

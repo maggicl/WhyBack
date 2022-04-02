@@ -119,3 +119,10 @@ label1:
 
   return;
 }
+
+procedure byteback.dummy.condition.Simple.overloadedConditions##() returns (~ret: int)
+  ensures true;
+{
+  ~ret := 0;
+  return;
+}

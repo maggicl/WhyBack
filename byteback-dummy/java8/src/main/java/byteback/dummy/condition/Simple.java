@@ -26,6 +26,16 @@ public class Simple {
     return gt(m, 0);
   }
 
+  @Condition
+  public static boolean returns_0(int returns) {
+    return true;
+  }
+
+  @Condition
+  public static boolean returns_0(long returns) {
+    return false;
+  }
+
 	@Ensure("returns_1")
 	public static int returnsOne() {
 		return 1;
@@ -67,6 +77,11 @@ public class Simple {
     }
 
     return a;
+  }
+
+  @Ensure("returns_0")
+  public static int overloadedConditions() {
+    return 0;
   }
 
 }

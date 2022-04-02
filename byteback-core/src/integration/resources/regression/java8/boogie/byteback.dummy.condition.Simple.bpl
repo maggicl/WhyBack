@@ -45,6 +45,8 @@ axiom ~int(true) == 1;
 
 function eq(~heap: Store, a: int, b: int) returns (bool) { a == b }
 
+function gt(~heap: Store, a: int, b: int) returns (bool) { a > b }
+
 function ~real<a>(a) returns (real);
 
 // int -> real
@@ -87,5 +89,33 @@ procedure byteback.dummy.condition.Simple.wrongAssumption2##() returns ()
   var a: bool;
   a := false;
   assume a;
+  return;
+}
+
+procedure byteback.dummy.condition.Simple.fibonacci#int#(m: int) returns (~ret: int)
+  requires gt(~heap, m, 0);
+{
+  var c: int;
+  var a: int;
+  var b: int;
+  var i: int;
+  a := 0;
+  b := 1;
+  i := 0;
+
+label2:
+  if (i >= m) {
+    goto label1;
+  }
+
+  c := a + b;
+  a := b;
+  b := c;
+  i := i + 1;
+  goto label2;
+
+label1:
+  ~ret := a;
+
   return;
 }

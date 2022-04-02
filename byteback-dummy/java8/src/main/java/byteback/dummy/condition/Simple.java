@@ -3,9 +3,11 @@ package byteback.dummy.condition;
 import static byteback.annotations.Contract.assertion;
 import static byteback.annotations.Contract.assumption;
 import static byteback.annotations.Operator.eq;
+import static byteback.annotations.Operator.gt;
 
 import byteback.annotations.Contract.Condition;
 import byteback.annotations.Contract.Ensure;
+import byteback.annotations.Contract.Require;
 
 public class Simple {
 
@@ -18,6 +20,11 @@ public class Simple {
 	public static boolean returns_argument(int a, int returns) {
 		return eq(returns, a);
 	}
+
+  @Condition
+  public static boolean argument_is_positive(int m, int returns) {
+    return gt(m, 0);
+  }
 
 	@Ensure("returns_1")
 	public static int returnsOne() {
@@ -46,5 +53,20 @@ public class Simple {
 
 		assumption(a);
 	}
+
+  @Require("argument_is_positive")
+  public static int fibonacci(int m) {
+    int a = 0;
+    int b = 1;
+    int c;
+
+    for (int i = 0; i < m; ++i) {
+      c = a + b;
+      a = b;
+      b = c;
+    }
+
+    return a;
+  }
 
 }

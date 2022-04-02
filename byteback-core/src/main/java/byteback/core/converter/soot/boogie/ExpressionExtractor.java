@@ -82,9 +82,9 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		return super.visit(expression);
 	}
 
-  public Expression visit(final SootExpression expression) {
-    return visit(expression, new SootType(UnknownType.v()));
-  }
+	public Expression visit(final SootExpression expression) {
+		return visit(expression, new SootType(UnknownType.v()));
+	}
 
 	public SootType getType() {
 		return types.peek();
@@ -306,16 +306,21 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseLocal(final Local local) {
-		pushExpression(new ValueReference(new Accessor(local.getName())));
+		final SootExpression expression = new SootExpression(local);
+		final var caster = new CasterProvider(getType()).visit(expression.getType());
+		final Expression boogieExpression = new ValueReference(new Accessor(local.getName()));
+		pushExpression(caster.apply(boogieExpression));
 	}
 
 	@Override
 	public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
 		final SootField field = new SootField(instanceFieldReference.getField());
 		final SootExpression base = new SootExpression(instanceFieldReference.getBase());
+		final var caster = new CasterProvider(getType()).visit(field.getType());
 		final Expression boogieBase = visit(base);
 		final Expression boogieFieldReference = new ValueReference(new Accessor(NameConverter.fieldName(field)));
-		pushExpression(Prelude.getHeapAccessExpression(boogieBase, boogieFieldReference));
+		final Expression boogieHeapAccess = Prelude.getHeapAccessExpression(boogieBase, boogieFieldReference);
+		pushExpression(caster.apply(boogieHeapAccess));
 	}
 
 	@Override

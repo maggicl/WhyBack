@@ -108,7 +108,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		public void caseIfStmt(final IfStmt ifStatement) {
 			final Unit targetUnit = ifStatement.getTarget();
 			final SootExpression condition = new SootExpression(ifStatement.getCondition());
-			final Expression boogieCondition = new CastingExtractor().visit(condition, new SootType(IntType.v()));
+			final Expression boogieCondition = new ExpressionExtractor().visit(condition, new SootType(IntType.v()));
 			final IfStatement boogieIfStatement = new IfStatement();
 			final Label label = labelTable.get(targetUnit);
 			final BlockStatement boogieThenBlock = makeThenBlock(new GotoStatement(label));

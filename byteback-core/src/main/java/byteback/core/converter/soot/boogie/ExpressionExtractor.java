@@ -31,6 +31,7 @@ import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
+
 import java.util.Iterator;
 import java.util.Stack;
 import soot.BooleanType;
@@ -41,6 +42,7 @@ import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.BinopExpr;
+import soot.jimple.CastExpr;
 import soot.jimple.CmpgExpr;
 import soot.jimple.CmplExpr;
 import soot.jimple.DivExpr;
@@ -53,6 +55,7 @@ import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.LeExpr;
+import soot.jimple.LongConstant;
 import soot.jimple.LtExpr;
 import soot.jimple.MulExpr;
 import soot.jimple.NeExpr;
@@ -272,6 +275,16 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		pushBinaryExpression(lessEquals, new LessThanEqualsOperation());
 	}
 
+  @Override
+  public void caseCastExpr(final CastExpr casting) {
+    final SootExpression operand = new SootExpression(casting.getOp());
+    final SootType toType = new SootType(casting.getCastType());
+    final SootType fromType = new SootType(casting.getType());
+    final var caster = new CasterProvider(toType).visit(fromType);
+
+    pushExpression(caster.apply(visit(operand, fromType)));
+  }
+
 	@Override
 	public void caseIntConstant(final IntConstant intConstant) {
 		getType().apply(new SootTypeVisitor<>() {
@@ -288,6 +301,12 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 		});
 	}
+
+  @Override
+  public void caseLongConstant(final LongConstant longConstant) {
+    final String literal = longConstant.toString();
+    pushExpression(new NumberLiteral(literal.substring(0, literal.length() - 1)));
+  }
 
 	@Override
 	public void caseDoubleConstant(final DoubleConstant doubleConstant) {

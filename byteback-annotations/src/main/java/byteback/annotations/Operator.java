@@ -100,75 +100,78 @@ public interface Operator {
 		return a.equals(b);
 	}
 
-	/**
-	 * Equality overloaded for boolean types to avoid auto-boxing of booleans.
-	 */
 	@Pure
 	@Prelude("eq")
 	public static boolean eq(final boolean a, final boolean b) {
 		return a == b;
 	}
 
-	/**
-	 * Equality overloaded for byte types to avoid auto-boxing of bytes.
-	 */
 	@Pure
 	@Prelude("eq")
 	public static boolean eq(final byte a, final byte b) {
 		return a == b;
 	}
 
-	/**
-	 * Equality overloaded for int types to avoid auto-boxing of integers.
-	 */
 	@Pure
 	@Prelude("eq")
 	public static boolean eq(final int a, final int b) {
 		return a == b;
 	}
 
-	/**
-	 * Equality overloaded for boolean types to avoid auto-boxing of booleans.
-	 */
 	@Pure
 	@Prelude("eq")
 	public static boolean eq(final char a, final char b) {
 		return a == b;
 	}
 
-	/**
-	 * Equality overloaded for double types to avoid auto-boxing of doubles.
-	 */
 	@Pure
 	@Prelude("eq")
 	public static boolean eq(final double a, final double b) {
 		return a == b;
 	}
 
-	/**
-	 * Equality overloaded for float types to avoid auto-boxing of floats.
-	 */
 	@Pure
 	@Prelude("eq")
 	public static boolean eq(final float a, final float b) {
 		return a == b;
 	}
 
-	/**
-	 * Equality overloaded for long types to avoid auto-boxing of longs.
-	 */
 	@Pure
 	@Prelude("eq")
 	public static boolean eq(final long a, final long b) {
 		return a == b;
 	}
 
-	/**
-	 * Equality overloaded for short types to avoid auto-boxing of shorts.
-	 */
 	@Pure
 	@Prelude("eq")
 	public static boolean eq(final short a, final short b) {
+		return a == b;
+	}
+
+  /**
+   * Numeric relational operations.
+   */
+	@Pure
+	@Prelude("gt")
+	public static boolean gt(final double a, final double b) {
+		return a == b;
+	}
+
+	@Pure
+	@Prelude("gt")
+	public static boolean gt(final float a, final float b) {
+		return a == b;
+	}
+
+	@Pure
+	@Prelude("gt")
+	public static boolean gt(final long a, final long b) {
+		return a == b;
+	}
+
+	@Pure
+	@Prelude("gt")
+	public static boolean gt(final short a, final short b) {
 		return a == b;
 	}
 

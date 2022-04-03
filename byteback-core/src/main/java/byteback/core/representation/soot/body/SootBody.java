@@ -8,6 +8,8 @@ import java.util.stream.Stream;
 import soot.Body;
 import soot.Local;
 import soot.Unit;
+import soot.jimple.toolkits.annotation.logic.Loop;
+import soot.jimple.toolkits.annotation.logic.LoopFinder;
 
 public class SootBody implements Visitable<SootStatementVisitor<?>> {
 
@@ -44,6 +46,10 @@ public class SootBody implements Visitable<SootStatementVisitor<?>> {
 			return Optional.empty();
 		}
 	}
+
+  public Collection<Loop> getLoops() {
+    return new LoopFinder().getLoops(sootBody);
+  }
 
 	public void apply(final SootStatementVisitor<?> visitor) {
 		for (Unit unit : sootBody.getUnits()) {

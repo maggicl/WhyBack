@@ -7,6 +7,7 @@ import static byteback.annotations.Operator.gt;
 
 import byteback.annotations.Contract.Condition;
 import byteback.annotations.Contract.Ensure;
+import byteback.annotations.Contract.Pure;
 import byteback.annotations.Contract.Require;
 
 public class Simple {

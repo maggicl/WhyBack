@@ -24,7 +24,7 @@ public class FunctionConverterIntegrationTest extends ConverterFixture {
 			final Program program = entry.getValue();
 
 			return clazz.methods().flatMap((method) -> {
-				if (method.getAnnotation(Contract.PURE_ANNOTATION).isPresent()) {
+				if (method.getAnnotation(Annotations.PURE_ANNOTATION).isPresent()) {
 					final String boogieName = NameConverter.methodName(method);
 					final FunctionDeclaration expected = program.lookupFunction(boogieName).get()
 							.getFunctionDeclaration();

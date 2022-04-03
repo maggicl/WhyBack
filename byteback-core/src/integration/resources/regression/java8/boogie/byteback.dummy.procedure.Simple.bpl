@@ -174,26 +174,19 @@ label1:
 
 procedure byteback.dummy.procedure.Simple.assignsProcedureResult##() returns ()
 {
-  var ~sym0: Reference;
   var a: Reference;
 
-  call ~sym0 := byteback.dummy.procedure.Simple.returnsNull##();
-  a := ~sym0;
+  call a := byteback.dummy.procedure.Simple.returnsNull##();
 
   return;
 }
 
 procedure byteback.dummy.procedure.Simple.assignsProcedureResultTwice##() returns ()
 {
-  var ~sym0: Reference;
-  var ~sym1: Reference;
   var a: Reference;
 
-  call ~sym0 := byteback.dummy.procedure.Simple.returnsNull##();
-  a := ~sym0;
-
-  call ~sym1 := byteback.dummy.procedure.Simple.returnsNull##();
-  a := ~sym1;
+  call a := byteback.dummy.procedure.Simple.returnsNull##();
+  call a := byteback.dummy.procedure.Simple.returnsNull##();
 
   return;
 }

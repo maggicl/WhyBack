@@ -105,4 +105,13 @@ public class SootMethod {
 		}
 	}
 
+	public int getNumber() {
+		return sootMethod.getNumber();
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		return object instanceof SootMethod && getNumber() == ((SootMethod) object).getNumber();
+	}
+
 }

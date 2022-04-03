@@ -89,7 +89,7 @@ public class ProcedureConverter {
 	public static Stream<Expression> makeConditions(final SootMethod method, final String typeName) {
 		final Stream<String> sourceNames = method.getAnnotationValues(typeName)
 				.map((element) -> new StringElementExtractor().visit(element));
-		final List<Expression> arguments = makeArguments(method);
+		final List<Expression> arguments = makeParameters(method);
 
 		return sourceNames.map((sourceName) -> makeCondition(method, sourceName, arguments));
 	}
@@ -106,7 +106,7 @@ public class ProcedureConverter {
 		return FunctionManager.instance().convert(source).getFunction().inline(arguments);
 	}
 
-	public static List<Expression> makeArguments(final SootMethod method) {
+	public static List<Expression> makeParameters(final SootMethod method) {
 		final List<Expression> references = new List<>(Prelude.getHeapVariable().getValueReference());
 
 		for (Local local : method.getBody().getParameterLocals()) {
@@ -119,9 +119,9 @@ public class ProcedureConverter {
 	}
 
 	public static List<Specification> makeSpecifications(final SootMethod method) {
-		final Stream<Specification> preconditions = makeConditions(method, Contract.REQUIRE_ANNOTATION)
+		final Stream<Specification> preconditions = makeConditions(method, Annotations.REQUIRE_ANNOTATION)
 				.map((expression) -> new PreCondition(false, expression));
-		final Stream<Specification> postconditions = makeConditions(method, Contract.ENSURE_ANNOTATION)
+		final Stream<Specification> postconditions = makeConditions(method, Annotations.ENSURE_ANNOTATION)
 				.map((expression) -> new PostCondition(false, expression));
 
 		return new List<Specification>().addAll(Stream.concat(preconditions, postconditions)::iterator);

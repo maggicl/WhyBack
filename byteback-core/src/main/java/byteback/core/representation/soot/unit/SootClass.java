@@ -87,4 +87,17 @@ public class SootClass {
 		return Optional.of(new SootMethod(sootClass.getMethod(signature)));
 	}
 
+  public Optional<SootMethod> getSootMethod(final String name) {
+    return Optional.of(new SootMethod(sootClass.getMethodByName(name)));
+  }
+
+	public int getNumber() {
+		return sootClass.getNumber();
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		return object instanceof SootClass && getNumber() == ((SootClass) object).getNumber();
+	}
+
 }

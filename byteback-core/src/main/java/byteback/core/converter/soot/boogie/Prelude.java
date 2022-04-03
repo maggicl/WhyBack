@@ -183,4 +183,8 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp")).makeFunctionReference();
 	}
 
+  public static ValueReference getThisReference() {
+    return new ValueReference(new Accessor("this"));
+  }
+
 }

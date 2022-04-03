@@ -114,10 +114,9 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		pushExpression(cmpReference);
 	}
 
-	public void pushFunctionReference(final InvokeExpr invoke, final List<Expression> arguments) {
+	public void pushFunctionReference(final SootMethod method, final List<Expression> arguments) {
 		final FunctionReference functionReference = new FunctionReference();
-		final SootMethod method = new SootMethod(invoke.getMethod());
-		final String methodName = method.getAnnotation(Contract.PRELUDE_ANNOTATION).flatMap(SootAnnotation::getValue)
+		final String methodName = method.getAnnotation(Annotations.PRELUDE_ANNOTATION).flatMap(SootAnnotation::getValue)
 				.map((element) -> new StringElementExtractor().visit(element))
 				.orElseGet(() -> NameConverter.methodName(method));
 		arguments.insertChild(Prelude.getHeapVariable().getValueReference(), 0);
@@ -140,17 +139,19 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseStaticInvokeExpr(final StaticInvokeExpr invoke) {
+    final SootMethod method = new SootMethod(invoke.getMethod());
 		final List<Expression> arguments = makeArguments(invoke);
-		pushFunctionReference(invoke, arguments);
+		pushFunctionReference(method, arguments);
 	}
 
 	@Override
 	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invoke) {
+    final SootMethod method = new SootMethod(invoke.getMethod());
 		final List<Expression> arguments = makeArguments(invoke);
 		final SootExpression base = new SootExpression(invoke.getBase());
 		final Expression target = visit(base);
 		arguments.insertChild(target, 0);
-		pushFunctionReference(invoke, arguments);
+		pushFunctionReference(method, arguments);
 	}
 
 	@Override

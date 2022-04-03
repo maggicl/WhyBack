@@ -3,9 +3,9 @@
 // -------------------------------------------------------------------
 type Reference;
 
-const ~null: Reference;
+const ~null: reference;
 
-type Field a;
+type field a;
 type Store = [Reference]<a>[Field a]a;
 
 var ~heap: Store;

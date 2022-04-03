@@ -5,11 +5,8 @@ import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootField;
-import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.Accessor;
-import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.Assignee;
-import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.BlockStatement;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.Expression;
@@ -17,11 +14,14 @@ import byteback.frontend.boogie.ast.GotoStatement;
 import byteback.frontend.boogie.ast.IfStatement;
 import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.LabelStatement;
-import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import com.google.common.base.Supplier;
+
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
@@ -44,10 +44,13 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final InnerExtractor extractor;
 
-	private int referenceCount;
+  private final Supplier<ValueReference> referenceSupplier;
 
-	public ValueReference generateValueReference() {
-		return Prelude.generateVariableReference(referenceCount++);
+	public Supplier<ValueReference> makeReferenceSupplier() {
+    final AtomicInteger counter = new AtomicInteger();
+    counter.set(0);
+
+    return () -> Prelude.generateVariableReference(counter.incrementAndGet());
 	}
 
 	private class InnerExtractor extends SootStatementVisitor<Body> {
@@ -61,12 +64,12 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 				@Override
 				public void caseLocal(final Local local) {
-					final ValueReference valueReference = new ValueReference(new Accessor(local.getName()));
-					final Expression assigned = new ProcedureExpressionExtractor(body, valueReference).visit(right,
+					final ValueReference reference = new ValueReference(new Accessor(local.getName()));
+					final Expression assigned = new ProcedureExpressionExtractor(body, reference).visit(right,
 							left.getType());
 
-					if (!assigned.equals(valueReference)) {
-						addSingleAssignment(new Assignee(valueReference), assigned);
+					if (!assigned.equals(reference)) {
+						addSingleAssignment(new Assignee(reference), assigned);
 					}
 				}
 
@@ -74,8 +77,8 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 				public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
 					final SootField field = new SootField(instanceFieldReference.getField());
 					final SootExpression base = new SootExpression(instanceFieldReference.getBase());
-					final ValueReference valueReference = generateValueReference();
-					final Expression assigned = new ProcedureExpressionExtractor(body, valueReference).visit(right,
+          final ValueReference reference = referenceSupplier.get();
+					final Expression assigned = new ProcedureExpressionExtractor(body, reference).visit(right,
 							left.getType());
 					final Expression boogieBase = new ExpressionExtractor().visit(base);
 					final Expression boogieFieldReference = new ValueReference(
@@ -149,18 +152,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.returnType = returnType;
 		this.labelTable = labelTable;
 		this.extractor = new InnerExtractor();
-	}
-
-	public void addSpecialStatement(final SootMethod method, final List<Expression> arguments) {
-		if (method.getName().equals("assertion")) {
-			assert arguments.getNumChild() == 1;
-			addStatement(new AssertStatement(arguments.getChild(0)));
-		} else if (method.getName().equals("assumption")) {
-			assert arguments.getNumChild() == 1;
-			addStatement(new AssumeStatement(arguments.getChild(0)));
-		} else {
-			throw new IllegalArgumentException("Invalid special function " + method);
-		}
+    this.referenceSupplier = makeReferenceSupplier();
 	}
 
 	public BlockStatement makeThenBlock(final Statement statement) {

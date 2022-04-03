@@ -126,3 +126,19 @@ procedure byteback.dummy.condition.Simple.overloadedConditions##() returns (~ret
   ~ret := 0;
   return;
 }
+
+procedure byteback.dummy.condition.Simple.result##() returns (~ret: int)
+  ensures eq(~heap, ~ret, 1);
+{
+  ~ret := 1;
+  return;
+}
+
+procedure byteback.dummy.condition.Simple.returnsResult##() returns (~ret: int)
+  ensures eq(~heap, ~ret, 1);
+{
+  var $stack0: int;
+  call $stack0 := byteback.dummy.condition.Simple.result##();
+  ~ret := $stack0;
+  return;
+}

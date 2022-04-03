@@ -33,32 +33,35 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		this.reference = reference;
 	}
 
-  public ProcedureExpressionExtractor(final Body body) {
-    this(body, null);
-  }
+	public ProcedureExpressionExtractor(final Body body) {
+		this(body, null);
+	}
 
 	public void addCall(final SootMethod method, final List<Expression> arguments) {
 		final TargetedCallStatement callStatement = makeCall(method, arguments);
-    final List<SymbolicReference> targets = new List<SymbolicReference>();
+		final List<SymbolicReference> targets = new List<SymbolicReference>();
 
-    if (reference != null) {
-      targets.add(reference);
-      pushExpression(reference);
-    }
+		if (reference != null) {
+			targets.add(reference);
+			pushExpression(reference);
+		}
 
-    callStatement.setTargetList(targets);
+		callStatement.setTargetList(targets);
 		body.addStatement(callStatement);
-  }
+	}
 
-  public void addSpecial(final SootMethod method, final List<Expression> arguments) {
-    if (method.equals(Annotations.ASSERT_METHOD)) {
-      body.addStatement(new AssertStatement(arguments.getChild(0)));
-    } else if (method.equals(Annotations.ASSUME_METHOD)) {
-      body.addStatement(new AssumeStatement(arguments.getChild(0)));
-    } else {
-      throw new RuntimeException("Unknown special method: " + method.getName());
-    }
-  }
+	public void addSpecial(final SootMethod method, final List<Expression> arguments) {
+		assert arguments.getNumChild() == 1;
+		assert reference == null;
+
+		if (method.equals(Annotations.ASSERT_METHOD)) {
+			body.addStatement(new AssertStatement(arguments.getChild(0)));
+		} else if (method.equals(Annotations.ASSUME_METHOD)) {
+			body.addStatement(new AssumeStatement(arguments.getChild(0)));
+		} else {
+			throw new RuntimeException("Unknown special method: " + method.getName());
+		}
+	}
 
 	@Override
 	public void pushFunctionReference(final SootMethod method, final List<Expression> arguments) {
@@ -67,10 +70,10 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		if (annotation.isPresent()) {
 			super.pushFunctionReference(method, arguments);
 		} else if (method.getSootClass().equals(Annotations.CONTRACT_CLASS)) {
-      addSpecial(method, arguments);
+			addSpecial(method, arguments);
 		} else {
-      addCall(method, arguments);
-    }
+			addCall(method, arguments);
+		}
 	}
 
 }

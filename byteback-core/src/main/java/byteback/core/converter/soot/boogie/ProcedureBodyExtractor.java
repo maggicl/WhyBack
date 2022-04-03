@@ -22,8 +22,6 @@ import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
 import java.util.Map;
-import java.util.Optional;
-
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
@@ -46,11 +44,11 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final InnerExtractor extractor;
 
-  private int referenceCount;
+	private int referenceCount;
 
-  public ValueReference generateValueReference() {
-    return Prelude.generateVariableReference(referenceCount++);
-  }
+	public ValueReference generateValueReference() {
+		return Prelude.generateVariableReference(referenceCount++);
+	}
 
 	private class InnerExtractor extends SootStatementVisitor<Body> {
 
@@ -64,21 +62,24 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 				@Override
 				public void caseLocal(final Local local) {
 					final ValueReference valueReference = new ValueReference(new Accessor(local.getName()));
-          final Expression assigned = new ProcedureExpressionExtractor(body, valueReference).visit(right, left.getType());
+					final Expression assigned = new ProcedureExpressionExtractor(body, valueReference).visit(right,
+							left.getType());
 
-          if (!assigned.equals(valueReference)) {
-            addSingleAssignment(new Assignee(valueReference), assigned);
-          }
+					if (!assigned.equals(valueReference)) {
+						addSingleAssignment(new Assignee(valueReference), assigned);
+					}
 				}
 
 				@Override
 				public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
 					final SootField field = new SootField(instanceFieldReference.getField());
 					final SootExpression base = new SootExpression(instanceFieldReference.getBase());
-          final ValueReference valueReference = generateValueReference();
-          final Expression assigned = new ProcedureExpressionExtractor(body, valueReference).visit(right, left.getType());
+					final ValueReference valueReference = generateValueReference();
+					final Expression assigned = new ProcedureExpressionExtractor(body, valueReference).visit(right,
+							left.getType());
 					final Expression boogieBase = new ExpressionExtractor().visit(base);
-					final Expression boogieFieldReference = new ValueReference(new Accessor(NameConverter.fieldName(field)));
+					final Expression boogieFieldReference = new ValueReference(
+							new Accessor(NameConverter.fieldName(field)));
 					addStatement(Prelude.getHeapUpdateStatement(boogieBase, boogieFieldReference, assigned));
 				}
 
@@ -115,7 +116,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		@Override
 		public void caseIfStmt(final IfStmt ifStatement) {
 			final SootExpression condition = new SootExpression(ifStatement.getCondition());
-      final SootType type = new SootType(IntType.v());
+			final SootType type = new SootType(IntType.v());
 			final Expression boogieCondition = new ExpressionExtractor().visit(condition, type);
 			final IfStatement boogieIfStatement = new IfStatement();
 			final Label label = labelTable.get(ifStatement.getTarget());
@@ -128,8 +129,8 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		@Override
 		public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 			final SootExpression invokeExpression = new SootExpression(invokeStatement.getInvokeExpr());
-      invokeExpression.apply(new ProcedureExpressionExtractor(body));
-    }
+			invokeExpression.apply(new ProcedureExpressionExtractor(body));
+		}
 
 		@Override
 		public void caseDefault(final Unit unit) {

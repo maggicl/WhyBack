@@ -7,7 +7,6 @@ import static byteback.annotations.Operator.gt;
 
 import byteback.annotations.Contract.Condition;
 import byteback.annotations.Contract.Ensure;
-import byteback.annotations.Contract.Pure;
 import byteback.annotations.Contract.Require;
 
 public class Simple {
@@ -22,20 +21,20 @@ public class Simple {
 		return eq(returns, a);
 	}
 
-  @Condition
-  public static boolean argument_is_positive(int m, int returns) {
-    return gt(m, 0);
-  }
+	@Condition
+	public static boolean argument_is_positive(int m, int returns) {
+		return gt(m, 0);
+	}
 
-  @Condition
-  public static boolean returns_0(int returns) {
-    return true;
-  }
+	@Condition
+	public static boolean returns_0(int returns) {
+		return true;
+	}
 
-  @Condition
-  public static boolean returns_0(long returns) {
-    return false;
-  }
+	@Condition
+	public static boolean returns_0(long returns) {
+		return false;
+	}
 
 	@Ensure("returns_1")
 	public static int returnsOne() {
@@ -65,24 +64,24 @@ public class Simple {
 		assumption(a);
 	}
 
-  @Require("argument_is_positive")
-  public static int fibonacci(int m) {
-    int a = 0;
-    int b = 1;
-    int c;
+	@Require("argument_is_positive")
+	public static int fibonacci(int m) {
+		int a = 0;
+		int b = 1;
+		int c;
 
-    for (int i = 0; i < m; ++i) {
-      c = a + b;
-      a = b;
-      b = c;
-    }
+		for (int i = 0; i < m; ++i) {
+			c = a + b;
+			a = b;
+			b = c;
+		}
 
-    return a;
-  }
+		return a;
+	}
 
-  @Ensure("returns_0")
-  public static int overloadedConditions() {
-    return 0;
-  }
+	@Ensure("returns_0")
+	public static int overloadedConditions() {
+		return 0;
+	}
 
 }

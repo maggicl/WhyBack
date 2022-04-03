@@ -148,9 +148,9 @@ public interface Operator {
 		return a == b;
 	}
 
-  /**
-   * Numeric relational operations.
-   */
+	/**
+	 * Numeric relational operations.
+	 */
 	@Pure
 	@Prelude("gt")
 	public static boolean gt(final double a, final double b) {

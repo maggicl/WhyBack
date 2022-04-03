@@ -31,7 +31,6 @@ import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
-
 import java.util.Iterator;
 import java.util.Stack;
 import soot.BooleanType;
@@ -139,14 +138,14 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseStaticInvokeExpr(final StaticInvokeExpr invoke) {
-    final SootMethod method = new SootMethod(invoke.getMethod());
+		final SootMethod method = new SootMethod(invoke.getMethod());
 		final List<Expression> arguments = makeArguments(invoke);
 		pushFunctionReference(method, arguments);
 	}
 
 	@Override
 	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invoke) {
-    final SootMethod method = new SootMethod(invoke.getMethod());
+		final SootMethod method = new SootMethod(invoke.getMethod());
 		final List<Expression> arguments = makeArguments(invoke);
 		final SootExpression base = new SootExpression(invoke.getBase());
 		final Expression target = visit(base);
@@ -276,15 +275,15 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		pushBinaryExpression(lessEquals, new LessThanEqualsOperation());
 	}
 
-  @Override
-  public void caseCastExpr(final CastExpr casting) {
-    final SootExpression operand = new SootExpression(casting.getOp());
-    final SootType toType = new SootType(casting.getCastType());
-    final SootType fromType = new SootType(casting.getType());
-    final var caster = new CasterProvider(toType).visit(fromType);
+	@Override
+	public void caseCastExpr(final CastExpr casting) {
+		final SootExpression operand = new SootExpression(casting.getOp());
+		final SootType toType = new SootType(casting.getCastType());
+		final SootType fromType = new SootType(casting.getType());
+		final var caster = new CasterProvider(toType).visit(fromType);
 
-    pushExpression(caster.apply(visit(operand, fromType)));
-  }
+		pushExpression(caster.apply(visit(operand, fromType)));
+	}
 
 	@Override
 	public void caseIntConstant(final IntConstant intConstant) {
@@ -303,11 +302,11 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		});
 	}
 
-  @Override
-  public void caseLongConstant(final LongConstant longConstant) {
-    final String literal = longConstant.toString();
-    pushExpression(new NumberLiteral(literal.substring(0, literal.length() - 1)));
-  }
+	@Override
+	public void caseLongConstant(final LongConstant longConstant) {
+		final String literal = longConstant.toString();
+		pushExpression(new NumberLiteral(literal.substring(0, literal.length() - 1)));
+	}
 
 	@Override
 	public void caseDoubleConstant(final DoubleConstant doubleConstant) {

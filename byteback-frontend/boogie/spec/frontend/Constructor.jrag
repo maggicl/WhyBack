@@ -1,0 +1,7 @@
+aspect Constructor {
+
+  public static ValueReference ValueReference.of(String name) {
+    return new ValueReference(new Accessor(name));
+  }
+  
+}

@@ -17,11 +17,9 @@ import byteback.frontend.boogie.ast.LabelStatement;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
+import com.google.common.base.Supplier;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.google.common.base.Supplier;
-
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
@@ -44,13 +42,13 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final InnerExtractor extractor;
 
-  private final Supplier<ValueReference> referenceSupplier;
+	private final Supplier<ValueReference> referenceSupplier;
 
 	public Supplier<ValueReference> makeReferenceSupplier() {
-    final AtomicInteger counter = new AtomicInteger();
-    counter.set(0);
+		final AtomicInteger counter = new AtomicInteger();
+		counter.set(0);
 
-    return () -> Prelude.generateVariableReference(counter.incrementAndGet());
+		return () -> Prelude.generateVariableReference(counter.incrementAndGet());
 	}
 
 	private class InnerExtractor extends SootStatementVisitor<Body> {
@@ -77,7 +75,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 				public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
 					final SootField field = new SootField(instanceFieldReference.getField());
 					final SootExpression base = new SootExpression(instanceFieldReference.getBase());
-          final ValueReference reference = referenceSupplier.get();
+					final ValueReference reference = referenceSupplier.get();
 					final Expression assigned = new ProcedureExpressionExtractor(body, reference).visit(right,
 							left.getType());
 					final Expression boogieBase = new ExpressionExtractor().visit(base);
@@ -152,7 +150,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.returnType = returnType;
 		this.labelTable = labelTable;
 		this.extractor = new InnerExtractor();
-    this.referenceSupplier = makeReferenceSupplier();
+		this.referenceSupplier = makeReferenceSupplier();
 	}
 
 	public BlockStatement makeThenBlock(final Statement statement) {

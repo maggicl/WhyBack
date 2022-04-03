@@ -36,8 +36,8 @@ public class PreludeIntegrationTest {
 
 	@Test
 	public void GetHeapAccessExpression_GivenPrelude_DoesNotThrowException() {
-		final Expression base = new ValueReference(new Accessor("reference"));
-		final Expression field = new ValueReference(new Accessor("Reference.field"));
+		final Expression base = ValueReference.of("reference");
+		final Expression field = ValueReference.of("Reference.field");
 		Prelude.getHeapAccessExpression(base, field);
 	}
 

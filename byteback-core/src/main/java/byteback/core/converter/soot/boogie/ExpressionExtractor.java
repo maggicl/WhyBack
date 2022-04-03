@@ -96,12 +96,12 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		operands.push(expression);
 	}
 
-	public void pushBinaryExpression(final BinopExpr sootExpression, final BinaryExpression boogieBinary) {
-		final SootExpression left = new SootExpression(sootExpression.getOp1());
-		final SootExpression right = new SootExpression(sootExpression.getOp2());
-		boogieBinary.setLeftOperand(visit(left, getType()));
-		boogieBinary.setRightOperand(visit(right, getType()));
-		pushExpression(boogieBinary);
+	public void pushBinaryExpression(final BinopExpr source, final BinaryExpression expression) {
+		final SootExpression left = new SootExpression(source.getOp1());
+		final SootExpression right = new SootExpression(source.getOp2());
+		expression.setLeftOperand(visit(left, getType()));
+		expression.setRightOperand(visit(right, getType()));
+		pushExpression(expression);
 	}
 
 	public void pushCmpExpression(final BinopExpr cmp) {
@@ -281,7 +281,6 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		final SootType toType = new SootType(casting.getCastType());
 		final SootType fromType = new SootType(casting.getType());
 		final var caster = new CasterProvider(toType).visit(fromType);
-
 		pushExpression(caster.apply(visit(operand, fromType)));
 	}
 
@@ -327,8 +326,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	public void caseLocal(final Local local) {
 		final SootExpression expression = new SootExpression(local);
 		final var caster = new CasterProvider(getType()).visit(expression.getType());
-		final Expression boogieExpression = new ValueReference(new Accessor(local.getName()));
-		pushExpression(caster.apply(boogieExpression));
+		pushExpression(caster.apply(ValueReference.of(local.getName())));
 	}
 
 	@Override
@@ -336,10 +334,9 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		final SootField field = new SootField(instanceFieldReference.getField());
 		final SootExpression base = new SootExpression(instanceFieldReference.getBase());
 		final var caster = new CasterProvider(getType()).visit(field.getType());
-		final Expression boogieBase = visit(base);
-		final Expression boogieFieldReference = new ValueReference(new Accessor(NameConverter.fieldName(field)));
-		final Expression boogieHeapAccess = Prelude.getHeapAccessExpression(boogieBase, boogieFieldReference);
-		pushExpression(caster.apply(boogieHeapAccess));
+		final Expression reference = ValueReference.of(NameConverter.fieldName(field));
+		final Expression heapAccess = Prelude.getHeapAccessExpression(visit(base), reference);
+		pushExpression(caster.apply(heapAccess));
 	}
 
 	@Override

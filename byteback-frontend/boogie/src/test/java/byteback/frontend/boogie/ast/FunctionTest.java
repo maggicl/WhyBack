@@ -44,8 +44,8 @@ public class FunctionTest extends ASTTestFixture {
 	public void Inline_GivenArithmeticAddReference_ReturnsExpectedExpression() throws Exception {
 		final Program program = getProgram("Arithmetic");
 		final Function function = program.lookupFunction("addition").get();
-		final ValueReference c = new ValueReference(new Accessor("c"));
-		final ValueReference d = new ValueReference(new Accessor("d"));
+		final ValueReference c = ValueReference.of("c");
+		final ValueReference d = ValueReference.of("d");
 		final Expression expected = new AdditionOperation(c, d);
 		final Expression actual = function.inline(new List<>(c, d));
 		TestUtil.assertAstEquals(expected, actual);

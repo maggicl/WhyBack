@@ -2,7 +2,6 @@ package byteback.core.converter.soot.boogie;
 
 import beaver.Parser;
 import byteback.core.util.Lazy;
-import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.Assignee;
 import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.BooleanType;
@@ -151,7 +150,7 @@ public class Prelude {
 	}
 
 	public static ValueReference getReturnValueReference() {
-		return new ValueReference(new Accessor("~ret"));
+		return ValueReference.of("~ret");
 	}
 
 	public static Label getLabel(final int index) {
@@ -169,7 +168,7 @@ public class Prelude {
 	}
 
 	public static ValueReference generateVariableReference(final int index) {
-		return new ValueReference(new Accessor("~sym" + index));
+		return ValueReference.of("~sym" + index);
 	}
 
 	public static FunctionReference getIntCaster() {
@@ -181,10 +180,6 @@ public class Prelude {
 	public static FunctionReference getCmpReference() {
 		return loadProgram().lookupFunction("~cmp")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp")).makeFunctionReference();
-	}
-
-	public static ValueReference getThisReference() {
-		return new ValueReference(new Accessor("this"));
 	}
 
 }

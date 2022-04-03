@@ -47,9 +47,9 @@ public class SootBody implements Visitable<SootStatementVisitor<?>> {
 		}
 	}
 
-  public Collection<Loop> getLoops() {
-    return new LoopFinder().getLoops(sootBody);
-  }
+	public Collection<Loop> getLoops() {
+		return new LoopFinder().getLoops(sootBody);
+	}
 
 	public void apply(final SootStatementVisitor<?> visitor) {
 		for (Unit unit : sootBody.getUnits()) {

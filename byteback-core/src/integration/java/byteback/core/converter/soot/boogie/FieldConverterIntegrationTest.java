@@ -24,8 +24,8 @@ public class FieldConverterIntegrationTest extends ConverterFixture {
 			final Program program = entry.getValue();
 
 			return clazz.fields().map((field) -> {
-				final String boogieName = NameConverter.fieldName(field);
-				final ConstantDeclaration expected = program.lookupVariable(boogieName)
+				final String name = NameConverter.fieldName(field);
+				final ConstantDeclaration expected = program.lookupVariable(name)
 						.flatMap(Variable::getConstantDeclaration).get();
 				final ConstantDeclaration actual = FieldConverter.instance().convert(field);
 

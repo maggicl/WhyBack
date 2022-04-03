@@ -84,12 +84,12 @@ public class Simple {
 		return 0;
 	}
 
-  @Ensure("returns_1")
+	@Ensure("returns_1")
 	public static int result() {
 		return 1;
 	}
 
-  @Ensure("returns_1")
+	@Ensure("returns_1")
 	public static int returnsResult() {
 		return result();
 	}

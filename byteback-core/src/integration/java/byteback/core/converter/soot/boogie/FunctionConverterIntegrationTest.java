@@ -26,8 +26,7 @@ public class FunctionConverterIntegrationTest extends ConverterFixture {
 			return clazz.methods().flatMap((method) -> {
 				if (method.getAnnotation(Annotations.PURE_ANNOTATION).isPresent()) {
 					final String name = NameConverter.methodName(method);
-					final FunctionDeclaration expected = program.lookupFunction(name).get()
-							.getFunctionDeclaration();
+					final FunctionDeclaration expected = program.lookupFunction(name).get().getFunctionDeclaration();
 					final FunctionDeclaration actual = FunctionConverter.instance().convert(method);
 
 					return Stream.of(new RegressionParameter<>(expected, actual));

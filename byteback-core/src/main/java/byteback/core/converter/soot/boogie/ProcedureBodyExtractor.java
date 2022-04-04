@@ -17,9 +17,9 @@ import byteback.frontend.boogie.ast.LabelStatement;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
-import com.google.common.base.Supplier;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
@@ -63,7 +63,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 				@Override
 				public void caseLocal(final Local local) {
 					final ValueReference reference = new ValueReference(new Accessor(local.getName()));
-					final Expression assigned = new ProcedureExpressionExtractor(body, reference).visit(right,
+					final Expression assigned = new ProcedureExpressionExtractor(body, () -> reference).visit(right,
 							left.getType());
 
 					if (!assigned.equals(reference)) {
@@ -75,13 +75,11 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 				public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
 					final SootField field = new SootField(instanceFieldReference.getField());
 					final SootExpression base = new SootExpression(instanceFieldReference.getBase());
-					final ValueReference reference = referenceSupplier.get();
-					final Expression assigned = new ProcedureExpressionExtractor(body, reference).visit(right,
+					final Expression assigned = new ProcedureExpressionExtractor(body, referenceSupplier).visit(right,
 							left.getType());
-					final Expression boogieBase = new ExpressionExtractor().visit(base);
-					final Expression boogieFieldReference = new ValueReference(
-							new Accessor(NameConverter.fieldName(field)));
-					addStatement(Prelude.getHeapUpdateStatement(boogieBase, boogieFieldReference, assigned));
+					final Expression fieldReference = ValueReference.of(NameConverter.fieldName(field));
+					addStatement(Prelude.getHeapUpdateStatement(new ExpressionExtractor().visit(base), fieldReference,
+							assigned));
 				}
 
 				@Override

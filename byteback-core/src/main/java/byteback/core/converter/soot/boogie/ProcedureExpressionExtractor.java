@@ -12,6 +12,7 @@ import byteback.frontend.boogie.ast.SymbolicReference;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
@@ -26,11 +27,11 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	final Body body;
 
-	final ValueReference reference;
+	final Supplier<ValueReference> referenceSupplier;
 
-	public ProcedureExpressionExtractor(final Body body, final ValueReference reference) {
+	public ProcedureExpressionExtractor(final Body body, final Supplier<ValueReference> referenceSupplier) {
 		this.body = body;
-		this.reference = reference;
+		this.referenceSupplier = referenceSupplier;
 	}
 
 	public ProcedureExpressionExtractor(final Body body) {
@@ -41,7 +42,8 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		final TargetedCallStatement callStatement = makeCall(method, arguments);
 		final List<SymbolicReference> targets = new List<SymbolicReference>();
 
-		if (reference != null) {
+		if (referenceSupplier != null) {
+			final ValueReference reference = referenceSupplier.get();
 			targets.add(reference);
 			pushExpression(reference);
 		}
@@ -52,7 +54,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	public void addSpecial(final SootMethod method, final List<Expression> arguments) {
 		assert arguments.getNumChild() == 1;
-		assert reference == null;
+		assert referenceSupplier == null;
 
 		if (method.equals(Annotations.ASSERT_METHOD)) {
 			body.addStatement(new AssertStatement(arguments.getChild(0)));

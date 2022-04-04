@@ -1,6 +1,7 @@
 package byteback.core.converter.soot.boogie;
 
 import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
+import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.core.representation.soot.unit.SootMethod;
@@ -8,7 +9,6 @@ import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Expression;
-import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.PostCondition;
 import byteback.frontend.boogie.ast.PreCondition;
@@ -22,12 +22,10 @@ import byteback.frontend.boogie.builder.ProcedureDeclarationBuilder;
 import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
 import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import java.util.Collection;
-import java.util.Map;
 import java.util.stream.Stream;
 import soot.BooleanType;
 import soot.Local;
 import soot.Type;
-import soot.Unit;
 import soot.VoidType;
 
 public class ProcedureConverter {
@@ -74,16 +72,21 @@ public class ProcedureConverter {
 	}
 
 	public static Body makeBody(final SootMethod method) {
-		final Body body = new Body();
-		final Map<Unit, Label> labelTable = new LabelCollector().visit(method.getBody());
-		method.getBody().apply(new ProcedureBodyExtractor(body, method.getReturnType(), labelTable));
+		final SootType returnType = method.getReturnType();
+		final SootBody body = method.getBody();
+		final Body boogieBody = new Body();
+		final LabelCollector labelCollector = new LabelCollector();
+		final LoopCollector loopCollector = new LoopCollector();
+		labelCollector.collect(body);
+		loopCollector.collect(body);
+		body.apply(new ProcedureBodyExtractor(boogieBody, returnType, labelCollector, loopCollector));
 
 		for (Local local : method.getBody().getLocals()) {
 			final VariableDeclarationBuilder variableBuilder = new VariableDeclarationBuilder();
-			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
+			boogieBody.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
 		}
 
-		return body;
+		return boogieBody;
 	}
 
 	public static Stream<Expression> makeConditions(final SootMethod method, final String typeName) {

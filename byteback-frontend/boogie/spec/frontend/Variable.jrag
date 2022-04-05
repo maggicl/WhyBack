@@ -121,4 +121,13 @@ aspect Variable {
 
   eq Program.getChild().getConstantDeclaration() = Optional.empty();
 
+  /**
+   * Create variable declaration from reference.
+   */
+  syn VariableDeclaration ValueReference.makeVariableDeclaration(TypeAccess typeAccess);
+
+  eq ValueReference.makeVariableDeclaration(TypeAccess typeAccess) =
+    new VariableDeclaration(new List<>(), new List<>(new BoundedBinding(
+      typeAccess, new List<>(getAccessor().makeDeclarator()), new Opt<>())));
+
 }

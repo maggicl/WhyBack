@@ -62,4 +62,7 @@ public interface Contract {
 	public static void assumption(boolean condition) {
 	}
 
+	public static void invariant(boolean condition) {
+	}
+
 }

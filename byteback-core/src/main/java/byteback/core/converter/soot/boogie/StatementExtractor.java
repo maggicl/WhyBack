@@ -1,5 +1,7 @@
 package byteback.core.converter.soot.boogie;
 
+import byteback.core.converter.soot.boogie.ProcedureBodyExtractor.VariableProvider;
+import byteback.core.converter.soot.boogie.ProcedureExpressionExtractor.VariableSupplier;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
@@ -14,8 +16,8 @@ import byteback.frontend.boogie.ast.IfStatement;
 import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
+import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
-import java.util.function.Supplier;
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
@@ -28,33 +30,12 @@ import soot.jimple.InvokeStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 
-public class StatementExtractor extends SootStatementVisitor<Statement> {
+public class StatementExtractor extends SootStatementVisitor<Body> {
 
-	private final Body body;
+	private final ProcedureBodyExtractor extractor;
 
-	private final SootType returnType;
-
-	private final LabelCollector labelCollector;
-
-	private final Supplier<ValueReference> referenceSupplier;
-
-  private Statement statement;
-
-	public StatementExtractor(final Body body, final SootType returnType, final LabelCollector labelCollector,
-			final Supplier<ValueReference> referenceSupplier) {
-		this.body = body;
-		this.returnType = returnType;
-		this.labelCollector = labelCollector;
-		this.referenceSupplier = referenceSupplier;
-	}
-
-	public void addStatement(final Statement statement) {
-		body.addStatement(statement);
-    this.statement = statement;
-	}
-
-	public void addSingleAssignment(final Assignee assignee, final Expression expression) {
-		addStatement(Prelude.makeSingleAssignment(assignee, expression));
+	public StatementExtractor(final ProcedureBodyExtractor extractor) {
+		this.extractor = extractor;
 	}
 
 	public BlockStatement makeThenBlock(final Statement statement) {
@@ -62,6 +43,34 @@ public class StatementExtractor extends SootStatementVisitor<Statement> {
 		blockStatement.addStatement(statement);
 
 		return blockStatement;
+	}
+
+	public void addStatement(final Statement statement) {
+		extractor.addStatement(statement);
+	}
+
+	public void addSingleAssignment(final Assignee assignee, final Expression expression) {
+		addStatement(Prelude.makeSingleAssignment(assignee, expression));
+	}
+
+	public Body getBody() {
+		return extractor.getBody();
+	}
+
+	public SootType getReturnType() {
+		return extractor.getReturnType();
+	}
+
+	public LoopCollector getLoopCollector() {
+		return extractor.getLoopCollector();
+	}
+
+	public LabelCollector getLabelCollector() {
+		return extractor.getLabelCollector();
+	}
+
+	public VariableProvider getVariableProvider() {
+		return extractor.getVariableProvider();
 	}
 
 	@Override
@@ -74,7 +83,8 @@ public class StatementExtractor extends SootStatementVisitor<Statement> {
 			@Override
 			public void caseLocal(final Local local) {
 				final ValueReference reference = ValueReference.of(local.getName());
-				final var extractor = new ProcedureExpressionExtractor(body, () -> reference);
+				final VariableSupplier supplier = () -> reference;
+				final var extractor = new ProcedureExpressionExtractor(StatementExtractor.this, supplier);
 				final Expression assigned = extractor.visit(right, left.getType());
 
 				if (!assigned.equals(reference)) {
@@ -86,7 +96,12 @@ public class StatementExtractor extends SootStatementVisitor<Statement> {
 			public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
 				final var field = new SootField(instanceFieldReference.getField());
 				final var base = new SootExpression(instanceFieldReference.getBase());
-				final var extractor = new ProcedureExpressionExtractor(body, referenceSupplier);
+				final VariableSupplier supplier = () -> {
+					final TypeAccess typeAccess = new TypeAccessExtractor().visit(field.getType());
+
+					return extractor.getVariableProvider().apply(typeAccess);
+				};
+				final var extractor = new ProcedureExpressionExtractor(StatementExtractor.this, supplier);
 				final Expression assigned = extractor.visit(right, left.getType());
 				final Expression fieldReference = ValueReference.of(NameConverter.fieldName(field));
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
@@ -111,7 +126,7 @@ public class StatementExtractor extends SootStatementVisitor<Statement> {
 		final SootExpression operand = new SootExpression(returnStatement.getOp());
 		final ValueReference valueReference = Prelude.getReturnValueReference();
 		final Assignee assignee = new Assignee(valueReference);
-		final Expression expression = new ExpressionExtractor().visit(operand, returnType);
+		final Expression expression = new ExpressionExtractor().visit(operand, getReturnType());
 		addSingleAssignment(assignee, expression);
 		addStatement(new ReturnStatement());
 	}
@@ -119,7 +134,7 @@ public class StatementExtractor extends SootStatementVisitor<Statement> {
 	@Override
 	public void caseGotoStmt(final GotoStmt gotoStatement) {
 		final Unit targetUnit = gotoStatement.getTarget();
-		final Label label = labelCollector.getLabel(targetUnit).get();
+		final Label label = getLabelCollector().getLabel(targetUnit).get();
 		addStatement(new GotoStatement(label));
 	}
 
@@ -129,7 +144,7 @@ public class StatementExtractor extends SootStatementVisitor<Statement> {
 		final var type = new SootType(IntType.v());
 		final Expression boogieCondition = new ExpressionExtractor().visit(condition, type);
 		final IfStatement boogieIfStatement = new IfStatement();
-		final Label label = labelCollector.getLabel(ifStatement.getTarget()).get();
+		final Label label = getLabelCollector().getLabel(ifStatement.getTarget()).get();
 		final BlockStatement boogieThenBlock = makeThenBlock(new GotoStatement(label));
 		boogieIfStatement.setCondition(boogieCondition);
 		boogieIfStatement.setThen(boogieThenBlock);
@@ -139,7 +154,7 @@ public class StatementExtractor extends SootStatementVisitor<Statement> {
 	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 		final SootExpression invokeExpression = new SootExpression(invokeStatement.getInvokeExpr());
-		invokeExpression.apply(new ProcedureExpressionExtractor(body));
+		invokeExpression.apply(new ProcedureExpressionExtractor(this, null));
 	}
 
 	@Override
@@ -148,8 +163,8 @@ public class StatementExtractor extends SootStatementVisitor<Statement> {
 	}
 
 	@Override
-	public Statement result() {
-		return statement;
+	public Body result() {
+		return getBody();
 	}
 
 }

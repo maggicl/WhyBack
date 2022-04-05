@@ -72,14 +72,9 @@ public class ProcedureConverter {
 	}
 
 	public static Body makeBody(final SootMethod method) {
-		final SootType returnType = method.getReturnType();
 		final SootBody body = method.getBody();
-		final Body boogieBody = new Body();
-		final LabelCollector labelCollector = new LabelCollector();
-		final LoopCollector loopCollector = new LoopCollector();
-		labelCollector.collect(body);
-		loopCollector.collect(body);
-		body.apply(new ProcedureBodyExtractor(boogieBody, returnType, labelCollector, loopCollector));
+		final SootType returnType = method.getReturnType();
+		final Body boogieBody = new ProcedureBodyExtractor(returnType).visit(body);
 
 		for (Local local : method.getBody().getLocals()) {
 			final VariableDeclarationBuilder variableBuilder = new VariableDeclarationBuilder();

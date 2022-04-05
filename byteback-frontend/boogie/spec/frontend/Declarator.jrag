@@ -4,4 +4,8 @@ aspect Declarator {
 
     eq Declarator.makeAccessor() = new Accessor(getName());
 
+    syn Declarator Accessor.makeDeclarator();
+
+    eq Accessor.makeDeclarator() = new Declarator(getName());
+
 }

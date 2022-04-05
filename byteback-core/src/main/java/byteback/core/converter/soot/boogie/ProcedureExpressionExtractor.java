@@ -5,7 +5,6 @@ import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
-import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.SymbolicReference;
@@ -16,6 +15,9 @@ import java.util.function.Supplier;
 
 public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
+	public static interface VariableSupplier extends Supplier<ValueReference> {
+	};
+
 	public static TargetedCallStatement makeCall(final SootMethod method, final List<Expression> arguments) {
 		final String methodName = NameConverter.methodName(method);
 		final TargetedCallStatement call = new TargetedCallStatement();
@@ -25,41 +27,36 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		return call;
 	}
 
-	final Body body;
+	final StatementExtractor extractor;
 
-	final Supplier<ValueReference> referenceSupplier;
+	final VariableSupplier supplier;
 
-	public ProcedureExpressionExtractor(final Body body, final Supplier<ValueReference> referenceSupplier) {
-		this.body = body;
-		this.referenceSupplier = referenceSupplier;
-	}
-
-	public ProcedureExpressionExtractor(final Body body) {
-		this(body, null);
+	public ProcedureExpressionExtractor(final StatementExtractor extractor, final VariableSupplier supplier) {
+		this.extractor = extractor;
+		this.supplier = supplier;
 	}
 
 	public void addCall(final SootMethod method, final List<Expression> arguments) {
 		final TargetedCallStatement callStatement = makeCall(method, arguments);
 		final List<SymbolicReference> targets = new List<SymbolicReference>();
 
-		if (referenceSupplier != null) {
-			final ValueReference reference = referenceSupplier.get();
+		if (supplier != null) {
+			final ValueReference reference = supplier.get();
 			targets.add(reference);
 			pushExpression(reference);
 		}
 
 		callStatement.setTargetList(targets);
-		body.addStatement(callStatement);
+		extractor.addStatement(callStatement);
 	}
 
 	public void addSpecial(final SootMethod method, final List<Expression> arguments) {
 		assert arguments.getNumChild() == 1;
-		assert referenceSupplier == null;
 
 		if (method.equals(Annotations.ASSERT_METHOD)) {
-			body.addStatement(new AssertStatement(arguments.getChild(0)));
+			extractor.addStatement(new AssertStatement(arguments.getChild(0)));
 		} else if (method.equals(Annotations.ASSUME_METHOD)) {
-			body.addStatement(new AssumeStatement(arguments.getChild(0)));
+			extractor.addStatement(new AssumeStatement(arguments.getChild(0)));
 		} else {
 			throw new RuntimeException("Unknown special method: " + method.getName());
 		}

@@ -6,7 +6,6 @@ import byteback.frontend.boogie.ast.Label;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import soot.Unit;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;

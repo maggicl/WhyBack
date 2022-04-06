@@ -16,11 +16,13 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 import soot.BooleanType;
+import soot.Local;
+import soot.Unit;
 
 public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	public static interface VariableSupplier extends Supplier<ValueReference> {
-	};
+	}
 
 	public static TargetedCallStatement makeCall(final SootMethod method, final List<Expression> arguments) {
 		final String methodName = NameConverter.methodName(method);
@@ -35,9 +37,13 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	final VariableSupplier supplier;
 
-	public ProcedureExpressionExtractor(final StatementExtractor extractor, final VariableSupplier supplier) {
+	final Unit unit;
+
+	public ProcedureExpressionExtractor(final StatementExtractor extractor, final VariableSupplier supplier,
+			final Unit unit) {
 		this.extractor = extractor;
 		this.supplier = supplier;
+		this.unit = unit;
 	}
 
 	public void addCall(final SootMethod method, final Iterable<SootExpression> arguments) {
@@ -58,8 +64,19 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 	public void addSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final Iterator<SootExpression> argumentIterator = arguments.iterator();
 		final SootExpression argument = argumentIterator.next();
-		final Expression boogieArgument = new InlineExpressionExtractor(extractor.getExpressionTable()).visit(argument,
-				new SootType(BooleanType.v()));
+		final Expression boogieArgument = new InlineExpressionExtractor(extractor.getExpressionTable()) {
+
+			@Override
+			public void caseLocal(final Local local) {
+				if (extractor.getDefinitionCollector().definitionsOfAt(local, unit).size() > 1) {
+					throw new IllegalStateException(
+							"Cannot inline local definition " + local + " because its definition is ambiguous");
+				}
+
+				super.caseLocal(local);
+			}
+
+		}.visit(argument, new SootType(BooleanType.v()));
 		assert !argumentIterator.hasNext();
 
 		if (method.equals(Annotations.ASSERT_METHOD)) {

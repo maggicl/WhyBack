@@ -13,15 +13,12 @@ import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.VariableDeclaration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Function;
 import soot.Local;
 import soot.Unit;
-import soot.toolkits.graph.Block;
-import soot.toolkits.graph.BlockGraph;
 
 public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
@@ -53,6 +50,8 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final LoopCollector loopCollector;
 
+	private final DefinitionCollector definitionCollector;
+
 	private final Stack<LoopContext> activeLoops;
 
 	private final Map<Local, Optional<Expression>> expressionTable;
@@ -63,24 +62,16 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.variableProvider = new VariableProvider();
 		this.labelCollector = new LabelCollector();
 		this.loopCollector = new LoopCollector();
+		this.definitionCollector = new DefinitionCollector();
 		this.activeLoops = new Stack<>();
 		this.expressionTable = new HashMap<>();
 	}
 
 	public Body visit(final SootBody body) {
-		final BlockGraph graph = body.getBlockGraph();
 		labelCollector.collect(body);
 		loopCollector.collect(body);
-
-		for (Block block : graph.getBlocks()) {
-			final Iterator<Unit> iterator = block.iterator();
-
-			while (iterator.hasNext()) {
-				iterator.next().apply(this);
-      }
-
-      expressionTable.clear();
-    }
+		definitionCollector.collect(body);
+		body.apply(this);
 
 		return result();
 	}
@@ -115,6 +106,10 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	public LabelCollector getLabelCollector() {
 		return labelCollector;
+	}
+
+	public DefinitionCollector getDefinitionCollector() {
+		return definitionCollector;
 	}
 
 	public VariableProvider getVariableProvider() {

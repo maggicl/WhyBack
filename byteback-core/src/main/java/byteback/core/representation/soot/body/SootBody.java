@@ -11,7 +11,9 @@ import soot.Unit;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 import soot.toolkits.graph.BlockGraph;
-import soot.toolkits.graph.ZonedBlockGraph;
+import soot.toolkits.graph.ExceptionalBlockGraph;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.UnitGraph;
 
 public class SootBody implements Visitable<SootStatementVisitor<?>> {
 
@@ -56,7 +58,13 @@ public class SootBody implements Visitable<SootStatementVisitor<?>> {
 	}
 
 	public BlockGraph getBlockGraph() {
-		final ZonedBlockGraph graph = new ZonedBlockGraph(sootBody);
+		final BlockGraph graph = new ExceptionalBlockGraph(sootBody);
+
+		return graph;
+	}
+
+	public UnitGraph getUnitGraph() {
+		final UnitGraph graph = new ExceptionalUnitGraph(sootBody);
 
 		return graph;
 	}

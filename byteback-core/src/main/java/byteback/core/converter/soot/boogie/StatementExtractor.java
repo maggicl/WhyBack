@@ -78,6 +78,10 @@ public class StatementExtractor extends SootStatementVisitor<Optional<Statement>
 		return extractor.getLabelCollector();
 	}
 
+	public DefinitionCollector getDefinitionCollector() {
+		return extractor.getDefinitionCollector();
+	}
+
 	public VariableProvider getVariableProvider() {
 		return extractor.getVariableProvider();
 	}
@@ -97,7 +101,7 @@ public class StatementExtractor extends SootStatementVisitor<Optional<Statement>
 			public void caseLocal(final Local local) {
 				final ValueReference reference = ValueReference.of(local.getName());
 				final VariableSupplier supplier = () -> reference;
-				final var extractor = new ProcedureExpressionExtractor(StatementExtractor.this, supplier);
+				final var extractor = new ProcedureExpressionExtractor(StatementExtractor.this, supplier, assignment);
 				final Expression assigned = extractor.visit(right, left.getType());
 
 				if (!assigned.equals(reference)) {
@@ -115,7 +119,7 @@ public class StatementExtractor extends SootStatementVisitor<Optional<Statement>
 
 					return extractor.getVariableProvider().apply(typeAccess);
 				};
-				final var extractor = new ProcedureExpressionExtractor(StatementExtractor.this, supplier);
+				final var extractor = new ProcedureExpressionExtractor(StatementExtractor.this, supplier, assignment);
 				final Expression assigned = extractor.visit(right, left.getType());
 				final Expression fieldReference = ValueReference.of(NameConverter.fieldName(field));
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
@@ -168,7 +172,7 @@ public class StatementExtractor extends SootStatementVisitor<Optional<Statement>
 	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 		final SootExpression invokeExpression = new SootExpression(invokeStatement.getInvokeExpr());
-		invokeExpression.apply(new ProcedureExpressionExtractor(this, null));
+		invokeExpression.apply(new ProcedureExpressionExtractor(this, null, invokeStatement));
 	}
 
 	@Override

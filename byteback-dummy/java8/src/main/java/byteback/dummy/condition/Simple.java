@@ -99,7 +99,7 @@ public class Simple {
 		int c = 0;
 
 		for (int i = 0; i < 10; ++i) {
-			assertion(c == 0);
+			assertion(eq(c, 0));
 		}
 	}
 
@@ -107,7 +107,7 @@ public class Simple {
 		int c = 0;
 
 		for (int i = 0; i < 10; ++i) {
-			invariant(eq(c, 0));
+      invariant(eq(c, 0));
 		}
 	}
 

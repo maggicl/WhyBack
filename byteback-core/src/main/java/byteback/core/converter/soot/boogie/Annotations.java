@@ -27,6 +27,8 @@ public class Annotations {
 
 	public static final SootMethod ASSUME_METHOD = CONTRACT_CLASS.getSootMethod("assumption").get();
 
+	public static final SootMethod INVARIANT_METHOD = CONTRACT_CLASS.getSootMethod("invariant").get();
+
 	private static SootClass loadClass(final String name) {
 		try {
 			return SootContext.instance().loadClass(name);

@@ -10,6 +10,8 @@ import soot.Local;
 import soot.Unit;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.ExceptionalBlockGraph;
 
 public class SootBody implements Visitable<SootStatementVisitor<?>> {
 
@@ -53,7 +55,13 @@ public class SootBody implements Visitable<SootStatementVisitor<?>> {
 		return loopFinder.getLoops(sootBody);
 	}
 
-	public void apply(final SootStatementVisitor<?> visitor) {
+  public BlockGraph getBlockGraph() {
+    final ExceptionalBlockGraph graph = new ExceptionalBlockGraph(sootBody);
+
+    return graph;
+  }
+
+  public void apply(final SootStatementVisitor<?> visitor) {
 		for (Unit unit : sootBody.getUnits()) {
 			unit.apply(visitor);
 		}

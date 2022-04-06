@@ -1,5 +1,6 @@
 package byteback.dummy.condition;
 
+import static byteback.annotations.Contract.invariant;
 import static byteback.annotations.Contract.assertion;
 import static byteback.annotations.Contract.assumption;
 import static byteback.annotations.Operator.eq;
@@ -93,5 +94,21 @@ public class Simple {
 	public static int returnsResult() {
 		return result();
 	}
+
+  public static void loopAssertion() {
+    int c = 0;
+
+    for (int i = 0; i < 10; ++i) {
+      assertion(c == 0);
+    }
+  }
+
+  public static void loopInvariant() {
+    int c = 0;
+
+    for (int i = 0; i < 10; ++i) {
+      invariant(eq(c, 0));
+    }
+  }
 
 }

@@ -1,56 +1,80 @@
 package byteback.core.converter.soot.boogie;
 
 import byteback.core.representation.soot.body.SootBody;
-import byteback.core.representation.soot.body.SootStatementVisitor;
+import byteback.frontend.boogie.ast.AssertStatement;
+import byteback.frontend.boogie.ast.AssumeStatement;
+import byteback.frontend.boogie.ast.Expression;
+import byteback.frontend.boogie.ast.ExtensionPoint;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import soot.Unit;
-import soot.jimple.IfStmt;
-import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
 
 public class LoopCollector {
 
-	private final Map<Stmt, Loop> startIndex;
+	public static class LoopContext {
 
-	private final Map<Stmt, Loop> endIndex;
+		private final Loop loop;
+
+    private final ExtensionPoint assertionPoint;
+
+    private final ExtensionPoint assumptionPoint;
+
+		public LoopContext(final Loop loop) {
+			this.loop = loop;
+			this.assertionPoint = new ExtensionPoint();
+			this.assumptionPoint = new ExtensionPoint();
+		}
+
+		public Loop getLoop() {
+			return loop;
+		}
+
+    public void addInvariant(final Expression invariant) {
+      assertionPoint.addStatement(new AssertStatement(invariant));
+      assumptionPoint.addStatement(new AssumeStatement(invariant));
+    }
+
+    public ExtensionPoint getAssertionPoint() {
+      return assertionPoint;
+    }
+
+    public ExtensionPoint getAssumptionPoint() {
+      return assumptionPoint;
+    }
+
+	}
+
+	private final Map<Unit, LoopContext> headIndex;
+
+	private final Map<Unit, LoopContext> backJumpIndex;
 
 	public LoopCollector() {
-		this.startIndex = new HashMap<>();
-		this.endIndex = new HashMap<>();
+		this.headIndex = new HashMap<>();
+		this.backJumpIndex = new HashMap<>();
 	}
 
 	public void collect(final SootBody body) {
 		for (Loop loop : body.getLoops()) {
-			if (loop.getBackJumpStmt() == loop.getHead()) {
-				loop.getBackJumpStmt().apply(new SootStatementVisitor<>() {
-
-					@Override
-					public void caseIfStmt(final IfStmt ifStatement) {
-						startIndex.put(ifStatement.getTarget(), loop);
-					}
-
-					@Override
-					public void caseDefault(final Unit unit) {
-						throw new IllegalArgumentException("Unable to determine backjump from " + unit);
-					}
-
-				});
-			} else {
-				startIndex.put(loop.getHead(), loop);
-			}
-
-			endIndex.put(loop.getBackJumpStmt(), loop);
+      final LoopContext loopContext = new LoopContext(loop);
+      headIndex.put(loop.getHead(), loopContext);
+      backJumpIndex.put(loop.getBackJumpStmt(), loopContext);
 		}
 	}
 
-	public Optional<Loop> getByStart(final Unit unit) {
-		return Optional.ofNullable(startIndex.get(unit));
+	public Optional<LoopContext> getByHead(final Unit unit) {
+		return Optional.ofNullable(headIndex.get(unit));
 	}
 
-	public Optional<Loop> getByEnd(final Unit unit) {
-		return Optional.ofNullable(endIndex.get(unit));
+	public Optional<LoopContext> getByBackJump(final Unit unit) {
+		return Optional.ofNullable(backJumpIndex.get(unit));
 	}
+
+  public Collection<LoopContext> getLoopContexts() {
+    return headIndex.values();
+  }
 
 }

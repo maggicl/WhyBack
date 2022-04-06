@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.Optional;
 import soot.Local;
 
-public class InlineExtractor extends ExpressionExtractor {
+public class InlineExpressionExtractor extends ExpressionExtractor {
 
 	private final Map<Local, Optional<Expression>> expressionTable;
 
-	public InlineExtractor(final Map<Local, Optional<Expression>> expressionTable) {
+	public InlineExpressionExtractor(final Map<Local, Optional<Expression>> expressionTable) {
 		this.expressionTable = expressionTable;
 	}
 

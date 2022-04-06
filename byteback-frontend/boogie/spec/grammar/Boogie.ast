@@ -225,6 +225,8 @@ ReturnStatement : Statement;
 
 BlockStatement : Statement ::= Statement*;
 
+ExtensionPoint : BlockStatement;
+
 GotoStatement : Statement ::= Label;
 
 LabelStatement : Statement ::= Label;

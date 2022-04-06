@@ -142,3 +142,44 @@ procedure byteback.dummy.condition.Simple.returnsResult##() returns (~ret: int)
   ~ret := $stack0;
   return;
 }
+
+procedure byteback.dummy.condition.Simple.loopAssertion##() returns ()
+{
+  var c: bool;
+  var i: int;
+  var $stack4: bool;
+
+  c := false;
+  i := 0;
+
+label4:
+  if (i >= 10) {
+    goto label1;
+  }
+
+  if (~int(c) != 0) {
+    goto label2;
+  }
+
+  $stack4 := true;
+
+  goto label3;
+
+label2:
+  $stack4 := false;
+
+label3:
+  assert $stack4;
+
+  i := (i + 1);
+
+  goto label4;
+
+label1:
+  return;
+}
+
+procedure byteback.dummy.condition.Simple.loopInvariant##() returns ()
+{
+  return;
+}

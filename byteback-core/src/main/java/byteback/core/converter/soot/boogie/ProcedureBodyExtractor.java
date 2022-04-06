@@ -1,45 +1,28 @@
 package byteback.core.converter.soot.boogie;
 
+import byteback.core.converter.soot.boogie.LoopCollector.LoopContext;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.frontend.boogie.ast.Body;
+import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.LabelStatement;
-import byteback.frontend.boogie.ast.List;
-import byteback.frontend.boogie.ast.LoopInvariant;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.VariableDeclaration;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Function;
+
+import soot.Local;
 import soot.Unit;
-import soot.jimple.toolkits.annotation.logic.Loop;
 
 public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
-
-	public static class LoopContext {
-
-		private final Loop loop;
-
-		private final List<LoopInvariant> invariants;
-
-		public LoopContext(final Loop loop, final List<LoopInvariant> invariants) {
-			this.loop = loop;
-			this.invariants = invariants;
-		}
-
-		public Loop getLoop() {
-			return loop;
-		}
-
-		public List<LoopInvariant> getInvariants() {
-			return invariants;
-		}
-
-	}
 
 	public class VariableProvider implements Function<TypeAccess, ValueReference> {
 
@@ -69,27 +52,39 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final LoopCollector loopCollector;
 
-	private final Stack<LoopContext> loopContexts;
+	private final Stack<LoopContext> activeLoops;
 
-	public ProcedureBodyExtractor(final SootType returnType) {
+  private final Map<Local, Optional<Expression>> expressionTable;
+
+  public ProcedureBodyExtractor(final SootType returnType) {
 		this.returnType = returnType;
 		this.body = new Body();
 		this.variableProvider = new VariableProvider();
 		this.labelCollector = new LabelCollector();
 		this.loopCollector = new LoopCollector();
-		this.loopContexts = new Stack<>();
-	}
+		this.activeLoops = new Stack<>();
+    this.expressionTable = new HashMap<>();
+  }
 
-	public Body visit(final SootBody body) {
+  public Body visit(final SootBody body) {
 		labelCollector.collect(body);
 		loopCollector.collect(body);
+    body.apply(this);
 
-		return super.visit(body);
+    return result();
 	}
 
 	public void addStatement(final Statement statement) {
 		body.addStatement(statement);
 	}
+
+  public void addInvariant(final Expression argument) {
+    if (activeLoops.isEmpty()) {
+      throw new IllegalStateException("Trying to insert an invariant outside of a loop context");
+    }
+
+    activeLoops.peek().addInvariant(argument);
+  }
 
 	public ValueReference addLocal(final TypeAccess typeAccess) {
 		return variableProvider.apply(typeAccess);
@@ -115,21 +110,27 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		return variableProvider;
 	}
 
-	@Override
+  public Map<Local, Optional<Expression>> getExpressionTable() {
+    return expressionTable;
+  }
+
+  @Override
 	public void caseDefault(final Unit unit) {
 		final var extractor = new StatementExtractor(this);
-		final Optional<Loop> loopStart = loopCollector.getByStart(unit);
-		final Optional<Loop> loopEnd = loopCollector.getByEnd(unit);
+		final Optional<LoopContext> loopContextStart = loopCollector.getByHead(unit);
+		final Optional<LoopContext> loopContextEnd = loopCollector.getByBackJump(unit);
 		final Optional<Label> labelLookup = labelCollector.getLabel(unit);
 
-		if (loopStart.isPresent()) {
-			final Loop loop = loopStart.get();
-			loopContexts.push(new LoopContext(loop, new List<>()));
+		if (loopContextStart.isPresent()) {
+			final LoopContext loopContext = loopContextStart.get();
+			activeLoops.push(loopContext);
+      addStatement(loopContext.getAssertionPoint());
 		}
 
-		if (loopEnd.isPresent()) {
-			final LoopContext loopContext = loopContexts.pop();
-			assert loopContext.getLoop() == loopEnd.get();
+		if (loopContextEnd.isPresent()) {
+			final LoopContext loopContext = activeLoops.pop();
+			assert loopContext.getLoop() == loopContextEnd.get().getLoop();
+      addStatement(loopContext.getAssertionPoint());
 		}
 
 		if (labelLookup.isPresent()) {
@@ -137,6 +138,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		}
 
 		unit.apply(extractor);
+
 	}
 
 	@Override

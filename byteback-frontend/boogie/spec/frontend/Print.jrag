@@ -547,6 +547,21 @@ aspect Print {
     indentedPrint(builder, 0);
   }
 
+  public void ExtensionPoint.indentedPrint(final StringBuilder builder, final int level) {
+    final Iterator<Statement> statementIterator = getStatementList().iterator();
+    
+    while (statementIterator.hasNext()) {
+      statementIterator.next().indentedPrint(builder, level);
+      builder.append("\n");
+    }
+
+    builder.deleteCharAt(builder.length() - 1);
+  }
+
+  public void ExtensionPoint.print(final StringBuilder builder) {
+    indentedPrint(builder, 0);
+  }
+
   public void IfStatement.indentedPrint(final StringBuilder builder, final int level) {
     PrintUtil.indentedAppend(builder, level, "if (");
     getCondition().print(builder);

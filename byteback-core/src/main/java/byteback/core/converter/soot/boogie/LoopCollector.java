@@ -5,7 +5,6 @@ import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.ExtensionPoint;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +18,9 @@ public class LoopCollector {
 
 		private final Loop loop;
 
-    private final ExtensionPoint assertionPoint;
+		private final ExtensionPoint assertionPoint;
 
-    private final ExtensionPoint assumptionPoint;
+		private final ExtensionPoint assumptionPoint;
 
 		public LoopContext(final Loop loop) {
 			this.loop = loop;
@@ -33,18 +32,18 @@ public class LoopCollector {
 			return loop;
 		}
 
-    public void addInvariant(final Expression invariant) {
-      assertionPoint.addStatement(new AssertStatement(invariant));
-      assumptionPoint.addStatement(new AssumeStatement(invariant));
-    }
+		public void addInvariant(final Expression invariant) {
+			assertionPoint.addStatement(new AssertStatement(invariant));
+			assumptionPoint.addStatement(new AssumeStatement(invariant));
+		}
 
-    public ExtensionPoint getAssertionPoint() {
-      return assertionPoint;
-    }
+		public ExtensionPoint getAssertionPoint() {
+			return assertionPoint;
+		}
 
-    public ExtensionPoint getAssumptionPoint() {
-      return assumptionPoint;
-    }
+		public ExtensionPoint getAssumptionPoint() {
+			return assumptionPoint;
+		}
 
 	}
 
@@ -59,9 +58,9 @@ public class LoopCollector {
 
 	public void collect(final SootBody body) {
 		for (Loop loop : body.getLoops()) {
-      final LoopContext loopContext = new LoopContext(loop);
-      headIndex.put(loop.getHead(), loopContext);
-      backJumpIndex.put(loop.getBackJumpStmt(), loopContext);
+			final LoopContext loopContext = new LoopContext(loop);
+			headIndex.put(loop.getHead(), loopContext);
+			backJumpIndex.put(loop.getBackJumpStmt(), loopContext);
 		}
 	}
 
@@ -73,8 +72,8 @@ public class LoopCollector {
 		return Optional.ofNullable(backJumpIndex.get(unit));
 	}
 
-  public Collection<LoopContext> getLoopContexts() {
-    return headIndex.values();
-  }
+	public Collection<LoopContext> getLoopContexts() {
+		return headIndex.values();
+	}
 
 }

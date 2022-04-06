@@ -12,11 +12,10 @@ import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.SymbolicReference;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
-import soot.BooleanType;
-
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
+import soot.BooleanType;
 
 public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
@@ -42,8 +41,8 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 	}
 
 	public void addCall(final SootMethod method, final Iterable<SootExpression> arguments) {
-    final List<Expression> boogieArguments = convertArguments(method, arguments);
-    final TargetedCallStatement callStatement = makeCall(method, boogieArguments);
+		final List<Expression> boogieArguments = convertArguments(method, arguments);
+		final TargetedCallStatement callStatement = makeCall(method, boogieArguments);
 		final List<SymbolicReference> targets = new List<SymbolicReference>();
 
 		if (supplier != null) {
@@ -57,18 +56,19 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 	}
 
 	public void addSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
-    final Iterator<SootExpression> argumentIterator = arguments.iterator();
-    final SootExpression argument = argumentIterator.next();
-    final Expression boogieArgument = new InlineExpressionExtractor(extractor.getExpressionTable()).visit(argument, new SootType(BooleanType.v()));
-    assert !argumentIterator.hasNext();
+		final Iterator<SootExpression> argumentIterator = arguments.iterator();
+		final SootExpression argument = argumentIterator.next();
+		final Expression boogieArgument = new InlineExpressionExtractor(extractor.getExpressionTable()).visit(argument,
+				new SootType(BooleanType.v()));
+		assert !argumentIterator.hasNext();
 
-    if (method.equals(Annotations.ASSERT_METHOD)) {
+		if (method.equals(Annotations.ASSERT_METHOD)) {
 			extractor.addStatement(new AssertStatement(boogieArgument));
 		} else if (method.equals(Annotations.ASSUME_METHOD)) {
 			extractor.addStatement(new AssumeStatement(boogieArgument));
 		} else if (method.equals(Annotations.INVARIANT_METHOD)) {
-      extractor.addInvariant(boogieArgument);
-    } else {
+			extractor.addInvariant(boogieArgument);
+		} else {
 			throw new RuntimeException("Unknown special method: " + method.getName());
 		}
 	}

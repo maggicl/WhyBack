@@ -4,7 +4,7 @@ import byteback.core.representation.soot.body.SootExpressionVisitor;
 import soot.Local;
 import soot.Value;
 
-public class SootLocalExtractor extends SootExpressionVisitor<Local> {
+public class LocalExtractor extends SootExpressionVisitor<Local> {
 
 	private Local local;
 

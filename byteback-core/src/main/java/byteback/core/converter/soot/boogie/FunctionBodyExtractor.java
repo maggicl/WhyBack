@@ -1,6 +1,6 @@
 package byteback.core.converter.soot.boogie;
 
-import byteback.core.converter.soot.SootLocalExtractor;
+import byteback.core.converter.soot.LocalExtractor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
@@ -32,7 +32,7 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 	public void caseAssignStmt(final AssignStmt assignment) {
 		final SootExpression left = new SootExpression(assignment.getLeftOp());
 		final SootExpression right = new SootExpression(assignment.getRightOp());
-		final Local local = new SootLocalExtractor().visit(left);
+		final Local local = new LocalExtractor().visit(left);
 		final Expression boogieExpression = new InlineExpressionExtractor(expressionTable).visit(right, left.getType());
 		expressionTable.put(local, Optional.of(boogieExpression));
 	}

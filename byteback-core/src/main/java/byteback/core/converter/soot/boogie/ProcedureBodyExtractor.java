@@ -12,15 +12,16 @@ import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.VariableDeclaration;
-
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Function;
-
 import soot.Local;
 import soot.Unit;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.BlockGraph;
 
 public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
@@ -54,37 +55,47 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final Stack<LoopContext> activeLoops;
 
-  private final Map<Local, Optional<Expression>> expressionTable;
+	private final Map<Local, Optional<Expression>> expressionTable;
 
-  public ProcedureBodyExtractor(final SootType returnType) {
+	public ProcedureBodyExtractor(final SootType returnType) {
 		this.returnType = returnType;
 		this.body = new Body();
 		this.variableProvider = new VariableProvider();
 		this.labelCollector = new LabelCollector();
 		this.loopCollector = new LoopCollector();
 		this.activeLoops = new Stack<>();
-    this.expressionTable = new HashMap<>();
-  }
+		this.expressionTable = new HashMap<>();
+	}
 
-  public Body visit(final SootBody body) {
+	public Body visit(final SootBody body) {
+		final BlockGraph graph = body.getBlockGraph();
 		labelCollector.collect(body);
 		loopCollector.collect(body);
-    body.apply(this);
 
-    return result();
+		for (Block block : graph.getBlocks()) {
+			final Iterator<Unit> iterator = block.iterator();
+
+			while (iterator.hasNext()) {
+				iterator.next().apply(this);
+      }
+
+      expressionTable.clear();
+    }
+
+		return result();
 	}
 
 	public void addStatement(final Statement statement) {
 		body.addStatement(statement);
 	}
 
-  public void addInvariant(final Expression argument) {
-    if (activeLoops.isEmpty()) {
-      throw new IllegalStateException("Trying to insert an invariant outside of a loop context");
-    }
+	public void addInvariant(final Expression argument) {
+		if (activeLoops.isEmpty()) {
+			throw new IllegalStateException("Trying to insert an invariant outside of a loop context");
+		}
 
-    activeLoops.peek().addInvariant(argument);
-  }
+		activeLoops.peek().addInvariant(argument);
+	}
 
 	public ValueReference addLocal(final TypeAccess typeAccess) {
 		return variableProvider.apply(typeAccess);
@@ -110,11 +121,11 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		return variableProvider;
 	}
 
-  public Map<Local, Optional<Expression>> getExpressionTable() {
-    return expressionTable;
-  }
+	public Map<Local, Optional<Expression>> getExpressionTable() {
+		return expressionTable;
+	}
 
-  @Override
+	@Override
 	public void caseDefault(final Unit unit) {
 		final var extractor = new StatementExtractor(this);
 		final Optional<LoopContext> loopContextStart = loopCollector.getByHead(unit);
@@ -124,13 +135,13 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		if (loopContextStart.isPresent()) {
 			final LoopContext loopContext = loopContextStart.get();
 			activeLoops.push(loopContext);
-      addStatement(loopContext.getAssertionPoint());
+			addStatement(loopContext.getAssertionPoint());
 		}
 
 		if (loopContextEnd.isPresent()) {
 			final LoopContext loopContext = activeLoops.pop();
 			assert loopContext.getLoop() == loopContextEnd.get().getLoop();
-      addStatement(loopContext.getAssertionPoint());
+			addStatement(loopContext.getAssertionPoint());
 		}
 
 		if (labelLookup.isPresent()) {

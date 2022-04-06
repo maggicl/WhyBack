@@ -1,8 +1,5 @@
 package byteback.core.converter.soot.boogie;
 
-import java.util.Map;
-import java.util.Optional;
-
 import byteback.core.converter.soot.boogie.ProcedureBodyExtractor.VariableProvider;
 import byteback.core.converter.soot.boogie.ProcedureExpressionExtractor.VariableSupplier;
 import byteback.core.representation.soot.body.SootExpression;
@@ -21,6 +18,8 @@ import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
+import java.util.Map;
+import java.util.Optional;
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
@@ -37,7 +36,7 @@ public class StatementExtractor extends SootStatementVisitor<Optional<Statement>
 
 	private final ProcedureBodyExtractor extractor;
 
-  private Statement statement;
+	private Statement statement;
 
 	public StatementExtractor(final ProcedureBodyExtractor extractor) {
 		this.extractor = extractor;
@@ -51,13 +50,13 @@ public class StatementExtractor extends SootStatementVisitor<Optional<Statement>
 	}
 
 	public void addStatement(final Statement statement) {
-    this.statement = statement;
+		this.statement = statement;
 		extractor.addStatement(statement);
 	}
 
-  public void addInvariant(final Expression expression) {
-    extractor.addInvariant(expression);
-  }
+	public void addInvariant(final Expression expression) {
+		extractor.addInvariant(expression);
+	}
 
 	public void addSingleAssignment(final Assignee assignee, final Expression expression) {
 		addStatement(Prelude.makeSingleAssignment(assignee, expression));
@@ -103,8 +102,8 @@ public class StatementExtractor extends SootStatementVisitor<Optional<Statement>
 
 				if (!assigned.equals(reference)) {
 					addSingleAssignment(new Assignee(reference), assigned);
-          getExpressionTable().put(local, Optional.of(assigned));
-        }
+					getExpressionTable().put(local, Optional.of(assigned));
+				}
 			}
 
 			@Override

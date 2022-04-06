@@ -34,7 +34,6 @@ import byteback.frontend.boogie.ast.ValueReference;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.stream.Stream;
-
 import soot.BooleanType;
 import soot.Local;
 import soot.Type;
@@ -115,21 +114,21 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	}
 
 	public List<Expression> convertArguments(final SootMethod method, final Iterable<SootExpression> arguments) {
-    final Iterator<SootType> typeIterator = method.getBody().getParameterLocals().stream()
-      .map(Local::getType).map(SootType::new).iterator();
-    final Iterator<SootExpression> expressionIterator = arguments.iterator();
-    final List<Expression> boogieArguments = new List<>();
+		final Iterator<SootType> typeIterator = method.getBody().getParameterLocals().stream().map(Local::getType)
+				.map(SootType::new).iterator();
+		final Iterator<SootExpression> expressionIterator = arguments.iterator();
+		final List<Expression> boogieArguments = new List<>();
 
-    while (typeIterator.hasNext() && expressionIterator.hasNext()) {
-      boogieArguments.add(visit(expressionIterator.next(), typeIterator.next()));
-    }
+		while (typeIterator.hasNext() && expressionIterator.hasNext()) {
+			boogieArguments.add(visit(expressionIterator.next(), typeIterator.next()));
+		}
 
-    return boogieArguments;
-  }
+		return boogieArguments;
+	}
 
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-    final List<Expression> boogieArguments = convertArguments(method, arguments);
-    final FunctionReference functionReference = new FunctionReference();
+		final List<Expression> boogieArguments = convertArguments(method, arguments);
+		final FunctionReference functionReference = new FunctionReference();
 		final String methodName = method.getAnnotation(Annotations.PRELUDE_ANNOTATION).flatMap(SootAnnotation::getValue)
 				.map((element) -> new StringElementExtractor().visit(element))
 				.orElseGet(() -> NameConverter.methodName(method));
@@ -149,8 +148,9 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	@Override
 	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invoke) {
 		final SootMethod method = new SootMethod(invoke.getMethod());
-    final SootExpression base = new SootExpression(invoke.getBase());
-    final Iterable<SootExpression> arguments = Stream.concat(Stream.of(base), invoke.getArgs().stream().map(SootExpression::new))::iterator;
+		final SootExpression base = new SootExpression(invoke.getBase());
+		final Iterable<SootExpression> arguments = Stream.concat(Stream.of(base),
+				invoke.getArgs().stream().map(SootExpression::new))::iterator;
 		pushFunctionReference(method, arguments);
 	}
 

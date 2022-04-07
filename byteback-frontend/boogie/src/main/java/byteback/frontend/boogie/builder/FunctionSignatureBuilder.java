@@ -1,37 +1,35 @@
 package byteback.frontend.boogie.builder;
 
 import byteback.frontend.boogie.ast.*;
-import java.util.Optional;
 
 public class FunctionSignatureBuilder extends SignatureBuilder {
 
-	private List<OptionalBinding> inputBindings;
+  private List<OptionalBinding> inputBindings;
 
-	private Optional<OptionalBinding> outputBindingParameter;
+  private OptionalBinding outputBinding;
 
-	public FunctionSignatureBuilder() {
-		this.inputBindings = new List<>();
-		this.outputBindingParameter = Optional.empty();
-	}
+  public FunctionSignatureBuilder() {
+    this.inputBindings = new List<>();
+  }
 
-	public FunctionSignatureBuilder addInputBinding(final OptionalBinding inputBinding) {
-		this.inputBindings.add(inputBinding);
+  public FunctionSignatureBuilder addInputBinding(final OptionalBinding inputBinding) {
+    this.inputBindings.add(inputBinding);
 
-		return this;
-	}
+    return this;
+  }
 
-	public FunctionSignatureBuilder outputBinding(final OptionalBinding outputBinding) {
-		outputBindingParameter = Optional.of(outputBinding);
+  public FunctionSignatureBuilder outputBinding(final OptionalBinding outputBinding) {
+    this.outputBinding = outputBinding;
 
-		return this;
-	}
+    return this;
+  }
 
-	public FunctionSignature build() {
-		final OptionalBinding outputBinding = outputBindingParameter.orElseThrow(() -> {
-			throw new IllegalArgumentException("A function signature must define an output binding");
-		});
+  public FunctionSignature build() {
+    if (outputBinding == null) {
+      throw new IllegalArgumentException("A function signature must define an output binding");
+    }
 
-		return new FunctionSignature(typeParameters, inputBindings, outputBinding);
-	}
+    return new FunctionSignature(typeParameters, inputBindings, outputBinding);
+  }
 
 }

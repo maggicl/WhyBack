@@ -104,13 +104,12 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		pushExpression(expression);
 	}
 
-	public void pushCmpExpression(final BinopExpr cmp) {
-		final FunctionReference cmpReference = Prelude.getCmpReference();
-		final SootExpression left = new SootExpression(cmp.getOp1());
-		final SootExpression right = new SootExpression(cmp.getOp2());
-		cmpReference.addArgument(visit(left));
-		cmpReference.addArgument(visit(right));
-		pushExpression(cmpReference);
+	public void pushSpecialBinaryExpression(final BinopExpr source, final FunctionReference reference) {
+		final SootExpression left = new SootExpression(source.getOp1());
+		final SootExpression right = new SootExpression(source.getOp2());
+		reference.addArgument(visit(left));
+		reference.addArgument(visit(right));
+		pushExpression(reference);
 	}
 
 	public List<Expression> convertArguments(final SootMethod method, final Iterable<SootExpression> arguments) {
@@ -152,6 +151,10 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		final Iterable<SootExpression> arguments = Stream.concat(Stream.of(base),
 				invoke.getArgs().stream().map(SootExpression::new))::iterator;
 		pushFunctionReference(method, arguments);
+	}
+
+	public void pushCmpExpression(final BinopExpr cmp) {
+		pushSpecialBinaryExpression(cmp, Prelude.getCmpReference());
 	}
 
 	@Override

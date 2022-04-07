@@ -35,7 +35,8 @@ public class FunctionConverter {
 
 	public static FunctionSignature makeSignature(final SootMethod method) {
 		final FunctionSignatureBuilder signatureBuilder = new FunctionSignatureBuilder();
-		signatureBuilder.addInputBinding(Prelude.getHeapVariable().makeOptionalBinding());
+		final OptionalBinding heapBinding = Prelude.getHeapVariable().makeOptionalBinding();
+		signatureBuilder.addInputBinding(heapBinding);
 
 		for (Local local : method.getBody().getParameterLocals()) {
 			signatureBuilder.addInputBinding(makeBinding(local));

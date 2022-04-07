@@ -1,55 +1,54 @@
 package byteback.frontend.boogie.builder;
 
 import byteback.frontend.boogie.ast.*;
-import java.util.Optional;
 
 public class FunctionDeclarationBuilder extends DeclarationBuilder {
 
-	private Optional<Declarator> declaratorParameter;
+  private Declarator declarator;
 
-	private Optional<FunctionSignature> signatureParameter;
+  private FunctionSignature signature;
 
-	private Optional<Expression> expressionParameter;
+  private Opt<Expression> expression;
 
-	public FunctionDeclarationBuilder() {
-		this.declaratorParameter = Optional.empty();
-		this.signatureParameter = Optional.empty();
-		this.expressionParameter = Optional.empty();
-	}
+  public FunctionDeclarationBuilder() {
+    this.expression = new Opt<>();
+  }
 
-	public FunctionDeclarationBuilder name(final String name) {
-		this.declaratorParameter = Optional.of(new Declarator(name));
+  public FunctionDeclarationBuilder name(final String name) {
+    this.declarator = new Declarator(name);
 
-		return this;
-	}
+    return this;
+  }
 
-	public FunctionDeclarationBuilder signature(final FunctionSignature signature) {
-		this.signatureParameter = Optional.of(signature);
+  public FunctionDeclarationBuilder signature(final FunctionSignature signature) {
+    this.signature = signature;
 
-		return this;
-	}
+    return this;
+  }
 
-	public FunctionDeclarationBuilder expression(final Expression expression) {
-		this.expressionParameter = Optional.of(expression);
+  public FunctionDeclarationBuilder expression(final Expression expression) {
+    this.expression = new Opt<>(expression);
 
-		return this;
-	}
+    return this;
+  }
 
-	@Override
-	public FunctionDeclarationBuilder addAttribute(final Attribute attribute) {
-		super.addAttribute(attribute);
+  @Override
+  public FunctionDeclarationBuilder addAttribute(final Attribute attribute) {
+    super.addAttribute(attribute);
 
-		return this;
-	}
+    return this;
+  }
 
-	public FunctionDeclaration build() {
-		final Declarator declarator = declaratorParameter
-				.orElseThrow(() -> new IllegalArgumentException("Function declaration must include a name"));
-		final FunctionSignature signature = signatureParameter
-				.orElseThrow(() -> new IllegalArgumentException("Function declaration must include a signature"));
-		final Expression expression = expressionParameter.orElse(null);
+  public FunctionDeclaration build() {
+    if (declarator == null) {
+      throw new IllegalArgumentException("Function declaration must include a name");
+    }
 
-		return new FunctionDeclaration(attributes, declarator, signature, new Opt<>(expression));
-	}
+    if (signature == null) {
+      throw new IllegalArgumentException("Function declaration must include a signature");
+    }
+
+    return new FunctionDeclaration(attributes, declarator, signature, expression);
+  }
 
 }

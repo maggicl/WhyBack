@@ -14,23 +14,23 @@ public class LabelCollector extends SootStatementVisitor<Map<Unit, Label>> {
 
 	private int counter;
 
-	private final Map<Unit, Label> labelTable;
+	private final Map<Unit, Label> labels;
 
 	public LabelCollector() {
 		this.counter = 0;
-		this.labelTable = new HashMap<>();
+		this.labels = new HashMap<>();
 	}
 
 	public boolean hasLabel(final Unit unit) {
-		return labelTable.containsKey(unit);
+		return labels.containsKey(unit);
 	}
 
 	public Optional<Label> getLabel(final Unit unit) {
-		return Optional.ofNullable(labelTable.get(unit));
+		return Optional.ofNullable(labels.get(unit));
 	}
 
 	public void branchTo(final Unit target) {
-		labelTable.put(target, Prelude.getLabel(++counter));
+		labels.put(target, Prelude.makeLabel(++counter));
 	}
 
 	public void collect(final SootBody body) {
@@ -53,7 +53,7 @@ public class LabelCollector extends SootStatementVisitor<Map<Unit, Label>> {
 
 	@Override
 	public Map<Unit, Label> result() {
-		return labelTable;
+		return labels;
 	}
 
 }

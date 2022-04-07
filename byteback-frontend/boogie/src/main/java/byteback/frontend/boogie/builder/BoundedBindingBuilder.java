@@ -1,47 +1,46 @@
 package byteback.frontend.boogie.builder;
 
 import byteback.frontend.boogie.ast.*;
-import java.util.Optional;
 
 public class BoundedBindingBuilder extends BindingBuilder {
 
-	private List<Declarator> declarators;
+  private List<Declarator> declarators;
 
-	private Optional<WhereClause> whereClauseParameter;
+  private Opt<WhereClause> whereClause;
 
-	public BoundedBindingBuilder() {
-		this.declarators = new List<>();
-		this.whereClauseParameter = Optional.empty();
-	}
+  public BoundedBindingBuilder() {
+    this.declarators = new List<>();
+    this.whereClause = new Opt<>();
+  }
 
-	public BoundedBindingBuilder addName(final String name) {
-		declarators.add(new Declarator(name));
+  public BoundedBindingBuilder addName(final String name) {
+    declarators.add(new Declarator(name));
 
-		return this;
-	}
+    return this;
+  }
 
-	public BoundedBindingBuilder typeAccess(final TypeAccess typeAccess) {
-		super.typeAccess(typeAccess);
+  public BoundedBindingBuilder typeAccess(final TypeAccess typeAccess) {
+    super.typeAccess(typeAccess);
 
-		return this;
-	}
+    return this;
+  }
 
-	public BoundedBindingBuilder whereClause(final WhereClause whereClause) {
-		whereClauseParameter = Optional.of(whereClause);
+  public BoundedBindingBuilder whereClause(final WhereClause whereClause) {
+    this.whereClause = new Opt<>(whereClause);
 
-		return this;
-	}
+    return this;
+  }
 
-	public BoundedBinding build() {
-		final TypeAccess typeAccess = typeAccessParameter
-				.orElseThrow(() -> new IllegalArgumentException("Bounded binding must include a type access"));
-		final Opt<WhereClause> whereClause = whereClauseParameter.map(Opt::new).orElse(new Opt<>());
+  public BoundedBinding build() {
+    if (typeAccess == null) {
+      new IllegalArgumentException("Bounded binding must include a type access");
+    }
 
-		if (declarators.getNumChild() == 0) {
-			throw new IllegalArgumentException("Bounded binding must declare at least one name");
-		}
+    if (declarators.getNumChild() == 0) {
+      throw new IllegalArgumentException("Bounded binding must declare at least one name");
+    }
 
-		return new BoundedBinding(typeAccess, declarators, whereClause);
-	}
+    return new BoundedBinding(typeAccess, declarators, whereClause);
+  }
 
 }

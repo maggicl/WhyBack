@@ -8,6 +8,12 @@ public class Lazy<T> {
 		return new Lazy<>(supplier);
 	}
 
+	public static <T> Lazy<T> empty() {
+		return new Lazy<T>(() -> {
+			throw new IllegalStateException("Unable to initialize value");
+		});
+	}
+
 	private final Supplier<T> supplier;
 
 	private T value;

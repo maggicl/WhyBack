@@ -1,18 +1,17 @@
 package byteback.frontend.boogie.builder;
 
 import byteback.frontend.boogie.ast.*;
-import java.util.Optional;
 
 public class OptionalBindingBuilder extends BindingBuilder {
 
-	protected Optional<Declarator> declaratorParameter;
+	protected Opt<Declarator> declarator;
 
 	public OptionalBindingBuilder() {
-		this.declaratorParameter = Optional.empty();
+		this.declarator = new Opt<>();
 	}
 
 	public OptionalBindingBuilder name(final String name) {
-		declaratorParameter = Optional.of(new Declarator(name));
+		declarator = new Opt<>(new Declarator(name));
 
 		return this;
 	}
@@ -23,10 +22,10 @@ public class OptionalBindingBuilder extends BindingBuilder {
 		return this;
 	}
 
-	public OptionalBinding build() {
-		final TypeAccess typeAccess = typeAccessParameter
-				.orElseThrow(() -> new IllegalArgumentException("Optional binding must include a type access"));
-		final Opt<Declarator> declarator = declaratorParameter.map(Opt::new).orElse(new Opt<>());
+  public OptionalBinding build() {
+    if (typeAccess == null) {
+				throw new IllegalArgumentException("Optional binding must include a type access");
+    }
 
 		return new OptionalBinding(typeAccess, declarator);
 	}

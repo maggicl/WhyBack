@@ -12,7 +12,6 @@ import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.SymbolicReference;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 import soot.BooleanType;
@@ -33,16 +32,16 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		return call;
 	}
 
-	final StatementExtractor extractor;
+	final ProcedureBodyExtractor bodyExtractor;
 
-	final VariableSupplier supplier;
+	final VariableSupplier variableSupplier;
 
 	final Unit unit;
 
-	public ProcedureExpressionExtractor(final StatementExtractor extractor, final VariableSupplier supplier,
+	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor, final VariableSupplier supplier,
 			final Unit unit) {
-		this.extractor = extractor;
-		this.supplier = supplier;
+		this.bodyExtractor = bodyExtractor;
+		this.variableSupplier = supplier;
 		this.unit = unit;
 	}
 
@@ -51,40 +50,38 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		final TargetedCallStatement callStatement = makeCall(method, boogieArguments);
 		final List<SymbolicReference> targets = new List<SymbolicReference>();
 
-		if (supplier != null) {
-			final ValueReference reference = supplier.get();
+		if (variableSupplier != null) {
+			final ValueReference reference = variableSupplier.get();
 			targets.add(reference);
 			pushExpression(reference);
 		}
 
 		callStatement.setTargetList(targets);
-		extractor.addStatement(callStatement);
+		bodyExtractor.addStatement(callStatement);
 	}
 
 	public void addSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final Iterator<SootExpression> argumentIterator = arguments.iterator();
-		final SootExpression argument = argumentIterator.next();
-		final Expression boogieArgument = new InlineExpressionExtractor(extractor.getExpressionTable()) {
+		final SootExpression argument = arguments.iterator().next();
+		final Expression boogieArgument = new SubstitutingExtractor(bodyExtractor.getSubstituter()) {
 
 			@Override
 			public void caseLocal(final Local local) {
-				if (extractor.getDefinitionCollector().definitionsOfAt(local, unit).size() > 1) {
+				if (!bodyExtractor.getDefinitionCollector().hasSingleDefinition(local, unit)) {
 					throw new IllegalStateException(
-							"Cannot inline local definition " + local + " because its definition is ambiguous");
+							"Cannot substitute local " + local + " because its definition is ambiguous");
 				}
 
 				super.caseLocal(local);
 			}
 
 		}.visit(argument, new SootType(BooleanType.v()));
-		assert !argumentIterator.hasNext();
 
 		if (method.equals(Annotations.ASSERT_METHOD)) {
-			extractor.addStatement(new AssertStatement(boogieArgument));
+			bodyExtractor.addStatement(new AssertStatement(boogieArgument));
 		} else if (method.equals(Annotations.ASSUME_METHOD)) {
-			extractor.addStatement(new AssumeStatement(boogieArgument));
+			bodyExtractor.addStatement(new AssumeStatement(boogieArgument));
 		} else if (method.equals(Annotations.INVARIANT_METHOD)) {
-			extractor.addInvariant(boogieArgument);
+			bodyExtractor.addInvariant(boogieArgument);
 		} else {
 			throw new RuntimeException("Unknown special method: " + method.getName());
 		}

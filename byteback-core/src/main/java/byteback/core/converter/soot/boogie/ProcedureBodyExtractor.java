@@ -12,12 +12,9 @@ import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.VariableDeclaration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Function;
-import soot.Local;
 import soot.Unit;
 
 public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
@@ -50,11 +47,11 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final LoopCollector loopCollector;
 
-	private final DefinitionCollector definitionCollector;
-
 	private final Stack<LoopContext> activeLoops;
 
-	private final Map<Local, Optional<Expression>> expressionTable;
+	private final DefinitionCollector definitions;
+
+	private final Substituter substitutions;
 
 	public ProcedureBodyExtractor(final SootType returnType) {
 		this.returnType = returnType;
@@ -62,15 +59,16 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.variableProvider = new VariableProvider();
 		this.labelCollector = new LabelCollector();
 		this.loopCollector = new LoopCollector();
-		this.definitionCollector = new DefinitionCollector();
+		this.definitions = new DefinitionCollector();
 		this.activeLoops = new Stack<>();
-		this.expressionTable = new HashMap<>();
+		this.substitutions = new Substituter();
 	}
 
 	public Body visit(final SootBody body) {
+		System.out.println(body);
 		labelCollector.collect(body);
 		loopCollector.collect(body);
-		definitionCollector.collect(body);
+		definitions.collect(body);
 		body.apply(this);
 
 		return result();
@@ -108,21 +106,21 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		return labelCollector;
 	}
 
-	public DefinitionCollector getDefinitionCollector() {
-		return definitionCollector;
-	}
-
 	public VariableProvider getVariableProvider() {
 		return variableProvider;
 	}
 
-	public Map<Local, Optional<Expression>> getExpressionTable() {
-		return expressionTable;
+	public Substituter getSubstituter() {
+		return substitutions;
+	}
+
+	public DefinitionCollector getDefinitionCollector() {
+		return definitions;
 	}
 
 	@Override
 	public void caseDefault(final Unit unit) {
-		final var extractor = new StatementExtractor(this);
+		final var extractor = new ProcedureStatementExtractor(this);
 		final Optional<LoopContext> loopContextStart = loopCollector.getByHead(unit);
 		final Optional<LoopContext> loopContextEnd = loopCollector.getByBackJump(unit);
 		final Optional<Label> labelLookup = labelCollector.getLabel(unit);

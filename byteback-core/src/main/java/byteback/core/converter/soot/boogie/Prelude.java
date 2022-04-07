@@ -151,7 +151,7 @@ public class Prelude {
 		return ValueReference.of("~ret");
 	}
 
-	public static Label getLabel(final int index) {
+	public static Label makeLabel(final int index) {
 		return new Label("label" + index);
 	}
 

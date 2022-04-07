@@ -1,63 +1,62 @@
 package byteback.frontend.boogie.builder;
 
 import byteback.frontend.boogie.ast.*;
-import java.util.Optional;
 
 public class ProcedureDeclarationBuilder extends DeclarationBuilder {
 
-	private Optional<Declarator> declaratorParameter;
+  private Declarator declarator;
 
-	private Optional<ProcedureSignature> signatureParameter;
+  private ProcedureSignature signature;
 
-	private Optional<Body> bodyParameter;
+  private Opt<Body> body;
 
-	private List<Specification> specification;
+  private List<Specification> specification;
 
-	public ProcedureDeclarationBuilder() {
-		declaratorParameter = Optional.empty();
-		signatureParameter = Optional.empty();
-		bodyParameter = Optional.empty();
-		specification = new List<>();
-	}
+  public ProcedureDeclarationBuilder() {
+    body = new Opt<>();
+    specification = new List<>();
+  }
 
-	public ProcedureDeclarationBuilder name(final String name) {
-		this.declaratorParameter = Optional.of(new Declarator(name));
+  public ProcedureDeclarationBuilder name(final String name) {
+    this.declarator = new Declarator(name);
 
-		return this;
-	}
+    return this;
+  }
 
-	public ProcedureDeclarationBuilder signature(final ProcedureSignature signature) {
-		this.signatureParameter = Optional.of(signature);
+  public ProcedureDeclarationBuilder signature(final ProcedureSignature signature) {
+    this.signature = signature;
 
-		return this;
-	}
+    return this;
+  }
 
-	public ProcedureDeclarationBuilder addSpecification(final Specification preCondition) {
-		specification.add(preCondition);
+  public ProcedureDeclarationBuilder addSpecification(final Specification preCondition) {
+    specification.add(preCondition);
 
-		return this;
-	}
+    return this;
+  }
 
-	public ProcedureDeclarationBuilder specification(final List<Specification> specification) {
-		this.specification.addAll(specification);
+  public ProcedureDeclarationBuilder specification(final List<Specification> specification) {
+    this.specification.addAll(specification);
 
-		return this;
-	}
+    return this;
+  }
 
-	public ProcedureDeclarationBuilder body(final Body body) {
-		this.bodyParameter = Optional.of(body);
+  public ProcedureDeclarationBuilder body(final Body body) {
+    this.body = new Opt<>(body);
 
-		return this;
-	}
+    return this;
+  }
 
-	public ProcedureDeclaration build() {
-		final Declarator declarator = declaratorParameter
-				.orElseThrow(() -> new IllegalArgumentException("Procedure declaration must include a name"));
-		final ProcedureSignature signature = signatureParameter
-				.orElseThrow(() -> new IllegalArgumentException("Procedure declaration must include a signature"));
-		final Body body = bodyParameter.orElse(null);
+  public ProcedureDeclaration build() {
+    if (declarator == null) {
+      throw new IllegalArgumentException("Procedure declaration must include a name");
+    }
 
-		return new ProcedureDeclaration(attributes, declarator, signature, specification, new Opt<>(body));
-	}
+    if (signature == null) {
+      throw new IllegalArgumentException("Procedure declaration must include a signature");
+    }
+
+    return new ProcedureDeclaration(attributes, declarator, signature, specification, body);
+  }
 
 }

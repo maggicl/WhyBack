@@ -22,10 +22,10 @@ public class OptionalBindingBuilder extends BindingBuilder {
 		return this;
 	}
 
-  public OptionalBinding build() {
-    if (typeAccess == null) {
-				throw new IllegalArgumentException("Optional binding must include a type access");
-    }
+	public OptionalBinding build() {
+		if (typeAccess == null) {
+			throw new IllegalArgumentException("Optional binding must include a type access");
+		}
 
 		return new OptionalBinding(typeAccess, declarator);
 	}

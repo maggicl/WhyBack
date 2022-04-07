@@ -4,51 +4,51 @@ import byteback.frontend.boogie.ast.*;
 
 public class FunctionDeclarationBuilder extends DeclarationBuilder {
 
-  private Declarator declarator;
+	private Declarator declarator;
 
-  private FunctionSignature signature;
+	private FunctionSignature signature;
 
-  private Opt<Expression> expression;
+	private Opt<Expression> expression;
 
-  public FunctionDeclarationBuilder() {
-    this.expression = new Opt<>();
-  }
+	public FunctionDeclarationBuilder() {
+		this.expression = new Opt<>();
+	}
 
-  public FunctionDeclarationBuilder name(final String name) {
-    this.declarator = new Declarator(name);
+	public FunctionDeclarationBuilder name(final String name) {
+		this.declarator = new Declarator(name);
 
-    return this;
-  }
+		return this;
+	}
 
-  public FunctionDeclarationBuilder signature(final FunctionSignature signature) {
-    this.signature = signature;
+	public FunctionDeclarationBuilder signature(final FunctionSignature signature) {
+		this.signature = signature;
 
-    return this;
-  }
+		return this;
+	}
 
-  public FunctionDeclarationBuilder expression(final Expression expression) {
-    this.expression = new Opt<>(expression);
+	public FunctionDeclarationBuilder expression(final Expression expression) {
+		this.expression = new Opt<>(expression);
 
-    return this;
-  }
+		return this;
+	}
 
-  @Override
-  public FunctionDeclarationBuilder addAttribute(final Attribute attribute) {
-    super.addAttribute(attribute);
+	@Override
+	public FunctionDeclarationBuilder addAttribute(final Attribute attribute) {
+		super.addAttribute(attribute);
 
-    return this;
-  }
+		return this;
+	}
 
-  public FunctionDeclaration build() {
-    if (declarator == null) {
-      throw new IllegalArgumentException("Function declaration must include a name");
-    }
+	public FunctionDeclaration build() {
+		if (declarator == null) {
+			throw new IllegalArgumentException("Function declaration must include a name");
+		}
 
-    if (signature == null) {
-      throw new IllegalArgumentException("Function declaration must include a signature");
-    }
+		if (signature == null) {
+			throw new IllegalArgumentException("Function declaration must include a signature");
+		}
 
-    return new FunctionDeclaration(attributes, declarator, signature, expression);
-  }
+		return new FunctionDeclaration(attributes, declarator, signature, expression);
+	}
 
 }

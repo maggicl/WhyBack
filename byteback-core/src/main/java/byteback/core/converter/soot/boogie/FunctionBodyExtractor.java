@@ -35,8 +35,7 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 		final SootExpression left = new SootExpression(assignment.getLeftOp());
 		final SootExpression right = new SootExpression(assignment.getRightOp());
 		final Local local = new LocalExtractor().visit(left);
-		final Expression boogieExpression = new SubstitutingExtractor(inliningTable).visit(right,
-				left.getType());
+		final Expression boogieExpression = new SubstitutingExtractor(inliningTable).visit(right, left.getType());
 		inliningTable.put(local, boogieExpression);
 	}
 

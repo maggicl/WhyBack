@@ -8,7 +8,6 @@ import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.core.representation.soot.unit.SootField;
 import byteback.core.representation.soot.unit.SootMethod;
-import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.AdditionOperation;
 import byteback.frontend.boogie.ast.AndOperation;
 import byteback.frontend.boogie.ast.BinaryExpression;
@@ -31,8 +30,10 @@ import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
 import byteback.frontend.boogie.ast.ValueReference;
+import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
 import java.util.Iterator;
 import java.util.Stack;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import soot.BooleanType;
 import soot.Local;
@@ -97,57 +98,55 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	}
 
 	public void pushBinaryExpression(final BinopExpr source, final BinaryExpression expression) {
-		final SootExpression left = new SootExpression(source.getOp1());
-		final SootExpression right = new SootExpression(source.getOp2());
+		final var left = new SootExpression(source.getOp1());
+		final var right = new SootExpression(source.getOp2());
 		expression.setLeftOperand(visit(left, getType()));
 		expression.setRightOperand(visit(right, getType()));
 		pushExpression(expression);
 	}
 
 	public void pushSpecialBinaryExpression(final BinopExpr source, final FunctionReference reference) {
-		final SootExpression left = new SootExpression(source.getOp1());
-		final SootExpression right = new SootExpression(source.getOp2());
+		final var left = new SootExpression(source.getOp1());
+		final var right = new SootExpression(source.getOp2());
 		reference.addArgument(visit(left));
 		reference.addArgument(visit(right));
 		pushExpression(reference);
 	}
 
-	public List<Expression> convertArguments(final SootMethod method, final Iterable<SootExpression> arguments) {
+	public List<Expression> convertArguments(final SootMethod method, final Iterable<SootExpression> sources) {
+		final List<Expression> arguments = new List<>();
 		final Iterator<SootType> typeIterator = method.getBody().getParameterLocals().stream().map(Local::getType)
 				.map(SootType::new).iterator();
-		final Iterator<SootExpression> expressionIterator = arguments.iterator();
-		final List<Expression> boogieArguments = new List<>();
+		final Iterator<SootExpression> sourceIterator = sources.iterator();
 
-		while (typeIterator.hasNext() && expressionIterator.hasNext()) {
-			boogieArguments.add(visit(expressionIterator.next(), typeIterator.next()));
+		while (typeIterator.hasNext() && sourceIterator.hasNext()) {
+			arguments.add(visit(sourceIterator.next(), typeIterator.next()));
 		}
 
-		return boogieArguments;
+		return arguments;
 	}
 
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final List<Expression> boogieArguments = convertArguments(method, arguments);
-		final FunctionReference functionReference = new FunctionReference();
+		final var referenceBuilder = new FunctionReferenceBuilder();
 		final String methodName = method.getAnnotation(Annotations.PRELUDE_ANNOTATION).flatMap(SootAnnotation::getValue)
 				.map((element) -> new StringElementExtractor().visit(element))
 				.orElseGet(() -> NameConverter.methodName(method));
-		boogieArguments.insertChild(Prelude.getHeapVariable().getValueReference(), 0);
-		functionReference.setAccessor(new Accessor(methodName));
-		functionReference.setArgumentList(boogieArguments);
-		pushExpression(functionReference);
+		referenceBuilder.prependArgument(Prelude.getHeapVariable().getValueReference()).name(methodName)
+				.addArguments(convertArguments(method, arguments));
+		pushExpression(referenceBuilder.build());
 	}
 
 	@Override
 	public void caseStaticInvokeExpr(final StaticInvokeExpr invoke) {
-		final SootMethod method = new SootMethod(invoke.getMethod());
+		final var method = new SootMethod(invoke.getMethod());
 		final Iterable<SootExpression> arguments = invoke.getArgs().stream().map(SootExpression::new)::iterator;
 		pushFunctionReference(method, arguments);
 	}
 
 	@Override
 	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invoke) {
-		final SootMethod method = new SootMethod(invoke.getMethod());
-		final SootExpression base = new SootExpression(invoke.getBase());
+		final var method = new SootMethod(invoke.getMethod());
+		final var base = new SootExpression(invoke.getBase());
 		final Iterable<SootExpression> arguments = Stream.concat(Stream.of(base),
 				invoke.getArgs().stream().map(SootExpression::new))::iterator;
 		pushFunctionReference(method, arguments);
@@ -281,10 +280,10 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseCastExpr(final CastExpr casting) {
-		final SootExpression operand = new SootExpression(casting.getOp());
-		final SootType toType = new SootType(casting.getCastType());
-		final SootType fromType = new SootType(casting.getType());
-		final var caster = new CasterProvider(toType).visit(fromType);
+		final var operand = new SootExpression(casting.getOp());
+		final var toType = new SootType(casting.getCastType());
+		final var fromType = new SootType(casting.getType());
+		final Function<Expression, Expression> caster = new CasterProvider(toType).visit(fromType);
 		pushExpression(caster.apply(visit(operand, fromType)));
 	}
 
@@ -328,16 +327,16 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseLocal(final Local local) {
-		final SootExpression expression = new SootExpression(local);
-		final var caster = new CasterProvider(getType()).visit(expression.getType());
+		final var expression = new SootExpression(local);
+		final Function<Expression, Expression> caster = new CasterProvider(getType()).visit(expression.getType());
 		pushExpression(caster.apply(ValueReference.of(local.getName())));
 	}
 
 	@Override
 	public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
-		final SootField field = new SootField(instanceFieldReference.getField());
-		final SootExpression base = new SootExpression(instanceFieldReference.getBase());
-		final var caster = new CasterProvider(getType()).visit(field.getType());
+		final var field = new SootField(instanceFieldReference.getField());
+		final var base = new SootExpression(instanceFieldReference.getBase());
+		final Function<Expression, Expression> caster = new CasterProvider(getType()).visit(field.getType());
 		final Expression reference = ValueReference.of(NameConverter.fieldName(field));
 		final Expression heapAccess = Prelude.getHeapAccessExpression(visit(base), reference);
 		pushExpression(caster.apply(heapAccess));
@@ -351,6 +350,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	@Override
 	public Expression result() {
 		types.pop();
+
 		return operands.pop();
 	}
 

@@ -4,32 +4,32 @@ import byteback.frontend.boogie.ast.*;
 
 public class FunctionSignatureBuilder extends SignatureBuilder {
 
-  private List<OptionalBinding> inputBindings;
+	private List<OptionalBinding> inputBindings;
 
-  private OptionalBinding outputBinding;
+	private OptionalBinding outputBinding;
 
-  public FunctionSignatureBuilder() {
-    this.inputBindings = new List<>();
-  }
+	public FunctionSignatureBuilder() {
+		this.inputBindings = new List<>();
+	}
 
-  public FunctionSignatureBuilder addInputBinding(final OptionalBinding inputBinding) {
-    this.inputBindings.add(inputBinding);
+	public FunctionSignatureBuilder addInputBinding(final OptionalBinding inputBinding) {
+		this.inputBindings.add(inputBinding);
 
-    return this;
-  }
+		return this;
+	}
 
-  public FunctionSignatureBuilder outputBinding(final OptionalBinding outputBinding) {
-    this.outputBinding = outputBinding;
+	public FunctionSignatureBuilder outputBinding(final OptionalBinding outputBinding) {
+		this.outputBinding = outputBinding;
 
-    return this;
-  }
+		return this;
+	}
 
-  public FunctionSignature build() {
-    if (outputBinding == null) {
-      throw new IllegalArgumentException("A function signature must define an output binding");
-    }
+	public FunctionSignature build() {
+		if (outputBinding == null) {
+			throw new IllegalArgumentException("A function signature must define an output binding");
+		}
 
-    return new FunctionSignature(typeParameters, inputBindings, outputBinding);
-  }
+		return new FunctionSignature(typeParameters, inputBindings, outputBinding);
+	}
 
 }

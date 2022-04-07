@@ -103,9 +103,9 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	@Override
 	public void caseReturnStmt(final ReturnStmt returnStatement) {
-		final SootExpression operand = new SootExpression(returnStatement.getOp());
+		final var operand = new SootExpression(returnStatement.getOp());
 		final ValueReference valueReference = Prelude.getReturnValueReference();
-		final Assignee assignee = new Assignee(valueReference);
+		final var assignee = new Assignee(valueReference);
 		final Expression expression = new ExpressionExtractor().visit(operand, bodyExtractor.getReturnType());
 		addSingleAssignment(assignee, expression);
 		addStatement(new ReturnStatement());

@@ -13,7 +13,7 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 
 	private Function<Expression, Expression> caster;
 
-	private SootType toType;
+	private final SootType toType;
 
 	public CasterProvider(final SootType toType) {
 		this.toType = toType;

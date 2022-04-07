@@ -4,59 +4,59 @@ import byteback.frontend.boogie.ast.*;
 
 public class ProcedureDeclarationBuilder extends DeclarationBuilder {
 
-  private Declarator declarator;
+	private Declarator declarator;
 
-  private ProcedureSignature signature;
+	private ProcedureSignature signature;
 
-  private Opt<Body> body;
+	private Opt<Body> body;
 
-  private List<Specification> specification;
+	private List<Specification> specification;
 
-  public ProcedureDeclarationBuilder() {
-    body = new Opt<>();
-    specification = new List<>();
-  }
+	public ProcedureDeclarationBuilder() {
+		body = new Opt<>();
+		specification = new List<>();
+	}
 
-  public ProcedureDeclarationBuilder name(final String name) {
-    this.declarator = new Declarator(name);
+	public ProcedureDeclarationBuilder name(final String name) {
+		this.declarator = new Declarator(name);
 
-    return this;
-  }
+		return this;
+	}
 
-  public ProcedureDeclarationBuilder signature(final ProcedureSignature signature) {
-    this.signature = signature;
+	public ProcedureDeclarationBuilder signature(final ProcedureSignature signature) {
+		this.signature = signature;
 
-    return this;
-  }
+		return this;
+	}
 
-  public ProcedureDeclarationBuilder addSpecification(final Specification preCondition) {
-    specification.add(preCondition);
+	public ProcedureDeclarationBuilder addSpecification(final Specification preCondition) {
+		specification.add(preCondition);
 
-    return this;
-  }
+		return this;
+	}
 
-  public ProcedureDeclarationBuilder specification(final List<Specification> specification) {
-    this.specification.addAll(specification);
+	public ProcedureDeclarationBuilder specification(final List<Specification> specification) {
+		this.specification.addAll(specification);
 
-    return this;
-  }
+		return this;
+	}
 
-  public ProcedureDeclarationBuilder body(final Body body) {
-    this.body = new Opt<>(body);
+	public ProcedureDeclarationBuilder body(final Body body) {
+		this.body = new Opt<>(body);
 
-    return this;
-  }
+		return this;
+	}
 
-  public ProcedureDeclaration build() {
-    if (declarator == null) {
-      throw new IllegalArgumentException("Procedure declaration must include a name");
-    }
+	public ProcedureDeclaration build() {
+		if (declarator == null) {
+			throw new IllegalArgumentException("Procedure declaration must include a name");
+		}
 
-    if (signature == null) {
-      throw new IllegalArgumentException("Procedure declaration must include a signature");
-    }
+		if (signature == null) {
+			throw new IllegalArgumentException("Procedure declaration must include a signature");
+		}
 
-    return new ProcedureDeclaration(attributes, declarator, signature, specification, body);
-  }
+		return new ProcedureDeclaration(attributes, declarator, signature, specification, body);
+	}
 
 }

@@ -23,15 +23,6 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 	public static interface VariableSupplier extends Supplier<ValueReference> {
 	}
 
-	public static TargetedCallStatement makeCall(final SootMethod method, final List<Expression> arguments) {
-		final String methodName = NameConverter.methodName(method);
-		final TargetedCallStatement call = new TargetedCallStatement();
-		call.setAccessor(new Accessor(methodName));
-		call.setArgumentList(arguments);
-
-		return call;
-	}
-
 	final ProcedureBodyExtractor bodyExtractor;
 
 	final VariableSupplier variableSupplier;
@@ -45,9 +36,17 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		this.unit = unit;
 	}
 
+	public TargetedCallStatement makeCall(final SootMethod method, final Iterable<SootExpression> arguments) {
+		final String methodName = NameConverter.methodName(method);
+		final TargetedCallStatement call = new TargetedCallStatement();
+		call.setAccessor(new Accessor(methodName));
+		call.setArgumentList(new List<Expression>().addAll(convertArguments(method, arguments)));
+
+		return call;
+	}
+
 	public void addCall(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final List<Expression> boogieArguments = convertArguments(method, arguments);
-		final TargetedCallStatement callStatement = makeCall(method, boogieArguments);
+		final TargetedCallStatement callStatement = makeCall(method, arguments);
 		final List<SymbolicReference> targets = new List<SymbolicReference>();
 
 		if (variableSupplier != null) {

@@ -7,16 +7,15 @@ import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootField;
 import byteback.frontend.boogie.ast.Assignee;
-import byteback.frontend.boogie.ast.BlockStatement;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.GotoStatement;
-import byteback.frontend.boogie.ast.IfStatement;
 import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
+import byteback.frontend.boogie.builder.IfStatementBuilder;
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
@@ -45,17 +44,10 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		addStatement(Prelude.makeSingleAssignment(assignee, expression));
 	}
 
-	public BlockStatement makeThenBlock(final Statement statement) {
-		final BlockStatement blockStatement = new BlockStatement();
-		blockStatement.addStatement(statement);
-
-		return blockStatement;
-	}
-
 	@Override
 	public void caseAssignStmt(final AssignStmt assignment) {
-		final SootExpression left = new SootExpression(assignment.getLeftOp());
-		final SootExpression right = new SootExpression(assignment.getRightOp());
+		final var left = new SootExpression(assignment.getLeftOp());
+		final var right = new SootExpression(assignment.getRightOp());
 
 		left.apply(new SootExpressionVisitor<>() {
 
@@ -68,7 +60,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 				if (!assigned.equals(reference)) {
 					addSingleAssignment(new Assignee(reference), assigned);
-					bodyExtractor.getSubstituter().put(local, assigned);
+					bodyExtractor.getSubstitutor().put(local, assigned);
 				}
 			}
 
@@ -120,21 +112,19 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	@Override
 	public void caseIfStmt(final IfStmt ifStatement) {
-		final var condition = new SootExpression(ifStatement.getCondition());
+    final var ifBuilder = new IfStatementBuilder();
+    final var condition = new SootExpression(ifStatement.getCondition());
 		final var type = new SootType(IntType.v());
-		final Expression boogieCondition = new ExpressionExtractor().visit(condition, type);
-		final IfStatement boogieIfStatement = new IfStatement();
 		final Label label = bodyExtractor.getLabelCollector().getLabel(ifStatement.getTarget()).get();
-		final BlockStatement boogieThenBlock = makeThenBlock(new GotoStatement(label));
-		boogieIfStatement.setCondition(boogieCondition);
-		boogieIfStatement.setThen(boogieThenBlock);
-		addStatement(boogieIfStatement);
+		ifBuilder.condition(new ExpressionExtractor().visit(condition, type))
+      .thenStatement(new GotoStatement(label));
+    addStatement(ifBuilder.build());
 	}
 
 	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
-		final SootExpression invokeExpression = new SootExpression(invokeStatement.getInvokeExpr());
-		invokeExpression.apply(new ProcedureExpressionExtractor(bodyExtractor, null, invokeStatement));
+		final var invoke = new SootExpression(invokeStatement.getInvokeExpr());
+		invoke.apply(new ProcedureExpressionExtractor(bodyExtractor, null, invokeStatement));
 	}
 
 	@Override

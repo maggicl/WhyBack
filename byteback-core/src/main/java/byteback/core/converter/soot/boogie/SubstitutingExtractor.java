@@ -6,9 +6,9 @@ import soot.Local;
 
 public class SubstitutingExtractor extends ExpressionExtractor {
 
-	private final Substituter substituter;
+	private final Substitutor substituter;
 
-	public SubstitutingExtractor(final Substituter substituter) {
+	public SubstitutingExtractor(final Substitutor substituter) {
 		this.substituter = substituter;
 	}
 

@@ -51,7 +51,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final DefinitionCollector definitions;
 
-	private final Substituter substitutions;
+	private final Substitutor substitutions;
 
 	public ProcedureBodyExtractor(final SootType returnType) {
 		this.returnType = returnType;
@@ -61,7 +61,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.loopCollector = new LoopCollector();
 		this.definitions = new DefinitionCollector();
 		this.activeLoops = new Stack<>();
-		this.substitutions = new Substituter();
+		this.substitutions = new Substitutor();
 	}
 
 	public Body visit(final SootBody body) {
@@ -110,7 +110,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		return variableProvider;
 	}
 
-	public Substituter getSubstituter() {
+	public Substitutor getSubstitutor() {
 		return substitutions;
 	}
 

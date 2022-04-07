@@ -61,7 +61,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	public void addSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final SootExpression argument = arguments.iterator().next();
-		final Expression boogieArgument = new SubstitutingExtractor(bodyExtractor.getSubstituter()) {
+		final Expression boogieArgument = new SubstitutingExtractor(bodyExtractor.getSubstitutor()) {
 
 			@Override
 			public void caseLocal(final Local local) {

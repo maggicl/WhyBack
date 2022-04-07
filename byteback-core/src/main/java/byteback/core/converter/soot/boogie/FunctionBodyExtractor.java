@@ -18,7 +18,7 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 
 	private final CountingMap<Local, Expression> expressionTable;
 
-	private final Substituter inliningTable;
+	private final Substitutor inliningTable;
 
 	private final SootType returnType;
 
@@ -27,7 +27,7 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 	public FunctionBodyExtractor(final SootType returnType) {
 		this.returnType = returnType;
 		this.expressionTable = new CountingMap<>();
-		this.inliningTable = new Substituter(this.expressionTable);
+		this.inliningTable = new Substitutor(this.expressionTable);
 	}
 
 	@Override

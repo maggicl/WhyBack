@@ -7,9 +7,9 @@ import byteback.frontend.boogie.ast.List;
 
 public class FunctionReferenceBuilder {
 
-	public Accessor accessor;
+	protected Accessor accessor;
 
-	public List<Expression> arguments;
+	protected List<Expression> arguments;
 
 	public FunctionReferenceBuilder() {
 		this.arguments = new List<>();

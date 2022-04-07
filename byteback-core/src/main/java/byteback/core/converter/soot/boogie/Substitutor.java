@@ -6,15 +6,15 @@ import java.util.Map;
 import java.util.Optional;
 import soot.Local;
 
-public class Substituter {
-
+public class Substitutor {
+  
 	public final Map<Local, Expression> substitutions;
 
-	public Substituter(final Map<Local, Expression> substitutions) {
+	public Substitutor(final Map<Local, Expression> substitutions) {
 		this.substitutions = substitutions;
 	}
 
-	public Substituter() {
+	public Substitutor() {
 		this(new HashMap<>());
 	}
 

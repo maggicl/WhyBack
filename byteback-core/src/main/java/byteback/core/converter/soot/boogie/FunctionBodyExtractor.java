@@ -18,7 +18,7 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 
 	private final CountingMap<Local, Expression> expressionTable;
 
-	private final Substitutor inliningTable;
+	private final Substitutor substitutor;
 
 	private final SootType returnType;
 
@@ -27,7 +27,7 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 	public FunctionBodyExtractor(final SootType returnType) {
 		this.returnType = returnType;
 		this.expressionTable = new CountingMap<>();
-		this.inliningTable = new Substitutor(this.expressionTable);
+		this.substitutor = new Substitutor(this.expressionTable);
 	}
 
 	@Override
@@ -35,14 +35,14 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 		final SootExpression left = new SootExpression(assignment.getLeftOp());
 		final SootExpression right = new SootExpression(assignment.getRightOp());
 		final Local local = new LocalExtractor().visit(left);
-		final Expression boogieExpression = new SubstitutingExtractor(inliningTable).visit(right, left.getType());
-		inliningTable.put(local, boogieExpression);
+		final Expression boogieExpression = new SubstitutingExtractor(substitutor).visit(right, left.getType());
+		substitutor.put(local, boogieExpression);
 	}
 
 	@Override
 	public void caseReturnStmt(final ReturnStmt returnStatement) {
 		final SootExpression operand = new SootExpression(returnStatement.getOp());
-		result = new SubstitutingExtractor(inliningTable).visit(operand, returnType);
+		result = new SubstitutingExtractor(substitutor).visit(operand, returnType);
 
 		for (Entry<Local, Integer> entry : expressionTable.getAccessCount().entrySet()) {
 			if (entry.getValue() == 0) {

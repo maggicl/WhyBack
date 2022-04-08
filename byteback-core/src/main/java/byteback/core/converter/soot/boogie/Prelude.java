@@ -7,6 +7,7 @@ import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.BooleanType;
 import byteback.frontend.boogie.ast.DefinedType;
 import byteback.frontend.boogie.ast.Expression;
+import byteback.frontend.boogie.ast.FrameCondition;
 import byteback.frontend.boogie.ast.Function;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.IntegerType;
@@ -159,7 +160,11 @@ public class Prelude {
 		return ValueReference.of("~sym" + index);
 	}
 
-	public static FunctionReference getIntCaster() {
+  public static FrameCondition makeHeapFrameCondition() {
+    return new FrameCondition(false, new List<ValueReference>(ValueReference.of("~heap")));
+  }
+
+  public static FunctionReference getIntCaster() {
 		return loadProgram().lookupFunction("~int")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~int casting function"))
 				.makeFunctionReference();

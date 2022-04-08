@@ -35,7 +35,7 @@ public class ProcedureDeclarationBuilder extends DeclarationBuilder {
 		return this;
 	}
 
-	public ProcedureDeclarationBuilder specification(final List<Specification> specification) {
+	public ProcedureDeclarationBuilder specification(final Iterable<Specification> specification) {
 		this.specification.addAll(specification);
 
 		return this;

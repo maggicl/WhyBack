@@ -53,7 +53,9 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final Substitutor substitutions;
 
-	public ProcedureBodyExtractor(final SootType returnType) {
+  private boolean modifiesHeap;
+
+  public ProcedureBodyExtractor(final SootType returnType) {
 		this.returnType = returnType;
 		this.body = new Body();
 		this.variableProvider = new VariableProvider();
@@ -62,9 +64,10 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.definitions = new DefinitionCollector();
 		this.activeLoops = new Stack<>();
 		this.substitutions = new Substitutor();
-	}
+    this.modifiesHeap = false;
+  }
 
-	public Body visit(final SootBody body) {
+  public Body visit(final SootBody body) {
 		System.out.println(body);
 		labelCollector.collect(body);
 		loopCollector.collect(body);
@@ -118,11 +121,20 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		return definitions;
 	}
 
-	@Override
+  public void setModifiesHeap() {
+    this.modifiesHeap = true;
+  }
+
+  public boolean getModifiesHeap() {
+    return modifiesHeap;
+  }
+
+  @Override
 	public void caseDefault(final Unit unit) {
 		final var extractor = new ProcedureStatementExtractor(this);
 		final Optional<LoopContext> loopContextStart = loopCollector.getByHead(unit);
 		final Optional<LoopContext> loopContextEnd = loopCollector.getByBackJump(unit);
+		final Optional<LoopContext> loopContextExit = loopCollector.getByExit(unit);
 		final Optional<Label> labelLookup = labelCollector.getLabel(unit);
 
 		if (loopContextStart.isPresent()) {
@@ -139,6 +151,11 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 		if (labelLookup.isPresent()) {
 			body.addStatement(new LabelStatement(labelLookup.get()));
+		}
+
+		if (loopContextExit.isPresent()) {
+			final LoopContext loopContext = loopContextExit.get();
+			addStatement(loopContext.getAssumptionPoint());
 		}
 
 		unit.apply(extractor);

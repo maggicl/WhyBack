@@ -77,7 +77,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression assigned = extractor.visit(right, left.getType());
 				final Expression fieldReference = ValueReference.of(NameConverter.fieldName(field));
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
-				addStatement(Prelude.getHeapUpdateStatement(boogieBase, fieldReference, assigned));
+        bodyExtractor.setModifiesHeap();
+        addStatement(Prelude.getHeapUpdateStatement(boogieBase, fieldReference, assigned));
 			}
 
 			@Override

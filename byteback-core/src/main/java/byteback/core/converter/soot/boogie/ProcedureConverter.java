@@ -105,13 +105,13 @@ public class ProcedureConverter {
 		final Stream<Specification> postconditions = makeConditions(method, Annotations.ENSURE_ANNOTATION)
 				.map((expression) -> new PostCondition(false, expression));
 
-    builder.specification(preconditions::iterator);
-    builder.specification(postconditions::iterator);
-  }
+		builder.specification(preconditions::iterator);
+		builder.specification(postconditions::iterator);
+	}
 
-  public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {
+	public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {
 		final SootType returnType = method.getReturnType();
-    final var bodyExtractor = new ProcedureBodyExtractor(returnType);
+		final var bodyExtractor = new ProcedureBodyExtractor(returnType);
 		final Body body = bodyExtractor.visit(method.getBody());
 
 		for (Local local : method.getBody().getLocals()) {
@@ -119,16 +119,16 @@ public class ProcedureConverter {
 			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
 		}
 
-    if (bodyExtractor.getModifiesHeap()) {
-      builder.addSpecification(Prelude.makeHeapFrameCondition());
-    }
+		if (bodyExtractor.getModifiesHeap()) {
+			builder.addSpecification(Prelude.makeHeapFrameCondition());
+		}
 
-    builder.body(body);
-  }
+		builder.body(body);
+	}
 
-  public ProcedureDeclaration convert(final SootMethod method) {
+	public ProcedureDeclaration convert(final SootMethod method) {
 		final var procedureBuilder = new ProcedureDeclarationBuilder();
-    procedureBuilder.name(NameConverter.methodName(method));
+		procedureBuilder.name(NameConverter.methodName(method));
 		buildSignature(procedureBuilder, method);
 		buildSpecifications(procedureBuilder, method);
 		buildBody(procedureBuilder, method);

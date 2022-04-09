@@ -107,10 +107,10 @@ public class Simple {
 		int c = 0;
 
 		for (int i = 0; i < 10; ++i) {
-          {
-            int f = 0;
-            invariant(eq(f, c));
-          }
+			{
+				int f = 0;
+				invariant(eq(f, c));
+			}
 		}
 	}
 

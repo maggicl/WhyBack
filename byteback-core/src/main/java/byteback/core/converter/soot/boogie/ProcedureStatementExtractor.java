@@ -77,8 +77,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression assigned = extractor.visit(right, left.getType());
 				final Expression fieldReference = ValueReference.of(NameConverter.fieldName(field));
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
-        bodyExtractor.setModifiesHeap();
-        addStatement(Prelude.getHeapUpdateStatement(boogieBase, fieldReference, assigned));
+				bodyExtractor.setModifiesHeap();
+				addStatement(Prelude.getHeapUpdateStatement(boogieBase, fieldReference, assigned));
 			}
 
 			@Override
@@ -113,13 +113,12 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	@Override
 	public void caseIfStmt(final IfStmt ifStatement) {
-    final var ifBuilder = new IfStatementBuilder();
-    final var condition = new SootExpression(ifStatement.getCondition());
+		final var ifBuilder = new IfStatementBuilder();
+		final var condition = new SootExpression(ifStatement.getCondition());
 		final var type = new SootType(IntType.v());
 		final Label label = bodyExtractor.getLabelCollector().getLabel(ifStatement.getTarget()).get();
-		ifBuilder.condition(new ExpressionExtractor().visit(condition, type))
-      .thenStatement(new GotoStatement(label));
-    addStatement(ifBuilder.build());
+		ifBuilder.condition(new ExpressionExtractor().visit(condition, type)).thenStatement(new GotoStatement(label));
+		addStatement(ifBuilder.build());
 	}
 
 	@Override

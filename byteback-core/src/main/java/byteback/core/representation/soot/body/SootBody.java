@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import soot.Body;
 import soot.Local;
+import soot.PatchingChain;
 import soot.Unit;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
@@ -69,8 +70,12 @@ public class SootBody implements Visitable<SootStatementVisitor<?>> {
 		return graph;
 	}
 
-	public void apply(final SootStatementVisitor<?> visitor) {
-		for (Unit unit : sootBody.getUnits()) {
+  public PatchingChain<Unit> getUnits() {
+    return sootBody.getUnits();
+  }
+
+  public void apply(final SootStatementVisitor<?> visitor) {
+		for (Unit unit : getUnits()) {
 			unit.apply(visitor);
 		}
 	}

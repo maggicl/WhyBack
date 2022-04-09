@@ -7,7 +7,7 @@ import java.util.Optional;
 import soot.Local;
 
 public class Substitutor {
-  
+
 	public final Map<Local, Expression> substitutions;
 
 	public Substitutor(final Map<Local, Expression> substitutions) {

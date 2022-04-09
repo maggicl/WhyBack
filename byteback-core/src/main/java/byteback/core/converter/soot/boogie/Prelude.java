@@ -160,11 +160,11 @@ public class Prelude {
 		return ValueReference.of("~sym" + index);
 	}
 
-  public static FrameCondition makeHeapFrameCondition() {
-    return new FrameCondition(false, new List<ValueReference>(ValueReference.of("~heap")));
-  }
+	public static FrameCondition makeHeapFrameCondition() {
+		return new FrameCondition(false, new List<ValueReference>(ValueReference.of("~heap")));
+	}
 
-  public static FunctionReference getIntCaster() {
+	public static FunctionReference getIntCaster() {
 		return loadProgram().lookupFunction("~int")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~int casting function"))
 				.makeFunctionReference();

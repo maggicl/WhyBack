@@ -9,51 +9,51 @@ import byteback.frontend.boogie.ast.Statement;
 
 public class IfStatementBuilder {
 
-  protected Meta condition; 
+	protected Meta condition;
 
-  protected BlockStatement thenBlock;
+	protected BlockStatement thenBlock;
 
-  protected Opt<BlockStatement> elseBlock;
+	protected Opt<BlockStatement> elseBlock;
 
-  public IfStatementBuilder() {
-    this.thenBlock = new BlockStatement();
-    this.elseBlock = new Opt<>();
-  }
+	public IfStatementBuilder() {
+		this.thenBlock = new BlockStatement();
+		this.elseBlock = new Opt<>();
+	}
 
-  public IfStatementBuilder condition(final Meta condition) {
-    this.condition = condition;
+	public IfStatementBuilder condition(final Meta condition) {
+		this.condition = condition;
 
-    return this;
-  }
+		return this;
+	}
 
-  public IfStatementBuilder thenBlock(final BlockStatement thenBlock) {
-    this.thenBlock = thenBlock;
+	public IfStatementBuilder thenBlock(final BlockStatement thenBlock) {
+		this.thenBlock = thenBlock;
 
-    return this;
-  }
+		return this;
+	}
 
-  public IfStatementBuilder thenStatement(final Statement statement) {
-    this.thenBlock = new BlockStatement(new List<>(statement));
+	public IfStatementBuilder thenStatement(final Statement statement) {
+		this.thenBlock = new BlockStatement(new List<>(statement));
 
-    return this;
-  }
+		return this;
+	}
 
-  public IfStatementBuilder elseBlock(final BlockStatement elseBlock) {
-    this.elseBlock = new Opt<>(elseBlock);
+	public IfStatementBuilder elseBlock(final BlockStatement elseBlock) {
+		this.elseBlock = new Opt<>(elseBlock);
 
-    return this;
-  }
+		return this;
+	}
 
-  public IfStatement build() {
-    if (condition == null) {
-      throw new IllegalArgumentException("IF statements must include a condition");
-    }
+	public IfStatement build() {
+		if (condition == null) {
+			throw new IllegalArgumentException("IF statements must include a condition");
+		}
 
-    if (thenBlock == null) {
-      throw new IllegalArgumentException("IF statements must include a THEN block");
-    }
+		if (thenBlock == null) {
+			throw new IllegalArgumentException("IF statements must include a THEN block");
+		}
 
-    return new IfStatement(condition, thenBlock, elseBlock);
-  }
+		return new IfStatement(condition, thenBlock, elseBlock);
+	}
 
 }

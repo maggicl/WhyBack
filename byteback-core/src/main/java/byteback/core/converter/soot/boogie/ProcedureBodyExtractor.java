@@ -53,9 +53,9 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final Substitutor substitutions;
 
-  private boolean modifiesHeap;
+	private boolean modifiesHeap;
 
-  public ProcedureBodyExtractor(final SootType returnType) {
+	public ProcedureBodyExtractor(final SootType returnType) {
 		this.returnType = returnType;
 		this.body = new Body();
 		this.variableProvider = new VariableProvider();
@@ -64,10 +64,10 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.definitions = new DefinitionCollector();
 		this.activeLoops = new Stack<>();
 		this.substitutions = new Substitutor();
-    this.modifiesHeap = false;
-  }
+		this.modifiesHeap = false;
+	}
 
-  public Body visit(final SootBody body) {
+	public Body visit(final SootBody body) {
 		System.out.println(body);
 		labelCollector.collect(body);
 		loopCollector.collect(body);
@@ -121,15 +121,15 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		return definitions;
 	}
 
-  public void setModifiesHeap() {
-    this.modifiesHeap = true;
-  }
+	public void setModifiesHeap() {
+		this.modifiesHeap = true;
+	}
 
-  public boolean getModifiesHeap() {
-    return modifiesHeap;
-  }
+	public boolean getModifiesHeap() {
+		return modifiesHeap;
+	}
 
-  @Override
+	@Override
 	public void caseDefault(final Unit unit) {
 		final var extractor = new ProcedureStatementExtractor(this);
 		final Optional<LoopContext> loopContextStart = loopCollector.getByHead(unit);

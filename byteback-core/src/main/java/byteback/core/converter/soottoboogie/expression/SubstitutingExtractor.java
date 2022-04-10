@@ -12,6 +12,10 @@ public class SubstitutingExtractor extends ExpressionExtractor {
 		this.substitutor = substitutor;
 	}
 
+	public Substitutor getSubstitutor() {
+		return substitutor;
+	}
+
 	@Override
 	public void caseLocal(final Local local) {
 		final Optional<Expression> substitution = substitutor.substitute(local);

@@ -1,8 +1,8 @@
 package byteback.core.converter.soottoboogie.procedure;
 
-import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
@@ -120,8 +120,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final var condition = new SootExpression(ifStatement.getCondition());
 		final var type = new SootType(IntType.v());
 		final Label label = bodyExtractor.getLabelCollector().getLabel(ifStatement.getTarget()).get();
-		ifBuilder.condition(new ExpressionExtractor().visit(condition, type))
-      .thenStatement(new GotoStatement(label));
+		ifBuilder.condition(new ExpressionExtractor().visit(condition, type)).thenStatement(new GotoStatement(label));
 		addStatement(ifBuilder.build());
 	}
 

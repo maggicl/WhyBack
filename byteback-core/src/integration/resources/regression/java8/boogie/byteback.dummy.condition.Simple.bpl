@@ -183,3 +183,8 @@ procedure byteback.dummy.condition.Simple.loopInvariant##() returns ()
 {
   return;
 }
+
+procedure byteback.dummy.condition.Simple.assignIf#int#(b: int) returns ()
+{
+  return;
+}

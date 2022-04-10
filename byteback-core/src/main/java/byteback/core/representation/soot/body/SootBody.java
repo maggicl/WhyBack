@@ -70,11 +70,11 @@ public class SootBody implements Visitable<SootStatementVisitor<?>> {
 		return graph;
 	}
 
-  public PatchingChain<Unit> getUnits() {
-    return sootBody.getUnits();
-  }
+	public PatchingChain<Unit> getUnits() {
+		return sootBody.getUnits();
+	}
 
-  public void apply(final SootStatementVisitor<?> visitor) {
+	public void apply(final SootStatementVisitor<?> visitor) {
 		for (Unit unit : getUnits()) {
 			unit.apply(visitor);
 		}

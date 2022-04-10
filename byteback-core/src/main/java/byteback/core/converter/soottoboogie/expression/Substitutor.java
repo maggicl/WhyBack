@@ -26,4 +26,8 @@ public class Substitutor {
 		return Optional.ofNullable(substitutions.get(local));
 	}
 
+  public boolean substitutes(final Local local) {
+    return substitutions.containsKey(local);
+  }
+
 }

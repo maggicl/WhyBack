@@ -1,4 +1,4 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie.function;
 
 import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.FunctionDeclaration;

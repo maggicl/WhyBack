@@ -1,4 +1,4 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie.procedure;
 
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.body.SootStatementVisitor;
@@ -53,12 +53,12 @@ public class LoopCollector {
 
 	private final Map<Unit, LoopContext> backJumpIndex;
 
-	private final Map<Unit, LoopContext> exitIndex;
+	private final Map<Unit, LoopContext> exitTargetIndex;
 
 	public LoopCollector() {
 		this.headIndex = new HashMap<>();
 		this.backJumpIndex = new HashMap<>();
-		this.exitIndex = new HashMap<>();
+		this.exitTargetIndex = new HashMap<>();
 	}
 
 	public void collect(final SootBody body) {
@@ -72,12 +72,12 @@ public class LoopCollector {
 
 					@Override
 					public void caseIfStmt(final IfStmt ifStatement) {
-						exitIndex.put(ifStatement.getTarget(), loopContext);
+						exitTargetIndex.put(ifStatement.getTarget(), loopContext);
 					}
 
 					@Override
 					public void caseDefault(final Unit unit) {
-						throw new IllegalStateException("Cannot identify exit target");
+						throw new IllegalStateException("Cannot identify exit target from " + unit);
 					}
 
 				});
@@ -93,8 +93,8 @@ public class LoopCollector {
 		return Optional.ofNullable(backJumpIndex.get(unit));
 	}
 
-	public Optional<LoopContext> getByExit(final Unit unit) {
-		return Optional.ofNullable(exitIndex.get(unit));
+	public Optional<LoopContext> getByExitTarget(final Unit unit) {
+		return Optional.ofNullable(exitTargetIndex.get(unit));
 	}
 
 	public Collection<LoopContext> getLoopContexts() {

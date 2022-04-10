@@ -1,6 +1,9 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie.procedure;
 
-import byteback.core.converter.soot.boogie.ProcedureExpressionExtractor.VariableSupplier;
+import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
+import byteback.core.converter.soottoboogie.NameConverter;
+import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
@@ -54,7 +57,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 			@Override
 			public void caseLocal(final Local local) {
 				final ValueReference reference = ValueReference.of(local.getName());
-				final VariableSupplier supplier = () -> reference;
+				final ProcedureExpressionExtractor.VariableSupplier supplier = () -> reference;
 				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, supplier, assignment);
 				final Expression assigned = extractor.visit(right, left.getType());
 
@@ -68,7 +71,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 			public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
 				final var field = new SootField(instanceFieldReference.getField());
 				final var base = new SootExpression(instanceFieldReference.getBase());
-				final VariableSupplier supplier = () -> {
+				final ProcedureExpressionExtractor.VariableSupplier supplier = () -> {
 					final TypeAccess typeAccess = new TypeAccessExtractor().visit(field.getType());
 
 					return bodyExtractor.getVariableProvider().apply(typeAccess);
@@ -117,7 +120,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final var condition = new SootExpression(ifStatement.getCondition());
 		final var type = new SootType(IntType.v());
 		final Label label = bodyExtractor.getLabelCollector().getLabel(ifStatement.getTarget()).get();
-		ifBuilder.condition(new ExpressionExtractor().visit(condition, type)).thenStatement(new GotoStatement(label));
+		ifBuilder.condition(new ExpressionExtractor().visit(condition, type))
+      .thenStatement(new GotoStatement(label));
 		addStatement(ifBuilder.build());
 	}
 

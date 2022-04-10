@@ -1,4 +1,4 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,6 +1,8 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie.procedure;
 
-import byteback.core.converter.soot.boogie.LoopCollector.LoopContext;
+import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.expression.Substitutor;
+import byteback.core.converter.soottoboogie.procedure.LoopCollector.LoopContext;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
@@ -134,7 +136,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		final var extractor = new ProcedureStatementExtractor(this);
 		final Optional<LoopContext> loopContextStart = loopCollector.getByHead(unit);
 		final Optional<LoopContext> loopContextEnd = loopCollector.getByBackJump(unit);
-		final Optional<LoopContext> loopContextExit = loopCollector.getByExit(unit);
+		final Optional<LoopContext> loopContextExit = loopCollector.getByExitTarget(unit);
 		final Optional<Label> labelLookup = labelCollector.getLabel(unit);
 
 		if (loopContextStart.isPresent()) {
@@ -159,7 +161,6 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		}
 
 		unit.apply(extractor);
-
 	}
 
 	@Override

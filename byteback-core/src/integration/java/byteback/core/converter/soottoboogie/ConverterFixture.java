@@ -1,4 +1,4 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie;
 
 import beaver.Parser;
 import byteback.core.ResourcesUtil;

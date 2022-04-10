@@ -1,4 +1,4 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie;
 
 import byteback.core.context.soot.ClassLoadException;
 import byteback.core.context.soot.SootContext;
@@ -21,19 +21,22 @@ public class Annotations {
 
 	public static final String ENSURE_ANNOTATION = "Lbyteback/annotations/Contract$Ensure;";
 
-	public static final SootClass CONTRACT_CLASS = loadClass(CONTRACT_CLASS_NAME);
+	public static final SootClass CONTRACT_CLASS = loadContractClass();
 
-	public static final SootMethod ASSERT_METHOD = CONTRACT_CLASS.getSootMethod("assertion").get();
+	public static final SootMethod ASSERT_METHOD = CONTRACT_CLASS.getSootMethod("assertion")
+			.orElseThrow(() -> new RuntimeException("Could not load `assertion` method from Contract class"));
 
-	public static final SootMethod ASSUME_METHOD = CONTRACT_CLASS.getSootMethod("assumption").get();
+	public static final SootMethod ASSUME_METHOD = CONTRACT_CLASS.getSootMethod("assumption")
+			.orElseThrow(() -> new RuntimeException("Could not load `assumption` method from Contract class"));
 
-	public static final SootMethod INVARIANT_METHOD = CONTRACT_CLASS.getSootMethod("invariant").get();
+	public static final SootMethod INVARIANT_METHOD = CONTRACT_CLASS.getSootMethod("invariant")
+			.orElseThrow(() -> new RuntimeException("Could not load `invariant` method from Contract class"));
 
-	private static SootClass loadClass(final String name) {
+	private static SootClass loadContractClass() {
 		try {
-			return SootContext.instance().loadClass(name);
+			return SootContext.instance().loadClass(CONTRACT_CLASS_NAME);
 		} catch (final ClassLoadException exception) {
-			log.error("Could not load annotation class: {}", name, exception);
+			log.error("Could not load Contract class", exception);
 			throw new RuntimeException(exception);
 		}
 	}

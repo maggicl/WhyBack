@@ -1,5 +1,6 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie.type;
 
+import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.frontend.boogie.ast.Expression;

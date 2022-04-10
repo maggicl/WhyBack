@@ -1,4 +1,4 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie;
 
 import beaver.Parser;
 import byteback.core.util.Lazy;
@@ -27,7 +27,6 @@ import byteback.frontend.boogie.util.ParserUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +44,7 @@ public class Prelude {
 		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		final InputStream stream = loader.getResourceAsStream("boogie/BytebackPrelude.bpl");
 		assert stream != null;
-		final Reader reader = new InputStreamReader(stream);
+		final var reader = new InputStreamReader(stream);
 
 		try {
 			return ParserUtil.parseBoogieProgram(reader);
@@ -128,7 +127,7 @@ public class Prelude {
 			final Expression value) {
 		final FunctionReference updateReference = getHeapUpdateFunction().makeFunctionReference();
 		final ValueReference heapReference = getHeapVariable().getValueReference();
-		final Assignee heapAssignee = new Assignee(heapReference);
+		final var heapAssignee = new Assignee(heapReference);
 		updateReference.addArgument(heapReference);
 		updateReference.addArgument(base);
 		updateReference.addArgument(field);

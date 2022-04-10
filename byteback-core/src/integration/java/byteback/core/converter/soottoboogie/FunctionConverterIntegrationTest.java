@@ -1,8 +1,9 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie;
 
 import static org.junit.Assert.assertEquals;
 
 import byteback.core.RegressionParameter;
+import byteback.core.converter.soottoboogie.function.FunctionConverter;
 import byteback.core.representation.soot.unit.SootClass;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
 import byteback.frontend.boogie.ast.PrintUtil;

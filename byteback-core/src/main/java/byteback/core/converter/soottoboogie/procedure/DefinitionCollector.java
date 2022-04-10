@@ -1,4 +1,4 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie.procedure;
 
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.util.Lazy;

@@ -1,5 +1,8 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie.Field;
 
+import byteback.core.converter.soottoboogie.NameConverter;
+import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.unit.SootField;
 import byteback.frontend.boogie.ast.ConstantDeclaration;
 import byteback.frontend.boogie.ast.Declarator;

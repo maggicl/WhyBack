@@ -1,5 +1,8 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie.function;
 
+import byteback.core.converter.soottoboogie.NameConverter;
+import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
@@ -25,7 +28,7 @@ public class FunctionConverter {
 	}
 
 	public static OptionalBinding makeBinding(final Local local) {
-		final SootType type = new SootType(local.getType());
+		final var type = new SootType(local.getType());
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
 		final OptionalBindingBuilder bindingBuilder = new OptionalBindingBuilder();
 		bindingBuilder.name(local.getName()).typeAccess(typeAccess);
@@ -62,7 +65,7 @@ public class FunctionConverter {
 	}
 
 	public FunctionDeclaration convert(final SootMethod method) {
-		final FunctionDeclarationBuilder functionBuilder = new FunctionDeclarationBuilder();
+		final var functionBuilder = new FunctionDeclarationBuilder();
 		final FunctionSignature boogieSignature = makeSignature(method);
 		final SootBody body = method.getBody();
 		final SootType returnType = method.getReturnType();

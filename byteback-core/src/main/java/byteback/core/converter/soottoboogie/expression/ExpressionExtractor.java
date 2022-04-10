@@ -1,5 +1,9 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie.expression;
 
+import byteback.core.converter.soottoboogie.Annotations;
+import byteback.core.converter.soottoboogie.type.CasterProvider;
+import byteback.core.converter.soottoboogie.NameConverter;
+import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.representation.soot.annotation.SootAnnotation;
 import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
 import byteback.core.representation.soot.body.SootExpression;
@@ -307,7 +311,8 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	@Override
 	public void caseLongConstant(final LongConstant longConstant) {
 		final String literal = longConstant.toString();
-		pushExpression(new NumberLiteral(literal.substring(0, literal.length() - 1)));
+		final String strippedLiteral = literal.substring(0, literal.length() - 1);
+		pushExpression(new NumberLiteral(strippedLiteral));
 	}
 
 	@Override

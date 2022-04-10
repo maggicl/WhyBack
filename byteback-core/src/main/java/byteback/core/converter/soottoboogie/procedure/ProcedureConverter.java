@@ -1,5 +1,10 @@
-package byteback.core.converter.soot.boogie;
+package byteback.core.converter.soottoboogie.procedure;
 
+import byteback.core.converter.soottoboogie.NameConverter;
+import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.function.FunctionManager;
+import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
+import byteback.core.converter.soottoboogie.Annotations;
 import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;

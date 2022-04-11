@@ -624,7 +624,7 @@ aspect Print {
   Assignee implements Printable;
 
   public void Assignee.print(final StringBuilder builder) {
-    getReference().print(builder);
+    getAccessor().print(builder);
   }
 
   public void MapAssignee.print(final StringBuilder builder) {

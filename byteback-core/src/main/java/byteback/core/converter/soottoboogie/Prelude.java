@@ -91,12 +91,12 @@ public class Prelude {
 	}
 
 	public static Variable getHeapVariable() {
-		return loadProgram().lookupVariable("~heap")
+		return loadProgram().lookupLocalVariable("~heap")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap variable"));
 	}
 
 	public static Variable getNullConstant() {
-		return loadProgram().lookupVariable("~null")
+		return loadProgram().lookupLocalVariable("~null")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~null variable"));
 	}
 
@@ -116,7 +116,7 @@ public class Prelude {
 
 	public static Expression getHeapAccessExpression(final Expression base, final Expression field) {
 		final FunctionReference reference = getHeapAccessFunction().makeFunctionReference();
-		reference.addArgument(getHeapVariable().getValueReference());
+		reference.addArgument(getHeapVariable().makeValueReference());
 		reference.addArgument(base);
 		reference.addArgument(field);
 
@@ -126,8 +126,8 @@ public class Prelude {
 	public static Statement getHeapUpdateStatement(final Expression base, final Expression field,
 			final Expression value) {
 		final FunctionReference updateReference = getHeapUpdateFunction().makeFunctionReference();
-		final ValueReference heapReference = getHeapVariable().getValueReference();
-		final var heapAssignee = new Assignee(heapReference);
+		final ValueReference heapReference = getHeapVariable().makeValueReference();
+		final var heapAssignee = Assignee.of(heapReference);
 		updateReference.addArgument(heapReference);
 		updateReference.addArgument(base);
 		updateReference.addArgument(field);

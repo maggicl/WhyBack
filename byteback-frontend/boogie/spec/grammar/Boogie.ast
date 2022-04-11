@@ -205,7 +205,7 @@ HavocStatement : Statement ::= Reference:SymbolicReference*;
 
 AssignmentStatement : Statement ::= Target:Assignee* Source:Expression*;
 
-Assignee ::= Reference:ValueReference;
+Assignee ::= Accessor;
 
 MapAssignee : Assignee ::= Select:MapSelect;
 

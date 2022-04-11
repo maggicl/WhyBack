@@ -43,7 +43,18 @@ aspect Variable {
   coll LinkedList<ValueReference> Variable.references();
 
   // We might want to keep track of unresolved references in a separate collection
-  ValueReference contributes this to Variable.references() for getAccessor().variable().orElse(null);
+  ValueReference contributes
+    this when getAccessor().variable().isPresent() to Variable.references()
+    for getAccessor().variable().get();
+
+  /**
+   * Assignments collection
+   */
+  //coll LinkedList<AssignmentStatement> Variable.assignments();
+
+  //AssignmentStatement contributes
+  //  this to Variable.assignments()
+  //  for getTarget().getAccessor().variable().getOrElse(null);
 
   /**
    * NTA definitions.
@@ -71,25 +82,60 @@ aspect Variable {
   }
 
   /**
-   * Lookup variables in program.
+   * Lookup variables locally.
    */
-  syn lazy Optional<Variable> Program.lookupVariable(String name);
+  syn lazy Optional<Variable> Scope.lookupLocalVariable(String name);
 
-  eq Program.lookupVariable(String name) = variables().getFirst(name);
+  eq Scope.lookupLocalVariable(String name) = variables().getFirst(name);
 
-  syn lazy Optional<Variable> Function.lookupVariable(String name);
+  /**
+   * Lookup variables remotely.
+   */
+  eq Program.getChild().lookupRemoteVariable(String name) {
+    return lookupLocalVariable(name);
+  }
 
-  eq Function.lookupVariable(String name) = variables().getFirst(name);
+  inh lazy Optional<Variable> FunctionDeclaration.lookupRemoteVariable(String name);
+
+  eq FunctionDeclaration.getChild().lookupRemoteVariable(String name) {
+    final Optional<Variable> localLookup = getFunction().lookupLocalVariable(name);
+
+    if (!localLookup.isPresent()) {
+      return lookupRemoteVariable(name);
+    } else {
+      return localLookup;
+    }
+  }
+
+  inh lazy Optional<Variable> ProcedureDeclaration.lookupRemoteVariable(String name);
+
+  eq ProcedureDeclaration.getChild().lookupRemoteVariable(String name) {
+    final Optional<Variable> localLookup = getProcedure().lookupLocalVariable(name);
+
+    if (!localLookup.isPresent()) {
+      return lookupRemoteVariable(name);
+    } else {
+      return localLookup;
+    }
+  }
+
+  inh lazy Optional<Variable> Body.lookupRemoteVariable(String name);
+
+  eq Body.getChild().lookupRemoteVariable(String name) {
+    final Optional<Variable> localLookup = lookupLocalVariable(name);
+
+    if (!localLookup.isPresent()) {
+      return lookupRemoteVariable(name);
+    } else {
+      return localLookup;
+    }
+  }
+
+  inh lazy Optional<Variable> Accessor.lookupRemoteVariable(String name);
 
   syn lazy Optional<Variable> Accessor.variable();
 
-  eq Accessor.variable() = lookupVariable(getName());
-
-  inh lazy Optional<Variable> Accessor.lookupVariable(String name);
-
-  eq Program.getChild().lookupVariable(String name) = lookupVariable(name);
-
-  eq FunctionDeclaration.getChild().lookupVariable(String name) = getFunction().lookupVariable(name);
+  eq Accessor.variable() = lookupRemoteVariable(getName());
 
   /**
    * Get type access used in variable.
@@ -101,9 +147,9 @@ aspect Variable {
   /**
    * Get reference to variable.
    */
-  syn ValueReference Variable.getValueReference();
+  syn ValueReference Variable.makeValueReference();
 
-  eq Variable.getValueReference() = new ValueReference(getDeclarator().makeAccessor());
+  eq Variable.makeValueReference() = new ValueReference(getDeclarator().makeAccessor());
 
   /**
    * Create optional binding from variable.
@@ -129,5 +175,11 @@ aspect Variable {
   eq ValueReference.makeVariableDeclaration(TypeAccess typeAccess) =
     new VariableDeclaration(new List<>(), new List<>(new BoundedBinding(
       typeAccess, new List<>(getAccessor().makeDeclarator()), new Opt<>())));
+
+  /**
+   * Delete a variable and all of its assignments.
+   */
+  public void Variable.delete() {
+  }
 
 }

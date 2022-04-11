@@ -64,7 +64,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression assigned = extractor.visit(right, left.getType());
 
 				if (!assigned.equals(reference)) {
-					addSingleAssignment(new Assignee(reference), assigned);
+					addSingleAssignment(Assignee.of(reference), assigned);
 					bodyExtractor.getSubstitutor().put(local, new LocalUseExtractor().visit(right), assigned);
 				}
 			}
@@ -103,7 +103,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 	public void caseReturnStmt(final ReturnStmt returnStatement) {
 		final var operand = new SootExpression(returnStatement.getOp());
 		final ValueReference valueReference = Prelude.getReturnValueReference();
-		final var assignee = new Assignee(valueReference);
+		final var assignee = Assignee.of(valueReference);
 		final Expression expression = new ExpressionExtractor().visit(operand, bodyExtractor.getReturnType());
 		addSingleAssignment(assignee, expression);
 		addStatement(new ReturnStatement());

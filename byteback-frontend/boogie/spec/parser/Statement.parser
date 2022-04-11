@@ -160,8 +160,8 @@ Assignee assignee
     ;
 
 Assignee value_assignee
-    = value_reference.r 
-    {: return new Assignee(r); :}
+    = accessor.a 
+    {: return new Assignee(a); :}
     ;
 
 List value_assignee_comma_list
@@ -172,8 +172,8 @@ List value_assignee_comma_list
     ;
 
 MapAssignee map_assignee
-    = value_reference.r map_select.s
-    {: return new MapAssignee(r, s); :}
+    = accessor.a map_select.s
+    {: return new MapAssignee(a, s); :}
     ;
 
 MapSelect map_select

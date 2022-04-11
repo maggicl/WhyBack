@@ -1,0 +1,33 @@
+aspect Optimization {
+
+  syn ProcedureDeclaration ProcedureDeclaration.normalize();
+
+  eq ProcedureDeclaration.normalize() {
+    final Program program = new Program();
+    final ProcedureDeclaration declaration = fullCopy();
+    program.addDeclaration(declaration);
+    declaration.getBody().normalize();
+
+    return declaration;
+  }
+
+  syn boolean Body.normalize() circular [true];
+
+  eq Body.normalize() {
+    boolean done = true;
+    System.out.println("================");
+    System.out.println(PrintUtil.toString(this));
+
+    for (Variable variable : variables()) {
+      if (variable.references().size() == 0) {
+        System.out.println(variable.getName());
+        done = false;
+        variable.delete();
+      }
+    }
+    System.out.println("================");
+
+    return true;
+  }
+
+}

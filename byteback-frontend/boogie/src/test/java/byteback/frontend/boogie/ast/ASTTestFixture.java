@@ -43,7 +43,7 @@ public class ASTTestFixture {
 
 	public Variable getVariable(final String programName, final String variableName) {
 		final Program program = getProgram(programName);
-		final Variable variable = program.lookupVariable(variableName)
+		final Variable variable = program.lookupLocalVariable(variableName)
 				.orElseThrow(() -> new RuntimeException("No such variable: " + variableName));
 
 		return variable;

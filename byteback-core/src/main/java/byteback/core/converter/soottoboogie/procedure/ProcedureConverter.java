@@ -93,7 +93,7 @@ public class ProcedureConverter {
 	}
 
 	public static List<Expression> makeParameters(final SootMethod method) {
-		final List<Expression> references = new List<>(Prelude.getHeapVariable().getValueReference());
+		final List<Expression> references = new List<>(Prelude.getHeapVariable().makeValueReference());
 
 		for (Local local : method.getBody().getParameterLocals()) {
 			references.add(ValueReference.of(local.getName()));
@@ -138,7 +138,7 @@ public class ProcedureConverter {
 		buildSpecifications(procedureBuilder, method);
 		buildBody(procedureBuilder, method);
 
-		return procedureBuilder.build();
+		return procedureBuilder.build().normalize();
 	}
 
 }

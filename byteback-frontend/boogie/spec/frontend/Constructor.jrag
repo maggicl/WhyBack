@@ -3,5 +3,9 @@ aspect Constructor {
   public static ValueReference ValueReference.of(String name) {
     return new ValueReference(new Accessor(name));
   }
+
+  public static Assignee Assignee.of(ValueReference reference) {
+    return new Assignee(reference.getAccessor());
+  }
   
 }

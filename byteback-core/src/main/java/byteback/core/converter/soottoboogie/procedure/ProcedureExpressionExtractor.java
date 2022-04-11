@@ -24,7 +24,7 @@ import soot.Unit;
 
 public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
-	public static interface VariableSupplier extends Supplier<ValueReference> {
+	public interface VariableSupplier extends Supplier<ValueReference> {
 	}
 
 	final ProcedureBodyExtractor bodyExtractor;

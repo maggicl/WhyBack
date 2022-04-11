@@ -1,8 +1,10 @@
 package byteback.core.converter.soottoboogie.procedure;
 
+import byteback.core.converter.soottoboogie.LocalUseExtractor;
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
+import byteback.core.converter.soottoboogie.procedure.ProcedureExpressionExtractor.VariableSupplier;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
@@ -57,13 +59,13 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 			@Override
 			public void caseLocal(final Local local) {
 				final ValueReference reference = ValueReference.of(local.getName());
-				final ProcedureExpressionExtractor.VariableSupplier supplier = () -> reference;
+				final VariableSupplier supplier = () -> reference;
 				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, supplier, assignment);
 				final Expression assigned = extractor.visit(right, left.getType());
 
 				if (!assigned.equals(reference)) {
 					addSingleAssignment(new Assignee(reference), assigned);
-					bodyExtractor.getSubstitutor().put(local, assigned);
+					bodyExtractor.getSubstitutor().put(local, new LocalUseExtractor().visit(right), assigned);
 				}
 			}
 

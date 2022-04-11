@@ -1,8 +1,11 @@
 package byteback.core.representation.soot.body;
 
+import java.util.List;
+
 import byteback.core.representation.Visitable;
 import byteback.core.representation.soot.type.SootType;
 import soot.Value;
+import soot.ValueBox;
 
 public class SootExpression implements Visitable<SootExpressionVisitor<?>> {
 
@@ -16,7 +19,11 @@ public class SootExpression implements Visitable<SootExpressionVisitor<?>> {
 		return new SootType(sootExpression.getType());
 	}
 
-	@Override
+  public List<ValueBox> getUseBoxes() {
+    return sootExpression.getUseBoxes();
+  }
+
+  @Override
 	public void apply(final SootExpressionVisitor<?> visitor) {
 		sootExpression.apply(visitor);
 	}

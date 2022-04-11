@@ -18,7 +18,11 @@ public class Substitutor {
 		this(new HashMap<>());
 	}
 
-	public void put(final Local local, final Expression expression) {
+  public Map<Local, Expression> getSubstitutions() {
+    return substitutions;
+  }
+
+  public void put(final Local local, final Expression expression) {
 		substitutions.put(local, expression);
 	}
 

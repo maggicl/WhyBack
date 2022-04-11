@@ -1,6 +1,7 @@
 package byteback.core.converter.soottoboogie.procedure;
 
 import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.expression.PartialSubstitutor;
 import byteback.core.converter.soottoboogie.expression.Substitutor;
 import byteback.core.converter.soottoboogie.procedure.LoopCollector.LoopContext;
 import byteback.core.representation.soot.body.SootBody;
@@ -53,7 +54,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final DefinitionCollector definitions;
 
-	private final Substitutor substitutions;
+	private final Substitutor substitutor;
 
 	private boolean modifiesHeap;
 
@@ -65,12 +66,11 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.loopCollector = new LoopCollector();
 		this.definitions = new DefinitionCollector();
 		this.activeLoops = new Stack<>();
-		this.substitutions = new Substitutor();
+		this.substitutor = new PartialSubstitutor();
 		this.modifiesHeap = false;
 	}
 
 	public Body visit(final SootBody body) {
-		System.out.println(body);
 		labelCollector.collect(body);
 		loopCollector.collect(body);
 		definitions.collect(body);
@@ -116,7 +116,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 	}
 
 	public Substitutor getSubstitutor() {
-		return substitutions;
+		return substitutor;
 	}
 
 	public DefinitionCollector getDefinitionCollector() {

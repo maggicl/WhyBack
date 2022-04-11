@@ -1,7 +1,6 @@
 package byteback.core.converter.soottoboogie.procedure;
 
 import byteback.core.converter.soottoboogie.NameConverter;
-import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
 import byteback.core.converter.soottoboogie.Annotations;
 import byteback.core.representation.soot.annotation.SootAnnotation;
@@ -18,11 +17,12 @@ import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
 import java.util.Optional;
 import java.util.function.Supplier;
+
 import soot.BooleanType;
 import soot.Local;
 import soot.Unit;
 
-public class ProcedureExpressionExtractor extends ExpressionExtractor {
+public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	public static interface VariableSupplier extends Supplier<ValueReference> {
 	}
@@ -35,6 +35,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor, final VariableSupplier supplier,
 			final Unit unit) {
+    super(bodyExtractor.getSubstitutor());
 		this.bodyExtractor = bodyExtractor;
 		this.variableSupplier = supplier;
 		this.unit = unit;
@@ -65,42 +66,38 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	public void addSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final SootExpression argument = arguments.iterator().next();
-		final Expression boogieArgument = new SubstitutingExtractor(bodyExtractor.getSubstitutor()) {
-
-			@Override
-			public void caseLocal(final Local local) {
-				if (!bodyExtractor.getDefinitionCollector().hasSingleDefinition(local, unit)) {
-					throw new IllegalStateException(
-							"Cannot substitute local " + local + " because its definition is ambiguous");
-				}
-
-				super.caseLocal(local);
-			}
-
-		}.visit(argument, new SootType(BooleanType.v()));
 
 		if (method.equals(Annotations.ASSERT_METHOD)) {
-			bodyExtractor.addStatement(new AssertStatement(boogieArgument));
+			bodyExtractor.addStatement(new AssertStatement(visit(argument, new SootType(BooleanType.v()))));
 		} else if (method.equals(Annotations.ASSUME_METHOD)) {
-			bodyExtractor.addStatement(new AssumeStatement(boogieArgument));
+			bodyExtractor.addStatement(new AssumeStatement(visit(argument, new SootType(BooleanType.v()))));
 		} else if (method.equals(Annotations.INVARIANT_METHOD)) {
-			bodyExtractor.addInvariant(boogieArgument);
+			bodyExtractor.addInvariant(visit(argument, new SootType(BooleanType.v())));
 		} else {
 			throw new RuntimeException("Unknown special method: " + method.getName());
 		}
 	}
 
-	@Override
-	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final Optional<SootAnnotation> annotation = method.getAnnotation(Annotations.PURE_ANNOTATION);
+  @Override
+  public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
+    final Optional<SootAnnotation> annotation = method.getAnnotation(Annotations.PURE_ANNOTATION);
 
-		if (annotation.isPresent()) {
-			super.pushFunctionReference(method, arguments);
-		} else if (method.getSootClass().equals(Annotations.CONTRACT_CLASS)) {
-			addSpecial(method, arguments);
-		} else {
-			addCall(method, arguments);
-		}
-	}
+    if (annotation.isPresent()) {
+      super.pushFunctionReference(method, arguments);
+    } else if (method.getSootClass().equals(Annotations.CONTRACT_CLASS)) {
+      addSpecial(method, arguments);
+    } else {
+      addCall(method, arguments);
+    }
+  }
+
+  @Override
+  public void caseLocal(final Local local) {
+    if (!bodyExtractor.getDefinitionCollector().hasSingleDefinition(local, unit)) {
+      pushExpression(ValueReference.of(local.getName()));
+    } else {
+      super.caseLocal(local);
+    }
+  }
 
 }

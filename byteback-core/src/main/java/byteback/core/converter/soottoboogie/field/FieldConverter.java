@@ -1,4 +1,4 @@
-package byteback.core.converter.soottoboogie.Field;
+package byteback.core.converter.soottoboogie.field;
 
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;

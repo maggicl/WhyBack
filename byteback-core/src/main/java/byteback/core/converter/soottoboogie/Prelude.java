@@ -110,10 +110,6 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update variable"));
 	}
 
-	public static Statement makeSingleAssignment(final Assignee assignee, final Expression expression) {
-		return new AssignmentStatement(new List<>(assignee), new List<>(expression));
-	}
-
 	public static Expression getHeapAccessExpression(final Expression base, final Expression field) {
 		final FunctionReference reference = getHeapAccessFunction().makeFunctionReference();
 		reference.addArgument(getHeapVariable().makeValueReference());
@@ -133,7 +129,7 @@ public class Prelude {
 		updateReference.addArgument(field);
 		updateReference.addArgument(value);
 
-		return makeSingleAssignment(heapAssignee, updateReference);
+		return new AssignmentStatement(heapAssignee, updateReference);
 	}
 
 	public static TypeAccess getFieldTypeAccess(final TypeAccess baseTypeAccess) {

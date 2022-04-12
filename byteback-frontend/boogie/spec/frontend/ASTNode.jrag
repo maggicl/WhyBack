@@ -1,0 +1,20 @@
+aspect ASTNode {
+
+  public void ASTNode.delete() {
+    final ASTNode parent = getParent();
+    assert parent != null;
+    final int index = parent.getIndexOfChild(this);
+    parent.removeChild(index);
+  }
+
+  public ASTNode ASTNode.getRoot() {
+    ASTNode n = this;
+
+    while (n.getParent() != null) {
+      n = n.getParent();
+    }
+
+    return n;
+  }
+  
+}

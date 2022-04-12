@@ -50,11 +50,11 @@ aspect Variable {
   /**
    * Assignments collection
    */
-  //coll LinkedList<AssignmentStatement> Variable.assignments();
+  coll LinkedList<AssignmentStatement> Variable.assignments();
 
-  //AssignmentStatement contributes
-  //  this to Variable.assignments()
-  //  for getTarget().getAccessor().variable().getOrElse(null);
+  AssignmentStatement contributes
+    this to Variable.assignments()
+    for getTarget().getAccessor().variable().orElse(null);
 
   /**
    * NTA definitions.
@@ -167,6 +167,12 @@ aspect Variable {
 
   eq Program.getChild().getConstantDeclaration() = Optional.empty();
 
+  inh lazy Optional<VariableDeclaration> Variable.getVariableDeclaration();
+
+  eq VariableDeclaration.getBinding().getVariableDeclaration() = Optional.of(this);
+
+  eq Program.getChild().getVariableDeclaration() = Optional.empty();
+
   /**
    * Create variable declaration from reference.
    */
@@ -180,6 +186,13 @@ aspect Variable {
    * Delete a variable and all of its assignments.
    */
   public void Variable.delete() {
+    assert references().size() == 0 : "Only unreferenced variables can be deleted";
+
+    for (AssignmentStatement statement : assignments()) {
+      statement.delete();
+    }
+
+    getVariableDeclaration().get().delete();
   }
 
 }

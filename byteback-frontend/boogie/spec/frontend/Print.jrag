@@ -495,9 +495,9 @@ aspect Print {
   }
 
   public void AssignmentStatement.print(final StringBuilder builder) {
-    PrintUtil.listPrint(builder, ", ", getTargetList());
+    getTarget().print(builder);
     builder.append(" := ");
-    PrintUtil.listPrint(builder, ", ", getSourceList());
+    getSource().print(builder);
     builder.append(";");
   }
 

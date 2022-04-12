@@ -12,7 +12,6 @@ import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
-import byteback.frontend.boogie.ast.SymbolicReference;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
 import java.util.Optional;
@@ -52,7 +51,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	public void addCall(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final TargetedCallStatement callStatement = makeCall(method, arguments);
-		final List<SymbolicReference> targets = new List<SymbolicReference>();
+		final List<ValueReference> targets = new List<ValueReference>();
 
 		if (variableSupplier != null) {
 			final ValueReference reference = variableSupplier.get();

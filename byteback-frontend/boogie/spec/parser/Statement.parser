@@ -148,8 +148,8 @@ List value_reference_comma_list
     ;
 
 AssignmentStatement assignment_statement
-    = assignee_comma_list.al COLONEQ expression_comma_list.el
-    {: return new AssignmentStatement(al, el); :}
+    = assignee.a COLONEQ expression.e
+    {: return new AssignmentStatement(a, e); :}
     ;
 
 Assignee assignee
@@ -164,13 +164,6 @@ Assignee value_assignee
     {: return new Assignee(a); :}
     ;
 
-List value_assignee_comma_list
-    = value_assignee.a
-    {: return new List(a); :}
-    | value_assignee_comma_list.al COMMA value_assignee.a
-    {: return al.add(a); :}
-    ;
-
 MapAssignee map_assignee
     = accessor.a map_select.s
     {: return new MapAssignee(a, s); :}
@@ -181,13 +174,6 @@ MapSelect map_select
     {: return new MapSelect(el); :}
     ;
 
-List assignee_comma_list
-    = assignee.a
-    {: return new List(a); :}
-    | assignee_comma_list.al COMMA assignee.a
-    {: return al.add(a); :}
-    ;
-
 CallStatement call_statement
     = targeted_call_statement.s
     {: return s; :}
@@ -196,13 +182,13 @@ CallStatement call_statement
     ;
 
 List call_targets
-    = value_assignee_comma_list.asl COLONEQ
-    {: return asl; :}
+    = value_reference_comma_list.vl COLONEQ
+    {: return vl; :}
     ;
 
 TargetedCallStatement targeted_call_statement
-    = CALL call_targets.asl? accessor.a LPAREN expression_comma_list.el? RPAREN
-    {: return new TargetedCallStatement(a, asl, el); :}
+    = CALL call_targets.vl? accessor.a LPAREN expression_comma_list.el? RPAREN
+    {: return new TargetedCallStatement(a, vl, el); :}
     ;
 
 UniversalCallStatement universal_call_statement

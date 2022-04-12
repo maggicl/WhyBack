@@ -138,7 +138,7 @@ public class ProcedureConverter {
 		buildSpecifications(procedureBuilder, method);
 		buildBody(procedureBuilder, method);
 
-		return procedureBuilder.build().normalize();
+		return procedureBuilder.build().removeUnusedVariables();
 	}
 
 }

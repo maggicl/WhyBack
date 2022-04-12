@@ -12,6 +12,7 @@ import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootField;
 import byteback.frontend.boogie.ast.Assignee;
+import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.GotoStatement;
@@ -46,7 +47,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 	}
 
 	public void addSingleAssignment(final Assignee assignee, final Expression expression) {
-		addStatement(Prelude.makeSingleAssignment(assignee, expression));
+		addStatement(new AssignmentStatement(assignee, expression));
 	}
 
 	@Override

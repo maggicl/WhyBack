@@ -203,7 +203,7 @@ AssumeStatement : Statement ::= Expression;
 
 HavocStatement : Statement ::= Reference:SymbolicReference*;
 
-AssignmentStatement : Statement ::= Target:Assignee* Source:Expression*;
+AssignmentStatement : Statement ::= Target:Assignee Source:Expression;
 
 Assignee ::= Accessor;
 
@@ -211,7 +211,7 @@ MapAssignee : Assignee ::= Select:MapSelect;
 
 abstract CallStatement : Statement ::= Accessor;
 
-TargetedCallStatement : CallStatement ::= Target:SymbolicReference* Argument:Expression*;
+TargetedCallStatement : CallStatement ::= Target:ValueReference* Argument:Expression*;
 
 UniversalCallStatement : CallStatement ::= Argument:Meta*;
 

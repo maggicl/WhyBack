@@ -53,12 +53,15 @@ public class LoopCollector {
 
 	private final Map<Unit, LoopContext> backJumpIndex;
 
+	private final Map<Unit, LoopContext> exitIndex;
+
 	private final Map<Unit, LoopContext> exitTargetIndex;
 
 	public LoopCollector() {
 		this.headIndex = new HashMap<>();
 		this.backJumpIndex = new HashMap<>();
-		this.exitTargetIndex = new HashMap<>();
+    this.exitIndex = new HashMap<>();
+    this.exitTargetIndex = new HashMap<>();
 	}
 
 	public void collect(final SootBody body) {
@@ -72,7 +75,8 @@ public class LoopCollector {
 
 					@Override
 					public void caseIfStmt(final IfStmt ifStatement) {
-						exitTargetIndex.put(ifStatement.getTarget(), loopContext);
+            exitIndex.put(ifStatement, loopContext);
+            exitTargetIndex.put(ifStatement.getTarget(), loopContext);
 					}
 
 					@Override
@@ -91,6 +95,10 @@ public class LoopCollector {
 
 	public Optional<LoopContext> getByBackJump(final Unit unit) {
 		return Optional.ofNullable(backJumpIndex.get(unit));
+	}
+
+	public Optional<LoopContext> getByExit(final Unit unit) {
+		return Optional.ofNullable(exitIndex.get(unit));
 	}
 
 	public Optional<LoopContext> getByExitTarget(final Unit unit) {

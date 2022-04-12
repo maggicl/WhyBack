@@ -55,17 +55,11 @@ procedure byteback.dummy.procedure.Simple.empty##() returns ()
 
 procedure byteback.dummy.procedure.Simple.singleAssignment##() returns ()
 {
-  var a: int;
-  a := 42;
   return;
 }
 
 procedure byteback.dummy.procedure.Simple.doubleAssignment##() returns ()
 {
-  var a: int;
-  var a#2: int;
-  a := 0;
-  a#2 := a + 42;
   return;
 }
 
@@ -127,8 +121,6 @@ label1:
 
 procedure byteback.dummy.procedure.Simple.assignParameter#int#(a: int) returns ()
 {
-  var a#2: bool;
-  a#2 := true;
   return;
 }
 
@@ -158,11 +150,8 @@ procedure byteback.dummy.procedure.Simple.returnsNull##() returns (~ret: Referen
 
 procedure byteback.dummy.procedure.Simple.realCondition##() returns ()
 {
-  var r: real;
   var $stack2 : int;
-
-  r := 3.14;
-  $stack2 := ~cmp(r, 2.72);
+  $stack2 := ~cmp(3.14, 2.72);
 
   if ($stack2 >= 0) {
     goto label1;
@@ -217,8 +206,5 @@ label1:
 
 procedure byteback.dummy.procedure.Simple.callsPureEq##() returns ()
 {
-  var result: bool;
-  result := eq(~heap, 1, 1);
-
   return;
 }

@@ -86,9 +86,7 @@ procedure byteback.dummy.condition.Simple.wrongAssumption1##() returns ()
 
 procedure byteback.dummy.condition.Simple.wrongAssumption2##() returns ()
 {
-  var a: bool;
-  a := false;
-  assume a;
+  assume false;
   return;
 }
 
@@ -145,46 +143,50 @@ procedure byteback.dummy.condition.Simple.returnsResult##() returns (~ret: int)
 
 procedure byteback.dummy.condition.Simple.loopAssertion##() returns ()
 {
-  var c: bool;
   var i: int;
-  var $stack4: bool;
-
-  c := false;
   i := 0;
-
-label4:
+label2:
   if (i >= 10) {
     goto label1;
   }
-
-  if (~int(c) != 0) {
-    goto label2;
-  }
-
-  $stack4 := true;
-
-  goto label3;
-
-label2:
-  $stack4 := false;
-
-label3:
-  assert $stack4;
-
+  assert eq(~heap, 0, 0);
   i := (i + 1);
-
-  goto label4;
-
+  goto label2;
 label1:
   return;
 }
 
 procedure byteback.dummy.condition.Simple.loopInvariant##() returns ()
 {
+  var i: int;
+  i := 0;
+  assert eq(~heap, 0, 0);
+label2:
+  assume eq(~heap, 0, 0);
+  if (i >= 10) {
+    goto label1;
+  }
+  i := (i + 1);
+  assert eq(~heap, 0, 0);
+  goto label2;
+label1:
+  assume eq(~heap, 0, 0);
+
   return;
 }
 
 procedure byteback.dummy.condition.Simple.assignIf#int#(b: int) returns ()
 {
+  var a: int;
+  a := 0;
+  if (a >= b) {
+    goto label1;
+  }
+  a := 1;
+  goto label2;
+label1:
+  a := 2;
+label2:
+  assert gt(~heap, a, 0);
   return;
 }

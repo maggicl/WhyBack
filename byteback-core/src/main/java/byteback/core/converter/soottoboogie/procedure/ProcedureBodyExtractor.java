@@ -136,7 +136,8 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		final var extractor = new ProcedureStatementExtractor(this);
 		final Optional<LoopContext> loopContextStart = loopCollector.getByHead(unit);
 		final Optional<LoopContext> loopContextEnd = loopCollector.getByBackJump(unit);
-		final Optional<LoopContext> loopContextExit = loopCollector.getByExitTarget(unit);
+		final Optional<LoopContext> loopContextExitTarget = loopCollector.getByExitTarget(unit);
+		final Optional<LoopContext> loopContextExit = loopCollector.getByExit(unit);
 		final Optional<Label> labelLookup = labelCollector.getLabel(unit);
 
 		if (loopContextStart.isPresent()) {
@@ -157,6 +158,11 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 		if (loopContextExit.isPresent()) {
 			final LoopContext loopContext = loopContextExit.get();
+			addStatement(loopContext.getAssumptionPoint());
+		}
+
+		if (loopContextExitTarget.isPresent()) {
+			final LoopContext loopContext = loopContextExitTarget.get();
 			addStatement(loopContext.getAssumptionPoint());
 		}
 

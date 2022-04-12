@@ -121,7 +121,7 @@ public class Simple {
       a = 2;
     }
 
-    assertion(eq(a, 1));
+    assertion(gt(a, 0));
   }
 
 }

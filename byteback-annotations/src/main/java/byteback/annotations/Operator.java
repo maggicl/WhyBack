@@ -154,38 +154,73 @@ public interface Operator {
 	@Pure
 	@Prelude("gt")
 	public static boolean gt(final double a, final double b) {
-		return a == b;
+		return a > b;
 	}
 
 	@Pure
 	@Prelude("gt")
 	public static boolean gt(final float a, final float b) {
-		return a == b;
+		return a > b;
 	}
 
 	@Pure
 	@Prelude("gt")
 	public static boolean gt(final long a, final long b) {
-		return a == b;
+		return a > b;
 	}
 
 	@Pure
 	@Prelude("gt")
 	public static boolean gt(final short a, final short b) {
-		return a == b;
+		return a > b;
 	}
 
-	/**
-	 * Specifies a reference to a old expression in a condition.
-	 * <p>
-	 * This expression is only allowed in the specification of conditions.
-	 *
-	 * @param a
-	 *            Single operand.
-	 * @return The given {@code a} instance.
-	 */
-	public static <T> T old(T a) {
-		return a;
+	@Pure
+	@Prelude("lt")
+	public static boolean lt(final double a, final double b) {
+		return a < b;
+	}
+
+	@Pure
+	@Prelude("lt")
+	public static boolean lt(final float a, final float b) {
+		return a < b;
+	}
+
+	@Pure
+	@Prelude("lt")
+	public static boolean lt(final long a, final long b) {
+		return a < b;
+	}
+
+	@Pure
+	@Prelude("lt")
+	public static boolean lt(final short a, final short b) {
+		return a < b;
+	}
+
+	@Pure
+	@Prelude("lte")
+	public static boolean lte(final double a, final double b) {
+		return a < b;
+	}
+
+	@Pure
+	@Prelude("lte")
+	public static boolean lte(final float a, final float b) {
+		return a < b;
+	}
+
+	@Pure
+	@Prelude("lte")
+	public static boolean lte(final long a, final long b) {
+		return a < b;
+	}
+
+	@Pure
+	@Prelude("lte")
+	public static boolean lte(final short a, final short b) {
+		return a < b;
 	}
 
 }

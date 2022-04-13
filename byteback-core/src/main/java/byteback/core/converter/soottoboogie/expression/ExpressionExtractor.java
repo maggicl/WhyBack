@@ -25,6 +25,7 @@ import byteback.frontend.boogie.ast.GreaterThanOperation;
 import byteback.frontend.boogie.ast.LessThanEqualsOperation;
 import byteback.frontend.boogie.ast.LessThanOperation;
 import byteback.frontend.boogie.ast.List;
+import byteback.frontend.boogie.ast.MinusOperation;
 import byteback.frontend.boogie.ast.ModuloOperation;
 import byteback.frontend.boogie.ast.MultiplicationOperation;
 import byteback.frontend.boogie.ast.NegationOperation;
@@ -188,7 +189,20 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	@Override
 	public void caseNegExpr(final NegExpr negation) {
 		final SootExpression operand = new SootExpression(negation.getOp());
-		pushExpression(new NegationOperation(visit(operand)));
+    final Expression expression = visit(operand);
+    getType().apply(new SootTypeVisitor<>() {
+
+			@Override
+			public void caseBooleanType(final BooleanType type) {
+        pushExpression(new NegationOperation(expression));
+			}
+
+			@Override
+			public void caseDefault(final Type type) {
+        pushExpression(new MinusOperation(expression));
+			}
+
+		});
 	}
 
 	@Override

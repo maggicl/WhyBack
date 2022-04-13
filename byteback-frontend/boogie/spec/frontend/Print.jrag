@@ -383,7 +383,7 @@ aspect Print {
   }
 
   public void ModuloOperation.printOperator(final StringBuilder builder) {
-    builder.append("%");
+    builder.append("mod");
   }
 
   public void ConcatenationOperation.printOperator(final StringBuilder builder) {
@@ -443,14 +443,22 @@ aspect Print {
     builder.append("(");
     getQuantifier().print(builder);
     builder.append(" ");
-    builder.append("<");
-    PrintUtil.listPrint(builder, ", ", getTypeParameterList());
-    builder.append(">");
-    builder.append(" ");
+
+    if (getTypeParameterList().getNumChild() > 0) {
+      builder.append("<");
+      PrintUtil.listPrint(builder, ", ", getTypeParameterList());
+      builder.append(">");
+      builder.append(" ");
+    }
+
     PrintUtil.listPrint(builder, ", ", getBindingList());
     builder.append(" :: ");
-    PrintUtil.listPrint(builder, ", ", getOptionList());
-    builder.append(" ");
+
+    if (getOptionList().getNumChild() > 0) {
+      PrintUtil.listPrint(builder, ", ", getOptionList());
+      builder.append(" ");
+    }
+
     getOperand().print(builder);
     builder.append(")");
   }

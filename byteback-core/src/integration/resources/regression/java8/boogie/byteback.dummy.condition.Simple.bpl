@@ -47,6 +47,12 @@ function eq(~heap: Store, a: int, b: int) returns (bool) { a == b }
 
 function gt(~heap: Store, a: int, b: int) returns (bool) { a > b }
 
+function lt(~heap: Store, a: int, b: int) returns (bool) { a < b }
+
+function lte(~heap: Store, a: int, b: int) returns (bool) { a <= b }
+
+function implies(~heap: Store, a: bool, b: bool) returns (bool) { a ==> b }
+
 function ~real<a>(a) returns (real);
 
 // int -> real
@@ -101,7 +107,9 @@ procedure byteback.dummy.condition.Simple.fibonacci#int#(m: int) returns (~ret: 
   b := 1;
   i := 0;
 
+  assert lte(~heap, i, m);
 label2:
+  assume lte(~heap, i, m);
   if (i >= m) {
     goto label1;
   }
@@ -110,9 +118,10 @@ label2:
   a := b;
   b := c;
   i := i + 1;
+  assert lte(~heap, i, m);
   goto label2;
-
 label1:
+  assume lte(~heap, i, m);
   ~ret := a;
 
   return;
@@ -187,6 +196,63 @@ procedure byteback.dummy.condition.Simple.assignIf#int#(b: int) returns ()
 label1:
   a := 2;
 label2:
+  assert implies(~heap, gt(~heap, b, a), eq(~heap, a, 1));
   assert gt(~heap, a, 0);
+  return;
+}
+
+procedure byteback.dummy.condition.Simple.fizz##()
+{
+  return;
+}
+
+procedure byteback.dummy.condition.Simple.buzz##()
+{
+  return;
+}
+
+procedure byteback.dummy.condition.Simple.fizzBuzz#int#(n: int)
+  requires gt(~heap, n, 0);
+{
+  var $stack5: int;
+  var $stack6: int;
+  var i: int;
+  i := 0;
+  assert lte(~heap, i, n);
+
+label4:
+
+  assume lte(~heap, i, n);
+  if (i >= n) {
+    goto label1;
+  }
+
+  $stack5 := i mod 3;
+
+  if ($stack5 != 0) {
+    goto label2;
+  }
+
+  call byteback.dummy.condition.Simple.fizz##();
+
+label2:
+
+  $stack6 := i mod 5;
+
+  if ($stack6 != 0) {
+    goto label3;
+  }
+
+  call byteback.dummy.condition.Simple.buzz##();
+
+label3:
+
+  i := i + 1;
+  assert lte(~heap, i, n);
+  goto label4;
+
+label1:
+
+  assume lte(~heap, i, n);
   return;
 }

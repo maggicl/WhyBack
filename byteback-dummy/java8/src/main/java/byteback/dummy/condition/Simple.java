@@ -5,6 +5,8 @@ import static byteback.annotations.Contract.assumption;
 import static byteback.annotations.Contract.invariant;
 import static byteback.annotations.Operator.eq;
 import static byteback.annotations.Operator.gt;
+import static byteback.annotations.Operator.lte;
+import static byteback.annotations.Operator.implies;
 
 import byteback.annotations.Contract.Condition;
 import byteback.annotations.Contract.Ensure;
@@ -24,6 +26,11 @@ public class Simple {
 
 	@Condition
 	public static boolean argument_is_positive(int m, int returns) {
+		return gt(m, 0);
+	}
+
+	@Condition
+	public static boolean argument_is_positive(int m) {
 		return gt(m, 0);
 	}
 
@@ -71,13 +78,14 @@ public class Simple {
 		int b = 1;
 		int c;
 
-		for (int i = 0; i < m; ++i) {
+    for (int i = 0; i < m; ++i) {
+      invariant(lte(i, m));
 			c = a + b;
 			a = b;
 			b = c;
-		}
+    }
 
-		return a;
+    return a;
 	}
 
 	@Ensure("returns_0")
@@ -121,7 +129,29 @@ public class Simple {
       a = 2;
     }
 
+    assertion(implies(gt(b, a), eq(a, 1)));
     assertion(gt(a, 0));
+  }
+
+  public static void fizz() {
+  }
+
+  public static void buzz() {
+  }
+
+  @Require("argument_is_positive")
+  public static void fizzBuzz(int n) {
+    for (int i = 0; i < n; ++i) {
+      invariant(lte(i, n));
+
+      if (i % 3 == 0) {
+        fizz();
+      }
+
+      if (i % 5 == 0) {
+        buzz();
+      }
+    }
   }
 
 }

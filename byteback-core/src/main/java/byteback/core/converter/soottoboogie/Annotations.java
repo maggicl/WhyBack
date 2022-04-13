@@ -13,6 +13,8 @@ public class Annotations {
 
 	public static final String CONTRACT_CLASS_NAME = "byteback.annotations.Contract";
 
+	public static final String QUANTIFIER_CLASS_NAME = "byteback.annotations.Quantifier";
+
 	public static final String PRELUDE_ANNOTATION = "Lbyteback/annotations/Contract$Prelude;";
 
 	public static final String PURE_ANNOTATION = "Lbyteback/annotations/Contract$Pure;";
@@ -21,9 +23,15 @@ public class Annotations {
 
 	public static final String ENSURE_ANNOTATION = "Lbyteback/annotations/Contract$Ensure;";
 
-	public static final SootClass CONTRACT_CLASS = loadContractClass();
+	public static final SootClass CONTRACT_CLASS = loadClass(CONTRACT_CLASS_NAME);
 
-	public static final SootMethod ASSERT_METHOD = CONTRACT_CLASS.getSootMethod("assertion")
+	public static final SootClass QUANTIFIER_CLASS = loadClass(QUANTIFIER_CLASS_NAME);
+
+  public static final String UNIVERSAL_QUANTIFIER_NAME = "forall";
+
+  public static final String EXISTENTIAL_QUANTIFIER_NAME = "exists";
+
+  public static final SootMethod ASSERT_METHOD = CONTRACT_CLASS.getSootMethod("assertion")
 			.orElseThrow(() -> new RuntimeException("Could not load `assertion` method from Contract class"));
 
 	public static final SootMethod ASSUME_METHOD = CONTRACT_CLASS.getSootMethod("assumption")
@@ -32,12 +40,12 @@ public class Annotations {
 	public static final SootMethod INVARIANT_METHOD = CONTRACT_CLASS.getSootMethod("invariant")
 			.orElseThrow(() -> new RuntimeException("Could not load `invariant` method from Contract class"));
 
-	private static SootClass loadContractClass() {
+  private static SootClass loadClass(final String className) {
 		try {
-			return SootContext.instance().loadClass(CONTRACT_CLASS_NAME);
+			return SootContext.instance().loadClass(className);
 		} catch (final ClassLoadException exception) {
-			log.error("Could not load Contract class", exception);
-			throw new RuntimeException(exception);
+      log.error("Could not load base class {}", className, exception);
+      throw new RuntimeException(exception);
 		}
 	}
 

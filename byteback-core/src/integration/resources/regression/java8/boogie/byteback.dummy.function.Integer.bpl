@@ -21,7 +21,7 @@ function byteback.dummy.function.Integer.division#int#int#(~heap: Store, a: int,
 
 function byteback.dummy.function.Integer.modulo#int#int#(~heap: Store, a: int, b: int) returns (int)
 {
-    a % b
+    a mod b
 }
 
 function byteback.dummy.function.Integer.square#int#(~heap: Store, a: int) returns (int)
@@ -41,7 +41,7 @@ function byteback.dummy.function.Integer.rectangleArea#int#int#(~heap: Store, a:
 
 function byteback.dummy.function.Integer.even#int#(~heap: Store, a: int) returns (bool)
 {
-    eq(~heap, (a % 2), 0)
+    eq(~heap, (a mod 2), 0)
 }
 
 function byteback.dummy.function.Integer.odd#int#(~heap: Store, a: int) returns (bool)
@@ -78,6 +78,11 @@ function byteback.dummy.function.Integer.assignPlusIndirectVariables#int#(~heap:
 function byteback.dummy.function.Integer.commonSubExpressionPlus#int#(~heap: Store, a: int) returns (int)
 {
     (a + 1) + (a + 1)
+}
+
+function byteback.dummy.function.Integer.minus#int#(~heap: Store, a: int) returns (int)
+{
+    -a
 }
 
 function byteback.dummy.function.Integer.returnsOne##(~heap: Store) returns(int)

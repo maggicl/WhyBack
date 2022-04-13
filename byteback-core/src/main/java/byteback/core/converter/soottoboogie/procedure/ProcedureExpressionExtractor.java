@@ -14,6 +14,8 @@ import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
+
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -64,14 +66,17 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 	}
 
 	public void addSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final SootExpression argument = arguments.iterator().next();
+    final Iterator<SootExpression> iterator = arguments.iterator();
+		final SootExpression argument = iterator.next();
+    final Expression condition = visit(argument, new SootType(BooleanType.v()));
+    assert !iterator.hasNext() : "Wrong number of arguments to special method";
 
-		if (method.equals(Annotations.ASSERT_METHOD)) {
-			bodyExtractor.addStatement(new AssertStatement(visit(argument, new SootType(BooleanType.v()))));
+    if (method.equals(Annotations.ASSERT_METHOD)) {
+			bodyExtractor.addStatement(new AssertStatement(condition));
 		} else if (method.equals(Annotations.ASSUME_METHOD)) {
-			bodyExtractor.addStatement(new AssumeStatement(visit(argument, new SootType(BooleanType.v()))));
+			bodyExtractor.addStatement(new AssumeStatement(condition));
 		} else if (method.equals(Annotations.INVARIANT_METHOD)) {
-			bodyExtractor.addInvariant(visit(argument, new SootType(BooleanType.v())));
+			bodyExtractor.addInvariant(condition);
 		} else {
 			throw new RuntimeException("Unknown special method: " + method.getName());
 		}

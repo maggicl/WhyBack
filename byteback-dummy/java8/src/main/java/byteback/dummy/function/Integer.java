@@ -17,6 +17,11 @@ public class Integer {
 		return a - b;
 	}
 
+  @Pure
+  public static int minus(int a) {
+    return -a;
+  }
+
 	@Pure
 	public static int multiplication(int a, int b) {
 		return a * b;
@@ -56,6 +61,7 @@ public class Integer {
 	public static boolean odd(int a) {
 		return not(even(a));
 	}
+
 
 	@Pure
 	public static int assignIndirect(int a) {

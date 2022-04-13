@@ -130,7 +130,6 @@ BvType = "bv" {DecIntegerLiteral}
     "*" { return symbol(Terminals.TIMES); }
     "/" { return symbol(Terminals.DIVIDE); }
     "div" { return symbol(Terminals.DIVIDE); }
-    "%" { return symbol(Terminals.MOD); }
     "mod" { return symbol(Terminals.MOD); }
     "!" { return symbol(Terminals.NOT); }
     "\u00ac" { return symbol(Terminals.NOT); }

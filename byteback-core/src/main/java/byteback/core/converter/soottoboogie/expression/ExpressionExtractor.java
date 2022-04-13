@@ -189,17 +189,17 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	@Override
 	public void caseNegExpr(final NegExpr negation) {
 		final SootExpression operand = new SootExpression(negation.getOp());
-    final Expression expression = visit(operand);
-    getType().apply(new SootTypeVisitor<>() {
+		final Expression expression = visit(operand);
+		getType().apply(new SootTypeVisitor<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
-        pushExpression(new NegationOperation(expression));
+				pushExpression(new NegationOperation(expression));
 			}
 
 			@Override
 			public void caseDefault(final Type type) {
-        pushExpression(new MinusOperation(expression));
+				pushExpression(new MinusOperation(expression));
 			}
 
 		});

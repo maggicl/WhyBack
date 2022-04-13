@@ -82,17 +82,6 @@ public class Integer {
 	}
 
 	@Pure
-	public static int assignPlusIndirect(int a) {
-		a = a + 1;
-		a = a + 2;
-		a = a + 3;
-		a = a + 4;
-		a = a + 5;
-
-		return a;
-	}
-
-	@Pure
 	public static int nestedPlus(int a) {
 		return a + 1 + 2 + 3 + 4 + 5;
 	}

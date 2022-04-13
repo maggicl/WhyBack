@@ -27,11 +27,11 @@ public class Annotations {
 
 	public static final SootClass QUANTIFIER_CLASS = loadClass(QUANTIFIER_CLASS_NAME);
 
-  public static final String UNIVERSAL_QUANTIFIER_NAME = "forall";
+	public static final String UNIVERSAL_QUANTIFIER_NAME = "forall";
 
-  public static final String EXISTENTIAL_QUANTIFIER_NAME = "exists";
+	public static final String EXISTENTIAL_QUANTIFIER_NAME = "exists";
 
-  public static final SootMethod ASSERT_METHOD = CONTRACT_CLASS.getSootMethod("assertion")
+	public static final SootMethod ASSERT_METHOD = CONTRACT_CLASS.getSootMethod("assertion")
 			.orElseThrow(() -> new RuntimeException("Could not load `assertion` method from Contract class"));
 
 	public static final SootMethod ASSUME_METHOD = CONTRACT_CLASS.getSootMethod("assumption")
@@ -40,12 +40,12 @@ public class Annotations {
 	public static final SootMethod INVARIANT_METHOD = CONTRACT_CLASS.getSootMethod("invariant")
 			.orElseThrow(() -> new RuntimeException("Could not load `invariant` method from Contract class"));
 
-  private static SootClass loadClass(final String className) {
+	private static SootClass loadClass(final String className) {
 		try {
 			return SootContext.instance().loadClass(className);
 		} catch (final ClassLoadException exception) {
-      log.error("Could not load base class {}", className, exception);
-      throw new RuntimeException(exception);
+			log.error("Could not load base class {}", className, exception);
+			throw new RuntimeException(exception);
 		}
 	}
 

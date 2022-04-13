@@ -10,80 +10,80 @@ import byteback.frontend.boogie.ast.TypeParameter;
 
 public class QuantifierExpressionBuilder {
 
-  private Expression operand; 
+	private Expression operand;
 
-  private Quantifier quantifier;
+	private Quantifier quantifier;
 
-  private List<TypeParameter> typeParameters;
+	private List<TypeParameter> typeParameters;
 
-  private List<SetBinding> bindings;
+	private List<SetBinding> bindings;
 
-  private List<Option> options;
+	private List<Option> options;
 
-  public QuantifierExpressionBuilder() {
-    this.typeParameters = new List<>();
-    this.bindings = new List<>();
-    this.options = new List<>();
-  }
+	public QuantifierExpressionBuilder() {
+		this.typeParameters = new List<>();
+		this.bindings = new List<>();
+		this.options = new List<>();
+	}
 
-  public QuantifierExpressionBuilder operand(final Expression operand) {
-    this.operand = operand;
+	public QuantifierExpressionBuilder operand(final Expression operand) {
+		this.operand = operand;
 
-    return this;
-  }
+		return this;
+	}
 
-  public QuantifierExpressionBuilder quantifier(final Quantifier quantifier) {
-    this.quantifier = quantifier;
+	public QuantifierExpressionBuilder quantifier(final Quantifier quantifier) {
+		this.quantifier = quantifier;
 
-    return this;
-  }
+		return this;
+	}
 
-  public QuantifierExpressionBuilder bindings(final List<SetBinding> bindings) {
-    this.bindings.addAll(bindings);
+	public QuantifierExpressionBuilder bindings(final List<SetBinding> bindings) {
+		this.bindings.addAll(bindings);
 
-    return this;
-  }
+		return this;
+	}
 
-  public QuantifierExpressionBuilder addBinding(final SetBinding binding) {
-    this.bindings.add(binding);
+	public QuantifierExpressionBuilder addBinding(final SetBinding binding) {
+		this.bindings.add(binding);
 
-    return this;
-  }
+		return this;
+	}
 
-  public QuantifierExpressionBuilder options(final List<Option> options) {
-    this.options.addAll(options);
+	public QuantifierExpressionBuilder options(final List<Option> options) {
+		this.options.addAll(options);
 
-    return this;
-  }
+		return this;
+	}
 
-  public QuantifierExpressionBuilder addOption(final Option option) {
-    this.options.add(option);
+	public QuantifierExpressionBuilder addOption(final Option option) {
+		this.options.add(option);
 
-    return this;
-  }
+		return this;
+	}
 
-  public QuantifierExpressionBuilder typeParameters(final List<TypeParameter> typeParameters) {
-    this.typeParameters.addAll(typeParameters);
+	public QuantifierExpressionBuilder typeParameters(final List<TypeParameter> typeParameters) {
+		this.typeParameters.addAll(typeParameters);
 
-    return this;
-  }
+		return this;
+	}
 
-  public QuantifierExpressionBuilder addTypeParameter(final TypeParameter typeParameter) {
-    this.typeParameters.add(typeParameter);
+	public QuantifierExpressionBuilder addTypeParameter(final TypeParameter typeParameter) {
+		this.typeParameters.add(typeParameter);
 
-    return this;
-  }
+		return this;
+	}
 
-  public QuantifierExpression build() {
-    if (operand == null) {
-      throw new IllegalArgumentException("A quantifier expression must include an operand");
-    }
+	public QuantifierExpression build() {
+		if (operand == null) {
+			throw new IllegalArgumentException("A quantifier expression must include an operand");
+		}
 
-    if (quantifier == null) {
-      throw new IllegalArgumentException("No quantifier defined");
-    }
+		if (quantifier == null) {
+			throw new IllegalArgumentException("No quantifier defined");
+		}
 
-    return new QuantifierExpression(operand, quantifier, typeParameters, bindings, options);
-  }
+		return new QuantifierExpression(operand, quantifier, typeParameters, bindings, options);
+	}
 
 }

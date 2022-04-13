@@ -2,7 +2,8 @@ package byteback.core.representation;
 
 public interface Visitor<T, R> {
 
-	void caseDefault(T argument);
+  default void caseDefault(T argument) {
+  }
 
 	default R result() {
 		return null;

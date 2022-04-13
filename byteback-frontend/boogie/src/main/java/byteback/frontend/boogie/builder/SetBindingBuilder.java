@@ -7,30 +7,30 @@ import byteback.frontend.boogie.ast.TypeAccess;
 
 public class SetBindingBuilder extends BindingBuilder {
 
-  private List<Declarator> declarators;
+	private List<Declarator> declarators;
 
-  public SetBindingBuilder() {
-    this.declarators = new List<>();
-  }
+	public SetBindingBuilder() {
+		this.declarators = new List<>();
+	}
 
-  public SetBindingBuilder name(final String name) {
-    this.declarators = new List<>(new Declarator(name));
+	public SetBindingBuilder name(final String name) {
+		this.declarators = new List<>(new Declarator(name));
 
-    return this;
-  }
+		return this;
+	}
 
-  public SetBindingBuilder typeAccess(final TypeAccess typeAccess) {
-    super.typeAccess(typeAccess);
+	public SetBindingBuilder typeAccess(final TypeAccess typeAccess) {
+		super.typeAccess(typeAccess);
 
-    return this;
-  }
+		return this;
+	}
 
-  public SetBinding build() {
-    if (declarators.getNumChild() == 0) {
-      throw new IllegalArgumentException("A SetBinding must include at least one declaration");
-    }
+	public SetBinding build() {
+		if (declarators.getNumChild() == 0) {
+			throw new IllegalArgumentException("A SetBinding must include at least one declaration");
+		}
 
-    return new SetBinding(typeAccess, declarators);
-  }
-  
+		return new SetBinding(typeAccess, declarators);
+	}
+
 }

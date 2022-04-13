@@ -8,12 +8,13 @@ import byteback.core.representation.soot.unit.SootClass;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.Before;
+
+import org.junit.After;
 import org.junit.Test;
 
 public class SootContextIntegrationTest extends SootContextFixture {
 
-	@Before
+	@After
 	public void after() {
 		resetContext();
 	}

@@ -1,10 +1,10 @@
 package byteback.core.converter.soottoboogie.procedure;
 
+import byteback.core.converter.soottoboogie.Annotations;
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.function.FunctionManager;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
-import byteback.core.converter.soottoboogie.Annotations;
 import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
@@ -32,126 +32,126 @@ import soot.VoidType;
 
 public class ProcedureConverter {
 
-  private static final ProcedureConverter instance = new ProcedureConverter();
+	private static final ProcedureConverter instance = new ProcedureConverter();
 
-  public static ProcedureConverter instance() {
-    return instance;
-  }
+	public static ProcedureConverter instance() {
+		return instance;
+	}
 
-  public static BoundedBinding makeBinding(final Local local) {
-    final var type = new SootType(local.getType());
-    final var bindingBuilder = new BoundedBindingBuilder();
-    final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
-    bindingBuilder.addName(local.getName()).typeAccess(typeAccess);
+	public static BoundedBinding makeBinding(final Local local) {
+		final var type = new SootType(local.getType());
+		final var bindingBuilder = new BoundedBindingBuilder();
+		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
+		bindingBuilder.addName(local.getName()).typeAccess(typeAccess);
 
-    return bindingBuilder.build();
-  }
+		return bindingBuilder.build();
+	}
 
-  public static void buildSignature(final ProcedureDeclarationBuilder builder, final SootMethod method) {
-    final var signatureBuilder = new ProcedureSignatureBuilder();
+	public static void buildSignature(final ProcedureDeclarationBuilder builder, final SootMethod method) {
+		final var signatureBuilder = new ProcedureSignatureBuilder();
 
-    for (Local local : method.getBody().getParameterLocals()) {
-      signatureBuilder.addInputBinding(makeBinding(local));
-    }
+		for (Local local : method.getBody().getParameterLocals()) {
+			signatureBuilder.addInputBinding(makeBinding(local));
+		}
 
-    method.getReturnType().apply(new SootTypeVisitor<>() {
+		method.getReturnType().apply(new SootTypeVisitor<>() {
 
-      @Override
-      public void caseVoidType(final VoidType type) {
-        // Do not add output parameter
-      }
+			@Override
+			public void caseVoidType(final VoidType type) {
+				// Do not add output parameter
+			}
 
-      @Override
-      public void caseDefault(final Type type) {
-        final TypeAccess typeAccess = new TypeAccessExtractor().visit(method.getReturnType());
-        final BoundedBinding binding = Prelude.getReturnBindingBuilder().typeAccess(typeAccess).build();
-        signatureBuilder.addOutputBinding(binding);
-      }
+			@Override
+			public void caseDefault(final Type type) {
+				final TypeAccess typeAccess = new TypeAccessExtractor().visit(method.getReturnType());
+				final BoundedBinding binding = Prelude.getReturnBindingBuilder().typeAccess(typeAccess).build();
+				signatureBuilder.addOutputBinding(binding);
+			}
 
-    });
+		});
 
-    builder.signature(signatureBuilder.build());
-  }
+		builder.signature(signatureBuilder.build());
+	}
 
-  public static Stream<Expression> makeConditions(final SootMethod method, final String typeName) {
-    final Stream<String> sourceNames = method.getAnnotationValues(typeName)
-        .map((element) -> new StringElementExtractor().visit(element));
-    final List<Expression> arguments = makeParameters(method);
+	public static Stream<Expression> makeConditions(final SootMethod method, final String typeName) {
+		final Stream<String> sourceNames = method.getAnnotationValues(typeName)
+				.map((element) -> new StringElementExtractor().visit(element));
+		final List<Expression> arguments = makeParameters(method);
 
-    return sourceNames.map((sourceName) -> makeCondition(method, sourceName, arguments));
-  }
+		return sourceNames.map((sourceName) -> makeCondition(method, sourceName, arguments));
+	}
 
-  public static Expression makeCondition(final SootMethod target, final String sourceName,
-      final List<Expression> arguments) {
-    final Collection<SootType> parameterTypes = target.getParameterTypes();
-    final SootType returnType = target.getReturnType();
-    returnType.apply(new SootTypeVisitor<>() {
+	public static Expression makeCondition(final SootMethod target, final String sourceName,
+			final List<Expression> arguments) {
+		final Collection<SootType> parameterTypes = target.getParameterTypes();
+		final SootType returnType = target.getReturnType();
+		returnType.apply(new SootTypeVisitor<>() {
 
-      @Override
-      public void caseVoidType(final VoidType voidType) {
-        // Source will not include return parameter
-      }
+			@Override
+			public void caseVoidType(final VoidType voidType) {
+				// Source will not include return parameter
+			}
 
-      @Override
-      public void caseDefault(final Type type) {
-        parameterTypes.add(returnType);
-      }
+			@Override
+			public void caseDefault(final Type type) {
+				parameterTypes.add(returnType);
+			}
 
-    });
-    final SootMethod source = target.getSootClass()
-        .getSootMethod(sourceName, parameterTypes, new SootType(BooleanType.v()))
-        .orElseThrow(() -> new IllegalArgumentException("Could not find condition method " + sourceName));
+		});
+		final SootMethod source = target.getSootClass()
+				.getSootMethod(sourceName, parameterTypes, new SootType(BooleanType.v()))
+				.orElseThrow(() -> new IllegalArgumentException("Could not find condition method " + sourceName));
 
-    return FunctionManager.instance().convert(source).getFunction().inline(arguments);
-  }
+		return FunctionManager.instance().convert(source).getFunction().inline(arguments);
+	}
 
-  public static List<Expression> makeParameters(final SootMethod method) {
-    final List<Expression> references = new List<>(Prelude.getHeapVariable().makeValueReference());
+	public static List<Expression> makeParameters(final SootMethod method) {
+		final List<Expression> references = new List<>(Prelude.getHeapVariable().makeValueReference());
 
-    for (Local local : method.getBody().getParameterLocals()) {
-      references.add(ValueReference.of(local.getName()));
-    }
+		for (Local local : method.getBody().getParameterLocals()) {
+			references.add(ValueReference.of(local.getName()));
+		}
 
-    references.add(Prelude.getReturnValueReference());
+		references.add(Prelude.getReturnValueReference());
 
-    return references;
-  }
+		return references;
+	}
 
-  public static void buildSpecifications(final ProcedureDeclarationBuilder builder, final SootMethod method) {
-    final Stream<Specification> preconditions = makeConditions(method, Annotations.REQUIRE_ANNOTATION)
-        .map((expression) -> new PreCondition(false, expression));
-    final Stream<Specification> postconditions = makeConditions(method, Annotations.ENSURE_ANNOTATION)
-        .map((expression) -> new PostCondition(false, expression));
+	public static void buildSpecifications(final ProcedureDeclarationBuilder builder, final SootMethod method) {
+		final Stream<Specification> preconditions = makeConditions(method, Annotations.REQUIRE_ANNOTATION)
+				.map((expression) -> new PreCondition(false, expression));
+		final Stream<Specification> postconditions = makeConditions(method, Annotations.ENSURE_ANNOTATION)
+				.map((expression) -> new PostCondition(false, expression));
 
-    builder.specification(preconditions::iterator);
-    builder.specification(postconditions::iterator);
-  }
+		builder.specification(preconditions::iterator);
+		builder.specification(postconditions::iterator);
+	}
 
-  public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {
-    final SootType returnType = method.getReturnType();
-    final var bodyExtractor = new ProcedureBodyExtractor(returnType);
-    final Body body = bodyExtractor.visit(method.getBody());
+	public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {
+		final SootType returnType = method.getReturnType();
+		final var bodyExtractor = new ProcedureBodyExtractor(returnType);
+		final Body body = bodyExtractor.visit(method.getBody());
 
-    for (Local local : method.getBody().getLocals()) {
-      final var variableBuilder = new VariableDeclarationBuilder();
-      body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
-    }
+		for (Local local : method.getBody().getLocals()) {
+			final var variableBuilder = new VariableDeclarationBuilder();
+			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
+		}
 
-    if (bodyExtractor.getModifiesHeap()) {
-      builder.addSpecification(Prelude.makeHeapFrameCondition());
-    }
+		if (bodyExtractor.getModifiesHeap()) {
+			builder.addSpecification(Prelude.makeHeapFrameCondition());
+		}
 
-    builder.body(body);
-  }
+		builder.body(body);
+	}
 
-  public ProcedureDeclaration convert(final SootMethod method) {
-    final var procedureBuilder = new ProcedureDeclarationBuilder();
-    procedureBuilder.name(NameConverter.methodName(method));
-    buildSignature(procedureBuilder, method);
-    buildSpecifications(procedureBuilder, method);
-    buildBody(procedureBuilder, method);
+	public ProcedureDeclaration convert(final SootMethod method) {
+		final var procedureBuilder = new ProcedureDeclarationBuilder();
+		procedureBuilder.name(NameConverter.methodName(method));
+		buildSignature(procedureBuilder, method);
+		buildSpecifications(procedureBuilder, method);
+		buildBody(procedureBuilder, method);
 
-    return procedureBuilder.build().removeUnusedVariables();
-  }
+		return procedureBuilder.build().removeUnusedVariables();
+	}
 
 }

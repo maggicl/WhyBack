@@ -68,7 +68,7 @@ public class VariableTest extends ASTTestFixture {
 	@Test
 	public void References_OnSimpleIdentityProcedureVariable0_ReturnsListOfOne() {
 		final Variable variable = getProcedure("Simple", "identity").variables().get(0);
-    assertEquals(1, variable.references().size());
+		assertEquals(1, variable.references().size());
 	}
 
 	@Test

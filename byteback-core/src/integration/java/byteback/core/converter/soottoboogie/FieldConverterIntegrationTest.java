@@ -10,6 +10,7 @@ import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.Variable;
 import java.io.IOException;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -17,6 +18,11 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class FieldConverterIntegrationTest extends ConverterFixture {
+
+	@AfterClass
+	public static void before() {
+		resetContext();
+	}
 
 	@Parameters
 	public static Iterable<RegressionParameter<ConstantDeclaration>> getParameters() throws IOException {

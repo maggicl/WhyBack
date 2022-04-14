@@ -1,14 +1,8 @@
 package byteback.dummy.procedure;
 
-import static byteback.annotations.Operator.eq;
-
 public class Simple {
 
 	public static void empty() {
-	}
-
-	public static void singleAssignment() {
-		int a = 42;
 	}
 
 	public static void doubleAssignment() {
@@ -89,10 +83,6 @@ public class Simple {
 		for (int i = 0; i < 10; ++i) {
 			emptyFor();
 		}
-	}
-
-	public static void callsPureEq() {
-		boolean result = eq(1, 1);
 	}
 
 }

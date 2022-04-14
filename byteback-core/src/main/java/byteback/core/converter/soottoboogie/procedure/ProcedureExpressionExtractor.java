@@ -69,11 +69,11 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		final Expression condition = visit(argument, new SootType(BooleanType.v()));
 		assert !iterator.hasNext() : "Wrong number of arguments to special method";
 
-		if (method.equals(Annotations.ASSERT_METHOD)) {
+		if (method.equals(Annotations.ASSERT_METHOD.get())) {
 			bodyExtractor.addStatement(new AssertStatement(condition));
-		} else if (method.equals(Annotations.ASSUME_METHOD)) {
+		} else if (method.equals(Annotations.ASSUME_METHOD.get())) {
 			bodyExtractor.addStatement(new AssumeStatement(condition));
-		} else if (method.equals(Annotations.INVARIANT_METHOD)) {
+		} else if (method.equals(Annotations.INVARIANT_METHOD.get())) {
 			bodyExtractor.addInvariant(condition);
 		} else {
 			throw new RuntimeException("Unknown special method: " + method.getName());
@@ -86,7 +86,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 		if (annotation.isPresent()) {
 			super.pushFunctionReference(method, arguments);
-		} else if (method.getSootClass().equals(Annotations.CONTRACT_CLASS)) {
+		} else if (method.getSootClass().equals(Annotations.CONTRACT_CLASS.get())) {
 			addSpecial(method, arguments);
 		} else {
 			addCall(method, arguments);

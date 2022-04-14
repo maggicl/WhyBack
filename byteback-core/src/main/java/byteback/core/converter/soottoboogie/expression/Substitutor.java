@@ -32,14 +32,14 @@ public class Substitutor {
 		return substitutionIndex;
 	}
 
-  protected void handleDependencies(final Set<Local> dependencies) {
-    if (dependencies.size() > 0) {
-      throw new IllegalStateException("Dependency found, the next substituted expressions may be invalid");
-    }
-  }
+	protected void handleDependencies(final Set<Local> dependencies) {
+		if (dependencies.size() > 0) {
+			throw new IllegalStateException("Dependency found, the next substituted expressions may be invalid");
+		}
+	}
 
-  public final void put(final Local source, final Set<Local> targets, final Expression expression) {
-    handleDependencies(dependencyIndex.getOrDefault(source, Collections.emptySet()));
+	public final void put(final Local source, final Set<Local> targets, final Expression expression) {
+		handleDependencies(dependencyIndex.getOrDefault(source, Collections.emptySet()));
 
 		for (Local target : targets) {
 			dependencyIndex.computeIfAbsent(target, ($) -> new HashSet<>()).add(source);

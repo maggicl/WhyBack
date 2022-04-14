@@ -5,8 +5,8 @@ import static byteback.annotations.Contract.assumption;
 import static byteback.annotations.Contract.invariant;
 import static byteback.annotations.Operator.eq;
 import static byteback.annotations.Operator.gt;
-import static byteback.annotations.Operator.lte;
 import static byteback.annotations.Operator.implies;
+import static byteback.annotations.Operator.lte;
 
 import byteback.annotations.Contract.Condition;
 import byteback.annotations.Contract.Ensure;
@@ -78,14 +78,14 @@ public class Simple {
 		int b = 1;
 		int c;
 
-    for (int i = 0; i < m; ++i) {
-      invariant(lte(i, m));
+		for (int i = 0; i < m; ++i) {
+			invariant(lte(i, m));
 			c = a + b;
 			a = b;
 			b = c;
-    }
+		}
 
-    return a;
+		return a;
 	}
 
 	@Ensure("returns_0")
@@ -115,43 +115,43 @@ public class Simple {
 		int c = 0;
 
 		for (int i = 0; i < 10; ++i) {
-      int f = 0;
-      invariant(eq(f, c));
+			int f = 0;
+			invariant(eq(f, c));
 		}
 	}
 
-  public static void assignIf(int b) {
-    int a = 0;
+	public static void assignIf(int b) {
+		int a = 0;
 
-    if (a < b) {
-      a = 1;
-    } else {
-      a = 2;
-    }
+		if (a < b) {
+			a = 1;
+		} else {
+			a = 2;
+		}
 
-    assertion(implies(gt(b, a), eq(a, 1)));
-    assertion(gt(a, 0));
-  }
+		assertion(implies(gt(b, a), eq(a, 1)));
+		assertion(gt(a, 0));
+	}
 
-  public static void fizz() {
-  }
+	public static void fizz() {
+	}
 
-  public static void buzz() {
-  }
+	public static void buzz() {
+	}
 
-  @Require("argument_is_positive")
-  public static void fizzBuzz(int n) {
-    for (int i = 0; i < n; ++i) {
-      invariant(lte(i, n));
+	@Require("argument_is_positive")
+	public static void fizzBuzz(int n) {
+		for (int i = 0; i < n; ++i) {
+			invariant(lte(i, n));
 
-      if (i % 3 == 0) {
-        fizz();
-      }
+			if (i % 3 == 0) {
+				fizz();
+			}
 
-      if (i % 5 == 0) {
-        buzz();
-      }
-    }
-  }
+			if (i % 5 == 0) {
+				buzz();
+			}
+		}
+	}
 
 }

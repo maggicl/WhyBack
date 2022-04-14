@@ -13,6 +13,8 @@ import byteback.frontend.boogie.ast.Program;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -20,6 +22,11 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class ProcedureConverterIntegrationTest extends ConverterFixture {
+
+	@AfterClass
+	public static void after() {
+		resetContext();
+	}
 
 	@Parameters
 	public static Iterable<RegressionParameter<ProcedureDeclaration>> getParameters() throws IOException {

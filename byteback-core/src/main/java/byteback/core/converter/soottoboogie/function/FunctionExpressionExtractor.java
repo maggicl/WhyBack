@@ -60,7 +60,7 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 
 	@Override
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-		if (method.getSootClass().equals(Annotations.QUANTIFIER_CLASS)) {
+		if (method.getSootClass().equals(Annotations.QUANTIFIER_CLASS.get())) {
 			pushQuantifier(method, arguments);
 		} else {
 			super.pushFunctionReference(method, arguments);

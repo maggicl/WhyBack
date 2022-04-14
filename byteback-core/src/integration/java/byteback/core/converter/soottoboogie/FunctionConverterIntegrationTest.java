@@ -10,6 +10,7 @@ import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Program;
 import java.io.IOException;
 import java.util.stream.Stream;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -17,6 +18,11 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class FunctionConverterIntegrationTest extends ConverterFixture {
+
+	@AfterClass
+	public static void after() {
+		resetContext();
+	}
 
 	@Parameters
 	public static Iterable<RegressionParameter<FunctionDeclaration>> getParameters() throws IOException {
@@ -26,8 +32,8 @@ public class FunctionConverterIntegrationTest extends ConverterFixture {
 
 			return clazz.methods().flatMap((method) -> {
 				if (method.getAnnotation(Annotations.PURE_ANNOTATION).isPresent()) {
-          System.err.println(method.getIdentifier());
-          final String name = NameConverter.methodName(method);
+					System.err.println(method.getIdentifier());
+					final String name = NameConverter.methodName(method);
 					final FunctionDeclaration expected = program.lookupFunction(name).get().getFunctionDeclaration();
 					final FunctionDeclaration actual = FunctionConverter.instance().convert(method);
 

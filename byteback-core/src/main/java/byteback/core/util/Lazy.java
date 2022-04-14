@@ -22,6 +22,10 @@ public class Lazy<T> {
 		this.supplier = supplier;
 	}
 
+	public synchronized void invalidate() {
+		value = null;
+	}
+
 	public synchronized T get() {
 		if (value != null) {
 			return value;

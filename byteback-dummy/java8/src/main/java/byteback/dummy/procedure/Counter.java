@@ -2,6 +2,13 @@ package byteback.dummy.procedure;
 
 public class Counter {
 
+	public static void main() {
+		final Counter counter = new Counter();
+		counter.increment();
+		counter.countTo10();
+		counter.countTo10Indirectly();
+	}
+
 	int count;
 
 	public Counter() {

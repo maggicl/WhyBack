@@ -9,6 +9,7 @@ import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.ExistentialQuantifier;
+import byteback.frontend.boogie.ast.OldReference;
 import byteback.frontend.boogie.ast.Quantifier;
 import byteback.frontend.boogie.ast.UniversalQuantifier;
 import byteback.frontend.boogie.builder.QuantifierExpressionBuilder;
@@ -34,9 +35,10 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 		quantifierBuilder.addBinding(bindingBuilder.build());
 		quantifierBuilder.operand(visit(argumentsIterator.next(), new SootType(BooleanType.v())));
 		pushExpression(quantifierBuilder.build());
-	}
+    assert !argumentsIterator.hasNext() : "Wrong number of arguments to quantifier";
+  }
 
-	public void pushExistentialQuantifier(Iterable<SootExpression> arguments) {
+  public void pushExistentialQuantifier(Iterable<SootExpression> arguments) {
 		final Quantifier quantifier = ExistentialQuantifier.instance();
 		pushQuantifier(quantifier, arguments);
 	}
@@ -58,11 +60,30 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 		}
 	}
 
-	@Override
+  public void pushOld(final SootMethod method, final Iterable<SootExpression> arguments) {
+    final Iterator<SootExpression> argumentsIterator = arguments.iterator();
+    final SootType argumentType = method.getParameterTypes().get(0);
+    pushExpression(new OldReference(visit(argumentsIterator.next(), argumentType)));
+    assert !argumentsIterator.hasNext() : "Wrong number of arguments to `old` reference";
+  }
+
+  public void pushSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
+    final String specialName = method.getName();
+
+    if (specialName.equals(Annotations.OLD_NAME)) {
+      pushOld(method, arguments);
+    } else {
+      throw new RuntimeException("Unknown special method: " + method.getName());
+    }
+  }
+
+  @Override
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
 		if (method.getSootClass().equals(Annotations.QUANTIFIER_CLASS.get())) {
 			pushQuantifier(method, arguments);
-		} else {
+		} else if (method.getSootClass().equals(Annotations.SPECIAL_CLASS.get())) {
+      pushSpecial(method, arguments);
+    } else {
 			super.pushFunctionReference(method, arguments);
 		}
 	}

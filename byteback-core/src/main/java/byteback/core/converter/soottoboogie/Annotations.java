@@ -16,6 +16,8 @@ public class Annotations {
 
 	public static final String QUANTIFIER_CLASS_NAME = "byteback.annotations.Quantifier";
 
+	public static final String SPECIAL_CLASS_NAME = "byteback.annotations.Special";
+
 	public static final String PRELUDE_ANNOTATION = "Lbyteback/annotations/Contract$Prelude;";
 
 	public static final String PURE_ANNOTATION = "Lbyteback/annotations/Contract$Pure;";
@@ -23,6 +25,8 @@ public class Annotations {
 	public static final String REQUIRE_ANNOTATION = "Lbyteback/annotations/Contract$Require;";
 
 	public static final String ENSURE_ANNOTATION = "Lbyteback/annotations/Contract$Ensure;";
+
+	public static final String OLD_NAME = "old";
 
 	public static final String UNIVERSAL_QUANTIFIER_NAME = "forall";
 
@@ -32,7 +36,10 @@ public class Annotations {
 
 	public static final Lazy<SootClass> QUANTIFIER_CLASS = Lazy.from(() -> loadClass(QUANTIFIER_CLASS_NAME));
 
-	public static final Lazy<SootMethod> ASSERT_METHOD = Lazy.from(() -> CONTRACT_CLASS.get().getSootMethod("assertion")
+	public static final Lazy<SootClass> SPECIAL_CLASS = Lazy.from(() -> loadClass(SPECIAL_CLASS_NAME));
+
+	public static final Lazy<SootMethod> ASSERT_METHOD = Lazy
+    .from(() -> CONTRACT_CLASS.get().getSootMethod("assertion")
 			.orElseThrow(() -> new RuntimeException("Could not load `assertion` method from Contract class")));
 
 	public static final Lazy<SootMethod> ASSUME_METHOD = Lazy

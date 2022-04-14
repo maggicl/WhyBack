@@ -10,9 +10,10 @@ public class NameConverter {
 	public static String methodName(final SootMethod method) {
 		final var builder = new StringBuilder();
 		final Iterator<SootType> typeIterator = method.getParameterTypes().iterator();
+		final String methodName = method.getName();
 		builder.append(method.getSootClass().getName());
 		builder.append(".");
-		builder.append(method.getName());
+		builder.append(methodName.replace("<", "$").replace(">", "$"));
 		builder.append("#");
 
 		while (typeIterator.hasNext()) {

@@ -16,6 +16,8 @@ function ~read<a>(h: Store, r: Reference, f: Field a) returns (a)
 function ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
 { h[r := h[r][f := v]] }
 
+procedure ~new() returns (~ret: Reference);
+
 // -------------------------------------------------------------------
 // Binary operators
 // -------------------------------------------------------------------

@@ -13,6 +13,7 @@ import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.IntegerType;
 import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.List;
+import byteback.frontend.boogie.ast.Procedure;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.RealType;
 import byteback.frontend.boogie.ast.Statement;
@@ -92,22 +93,27 @@ public class Prelude {
 
 	public static Variable getHeapVariable() {
 		return loadProgram().lookupLocalVariable("~heap")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap variable"));
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap function"));
 	}
 
 	public static Variable getNullConstant() {
 		return loadProgram().lookupLocalVariable("~null")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~null variable"));
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~null function"));
 	}
 
 	public static Function getHeapAccessFunction() {
 		return loadProgram().lookupFunction("~read")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~read variable"));
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~read function"));
 	}
 
 	public static Function getHeapUpdateFunction() {
 		return loadProgram().lookupFunction("~update")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update variable"));
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update function"));
+	}
+
+	public static Procedure getNewProcedure() {
+		return loadProgram().lookupProcedure("~new")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~new procedure"));
 	}
 
 	public static Expression getHeapAccessExpression(final Expression base, final Expression field) {

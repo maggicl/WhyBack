@@ -4,6 +4,9 @@ import byteback.annotations.Contract.Pure;
 
 public class Virtual {
 
+	public Virtual() {
+	}
+
 	@Pure
 	public Virtual getThis() {
 		return this;

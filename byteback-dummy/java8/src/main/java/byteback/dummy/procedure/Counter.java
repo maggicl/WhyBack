@@ -2,7 +2,11 @@ package byteback.dummy.procedure;
 
 public class Counter {
 
-	int count = 0;
+	int count;
+
+	public Counter() {
+		this.count = 0;
+	}
 
 	public void increment() {
 		count++;

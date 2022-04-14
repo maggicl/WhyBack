@@ -2,6 +2,7 @@ package byteback.core.converter.soottoboogie.procedure;
 
 import byteback.core.converter.soottoboogie.Annotations;
 import byteback.core.converter.soottoboogie.NameConverter;
+import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
 import byteback.core.representation.soot.annotation.SootAnnotation;
 import byteback.core.representation.soot.body.SootExpression;
@@ -12,14 +13,19 @@ import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
+import byteback.frontend.boogie.ast.Procedure;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import soot.BooleanType;
 import soot.Local;
 import soot.Unit;
+import soot.jimple.NewExpr;
+import soot.jimple.SpecialInvokeExpr;
 
 public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
@@ -49,8 +55,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		return call;
 	}
 
-	public void addCall(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final TargetedCallStatement callStatement = makeCall(method, arguments);
+	public void addCall(final TargetedCallStatement callStatement, final Iterable<SootExpression> arguments) {
 		final List<ValueReference> targets = new List<ValueReference>();
 
 		if (variableSupplier != null) {
@@ -89,8 +94,25 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		} else if (method.getSootClass().equals(Annotations.CONTRACT_CLASS.get())) {
 			addSpecial(method, arguments);
 		} else {
-			addCall(method, arguments);
+			final TargetedCallStatement callStatement = makeCall(method, arguments);
+			addCall(callStatement, arguments);
 		}
+	}
+
+	@Override
+	public void caseSpecialInvokeExpr(final SpecialInvokeExpr invoke) {
+		final var method = new SootMethod(invoke.getMethod());
+		final var base = new SootExpression(invoke.getBase());
+		final Iterable<SootExpression> arguments = Stream.concat(Stream.of(base),
+				invoke.getArgs().stream().map(SootExpression::new))::iterator;
+		pushFunctionReference(method, arguments);
+	}
+
+	@Override
+	public void caseNewExpr(final NewExpr newExpression) {
+		final Procedure newProcedure = Prelude.getNewProcedure();
+		final TargetedCallStatement callStatement = newProcedure.makeTargetedCall();
+		addCall(callStatement, Collections.emptyList());
 	}
 
 	@Override

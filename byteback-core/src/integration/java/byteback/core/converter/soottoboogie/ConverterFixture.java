@@ -36,9 +36,9 @@ public class ConverterFixture extends SootClassFixture {
 		});
 	}
 
-  public static void resetContext() {
-    Annotations.reset();
-    SootClassFixture.resetContext();
-  }
+	public static void resetContext() {
+		Annotations.reset();
+		SootClassFixture.resetContext();
+	}
 
 }

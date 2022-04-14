@@ -125,7 +125,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
 	}
 
 	@Test
-	public void Classes_AfterLoadingUnitClass_ReturnsStreamContainingUnitClass()
+	public void Classes_AfterLoadingStaticInitializerClass_ReturnsStreamContainingStaticInitializerClass()
 			throws FileNotFoundException, ClassLoadException {
 		final Path classPath = ResourcesUtil.getJarPath("java8");
 		final String name = "byteback.dummy.context.StaticInitializer";

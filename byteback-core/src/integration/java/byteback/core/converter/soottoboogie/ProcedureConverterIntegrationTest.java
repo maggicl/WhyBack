@@ -13,7 +13,6 @@ import byteback.frontend.boogie.ast.Program;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;

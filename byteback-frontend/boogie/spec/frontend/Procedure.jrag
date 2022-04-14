@@ -40,6 +40,14 @@ aspect Procedure {
   eq ProcedureDeclaration.getChild().getProcedureDeclaration() = this;
 
   /**
+   * Create targeted call with unbound arguments.
+   */
+  syn TargetedCallStatement Procedure.makeTargetedCall();
+  
+  eq Procedure.makeTargetedCall() = new TargetedCallStatement(
+     getDeclarator().makeAccessor(), new List<>(), new List<>());
+
+  /**
    * Link procedure to body.
    */
   inh lazy Body Procedure.getBody();

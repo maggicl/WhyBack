@@ -1,5 +1,13 @@
 const byteback.dummy.procedure.Counter.count: Field int;
 
+procedure byteback.dummy.procedure.Counter.$init$##(this: Reference) returns ()
+  modifies ~heap;
+{
+  call java.lang.Object.$init$##(this);
+  ~heap := ~update(~heap, this, byteback.dummy.procedure.Counter.count, 0);
+  return;
+} 
+
 procedure byteback.dummy.procedure.Counter.increment##(this : Reference) returns ()
   modifies ~heap;
 {

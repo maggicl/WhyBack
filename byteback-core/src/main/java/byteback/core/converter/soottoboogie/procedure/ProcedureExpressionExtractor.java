@@ -1,14 +1,12 @@
 package byteback.core.converter.soottoboogie.procedure;
 
 import byteback.core.converter.soottoboogie.Annotations;
-import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
 import byteback.core.representation.soot.annotation.SootAnnotation;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootMethod;
-import byteback.frontend.boogie.ast.Accessor;
 import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;

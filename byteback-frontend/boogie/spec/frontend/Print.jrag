@@ -296,7 +296,16 @@ aspect Print {
     builder.append("*");
   }
 
-  public void Expression.print(final StringBuilder builder) {}
+  Expression implements Printable;
+
+  public void ConditionalOperation.print(final StringBuilder builder) {
+    builder.append("if ");
+    getCondition().print(builder);
+    builder.append(" then ");
+    getThen().print(builder);
+    builder.append(" else ");
+    getElse().print(builder);
+  }
 
   public void Literal.print(final StringBuilder builder) {
     builder.append(getValue());

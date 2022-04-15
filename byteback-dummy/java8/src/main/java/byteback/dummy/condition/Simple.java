@@ -7,9 +7,11 @@ import static byteback.annotations.Operator.eq;
 import static byteback.annotations.Operator.gt;
 import static byteback.annotations.Operator.implies;
 import static byteback.annotations.Operator.lte;
+import static byteback.annotations.Special.ifThenElse;
 
 import byteback.annotations.Contract.Condition;
 import byteback.annotations.Contract.Ensure;
+import byteback.annotations.Contract.Pure;
 import byteback.annotations.Contract.Require;
 
 public class Simple {
@@ -71,6 +73,11 @@ public class Simple {
 
 		assumption(a);
 	}
+
+  @Pure
+  public static int recursive_fibonacci(int m) {
+    return ifThenElse(lte(m, 0), 0, recursive_fibonacci(m));
+  }
 
 	@Require("argument_is_positive")
 	public static int fibonacci(int m) {

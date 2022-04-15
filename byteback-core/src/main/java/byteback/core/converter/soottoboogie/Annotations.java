@@ -28,6 +28,8 @@ public class Annotations {
 
 	public static final String OLD_NAME = "old";
 
+	public static final String CONDITIONAL_NAME = "ifThenElse";
+
 	public static final String UNIVERSAL_QUANTIFIER_NAME = "forall";
 
 	public static final String EXISTENTIAL_QUANTIFIER_NAME = "exists";

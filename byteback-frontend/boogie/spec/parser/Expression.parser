@@ -18,6 +18,13 @@ List meta_comma_list
 Expression expression
     = expression0.e
     {: return e; :}
+    | conditional_operation.e
+    {: return e; :}
+    ;
+
+ConditionalOperation conditional_operation
+    = IF expression.c THEN expression.e1 ELSE expression.e2
+    {: return new ConditionalOperation(c, e1, e2); :}
     ;
 
 List expression_comma_list

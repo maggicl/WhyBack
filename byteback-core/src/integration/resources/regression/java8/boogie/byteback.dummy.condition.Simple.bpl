@@ -96,6 +96,11 @@ procedure byteback.dummy.condition.Simple.wrongAssumption2##() returns ()
   return;
 }
 
+function byteback.dummy.condition.Simple.recursive_fibonacci#int#(m: int) returns (int)
+{
+  m
+}
+
 procedure byteback.dummy.condition.Simple.fibonacci#int#(m: int) returns (~ret: int)
   requires gt(~heap, m, 0);
 {

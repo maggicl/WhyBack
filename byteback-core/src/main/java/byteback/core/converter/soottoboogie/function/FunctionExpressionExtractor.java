@@ -8,7 +8,9 @@ import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootMethod;
+import byteback.frontend.boogie.ast.ConditionalOperation;
 import byteback.frontend.boogie.ast.ExistentialQuantifier;
+import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.OldReference;
 import byteback.frontend.boogie.ast.Quantifier;
 import byteback.frontend.boogie.ast.UniversalQuantifier;
@@ -67,11 +69,23 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
     assert !argumentsIterator.hasNext() : "Wrong number of arguments to `old` reference";
   }
 
+  public void pushConditional(final SootMethod method, final Iterable<SootExpression> arguments) {
+    final Iterator<SootExpression> argumentsIterator = arguments.iterator();
+    final SootType argumentType = method.getParameterTypes().get(1);
+    final Expression condition = visit(argumentsIterator.next(), new SootType(BooleanType.v()));
+    final Expression thenExpression = visit(argumentsIterator.next(), argumentType);
+    final Expression elseExpression = visit(argumentsIterator.next(), argumentType);
+    pushExpression(new ConditionalOperation(condition, thenExpression, elseExpression));
+    assert !argumentsIterator.hasNext() : "Wrong number of arguments to conditional expression";
+  }
+
   public void pushSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
     final String specialName = method.getName();
 
     if (specialName.equals(Annotations.OLD_NAME)) {
       pushOld(method, arguments);
+    } else if (specialName.equals(Annotations.CONDITIONAL_NAME)) {
+      pushConditional(method, arguments);
     } else {
       throw new RuntimeException("Unknown special method: " + method.getName());
     }

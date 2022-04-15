@@ -176,4 +176,8 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp")).makeFunctionReference();
 	}
 
+  public static boolean modifiesHeap(final Procedure procedure) {
+    return procedure.modifies(getHeapVariable().makeValueReference());
+  }
+
 }

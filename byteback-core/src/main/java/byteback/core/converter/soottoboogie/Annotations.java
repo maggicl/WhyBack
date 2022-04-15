@@ -53,6 +53,7 @@ public class Annotations {
 	public static void reset() {
 		CONTRACT_CLASS.invalidate();
 		QUANTIFIER_CLASS.invalidate();
+    SPECIAL_CLASS.invalidate();
 		ASSERT_METHOD.invalidate();
 		ASSUME_METHOD.invalidate();
 		INVARIANT_METHOD.invalidate();

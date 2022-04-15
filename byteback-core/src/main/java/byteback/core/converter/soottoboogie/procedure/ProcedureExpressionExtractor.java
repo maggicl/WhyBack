@@ -14,6 +14,7 @@ import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.Procedure;
+import byteback.frontend.boogie.ast.ProcedureDeclaration;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
 import java.util.Collections;
@@ -47,12 +48,16 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 	}
 
 	public TargetedCallStatement makeCall(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final String methodName = NameConverter.methodName(method);
-		final TargetedCallStatement call = new TargetedCallStatement();
-		call.setAccessor(new Accessor(methodName));
+    final ProcedureDeclaration procedureDeclaration = ProcedureManager.instance().convert(method);
+    final Procedure procedure = procedureDeclaration.getProcedure();
+		final TargetedCallStatement call = procedure.makeTargetedCall();
 		call.setArgumentList(new List<Expression>().addAll(convertArguments(method, arguments)));
 
-		return call;
+    if (Prelude.modifiesHeap(procedure)) {
+      bodyExtractor.setModifiesHeap();
+    }
+
+    return call;
 	}
 
 	public void addCall(final TargetedCallStatement callStatement, final Iterable<SootExpression> arguments) {

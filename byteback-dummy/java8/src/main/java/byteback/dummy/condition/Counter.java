@@ -19,10 +19,16 @@ public class Counter {
     return eq(count, old(count) + 10);
   }
 
+  @Condition
+  public boolean count_is_0() {
+    return eq(count, 0);
+  }
+
 	public static void main() {
 		final Counter counter = new Counter();
-		counter.increment();
     assertion(eq(counter.count, 0));
+		counter.increment();
+    assertion(eq(counter.count, 1));
     counter.countTo10();
     assertion(eq(counter.count, 11));
 		counter.countTo10Indirectly();
@@ -31,6 +37,7 @@ public class Counter {
 
 	int count;
 
+  @Ensure("count_is_0")
 	public Counter() {
 		this.count = 0;
 	}

@@ -32,13 +32,13 @@ public interface Contract {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
+	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public static @interface Require {
 		public String value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
+	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public static @interface Ensure {
 		public String value();
 	}

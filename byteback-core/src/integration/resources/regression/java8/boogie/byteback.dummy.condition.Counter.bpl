@@ -21,6 +21,8 @@ function ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
 // -------------------------------------------------------------------
 function ~cmp<a>(a, a) returns (int);
 
+function ifgt(a: int) returns (int) { if (a > 0) then 0 else 1 }
+
 axiom (forall i: int, j: int :: i < j ==> ~cmp(i, j) == -1);
 axiom (forall i: int, j: int :: i > j ==> ~cmp(i, j) == 1);
 axiom (forall i: int, j: int :: i == j ==> ~cmp(i, j) == 0);
@@ -71,16 +73,17 @@ procedure byteback.dummy.condition.Counter.main##() returns ()
 }
 
 procedure byteback.dummy.condition.Counter.$init$##(this: Reference) returns ()
-  modifies ~heap;
   ensures eq(~heap, ~read(~heap, this, byteback.dummy.condition.Counter.count), 0);
+  modifies ~heap;
 {
+  call java.lang.Object.$init$##(this);
   ~heap := ~update(~heap, this, byteback.dummy.condition.Counter.count, 0);
   return;
 } 
 
 procedure byteback.dummy.condition.Counter.increment##(this : Reference) returns ()
+  ensures eq(~heap, ~read(~heap, this, byteback.dummy.condition.Counter.count), old(~read(~heap, this, byteback.dummy.condition.Counter.count)) + 1);
   modifies ~heap;
-  ensures eq(~heap, ~read(~heap, this, byteback.dummy.condition.Counter.count), old(~read(~heap, this, byteback.dummy.condition.Counter.count) + 1));
 {
   ~heap := ~update(~heap, this, byteback.dummy.condition.Counter.count,
     ~read(~heap, this, byteback.dummy.condition.Counter.count) + 1);
@@ -88,15 +91,18 @@ procedure byteback.dummy.condition.Counter.increment##(this : Reference) returns
 }
 
 procedure byteback.dummy.condition.Counter.countTo10##(this : Reference) returns ()
+  ensures eq(~heap, ~read(~heap, this, byteback.dummy.condition.Counter.count),
+    old(~read(~heap, this, byteback.dummy.condition.Counter.count)) + 10);
   modifies ~heap;
 {
   var i: int;
   i := 0;
 
 label2:
-  if ((i >= 10)) {
+  if (i >= 10) {
     goto label1;
   }
+
   ~heap := ~update(~heap, this, byteback.dummy.condition.Counter.count,
     ~read(~heap, this, byteback.dummy.condition.Counter.count) + 1);
   i := i + 1;
@@ -107,15 +113,18 @@ label1:
 }
 
 procedure byteback.dummy.condition.Counter.countTo10Indirectly##(this : Reference) returns ()
+  ensures eq(~heap, ~read(~heap, this, byteback.dummy.condition.Counter.count),
+    old(~read(~heap, this, byteback.dummy.condition.Counter.count)) + 10);
   modifies ~heap;
 {
   var i: int;
   i := 0;
 
 label2:
-  if ((i >= 10)) {
+  if (i >= 10) {
     goto label1;
   }
+
   call byteback.dummy.condition.Counter.increment##(this);
   i := i + 1;
   goto label2;

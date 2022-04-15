@@ -54,4 +54,47 @@ aspect Procedure {
 
   eq ProcedureDeclaration.getChild().getBody() = getBody();
 
+  /**
+   * Link procedure to specifications.
+   */
+  inh lazy List<Specification> Procedure.getSpecificationList();
+
+  eq ProcedureDeclaration.getChild().getSpecificationList() = getSpecificationList();
+
+  /**
+   * Check if procedures modifies a certain value reference.
+   */
+  syn boolean Procedure.modifies(ValueReference reference);
+
+  eq Procedure.modifies(ValueReference reference) {
+    for (Specification specification : getSpecificationList()) {
+      if (specification.modifies(reference)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  syn boolean Specification.modifies(ValueReference reference);
+
+  eq PreCondition.modifies(ValueReference reference) = false;
+
+  eq PostCondition.modifies(ValueReference reference) = false;
+
+  eq LoopInvariant.modifies(ValueReference reference) = false;
+
+  eq FrameCondition.modifies(ValueReference reference) {
+    final String referencedName = reference.getAccessor().getName();
+
+    for (ValueReference modifiedReference : getReferenceList()) {
+      final String modifiedName = modifiedReference.getAccessor().getName();
+      
+      if (modifiedName.equals(referencedName)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }

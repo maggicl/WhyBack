@@ -1,6 +1,7 @@
 const byteback.dummy.procedure.Counter.count: Field int;
 
 procedure byteback.dummy.procedure.Counter.main##() returns ()
+  modifies ~heap;
 {
   var $stack1: Reference;
   call $stack1 := ~new();
@@ -47,6 +48,7 @@ label1:
 }
 
 procedure byteback.dummy.procedure.Counter.countTo10Indirectly##(this : Reference) returns ()
+  modifies ~heap;
 {
   var i: int;
   i := 0;

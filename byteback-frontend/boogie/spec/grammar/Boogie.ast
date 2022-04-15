@@ -105,6 +105,8 @@ Star : Meta;
 
 abstract Expression : Meta;
 
+abstract Conditional : Expression;
+
 abstract BinaryExpression : Expression ::= LeftOperand:Expression RightOperand:Expression;
 
 abstract UnaryExpression: Expression ::= Operand:Expression;

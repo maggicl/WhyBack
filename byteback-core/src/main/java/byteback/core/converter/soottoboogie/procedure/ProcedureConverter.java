@@ -137,10 +137,6 @@ public class ProcedureConverter {
 			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
 		}
 
-		if (bodyExtractor.getModifiesHeap()) {
-			builder.addSpecification(Prelude.makeHeapFrameCondition());
-		}
-
 		builder.body(body);
 	}
 

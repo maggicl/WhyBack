@@ -56,8 +56,6 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final Substitutor substitutor;
 
-	private boolean modifiesHeap;
-
 	public ProcedureBodyExtractor(final SootType returnType) {
 		this.returnType = returnType;
 		this.body = new Body();
@@ -67,7 +65,6 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.definitions = new DefinitionCollector();
 		this.activeLoops = new Stack<>();
 		this.substitutor = new PartialSubstitutor();
-		this.modifiesHeap = false;
 	}
 
 	public Body visit(final SootBody body) {
@@ -121,14 +118,6 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	public DefinitionCollector getDefinitionCollector() {
 		return definitions;
-	}
-
-	public void setModifiesHeap() {
-		this.modifiesHeap = true;
-	}
-
-	public boolean getModifiesHeap() {
-		return modifiesHeap;
 	}
 
 	@Override

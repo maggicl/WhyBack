@@ -1,6 +1,7 @@
 package byteback.core.converter.soottoboogie.procedure;
 
 import byteback.core.converter.soottoboogie.Annotations;
+import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
 import byteback.core.representation.soot.annotation.SootAnnotation;
@@ -12,9 +13,10 @@ import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.Procedure;
-import byteback.frontend.boogie.ast.ProcedureDeclaration;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
+import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
@@ -46,17 +48,11 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
   }
 
   public TargetedCallStatement makeCall(final SootMethod method, final Iterable<SootExpression> arguments) {
-    final ProcedureDeclaration procedureDeclaration = ProcedureManager.instance().convert(method);
-    final Procedure procedure = procedureDeclaration.getProcedure();
-    final TargetedCallStatement call = procedure.makeTargetedCall();
+    final var callBuilder = new TargetedCallStatementBuilder();
+    callBuilder.name(NameConverter.methodName(method));
+    callBuilder.arguments(new List<Expression>().addAll(convertArguments(method, arguments)));
 
-    if (Prelude.modifiesHeap(procedure)) {
-      bodyExtractor.setModifiesHeap();
-    }
-
-    call.setArgumentList(new List<Expression>().addAll(convertArguments(method, arguments)));
-
-    return call;
+    return callBuilder.build();
   }
 
   public void addCall(final TargetedCallStatement callStatement, final Iterable<SootExpression> arguments) {

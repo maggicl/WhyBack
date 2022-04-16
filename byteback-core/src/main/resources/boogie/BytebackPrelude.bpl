@@ -19,6 +19,35 @@ function ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
 procedure ~new() returns (~ret: Reference);
 
 // -------------------------------------------------------------------
+// Array model
+// -------------------------------------------------------------------
+type Array a = Field [int]a;
+
+const unique ~Array_bool: Array bool;
+
+const unique ~Array_int: Array int;
+
+const unique ~Array_real: Array real;
+
+const unique ~Array_Reference: Array Reference;
+
+const unique java.lang.Array.length: Field int;
+
+function get<a>(h: Store, r: Reference, f: Array a, i: int) returns (a)
+{
+  ~read(h, r, f)[i]
+}
+
+function insert<a>(h: Store, r: Reference, f: Array a, i: int, e: a) returns (Store)
+{
+  ~update(h, r, f, ~read(h, r, f)[i := e])
+}
+
+procedure ~array(l: int) returns (~ret: Reference);
+  modifies ~heap;
+  ensures ~read(~heap, ~ret, java.lang.Array.length) == l;
+
+// -------------------------------------------------------------------
 // Binary operators
 // -------------------------------------------------------------------
 function ~cmp<a>(a, a) returns (int);

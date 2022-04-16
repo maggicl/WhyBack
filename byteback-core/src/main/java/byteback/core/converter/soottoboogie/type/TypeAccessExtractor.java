@@ -3,6 +3,7 @@ package byteback.core.converter.soottoboogie.type;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.frontend.boogie.ast.TypeAccess;
+import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.DoubleType;
@@ -54,6 +55,11 @@ public class TypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
 	public void caseRefType(final RefType referenceType) {
 		setTypeAccess(Prelude.getReferenceType().makeTypeAccess());
 	}
+
+  @Override
+  public void caseArrayType(final ArrayType arrayType) {
+		setTypeAccess(Prelude.getReferenceType().makeTypeAccess());
+  }
 
 	@Override
 	public void caseDefault(final Type type) {

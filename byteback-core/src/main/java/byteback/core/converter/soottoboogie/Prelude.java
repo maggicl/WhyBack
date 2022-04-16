@@ -106,10 +106,20 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~read function"));
 	}
 
+	public static Function getArrayLengthFunction() {
+		return loadProgram().lookupFunction("~lengthof")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~lengthof function"));
+	}
+
 	public static Function getHeapUpdateFunction() {
 		return loadProgram().lookupFunction("~update")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update function"));
 	}
+
+  public static Function getArrayAccessFunction() {
+		return loadProgram().lookupFunction("~get")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~getfunction"));
+  }
 
 	public static Procedure getNewProcedure() {
 		return loadProgram().lookupProcedure("~new")
@@ -125,7 +135,28 @@ public class Prelude {
 		return reference;
 	}
 
-	public static Statement getHeapUpdateStatement(final Expression base, final Expression field,
+	public static Expression getLengthAccessExpression(final Expression array) {
+		final FunctionReference reference = getArrayLengthFunction().makeFunctionReference();
+		reference.addArgument(getHeapVariable().makeValueReference());
+		reference.addArgument(array);
+
+		return reference;
+	}
+
+  public static Expression getArrayAccessExpression(final TypeAccess typeAccess, final Expression base, final Expression index) {
+    final String arrayIdentifier = "~Array_" + typeAccess.getIdentifier();
+    final FunctionReference reference = getArrayAccessFunction().makeFunctionReference();
+    final Variable array = loadProgram().lookupLocalVariable(arrayIdentifier)
+      .orElseThrow(() -> new IllegalStateException("Missing definition for array variable " + arrayIdentifier));
+    reference.addArgument(getHeapVariable().makeValueReference());
+    reference.addArgument(base);
+    reference.addArgument(array.makeValueReference());
+    reference.addArgument(index);
+
+    return reference;
+  }
+
+  public static Statement getHeapUpdateStatement(final Expression base, final Expression field,
 			final Expression value) {
 		final FunctionReference updateReference = getHeapUpdateFunction().makeFunctionReference();
 		final ValueReference heapReference = getHeapVariable().makeValueReference();

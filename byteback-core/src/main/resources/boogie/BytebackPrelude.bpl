@@ -31,21 +31,26 @@ const unique ~Array_real: Array real;
 
 const unique ~Array_Reference: Array Reference;
 
-const unique java.lang.Array.length: Field int;
+const unique ~length: Field int;
 
-function get<a>(h: Store, r: Reference, f: Array a, i: int) returns (a)
+function ~lengthof(h: Store, r: Reference) returns (int)
+{
+  ~read(h, r, ~length)
+}
+
+function ~get<a>(h: Store, r: Reference, f: Array a, i: int) returns (a)
 {
   ~read(h, r, f)[i]
 }
 
-function insert<a>(h: Store, r: Reference, f: Array a, i: int, e: a) returns (Store)
+function ~insert<a>(h: Store, r: Reference, f: Array a, i: int, e: a) returns (Store)
 {
   ~update(h, r, f, ~read(h, r, f)[i := e])
 }
 
 procedure ~array(l: int) returns (~ret: Reference);
   modifies ~heap;
-  ensures ~read(~heap, ~ret, java.lang.Array.length) == l;
+  ensures ~read(~heap, ~ret, ~length) == l;
 
 // -------------------------------------------------------------------
 // Binary operators

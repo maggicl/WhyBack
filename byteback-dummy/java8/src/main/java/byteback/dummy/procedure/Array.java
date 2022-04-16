@@ -2,7 +2,7 @@ package byteback.dummy.procedure;
 
 public class Array {
 
-	public static int arraySum(int[] as) {
+	public static int sum(int[] as) {
 
 		int c = 0;
 

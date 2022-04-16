@@ -21,8 +21,6 @@ function ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
 // -------------------------------------------------------------------
 function ~cmp<a>(a, a) returns (int);
 
-function ifgt(a: int) returns (int) { if (a > 0) then 0 else 1 }
-
 axiom (forall i: int, j: int :: i < j ==> ~cmp(i, j) == -1);
 axiom (forall i: int, j: int :: i > j ==> ~cmp(i, j) == 1);
 axiom (forall i: int, j: int :: i == j ==> ~cmp(i, j) == 0);

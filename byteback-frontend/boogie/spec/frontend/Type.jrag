@@ -85,4 +85,21 @@ aspect Type {
 
   eq TypeDeclaration.getChild().getTypeParameterList() = getTypeParameterList();
 
+  /**
+   * Get String identifier from type access.
+   */
+  syn lazy String TypeAccess.getIdentifier();
+
+  eq BooleanTypeAccess.getIdentifier() = "bool";
+
+  eq IntegerTypeAccess.getIdentifier() = "int";
+
+  eq RealTypeAccess.getIdentifier() = "real";
+
+  eq UnknownTypeAccess.getIdentifier() = getAccessor().getName();
+
+  eq MapTypeAccess.getIdentifier() { throw new UnsupportedOperationException(); }
+
+  eq BitvectorTypeAccess.getIdentifier() { throw new UnsupportedOperationException(); }
+
 }

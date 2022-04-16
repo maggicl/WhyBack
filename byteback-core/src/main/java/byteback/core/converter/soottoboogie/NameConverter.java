@@ -17,7 +17,7 @@ public class NameConverter {
 		builder.append("#");
 
 		while (typeIterator.hasNext()) {
-			builder.append(typeIterator.next());
+			builder.append(typeIterator.next().toString().replace("[", "").replace("]", "$"));
 			builder.append("#");
 		}
 

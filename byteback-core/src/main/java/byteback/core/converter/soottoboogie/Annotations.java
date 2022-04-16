@@ -22,6 +22,8 @@ public class Annotations {
 
 	public static final String PURE_ANNOTATION = "Lbyteback/annotations/Contract$Pure;";
 
+	public static final String CONDITION_ANNOTATION = "Lbyteback/annotations/Contract$Condition;";
+
 	public static final String REQUIRE_ANNOTATION = "Lbyteback/annotations/Contract$Require;";
 
 	public static final String ENSURE_ANNOTATION = "Lbyteback/annotations/Contract$Ensure;";

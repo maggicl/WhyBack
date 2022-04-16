@@ -4,6 +4,7 @@ import byteback.core.converter.soottoboogie.Annotations;
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.type.CasterProvider;
+import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.annotation.SootAnnotation;
 import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
 import byteback.core.representation.soot.body.SootExpression;
@@ -34,6 +35,7 @@ import byteback.frontend.boogie.ast.NumberLiteral;
 import byteback.frontend.boogie.ast.OrOperation;
 import byteback.frontend.boogie.ast.RealLiteral;
 import byteback.frontend.boogie.ast.SubtractionOperation;
+import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
 import java.util.Iterator;
@@ -47,6 +49,7 @@ import soot.UnknownType;
 import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
+import soot.jimple.ArrayRef;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
 import soot.jimple.CmpgExpr;
@@ -60,6 +63,7 @@ import soot.jimple.GtExpr;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.LeExpr;
+import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.LtExpr;
 import soot.jimple.MulExpr;
@@ -360,6 +364,21 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		final Expression heapAccess = Prelude.getHeapAccessExpression(visit(base), reference);
 		pushExpression(caster.apply(heapAccess));
 	}
+
+	@Override
+  public void caseArrayRef(final ArrayRef arrayReference) {
+		final var base = new SootExpression(arrayReference.getBase());
+    final var baseType = new SootType(arrayReference.getType());
+    final var index = new SootExpression(arrayReference.getIndex());
+    final TypeAccess typeAccess = new TypeAccessExtractor().visit(baseType);
+		pushExpression(Prelude.getArrayAccessExpression(typeAccess, visit(base), visit(index)));
+  }
+
+  @Override
+  public void caseLengthExpr(final LengthExpr length) {
+		final var operand = new SootExpression(length.getOp());
+		pushExpression(Prelude.getLengthAccessExpression(visit(operand)));
+  }
 
 	@Override
 	public void caseDefault(final Value expression) {

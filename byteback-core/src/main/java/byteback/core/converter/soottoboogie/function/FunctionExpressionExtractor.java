@@ -37,10 +37,10 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 		quantifierBuilder.addBinding(bindingBuilder.build());
 		quantifierBuilder.operand(visit(argumentsIterator.next(), new SootType(BooleanType.v())));
 		pushExpression(quantifierBuilder.build());
-    assert !argumentsIterator.hasNext() : "Wrong number of arguments to quantifier";
-  }
+		assert !argumentsIterator.hasNext() : "Wrong number of arguments to quantifier";
+	}
 
-  public void pushExistentialQuantifier(Iterable<SootExpression> arguments) {
+	public void pushExistentialQuantifier(Iterable<SootExpression> arguments) {
 		final Quantifier quantifier = ExistentialQuantifier.instance();
 		pushQuantifier(quantifier, arguments);
 	}
@@ -62,42 +62,42 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 		}
 	}
 
-  public void pushOld(final SootMethod method, final Iterable<SootExpression> arguments) {
-    final Iterator<SootExpression> argumentsIterator = arguments.iterator();
-    final SootType argumentType = method.getParameterTypes().get(0);
-    pushExpression(new OldReference(visit(argumentsIterator.next(), argumentType)));
-    assert !argumentsIterator.hasNext() : "Wrong number of arguments to `old` reference";
-  }
+	public void pushOld(final SootMethod method, final Iterable<SootExpression> arguments) {
+		final Iterator<SootExpression> argumentsIterator = arguments.iterator();
+		final SootType argumentType = method.getParameterTypes().get(0);
+		pushExpression(new OldReference(visit(argumentsIterator.next(), argumentType)));
+		assert !argumentsIterator.hasNext() : "Wrong number of arguments to `old` reference";
+	}
 
-  public void pushConditional(final SootMethod method, final Iterable<SootExpression> arguments) {
-    final Iterator<SootExpression> argumentsIterator = arguments.iterator();
-    final SootType argumentType = method.getParameterTypes().get(1);
-    final Expression condition = visit(argumentsIterator.next(), new SootType(BooleanType.v()));
-    final Expression thenExpression = visit(argumentsIterator.next(), argumentType);
-    final Expression elseExpression = visit(argumentsIterator.next(), argumentType);
-    pushExpression(new ConditionalOperation(condition, thenExpression, elseExpression));
-    assert !argumentsIterator.hasNext() : "Wrong number of arguments to conditional expression";
-  }
+	public void pushConditional(final SootMethod method, final Iterable<SootExpression> arguments) {
+		final Iterator<SootExpression> argumentsIterator = arguments.iterator();
+		final SootType argumentType = method.getParameterTypes().get(1);
+		final Expression condition = visit(argumentsIterator.next(), new SootType(BooleanType.v()));
+		final Expression thenExpression = visit(argumentsIterator.next(), argumentType);
+		final Expression elseExpression = visit(argumentsIterator.next(), argumentType);
+		pushExpression(new ConditionalOperation(condition, thenExpression, elseExpression));
+		assert !argumentsIterator.hasNext() : "Wrong number of arguments to conditional expression";
+	}
 
-  public void pushSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
-    final String specialName = method.getName();
+	public void pushSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
+		final String specialName = method.getName();
 
-    if (specialName.equals(Annotations.OLD_NAME)) {
-      pushOld(method, arguments);
-    } else if (specialName.equals(Annotations.CONDITIONAL_NAME)) {
-      pushConditional(method, arguments);
-    } else {
-      throw new RuntimeException("Unknown special method: " + method.getName());
-    }
-  }
+		if (specialName.equals(Annotations.OLD_NAME)) {
+			pushOld(method, arguments);
+		} else if (specialName.equals(Annotations.CONDITIONAL_NAME)) {
+			pushConditional(method, arguments);
+		} else {
+			throw new RuntimeException("Unknown special method: " + method.getName());
+		}
+	}
 
-  @Override
+	@Override
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
 		if (method.getSootClass().equals(Annotations.QUANTIFIER_CLASS.get())) {
 			pushQuantifier(method, arguments);
 		} else if (method.getSootClass().equals(Annotations.SPECIAL_CLASS.get())) {
-      pushSpecial(method, arguments);
-    } else {
+			pushSpecial(method, arguments);
+		} else {
 			super.pushFunctionReference(method, arguments);
 		}
 	}

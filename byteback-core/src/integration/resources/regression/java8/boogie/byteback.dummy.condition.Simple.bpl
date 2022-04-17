@@ -96,9 +96,9 @@ procedure byteback.dummy.condition.Simple.wrongAssumption2##() returns ()
   return;
 }
 
-function byteback.dummy.condition.Simple.recursive_fibonacci#int#(m: int) returns (int)
+function byteback.dummy.condition.Simple.recursive_fibonacci#int#(~heap: Store, m: int) returns (int)
 {
-  m
+  if lte(~heap, m, 0) then 0 else byteback.dummy.condition.Simple.recursive_fibonacci#int#(~heap, m)
 }
 
 procedure byteback.dummy.condition.Simple.fibonacci#int#(m: int) returns (~ret: int)

@@ -116,10 +116,10 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update function"));
 	}
 
-  public static Function getArrayAccessFunction() {
+	public static Function getArrayAccessFunction() {
 		return loadProgram().lookupFunction("~get")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~getfunction"));
-  }
+	}
 
 	public static Procedure getNewProcedure() {
 		return loadProgram().lookupProcedure("~new")
@@ -143,20 +143,21 @@ public class Prelude {
 		return reference;
 	}
 
-  public static Expression getArrayAccessExpression(final TypeAccess typeAccess, final Expression base, final Expression index) {
-    final String arrayIdentifier = "~Array_" + typeAccess.getIdentifier();
-    final FunctionReference reference = getArrayAccessFunction().makeFunctionReference();
-    final Variable array = loadProgram().lookupLocalVariable(arrayIdentifier)
-      .orElseThrow(() -> new IllegalStateException("Missing definition for array variable " + arrayIdentifier));
-    reference.addArgument(getHeapVariable().makeValueReference());
-    reference.addArgument(base);
-    reference.addArgument(array.makeValueReference());
-    reference.addArgument(index);
+	public static Expression getArrayAccessExpression(final TypeAccess typeAccess, final Expression base,
+			final Expression index) {
+		final String arrayIdentifier = "~Array_" + typeAccess.getIdentifier();
+		final FunctionReference reference = getArrayAccessFunction().makeFunctionReference();
+		final Variable array = loadProgram().lookupLocalVariable(arrayIdentifier).orElseThrow(
+				() -> new IllegalStateException("Missing definition for array variable " + arrayIdentifier));
+		reference.addArgument(getHeapVariable().makeValueReference());
+		reference.addArgument(base);
+		reference.addArgument(array.makeValueReference());
+		reference.addArgument(index);
 
-    return reference;
-  }
+		return reference;
+	}
 
-  public static Statement getHeapUpdateStatement(final Expression base, final Expression field,
+	public static Statement getHeapUpdateStatement(final Expression base, final Expression field,
 			final Expression value) {
 		final FunctionReference updateReference = getHeapUpdateFunction().makeFunctionReference();
 		final ValueReference heapReference = getHeapVariable().makeValueReference();
@@ -207,8 +208,8 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp")).makeFunctionReference();
 	}
 
-  public static boolean modifiesHeap(final Procedure procedure) {
-    return procedure.modifies(getHeapVariable().makeValueReference());
-  }
+	public static boolean modifiesHeap(final Procedure procedure) {
+		return procedure.modifies(getHeapVariable().makeValueReference());
+	}
 
 }

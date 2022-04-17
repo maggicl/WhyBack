@@ -366,19 +366,19 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	}
 
 	@Override
-  public void caseArrayRef(final ArrayRef arrayReference) {
+	public void caseArrayRef(final ArrayRef arrayReference) {
 		final var base = new SootExpression(arrayReference.getBase());
-    final var baseType = new SootType(arrayReference.getType());
-    final var index = new SootExpression(arrayReference.getIndex());
-    final TypeAccess typeAccess = new TypeAccessExtractor().visit(baseType);
+		final var baseType = new SootType(arrayReference.getType());
+		final var index = new SootExpression(arrayReference.getIndex());
+		final TypeAccess typeAccess = new TypeAccessExtractor().visit(baseType);
 		pushExpression(Prelude.getArrayAccessExpression(typeAccess, visit(base), visit(index)));
-  }
+	}
 
-  @Override
-  public void caseLengthExpr(final LengthExpr length) {
+	@Override
+	public void caseLengthExpr(final LengthExpr length) {
 		final var operand = new SootExpression(length.getOp());
 		pushExpression(Prelude.getLengthAccessExpression(visit(operand)));
-  }
+	}
 
 	@Override
 	public void caseDefault(final Value expression) {

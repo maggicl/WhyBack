@@ -56,10 +56,10 @@ public class TypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
 		setTypeAccess(Prelude.getReferenceType().makeTypeAccess());
 	}
 
-  @Override
-  public void caseArrayType(final ArrayType arrayType) {
+	@Override
+	public void caseArrayType(final ArrayType arrayType) {
 		setTypeAccess(Prelude.getReferenceType().makeTypeAccess());
-  }
+	}
 
 	@Override
 	public void caseDefault(final Type type) {

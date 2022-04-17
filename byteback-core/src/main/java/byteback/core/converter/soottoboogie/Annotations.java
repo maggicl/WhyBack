@@ -42,8 +42,7 @@ public class Annotations {
 
 	public static final Lazy<SootClass> SPECIAL_CLASS = Lazy.from(() -> loadClass(SPECIAL_CLASS_NAME));
 
-	public static final Lazy<SootMethod> ASSERT_METHOD = Lazy
-    .from(() -> CONTRACT_CLASS.get().getSootMethod("assertion")
+	public static final Lazy<SootMethod> ASSERT_METHOD = Lazy.from(() -> CONTRACT_CLASS.get().getSootMethod("assertion")
 			.orElseThrow(() -> new RuntimeException("Could not load `assertion` method from Contract class")));
 
 	public static final Lazy<SootMethod> ASSUME_METHOD = Lazy
@@ -57,7 +56,7 @@ public class Annotations {
 	public static void reset() {
 		CONTRACT_CLASS.invalidate();
 		QUANTIFIER_CLASS.invalidate();
-    SPECIAL_CLASS.invalidate();
+		SPECIAL_CLASS.invalidate();
 		ASSERT_METHOD.invalidate();
 		ASSUME_METHOD.invalidate();
 		INVARIANT_METHOD.invalidate();

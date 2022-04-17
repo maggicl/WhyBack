@@ -74,10 +74,10 @@ public class Simple {
 		assumption(a);
 	}
 
-  @Pure
-  public static int recursive_fibonacci(int m) {
-    return ifThenElse(lte(m, 0), 0, recursive_fibonacci(m));
-  }
+	@Pure
+	public static int recursive_fibonacci(int m) {
+		return ifThenElse(lte(m, 0), 0, recursive_fibonacci(m));
+	}
 
 	@Require("argument_is_positive")
 	public static int fibonacci(int m) {

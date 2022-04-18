@@ -3,6 +3,8 @@ package byteback.core.converter.soottoboogie.procedure;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.util.Lazy;
 import java.util.Collection;
+import java.util.stream.Collectors;
+
 import soot.Local;
 import soot.Unit;
 import soot.toolkits.scalar.LocalDefs;
@@ -20,8 +22,8 @@ public class DefinitionCollector {
 		definitions = Lazy.from(() -> new SimpleLocalDefs(body.getUnitGraph()));
 	}
 
-	public boolean hasSingleDefinition(final Local local, final Unit unit) {
-		return definitionsOfAt(local, unit).size() == 1;
+	public boolean hasSingleDefinition(final Local local) {
+		return definitionsOf(local).size() == 1;
 	}
 
 	public Collection<Unit> definitionsOfAt(final Local local, final Unit unit) {
@@ -29,7 +31,7 @@ public class DefinitionCollector {
 	}
 
 	public Collection<Unit> definitionsOf(final Local local) {
-		return definitions.get().getDefsOf(local);
+		return definitions.get().getDefsOf(local).stream().collect(Collectors.toSet());
 	}
 
 }

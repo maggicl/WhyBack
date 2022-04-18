@@ -11,7 +11,7 @@ label2:
     goto label1;
   }
 
-  c := (c + ~get(~heap, as, ~Array_int, l4));
+  c := (c + ~get(~heap, as, ~Array.int, l4));
   l4 := (l4 + 1);
 
   goto label2;
@@ -23,8 +23,8 @@ label1:
   return;
 }
 
-procedure byteback.dummy.procedure.Array.assignsLastElement#int$#(as: Reference) returns (~ret: int)
+procedure byteback.dummy.procedure.Array.assignsLastElement#int$#(as: Reference) returns ()
 {
-  ~heap := ~insert(~heap, as, ~Array_int, ~lengthof(~heap, as) - 1, 1)
+  ~heap := ~insert(~heap, as, ~Array.int, ~lengthof(~heap, as) - 1, 1)
   return;
 }

@@ -149,7 +149,7 @@ public class Prelude {
 	}
 
 	public static Variable getArrayTypeVariable(final TypeAccess typeAccess) {
-		final String arrayIdentifier = "~Array_" + typeAccess.getIdentifier();
+		final String arrayIdentifier = "~Array." + typeAccess.getIdentifier();
 		return loadProgram().lookupLocalVariable(arrayIdentifier).orElseThrow(
 				() -> new IllegalStateException("Missing definition for array variable " + arrayIdentifier));
 	}

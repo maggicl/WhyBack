@@ -100,9 +100,14 @@ label1:
 
 procedure byteback.dummy.procedure.Simple.assignIf##() returns ()
 {
-  if (~int(false) != 0) {
+  var a: bool;
+  a := false;
+
+  if (~int(a) != 0) {
     goto label1;
   }
+
+  a := true;
 
 label1:
   return;

@@ -193,7 +193,7 @@ procedure byteback.dummy.condition.Simple.assignIf#int#(b: int) returns ()
 {
   var a: int;
   a := 0;
-  if (0 >= b) {
+  if (a >= b) {
     goto label1;
   }
   a := 1;

@@ -23,19 +23,19 @@ procedure ~new() returns (~ret: Reference);
 // -------------------------------------------------------------------
 type Array a = Field [int]a;
 
-const unique ~Array_bool: Array bool;
+const unique ~Array.bool: Array bool;
 
-const unique ~Array_int: Array int;
+const unique ~Array.int: Array int;
 
-const unique ~Array_real: Array real;
+const unique ~Array.real: Array real;
 
-const unique ~Array_Reference: Array Reference;
+const unique ~Array.Reference: Array Reference;
 
-const unique ~length: Field int;
+const unique ~Array.length: Field int;
 
 function ~lengthof(h: Store, r: Reference) returns (int)
 {
-  ~read(h, r, ~length)
+  ~read(h, r, ~Array.length)
 }
 
 function ~get<a>(h: Store, r: Reference, f: Array a, i: int) returns (a)
@@ -50,7 +50,7 @@ function ~insert<a>(h: Store, r: Reference, f: Array a, i: int, e: a) returns (S
 
 procedure ~array(l: int) returns (~ret: Reference);
   modifies ~heap;
-  ensures ~read(~heap, ~ret, ~length) == l;
+  ensures ~read(~heap, ~ret, ~Array.length) == l;
 
 // -------------------------------------------------------------------
 // Binary operators

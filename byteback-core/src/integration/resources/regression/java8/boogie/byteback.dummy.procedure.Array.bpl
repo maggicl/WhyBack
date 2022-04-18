@@ -22,3 +22,9 @@ label1:
 
   return;
 }
+
+procedure byteback.dummy.procedure.Array.assignsLastElement#int$#(as: Reference) returns (~ret: int)
+{
+  ~heap := ~insert(~heap, as, ~Array_int, ~lengthof(~heap, as) - 1, 1)
+  return;
+}

@@ -13,4 +13,8 @@ public class Array {
 		return c;
 	}
 
+	public static void assignsLastElement(int[] as) {
+		as[as.length - 1] = 1;
+	}
+
 }

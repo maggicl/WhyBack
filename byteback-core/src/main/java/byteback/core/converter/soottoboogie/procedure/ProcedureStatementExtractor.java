@@ -21,13 +21,13 @@ import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Supplier;
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
 import soot.Value;
+import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
@@ -41,7 +41,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 	interface ReferenceSupplier extends Supplier<Optional<ValueReference>> {
 	}
 
-	private static final ReferenceSupplier defaultReferenceSupplier = () -> Optional.empty();
+	private static final ReferenceSupplier EMPTY_REFERENCE_SUPPLIER = () -> Optional.empty();
 
 	private final ProcedureBodyExtractor bodyExtractor;
 
@@ -94,6 +94,25 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 			}
 
 			@Override
+			public void caseArrayRef(final ArrayRef arrayReference) {
+				final var base = new SootExpression(arrayReference.getBase());
+				final var index = new SootExpression(arrayReference.getIndex());
+				final var type = new SootType(arrayReference.getType());
+				final ReferenceSupplier referenceSupplier = () -> {
+					final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
+
+					return Optional.of(bodyExtractor.getVariableProvider().get(typeAccess));
+				};
+				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, referenceSupplier, assignment);
+				final Expression assigned = extractor.visit(right, left.getType());
+				final Expression indexReference = new ProcedureExpressionExtractor(bodyExtractor,
+						EMPTY_REFERENCE_SUPPLIER, assignment).visit(index);
+				final Expression boogieBase = new ExpressionExtractor().visit(base);
+				addStatement(Prelude.getArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
+						indexReference, assigned));
+			}
+
+			@Override
 			public void caseDefault(final Value value) {
 				throw new IllegalArgumentException("Unknown left hand side argument in assignment: " + assignment);
 			}
@@ -111,7 +130,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final var operand = new SootExpression(returnStatement.getOp());
 		final ValueReference valueReference = Prelude.getReturnValueReference();
 		final var assignee = Assignee.of(valueReference);
-		final Expression expression = new ProcedureExpressionExtractor(bodyExtractor, defaultReferenceSupplier,
+		final Expression expression = new ProcedureExpressionExtractor(bodyExtractor, EMPTY_REFERENCE_SUPPLIER,
 				returnStatement).visit(operand, bodyExtractor.getReturnType());
 		addSingleAssignment(assignee, expression);
 		addStatement(new ReturnStatement());
@@ -130,7 +149,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final var ifBuilder = new IfStatementBuilder();
 		final var condition = new SootExpression(ifStatement.getCondition());
 		final Label label = bodyExtractor.getLabelCollector().getLabel(ifStatement.getTarget()).get();
-		ifBuilder.condition(new ProcedureExpressionExtractor(bodyExtractor, defaultReferenceSupplier, ifStatement)
+		ifBuilder.condition(new ProcedureExpressionExtractor(bodyExtractor, EMPTY_REFERENCE_SUPPLIER, ifStatement)
 				.visit(condition, type)).thenStatement(new GotoStatement(label));
 		addStatement(ifBuilder.build());
 	}
@@ -138,7 +157,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 		final var invoke = new SootExpression(invokeStatement.getInvokeExpr());
-		invoke.apply(new ProcedureExpressionExtractor(bodyExtractor, defaultReferenceSupplier, invokeStatement));
+		invoke.apply(new ProcedureExpressionExtractor(bodyExtractor, EMPTY_REFERENCE_SUPPLIER, invokeStatement));
 	}
 
 	@Override

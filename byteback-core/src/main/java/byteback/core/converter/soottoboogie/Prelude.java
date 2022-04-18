@@ -121,6 +121,11 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~getfunction"));
 	}
 
+	public static Function getArrayUpdateFunction() {
+		return loadProgram().lookupFunction("~insert")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~insert"));
+	}
+
 	public static Procedure getNewProcedure() {
 		return loadProgram().lookupProcedure("~new")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~new procedure"));
@@ -143,15 +148,19 @@ public class Prelude {
 		return reference;
 	}
 
+	public static Variable getArrayTypeVariable(final TypeAccess typeAccess) {
+		final String arrayIdentifier = "~Array_" + typeAccess.getIdentifier();
+		return loadProgram().lookupLocalVariable(arrayIdentifier).orElseThrow(
+				() -> new IllegalStateException("Missing definition for array variable " + arrayIdentifier));
+	}
+
 	public static Expression getArrayAccessExpression(final TypeAccess typeAccess, final Expression base,
 			final Expression index) {
-		final String arrayIdentifier = "~Array_" + typeAccess.getIdentifier();
 		final FunctionReference reference = getArrayAccessFunction().makeFunctionReference();
-		final Variable array = loadProgram().lookupLocalVariable(arrayIdentifier).orElseThrow(
-				() -> new IllegalStateException("Missing definition for array variable " + arrayIdentifier));
+		final Variable arrayType = getArrayTypeVariable(typeAccess);
 		reference.addArgument(getHeapVariable().makeValueReference());
 		reference.addArgument(base);
-		reference.addArgument(array.makeValueReference());
+		reference.addArgument(arrayType.makeValueReference());
 		reference.addArgument(index);
 
 		return reference;
@@ -165,6 +174,21 @@ public class Prelude {
 		updateReference.addArgument(heapReference);
 		updateReference.addArgument(base);
 		updateReference.addArgument(field);
+		updateReference.addArgument(value);
+
+		return new AssignmentStatement(heapAssignee, updateReference);
+	}
+
+	public static Statement getArrayUpdateStatement(final TypeAccess typeAccess, final Expression base,
+			final Expression index, final Expression value) {
+		final FunctionReference updateReference = getArrayUpdateFunction().makeFunctionReference();
+		final ValueReference heapReference = getHeapVariable().makeValueReference();
+		final Variable arrayType = getArrayTypeVariable(typeAccess);
+		final var heapAssignee = Assignee.of(heapReference);
+		updateReference.addArgument(heapReference);
+		updateReference.addArgument(base);
+		updateReference.addArgument(arrayType.makeValueReference());
+		updateReference.addArgument(index);
 		updateReference.addArgument(value);
 
 		return new AssignmentStatement(heapAssignee, updateReference);

@@ -65,11 +65,9 @@ procedure byteback.dummy.procedure.Simple.doubleAssignment##() returns ()
 
 procedure byteback.dummy.procedure.Simple.emptyWhile##() returns ()
 {
-  var a: bool;
-  a := false;
 
 label2:
-  if (~int(a) == 0) {
+  if (~int(false) == 0) {
     goto label1;
   }
 
@@ -77,15 +75,13 @@ label2:
 
 label1:
   return;
+
 }
 
 procedure byteback.dummy.procedure.Simple.emptyDoWhile##() returns ()
 {
-  var a: bool;
-  a := false;
-
 label1:
-  if (~int(a) != 0) {
+  if (~int(false) != 0) {
     goto label1;
   }
 
@@ -94,10 +90,7 @@ label1:
 
 procedure byteback.dummy.procedure.Simple.emptyIf##() returns ()
 {
-  var a: bool;
-  a := false;
-
-  if (~int(a) == 0) {
+  if (~int(false) == 0) {
     goto label1;
   }
 
@@ -107,14 +100,10 @@ label1:
 
 procedure byteback.dummy.procedure.Simple.assignIf##() returns ()
 {
-  var a: bool;
-  a := false;
-
-  if (~int(a) != 0) {
+  if (~int(false) != 0) {
     goto label1;
   }
 
-  a := true;
 label1:
   return;
 }
@@ -150,10 +139,7 @@ procedure byteback.dummy.procedure.Simple.returnsNull##() returns (~ret: Referen
 
 procedure byteback.dummy.procedure.Simple.realCondition##() returns ()
 {
-  var $stack2 : int;
-  $stack2 := ~cmp(3.14, 2.72);
-
-  if ($stack2 >= 0) {
+  if (~cmp(3.14, 2.72) >= 0) {
     goto label1;
   }
 

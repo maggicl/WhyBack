@@ -1,15 +1,13 @@
 procedure byteback.dummy.procedure.Array.sum#int$#(as: Reference) returns (~ret: int)
 {
-  var l3: int;
   var c: int;
   var l4: int;
   c := 0;
-  l3 := ~lengthof(~heap, as);
   l4 := 0;
 
 label2:
 
-  if (l4 >= l3) {
+  if (l4 >= ~lengthof(~heap, as)) {
     goto label1;
   }
 

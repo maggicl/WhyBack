@@ -106,6 +106,15 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		operands.push(expression);
 	}
 
+	public void pushCastExpression(final Expression expression, final SootType fromType) {
+		final var caster = new CasterProvider(getType()).visit(fromType);
+		operands.push(caster.apply(expression));
+	}
+
+	public void pushCastExpression(final Expression expression, final Value value) {
+		pushCastExpression(expression, new SootType(value.getType()));
+	}
+
 	public void pushBinaryExpression(final BinopExpr source, final BinaryExpression expression) {
 		final var left = new SootExpression(source.getOp1());
 		final var right = new SootExpression(source.getOp2());
@@ -350,28 +359,25 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseLocal(final Local local) {
-		final var expression = new SootExpression(local);
-		final Function<Expression, Expression> caster = new CasterProvider(getType()).visit(expression.getType());
-		pushExpression(caster.apply(ValueReference.of(local.getName())));
+		pushCastExpression(ValueReference.of(local.getName()), local);
 	}
 
 	@Override
 	public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
 		final var field = new SootField(instanceFieldReference.getField());
 		final var base = new SootExpression(instanceFieldReference.getBase());
-		final Function<Expression, Expression> caster = new CasterProvider(getType()).visit(field.getType());
 		final Expression reference = ValueReference.of(NameConverter.fieldName(field));
 		final Expression heapAccess = Prelude.getHeapAccessExpression(visit(base), reference);
-		pushExpression(caster.apply(heapAccess));
+		pushCastExpression(heapAccess, field.getType());
 	}
 
 	@Override
 	public void caseArrayRef(final ArrayRef arrayReference) {
 		final var base = new SootExpression(arrayReference.getBase());
-		final var baseType = new SootType(arrayReference.getType());
+		final var arrayType = new SootType(arrayReference.getType());
 		final var index = new SootExpression(arrayReference.getIndex());
-		final TypeAccess typeAccess = new TypeAccessExtractor().visit(baseType);
-		pushExpression(Prelude.getArrayAccessExpression(typeAccess, visit(base), visit(index)));
+		final TypeAccess typeAccess = new TypeAccessExtractor().visit(arrayType);
+		pushCastExpression(Prelude.getArrayAccessExpression(typeAccess, visit(base), visit(index)), arrayType);
 	}
 
 	@Override

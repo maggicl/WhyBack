@@ -37,7 +37,6 @@ public class ProcedureConverterIntegrationTest extends ConverterFixture {
 				if (!method.getAnnotation(Annotations.PURE_ANNOTATION).isPresent()
 						&& !method.getAnnotation(Annotations.CONDITION_ANNOTATION).isPresent()) {
 					final String boogieName = NameConverter.methodName(method);
-					System.out.println(boogieName);
 					final Optional<ProcedureDeclaration> expected = program.lookupProcedure(boogieName)
 							.map(Procedure::getProcedureDeclaration);
 

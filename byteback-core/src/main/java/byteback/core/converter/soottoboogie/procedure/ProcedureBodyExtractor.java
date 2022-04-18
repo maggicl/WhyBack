@@ -17,12 +17,11 @@ import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.VariableDeclaration;
 import java.util.Optional;
 import java.util.Stack;
-import java.util.function.Function;
 import soot.Unit;
 
 public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
-	public class VariableProvider implements Function<TypeAccess, ValueReference> {
+	public class VariableProvider {
 
 		private int variableCounter;
 
@@ -30,7 +29,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 			variableCounter = 0;
 		}
 
-		public ValueReference apply(final TypeAccess typeAccess) {
+		public ValueReference get(final TypeAccess typeAccess) {
 			final ValueReference reference = Prelude.makeValueReference(++variableCounter);
 			final VariableDeclaration declaration = reference.makeVariableDeclaration(typeAccess);
 			body.addLocalDeclaration(declaration);
@@ -86,10 +85,6 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		}
 
 		activeLoops.peek().addInvariant(argument);
-	}
-
-	public ValueReference addLocal(final TypeAccess typeAccess) {
-		return variableProvider.apply(typeAccess);
 	}
 
 	public Body getBody() {

@@ -21,7 +21,7 @@ public class DefinitionCollector {
 	}
 
 	public boolean hasSingleDefinition(final Local local, final Unit unit) {
-		return definitions.get().getDefsOfAt(local, unit).size() == 1;
+		return definitionsOfAt(local, unit).size() == 1;
 	}
 
 	public Collection<Unit> definitionsOfAt(final Local local, final Unit unit) {

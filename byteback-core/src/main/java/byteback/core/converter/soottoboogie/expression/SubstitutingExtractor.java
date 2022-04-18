@@ -19,7 +19,8 @@ public class SubstitutingExtractor extends ExpressionExtractor {
 	@Override
 	public void caseLocal(final Local local) {
 		final Optional<Expression> substitution = substitutor.substitute(local);
-		substitution.ifPresentOrElse(this::pushExpression, () -> super.caseLocal(local));
+		substitution.ifPresentOrElse((expression) -> pushCastExpression(expression, local),
+				() -> super.caseLocal(local));
 	}
 
 }

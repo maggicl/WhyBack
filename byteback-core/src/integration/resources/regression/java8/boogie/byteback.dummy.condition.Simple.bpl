@@ -193,7 +193,7 @@ procedure byteback.dummy.condition.Simple.assignIf#int#(b: int) returns ()
 {
   var a: int;
   a := 0;
-  if (a >= b) {
+  if (0 >= b) {
     goto label1;
   }
   a := 1;
@@ -219,8 +219,6 @@ procedure byteback.dummy.condition.Simple.buzz##()
 procedure byteback.dummy.condition.Simple.fizzBuzz#int#(n: int)
   requires gt(~heap, n, 0);
 {
-  var $stack5: int;
-  var $stack6: int;
   var i: int;
   i := 0;
   assert lte(~heap, i, n);
@@ -232,9 +230,7 @@ label4:
     goto label1;
   }
 
-  $stack5 := i mod 3;
-
-  if ($stack5 != 0) {
+  if (i mod 3 != 0) {
     goto label2;
   }
 
@@ -242,9 +238,7 @@ label4:
 
 label2:
 
-  $stack6 := i mod 5;
-
-  if ($stack6 != 0) {
+  if (i mod 5 != 0) {
     goto label3;
   }
 
@@ -254,6 +248,7 @@ label3:
 
   i := i + 1;
   assert lte(~heap, i, n);
+
   goto label4;
 
 label1:

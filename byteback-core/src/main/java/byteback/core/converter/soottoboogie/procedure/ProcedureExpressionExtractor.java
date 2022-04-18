@@ -4,6 +4,7 @@ import byteback.core.converter.soottoboogie.Annotations;
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
+import byteback.core.converter.soottoboogie.procedure.ProcedureStatementExtractor.ReferenceSupplier;
 import byteback.core.representation.soot.annotation.SootAnnotation;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.type.SootType;
@@ -19,7 +20,6 @@ import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 import soot.BooleanType;
 import soot.Local;
@@ -29,20 +29,17 @@ import soot.jimple.SpecialInvokeExpr;
 
 public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
-	public interface VariableSupplier extends Supplier<ValueReference> {
-	}
-
 	final ProcedureBodyExtractor bodyExtractor;
 
-	final VariableSupplier variableSupplier;
+	final ReferenceSupplier referenceSupplier;
 
 	final Unit unit;
 
-	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor, final VariableSupplier supplier,
-			final Unit unit) {
+	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor,
+			final ReferenceSupplier referenceSupplier, final Unit unit) {
 		super(bodyExtractor.getSubstitutor());
 		this.bodyExtractor = bodyExtractor;
-		this.variableSupplier = supplier;
+		this.referenceSupplier = referenceSupplier;
 		this.unit = unit;
 	}
 
@@ -56,12 +53,10 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	public void addCall(final TargetedCallStatement callStatement, final Iterable<SootExpression> arguments) {
 		final List<ValueReference> targets = new List<ValueReference>();
-
-		if (variableSupplier != null) {
-			final ValueReference reference = variableSupplier.get();
+		referenceSupplier.get().ifPresent((reference) -> {
 			targets.add(reference);
 			pushExpression(reference);
-		}
+		});
 
 		callStatement.setTargetList(targets);
 		bodyExtractor.addStatement(callStatement);
@@ -116,8 +111,10 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	@Override
 	public void caseLocal(final Local local) {
-		if (!bodyExtractor.getDefinitionCollector().hasSingleDefinition(local, unit)) {
-			pushExpression(ValueReference.of(local.getName()));
+		final DefinitionCollector definitionCollector = bodyExtractor.getDefinitionCollector();
+
+		if (!definitionCollector.hasSingleDefinition(local, unit) || local.getUseBoxes().size() > 1) {
+			pushCastExpression(ValueReference.of(local.getName()), local);
 		} else {
 			super.caseLocal(local);
 		}

@@ -1,9 +1,10 @@
-package byteback.core.converter.soottoboogie.procedure;
+package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.Annotations;
+import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
-import byteback.core.converter.soottoboogie.function.FunctionManager;
+import byteback.core.converter.soottoboogie.method.function.FunctionManager;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
 import byteback.core.representation.soot.type.SootType;
@@ -100,7 +101,7 @@ public class ProcedureConverter {
 		});
 		final SootMethod source = target.getSootClass()
 				.getSootMethod(sourceName, parameterTypes, new SootType(BooleanType.v()))
-				.orElseThrow(() -> new IllegalArgumentException("Could not find condition method " + sourceName));
+				.orElseThrow(() -> new ConversionException("Could not find condition method " + sourceName));
 
 		return FunctionManager.instance().convert(source).getFunction().inline(arguments);
 	}
@@ -142,10 +143,15 @@ public class ProcedureConverter {
 
 	public ProcedureDeclaration convert(final SootMethod method) {
 		final var procedureBuilder = new ProcedureDeclarationBuilder();
-		procedureBuilder.name(NameConverter.methodName(method));
-		buildSignature(procedureBuilder, method);
-		buildSpecifications(procedureBuilder, method);
-		buildBody(procedureBuilder, method);
+
+		try {
+			procedureBuilder.name(NameConverter.methodName(method));
+			buildSignature(procedureBuilder, method);
+			buildSpecifications(procedureBuilder, method);
+			buildBody(procedureBuilder, method);
+		} catch(ConversionException exception) {
+			throw new ProcedureConversionException(method, exception);
+		}
 
 		return procedureBuilder.build().removeUnusedVariables();
 	}

@@ -1,5 +1,6 @@
-package byteback.core.converter.soottoboogie.procedure;
+package byteback.core.converter.soottoboogie.method.procedure;
 
+import byteback.core.converter.soottoboogie.statement.StatementConversionException;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.frontend.boogie.ast.AssertStatement;
@@ -81,7 +82,7 @@ public class LoopCollector {
 
 					@Override
 					public void caseDefault(final Unit unit) {
-						throw new IllegalStateException("Cannot identify exit target from " + unit);
+						throw new StatementConversionException(unit, "Cannot identify exit target from " + unit);
 					}
 
 				});

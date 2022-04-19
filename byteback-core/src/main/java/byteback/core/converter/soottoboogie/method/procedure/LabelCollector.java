@@ -1,5 +1,6 @@
-package byteback.core.converter.soottoboogie.procedure;
+package byteback.core.converter.soottoboogie.method.procedure;
 
+import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.body.SootStatementVisitor;
@@ -28,6 +29,10 @@ public class LabelCollector extends SootStatementVisitor<Map<Unit, Label>> {
 
 	public Optional<Label> getLabel(final Unit unit) {
 		return Optional.ofNullable(labels.get(unit));
+	}
+
+	public Label fetchLabel(final Unit unit) {
+		return getLabel(unit).orElseThrow(() -> new ConversionException("Cannot fetch label for target " + unit));
 	}
 
 	public void branchTo(final Unit target) {

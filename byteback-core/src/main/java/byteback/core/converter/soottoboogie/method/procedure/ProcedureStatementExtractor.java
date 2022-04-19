@@ -1,8 +1,9 @@
-package byteback.core.converter.soottoboogie.procedure;
+package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.LocalUseExtractor;
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.statement.StatementConversionException;
 import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootExpression;
@@ -114,7 +115,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 			@Override
 			public void caseDefault(final Value value) {
-				throw new IllegalArgumentException("Unknown left hand side argument in assignment: " + assignment);
+				throw new StatementConversionException(assignment, "Unknown left hand side argument in assignment: " + assignment);
 			}
 
 		});
@@ -139,7 +140,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 	@Override
 	public void caseGotoStmt(final GotoStmt gotoStatement) {
 		final Unit targetUnit = gotoStatement.getTarget();
-		final Label label = bodyExtractor.getLabelCollector().getLabel(targetUnit).get();
+		final Label label = bodyExtractor.getLabelCollector().fetchLabel(targetUnit);
 		addStatement(new GotoStatement(label));
 	}
 
@@ -148,7 +149,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final var type = new SootType(IntType.v());
 		final var ifBuilder = new IfStatementBuilder();
 		final var condition = new SootExpression(ifStatement.getCondition());
-		final Label label = bodyExtractor.getLabelCollector().getLabel(ifStatement.getTarget()).get();
+		final Label label = bodyExtractor.getLabelCollector().fetchLabel(ifStatement.getTarget());
 		ifBuilder.condition(new ProcedureExpressionExtractor(bodyExtractor, EMPTY_REFERENCE_SUPPLIER, ifStatement)
 				.visit(condition, type)).thenStatement(new GotoStatement(label));
 		addStatement(ifBuilder.build());
@@ -162,7 +163,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	@Override
 	public void caseDefault(final Unit unit) {
-		throw new IllegalArgumentException("Cannot extract procedure with statement " + unit);
+		throw new StatementConversionException(unit, "Cannot extract procedure with statement " + unit);
 	}
 
 	@Override

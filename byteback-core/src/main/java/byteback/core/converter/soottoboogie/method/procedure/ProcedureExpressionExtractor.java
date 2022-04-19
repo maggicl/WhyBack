@@ -1,10 +1,8 @@
-package byteback.core.converter.soottoboogie.procedure;
+package byteback.core.converter.soottoboogie.method.procedure;
 
-import byteback.core.converter.soottoboogie.Annotations;
-import byteback.core.converter.soottoboogie.NameConverter;
-import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.*;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
-import byteback.core.converter.soottoboogie.procedure.ProcedureStatementExtractor.ReferenceSupplier;
+import byteback.core.converter.soottoboogie.method.procedure.ProcedureStatementExtractor.ReferenceSupplier;
 import byteback.core.representation.soot.annotation.SootAnnotation;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.type.SootType;
@@ -73,7 +71,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		} else if (method.equals(Annotations.INVARIANT_METHOD.get())) {
 			bodyExtractor.addInvariant(condition);
 		} else {
-			throw new RuntimeException("Unknown special method: " + method.getName());
+			throw new ConversionException("Unknown special method: " + method.getName());
 		}
 	}
 

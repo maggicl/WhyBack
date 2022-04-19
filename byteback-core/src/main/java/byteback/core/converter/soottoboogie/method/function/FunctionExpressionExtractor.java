@@ -1,6 +1,7 @@
-package byteback.core.converter.soottoboogie.function;
+package byteback.core.converter.soottoboogie.method.function;
 
 import byteback.core.converter.soottoboogie.Annotations;
+import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.LocalExtractor;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
 import byteback.core.converter.soottoboogie.expression.Substitutor;
@@ -58,7 +59,7 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 		} else if (quantifierName.equals(Annotations.UNIVERSAL_QUANTIFIER_NAME)) {
 			pushUniversalQuantifier(arguments);
 		} else {
-			throw new RuntimeException("Unknown quantifier method: " + method.getName());
+			throw new ConversionException("Unknown quantifier method: " + method.getName());
 		}
 	}
 
@@ -87,7 +88,7 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 		} else if (specialName.equals(Annotations.CONDITIONAL_NAME)) {
 			pushConditional(method, arguments);
 		} else {
-			throw new RuntimeException("Unknown special method: " + method.getName());
+			throw new ConversionException("Unknown special method: " + method.getName());
 		}
 	}
 

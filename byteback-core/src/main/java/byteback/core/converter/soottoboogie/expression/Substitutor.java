@@ -1,5 +1,6 @@
 package byteback.core.converter.soottoboogie.expression;
 
+import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.frontend.boogie.ast.Expression;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,7 +35,8 @@ public class Substitutor {
 
 	protected void handleDependencies(final Set<Local> dependencies) {
 		if (dependencies.size() > 0) {
-			throw new IllegalStateException("Dependency found, the next substituted expressions may be invalid");
+			throw new ConversionException(
+					"Dependency found, the next substituted expressions may be invalid");
 		}
 	}
 

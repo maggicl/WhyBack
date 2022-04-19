@@ -1,15 +1,13 @@
-package byteback.core.converter.soottoboogie.function;
+package byteback.core.converter.soottoboogie.method.function;
 
+import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
-import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.core.representation.soot.unit.SootMethod;
-import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
-import byteback.frontend.boogie.ast.FunctionSignature;
 import byteback.frontend.boogie.ast.OptionalBinding;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.builder.FunctionDeclarationBuilder;
@@ -36,7 +34,7 @@ public class FunctionConverter {
 		return bindingBuilder.build();
 	}
 
-	public static FunctionSignature makeSignature(final SootMethod method) {
+	public static void buildSignature(final FunctionDeclarationBuilder functionBuilder, final SootMethod method) {
 		final FunctionSignatureBuilder signatureBuilder = new FunctionSignatureBuilder();
 		final OptionalBinding heapBinding = Prelude.getHeapVariable().makeOptionalBinding();
 		signatureBuilder.addInputBinding(heapBinding);
@@ -49,7 +47,7 @@ public class FunctionConverter {
 
 			@Override
 			public void caseVoidType(final VoidType type) {
-				throw new IllegalArgumentException("A pure function cannot be void");
+				throw new ConversionException("A pure function cannot be void");
 			}
 
 			@Override
@@ -61,18 +59,23 @@ public class FunctionConverter {
 
 		});
 
-		return signatureBuilder.build();
+		functionBuilder.signature(signatureBuilder.build());
+	}
+
+	public static void buildExpression(final FunctionDeclarationBuilder functionBuilder, final SootMethod method) {
+		functionBuilder.expression(new FunctionBodyExtractor(method.getReturnType()).visit(method.getBody()));
 	}
 
 	public FunctionDeclaration convert(final SootMethod method) {
 		final var functionBuilder = new FunctionDeclarationBuilder();
-		final FunctionSignature boogieSignature = makeSignature(method);
-		final SootBody body = method.getBody();
-		final SootType returnType = method.getReturnType();
-		final Expression boogieExpression = new FunctionBodyExtractor(returnType).visit(body);
-		functionBuilder.name(NameConverter.methodName(method));
-		functionBuilder.signature(boogieSignature);
-		functionBuilder.expression(boogieExpression);
+
+		try {
+			functionBuilder.name(NameConverter.methodName(method));
+			buildSignature(functionBuilder, method);
+			buildExpression(functionBuilder, method);
+		} catch(final ConversionException exception) {
+			throw new FunctionConversionException(method, exception);
+		}
 
 		return functionBuilder.build();
 	}

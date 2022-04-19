@@ -3,7 +3,7 @@ package byteback.core.converter.soottoboogie;
 import static org.junit.Assert.assertEquals;
 
 import byteback.core.RegressionParameter;
-import byteback.core.converter.soottoboogie.procedure.ProcedureConverter;
+import byteback.core.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.core.representation.soot.unit.SootClass;
 import byteback.frontend.boogie.ast.ConstantDeclaration;
 import byteback.frontend.boogie.ast.PrintUtil;

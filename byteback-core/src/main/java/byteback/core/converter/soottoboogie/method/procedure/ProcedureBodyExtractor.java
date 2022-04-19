@@ -1,9 +1,9 @@
-package byteback.core.converter.soottoboogie.procedure;
+package byteback.core.converter.soottoboogie.method.procedure;
 
+import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.expression.PartialSubstitutor;
 import byteback.core.converter.soottoboogie.expression.Substitutor;
-import byteback.core.converter.soottoboogie.procedure.LoopCollector.LoopContext;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
@@ -47,7 +47,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final LoopCollector loopCollector;
 
-	private final Stack<LoopContext> activeLoops;
+	private final Stack<LoopCollector.LoopContext> activeLoops;
 
 	private final DefinitionCollector definitions;
 
@@ -79,7 +79,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	public void addInvariant(final Expression argument) {
 		if (activeLoops.isEmpty()) {
-			throw new IllegalStateException("Trying to insert an invariant outside of a loop context");
+			throw new ConversionException("Trying to insert an invariant outside of a loop context");
 		}
 
 		activeLoops.peek().addInvariant(argument);

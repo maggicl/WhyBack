@@ -1,7 +1,8 @@
-package byteback.core.converter.soottoboogie.function;
+package byteback.core.converter.soottoboogie.method.function;
 
 import byteback.core.converter.soottoboogie.LocalExtractor;
 import byteback.core.converter.soottoboogie.LocalUseExtractor;
+import byteback.core.converter.soottoboogie.statement.StatementConversionException;
 import byteback.core.converter.soottoboogie.expression.Substitutor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootStatementVisitor;
@@ -9,14 +10,10 @@ import byteback.core.representation.soot.type.SootType;
 import byteback.core.util.CountingMap;
 import byteback.frontend.boogie.ast.Expression;
 import java.util.Map.Entry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.jimple.*;
 
 public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
-
-	private static final Logger log = LoggerFactory.getLogger(FunctionBodyExtractor.class);
 
 	private final CountingMap<Local, Expression> expressionTable;
 
@@ -48,14 +45,14 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 
 		for (Entry<Local, Integer> entry : expressionTable.getAccessCount().entrySet()) {
 			if (entry.getValue() == 0) {
-				log.warn("Local assignment {} unused in final expansion", entry.getKey());
+				throw new StatementConversionException(returnStatement, "Unused local in expansion " + entry.getKey());
 			}
 		}
 	}
 
 	@Override
 	public void caseDefault(final Unit unit) {
-		throw new UnsupportedOperationException("Cannot substitute statement " + unit);
+		throw new StatementConversionException(unit, "Cannot substitute statement " + unit);
 	}
 
 	@Override

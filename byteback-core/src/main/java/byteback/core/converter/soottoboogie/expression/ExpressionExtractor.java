@@ -91,7 +91,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseDefault(final Type type) {
-				throw new ExpressionConversionException("Bitwise OR is currently not supported for type " + type);
+				throw new ExpressionConversionException(or, "Bitwise OR is currently not supported for type " + type);
 			}
 
 		});
@@ -108,7 +108,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseDefault(final Type type) {
-				throw new ExpressionConversionException("Bitwise AND is currently not supported for type " + type);
+				throw new ExpressionConversionException(and, "Bitwise AND is currently not supported for type " + type);
 			}
 
 		});
@@ -125,7 +125,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseDefault(final Type type) {
-				throw new ExpressionConversionException("Bitwise XOR is currently not supported for type " + type);
+				throw new ExpressionConversionException(xor, "Bitwise XOR is currently not supported for type " + type);
 			}
 
 		});
@@ -250,7 +250,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 	@Override
 	public void caseDefault(final Value value) {
-		throw new ExpressionConversionException("Unable to convert Jimple expression " + value + " to Boogie");
+		throw new ExpressionConversionException(value, "Unable to convert Jimple expression " + value + " to Boogie");
 	}
 
 }

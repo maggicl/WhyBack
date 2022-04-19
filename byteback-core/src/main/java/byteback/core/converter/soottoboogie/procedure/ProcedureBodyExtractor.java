@@ -9,13 +9,11 @@ import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.Expression;
-import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.LabelStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.VariableDeclaration;
-import java.util.Optional;
 import java.util.Stack;
 import soot.Unit;
 
@@ -118,38 +116,23 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 	@Override
 	public void caseDefault(final Unit unit) {
 		final var extractor = new ProcedureStatementExtractor(this);
-		final Optional<LoopContext> loopContextStart = loopCollector.getByHead(unit);
-		final Optional<LoopContext> loopContextEnd = loopCollector.getByBackJump(unit);
-		final Optional<LoopContext> loopContextExitTarget = loopCollector.getByExitTarget(unit);
-		final Optional<LoopContext> loopContextExit = loopCollector.getByExit(unit);
-		final Optional<Label> labelLookup = labelCollector.getLabel(unit);
-
-		if (loopContextStart.isPresent()) {
-			final LoopContext loopContext = loopContextStart.get();
-			activeLoops.push(loopContext);
-			addStatement(loopContext.getAssertionPoint());
-		}
-
-		if (loopContextEnd.isPresent()) {
-			final LoopContext loopContext = activeLoops.pop();
-			assert loopContext.getLoop() == loopContextEnd.get().getLoop();
-			addStatement(loopContext.getAssertionPoint());
-		}
-
-		if (labelLookup.isPresent()) {
-			body.addStatement(new LabelStatement(labelLookup.get()));
-		}
-
-		if (loopContextExit.isPresent()) {
-			final LoopContext loopContext = loopContextExit.get();
-			addStatement(loopContext.getAssumptionPoint());
-		}
-
-		if (loopContextExitTarget.isPresent()) {
-			final LoopContext loopContext = loopContextExitTarget.get();
-			addStatement(loopContext.getAssumptionPoint());
-		}
-
+		loopCollector.getByHead(unit).ifPresent((context) -> {
+			activeLoops.push(context);
+			addStatement(context.getAssertionPoint());
+		});
+		loopCollector.getByBackJump(unit).ifPresent((context) -> {
+			assert context.getLoop() == activeLoops.peek().getLoop();
+			addStatement(activeLoops.pop().getAssertionPoint());
+		});
+		labelCollector.getLabel(unit).ifPresent((label) -> {
+			body.addStatement(new LabelStatement(label));
+		});
+		loopCollector.getByExitTarget(unit).ifPresent((context) -> {
+			addStatement(context.getAssumptionPoint());
+		});
+		loopCollector.getByExit(unit).ifPresent((context) -> {
+			addStatement(context.getAssumptionPoint());
+		});
 		unit.apply(extractor);
 	}
 

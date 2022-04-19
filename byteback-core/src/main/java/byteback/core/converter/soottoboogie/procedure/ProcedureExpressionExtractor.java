@@ -17,7 +17,6 @@ import byteback.frontend.boogie.ast.Procedure;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -51,7 +50,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		return callBuilder.build();
 	}
 
-	public void addCall(final TargetedCallStatement callStatement, final Iterable<SootExpression> arguments) {
+	public void addCall(final TargetedCallStatement callStatement) {
 		final List<ValueReference> targets = new List<ValueReference>();
 		referenceSupplier.get().ifPresent((reference) -> {
 			targets.add(reference);
@@ -89,7 +88,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 			addSpecial(method, arguments);
 		} else {
 			final TargetedCallStatement callStatement = makeCall(method, arguments);
-			addCall(callStatement, arguments);
+			addCall(callStatement);
 		}
 	}
 
@@ -106,7 +105,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 	public void caseNewExpr(final NewExpr newExpression) {
 		final Procedure newProcedure = Prelude.getNewProcedure();
 		final TargetedCallStatement callStatement = newProcedure.makeTargetedCall();
-		addCall(callStatement, Collections.emptyList());
+		addCall(callStatement);
 	}
 
 	@Override

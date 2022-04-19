@@ -4,7 +4,6 @@ import byteback.core.representation.soot.body.SootBody;
 import byteback.core.util.Lazy;
 import java.util.Collection;
 import java.util.stream.Collectors;
-
 import soot.Local;
 import soot.Unit;
 import soot.toolkits.scalar.LocalDefs;

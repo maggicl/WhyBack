@@ -41,12 +41,12 @@ function byteback.dummy.function.Integer.rectangleArea#int#int#(~heap: Store, a:
 
 function byteback.dummy.function.Integer.even#int#(~heap: Store, a: int) returns (bool)
 {
-    eq(~heap, (a mod 2), 0)
+    ~eq(~heap, (a mod 2), 0)
 }
 
 function byteback.dummy.function.Integer.odd#int#(~heap: Store, a: int) returns (bool)
 {
-    not(~heap, byteback.dummy.function.Integer.even#int#(~heap, a))
+    ~not(~heap, byteback.dummy.function.Integer.even#int#(~heap, a))
 }
 
 function byteback.dummy.function.Integer.assignIndirect#int#(~heap: Store, a: int) returns (int)

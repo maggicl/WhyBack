@@ -55,15 +55,38 @@ procedure ~array(l: int) returns (~ret: Reference);
 // -------------------------------------------------------------------
 // Binary operators
 // -------------------------------------------------------------------
-function ~cmp<a>(a, a) returns (int);
-
-axiom (forall i: int, j: int :: i < j ==> ~cmp(i, j) == -1);
-axiom (forall i: int, j: int :: i > j ==> ~cmp(i, j) == 1);
-axiom (forall i: int, j: int :: i == j ==> ~cmp(i, j) == 0);
+function ~cmp(a: real, b: real) returns (int);
 
 axiom (forall i: real, j: real :: i < j ==> ~cmp(i, j) == -1);
 axiom (forall i: real, j: real :: i > j ==> ~cmp(i, j) == 1);
 axiom (forall i: real, j: real :: i == j ==> ~cmp(i, j) == 0);
+
+function ~and(~heap: Store, a: bool, b: bool) returns (bool)
+{ a && b }
+
+function ~or(~heap: Store, a: bool, b: bool) returns (bool)
+{ a || b }
+
+function ~implies(~heap: Store, a: bool, b: bool) returns (bool)
+{ a ==> b }
+
+function ~iff(~heap: Store, a: bool, b: bool) returns (bool)
+{ a <==> b }
+
+function ~lt(~heap: Store, a: real, b: real) returns (bool)
+{ a < b }
+
+function ~lte(~heap: Store, a: real, b: real) returns (bool)
+{ a <= b }
+
+function ~gt(~heap: Store, a: real, b: real) returns (bool)
+{ a > b }
+
+function ~gte(~heap: Store, a: real, b: real) returns (bool)
+{ a >= b }
+
+function ~eq<t>(~heap: Store, a: t, b: t) returns (bool)
+{ a == b }
 
 // -------------------------------------------------------------------
 // Casting operators

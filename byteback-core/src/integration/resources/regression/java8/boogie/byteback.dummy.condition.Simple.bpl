@@ -1,72 +1,12 @@
-// -------------------------------------------------------------------
-// Heap model
-// -------------------------------------------------------------------
-type Reference;
-
-const ~null: Reference;
-
-type Field a;
-type Store = [Reference]<a>[Field a]a;
-
-var ~heap: Store;
-
-function ~read<a>(h: Store, r: Reference, f: Field a) returns (a)
-{ h[r][f] }
-
-function ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
-{ h[r := h[r][f := v]] }
-
-// -------------------------------------------------------------------
-// Binary operators
-// -------------------------------------------------------------------
-function ~cmp<a>(a, a) returns (int);
-
-axiom (forall i: int, j: int :: i < j ==> ~cmp(i, j) == -1);
-axiom (forall i: int, j: int :: i > j ==> ~cmp(i, j) == 1);
-axiom (forall i: int, j: int :: i == j ==> ~cmp(i, j) == 0);
-
-axiom (forall i: real, j: real :: i < j ==> ~cmp(i, j) == -1);
-axiom (forall i: real, j: real :: i > j ==> ~cmp(i, j) == 1);
-axiom (forall i: real, j: real :: i == j ==> ~cmp(i, j) == 0);
-
-// -------------------------------------------------------------------
-// Casting operators
-// -------------------------------------------------------------------
-
-// Casting between primitive types
-function ~int<a>(a) returns (int);
-
-// bool -> int
-axiom ~int(false) == 0;
-axiom ~int(true) == 1;
-
-// real -> int
-// TODO
-
-function eq(~heap: Store, a: int, b: int) returns (bool) { a == b }
-
-function gt(~heap: Store, a: int, b: int) returns (bool) { a > b }
-
-function lt(~heap: Store, a: int, b: int) returns (bool) { a < b }
-
-function lte(~heap: Store, a: int, b: int) returns (bool) { a <= b }
-
-function implies(~heap: Store, a: bool, b: bool) returns (bool) { a ==> b }
-
-function ~real<a>(a) returns (real);
-
-// int -> real
-// TODO
-
 procedure byteback.dummy.condition.Simple.returnsOne##() returns (~ret: int)
-  ensures eq(~heap, ~ret, 1);
+  ensures ~eq(~heap, ~ret, 1);
 {
   ~ret := 1;
   return;
 }
 
 procedure byteback.dummy.condition.Simple.identity#int#(a: int) returns (~ret: int)
-  ensures eq(~heap, ~ret, a);
+  ensures ~eq(~heap, ~ret, a);
 {
   ~ret := a;
   return;
@@ -98,11 +38,11 @@ procedure byteback.dummy.condition.Simple.wrongAssumption2##() returns ()
 
 function byteback.dummy.condition.Simple.recursive_fibonacci#int#(~heap: Store, m: int) returns (int)
 {
-  if lte(~heap, m, 0) then 0 else byteback.dummy.condition.Simple.recursive_fibonacci#int#(~heap, m)
+  if ~lte(~heap, m, 0) then 0 else byteback.dummy.condition.Simple.recursive_fibonacci#int#(~heap, m)
 }
 
 procedure byteback.dummy.condition.Simple.fibonacci#int#(m: int) returns (~ret: int)
-  requires gt(~heap, m, 0);
+  requires ~gt(~heap, m, 0);
 {
   var c: int;
   var a: int;
@@ -112,9 +52,9 @@ procedure byteback.dummy.condition.Simple.fibonacci#int#(m: int) returns (~ret: 
   b := 1;
   i := 0;
 
-  assert lte(~heap, i, m);
+  assert ~lte(~heap, i, m);
 label2:
-  assume lte(~heap, i, m);
+  assume ~lte(~heap, i, m);
   if (i >= m) {
     goto label1;
   }
@@ -123,10 +63,10 @@ label2:
   a := b;
   b := c;
   i := i + 1;
-  assert lte(~heap, i, m);
+  assert ~lte(~heap, i, m);
   goto label2;
 label1:
-  assume lte(~heap, i, m);
+  assume ~lte(~heap, i, m);
   ~ret := a;
 
   return;
@@ -140,14 +80,14 @@ procedure byteback.dummy.condition.Simple.overloadedConditions##() returns (~ret
 }
 
 procedure byteback.dummy.condition.Simple.result##() returns (~ret: int)
-  ensures eq(~heap, ~ret, 1);
+  ensures ~eq(~heap, ~ret, 1);
 {
   ~ret := 1;
   return;
 }
 
 procedure byteback.dummy.condition.Simple.returnsResult##() returns (~ret: int)
-  ensures eq(~heap, ~ret, 1);
+  ensures ~eq(~heap, ~ret, 1);
 {
   var $stack0: int;
   call $stack0 := byteback.dummy.condition.Simple.result##();
@@ -163,7 +103,7 @@ label2:
   if (i >= 10) {
     goto label1;
   }
-  assert eq(~heap, 0, 0);
+  assert ~eq(~heap, 0, 0);
   i := (i + 1);
   goto label2;
 label1:
@@ -174,17 +114,17 @@ procedure byteback.dummy.condition.Simple.loopInvariant##() returns ()
 {
   var i: int;
   i := 0;
-  assert eq(~heap, 0, 0);
+  assert ~eq(~heap, 0, 0);
 label2:
-  assume eq(~heap, 0, 0);
+  assume ~eq(~heap, 0, 0);
   if (i >= 10) {
     goto label1;
   }
   i := (i + 1);
-  assert eq(~heap, 0, 0);
+  assert ~eq(~heap, 0, 0);
   goto label2;
 label1:
-  assume eq(~heap, 0, 0);
+  assume ~eq(~heap, 0, 0);
 
   return;
 }
@@ -201,8 +141,8 @@ procedure byteback.dummy.condition.Simple.assignIf#int#(b: int) returns ()
 label1:
   a := 2;
 label2:
-  assert implies(~heap, gt(~heap, b, a), eq(~heap, a, 1));
-  assert gt(~heap, a, 0);
+  assert ~implies(~heap, ~gt(~heap, b, a), ~eq(~heap, a, 1));
+  assert ~gt(~heap, a, 0);
   return;
 }
 
@@ -217,15 +157,15 @@ procedure byteback.dummy.condition.Simple.buzz##()
 }
 
 procedure byteback.dummy.condition.Simple.fizzBuzz#int#(n: int)
-  requires gt(~heap, n, 0);
+  requires ~gt(~heap, n, 0);
 {
   var i: int;
   i := 0;
-  assert lte(~heap, i, n);
+  assert ~lte(~heap, i, n);
 
 label4:
 
-  assume lte(~heap, i, n);
+  assume ~lte(~heap, i, n);
   if (i >= n) {
     goto label1;
   }
@@ -247,12 +187,12 @@ label2:
 label3:
 
   i := i + 1;
-  assert lte(~heap, i, n);
+  assert ~lte(~heap, i, n);
 
   goto label4;
 
 label1:
 
-  assume lte(~heap, i, n);
+  assume ~lte(~heap, i, n);
   return;
 }

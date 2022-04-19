@@ -22,7 +22,7 @@ public interface Operator {
 	 * @return {@code true} if {@code a -> b}.
 	 */
 	@Pure
-	@Prelude("implies")
+	@Prelude("~implies")
 	public static boolean implies(final boolean a, final boolean b) {
 		return !a || b;
 	}
@@ -37,7 +37,7 @@ public interface Operator {
 	 * @return {@code true} if {@code a <-> b}.
 	 */
 	@Pure
-	@Prelude("iff")
+	@Prelude("~iff")
 	public static boolean iff(final boolean a, final boolean b) {
 		return a == b;
 	}
@@ -52,7 +52,7 @@ public interface Operator {
 	 * @return {@code true} if {@code a && b}.
 	 */
 	@Pure
-	@Prelude("and")
+	@Prelude("~and")
 	public static boolean and(final boolean a, final boolean b) {
 		return a && b;
 	}
@@ -67,7 +67,7 @@ public interface Operator {
 	 * @return {@code true} if {@code a || b}.
 	 */
 	@Pure
-	@Prelude("or")
+	@Prelude("~or")
 	public static boolean or(final boolean a, final boolean b) {
 		return a || b;
 	}
@@ -80,7 +80,7 @@ public interface Operator {
 	 * @return {@code true} if {@code !o}.
 	 */
 	@Pure
-	@Prelude("not")
+	@Prelude("~not")
 	public static boolean not(final boolean a) {
 		return !a;
 	}
@@ -95,55 +95,55 @@ public interface Operator {
 	 * @return {@code true} if {@code a || b}.
 	 */
 	@Pure
-	@Prelude("eq")
+	@Prelude("~eq")
 	public static boolean eq(final Object a, final Object b) {
 		return a.equals(b);
 	}
 
 	@Pure
-	@Prelude("eq")
+	@Prelude("~eq")
 	public static boolean eq(final boolean a, final boolean b) {
 		return a == b;
 	}
 
 	@Pure
-	@Prelude("eq")
+	@Prelude("~eq")
 	public static boolean eq(final byte a, final byte b) {
 		return a == b;
 	}
 
 	@Pure
-	@Prelude("eq")
+	@Prelude("~eq")
 	public static boolean eq(final int a, final int b) {
 		return a == b;
 	}
 
 	@Pure
-	@Prelude("eq")
+	@Prelude("~eq")
 	public static boolean eq(final char a, final char b) {
 		return a == b;
 	}
 
 	@Pure
-	@Prelude("eq")
+	@Prelude("~eq")
 	public static boolean eq(final double a, final double b) {
 		return a == b;
 	}
 
 	@Pure
-	@Prelude("eq")
+	@Prelude("~eq")
 	public static boolean eq(final float a, final float b) {
 		return a == b;
 	}
 
 	@Pure
-	@Prelude("eq")
+	@Prelude("~eq")
 	public static boolean eq(final long a, final long b) {
 		return a == b;
 	}
 
 	@Pure
-	@Prelude("eq")
+	@Prelude("~eq")
 	public static boolean eq(final short a, final short b) {
 		return a == b;
 	}
@@ -152,99 +152,100 @@ public interface Operator {
 	 * Numeric relational operations.
 	 */
 	@Pure
-	@Prelude("gt")
-	public static boolean gt(final double a, final double b) {
-		return a > b;
-	}
-
-	@Pure
-	@Prelude("gt")
-	public static boolean gt(final float a, final float b) {
-		return a > b;
-	}
-
-	@Pure
-	@Prelude("gt")
-	public static boolean gt(final long a, final long b) {
-		return a > b;
-	}
-
-	@Pure
-	@Prelude("gt")
-	public static boolean gt(final short a, final short b) {
-		return a > b;
-	}
-
-	@Pure
-	@Prelude("lt")
+	@Prelude("~lt")
 	public static boolean lt(final double a, final double b) {
 		return a < b;
 	}
 
 	@Pure
-	@Prelude("lt")
+	@Prelude("~lt")
 	public static boolean lt(final float a, final float b) {
 		return a < b;
 	}
 
 	@Pure
-	@Prelude("lt")
+	@Prelude("~lt")
 	public static boolean lt(final long a, final long b) {
 		return a < b;
 	}
 
 	@Pure
-	@Prelude("lt")
+	@Prelude("~lt")
 	public static boolean lt(final short a, final short b) {
 		return a < b;
 	}
 
 	@Pure
-	@Prelude("lte")
+	@Prelude("~lte")
 	public static boolean lte(final double a, final double b) {
 		return a < b;
 	}
 
 	@Pure
-	@Prelude("lte")
+	@Prelude("~lte")
 	public static boolean lte(final float a, final float b) {
 		return a < b;
 	}
 
 	@Pure
-	@Prelude("lte")
+	@Prelude("~lte")
 	public static boolean lte(final long a, final long b) {
 		return a < b;
 	}
 
 	@Pure
-	@Prelude("lte")
+	@Prelude("~lte")
 	public static boolean lte(final short a, final short b) {
 		return a < b;
 	}
 
 	@Pure
-	@Prelude("gte")
+	@Prelude("~gte")
 	public static boolean gte(final double a, final double b) {
 		return a < b;
 	}
 
 	@Pure
-	@Prelude("gte")
+	@Prelude("~gte")
 	public static boolean gte(final float a, final float b) {
 		return a < b;
 	}
 
 	@Pure
-	@Prelude("gte")
+	@Prelude("~gte")
 	public static boolean gte(final long a, final long b) {
 		return a < b;
 	}
 
 	@Pure
-	@Prelude("gte")
+	@Prelude("~gte")
 	public static boolean gte(final short a, final short b) {
 		return a < b;
 	}
+
+	@Pure
+	@Prelude("~gt")
+	public static boolean gt(final double a, final double b) {
+		return a > b;
+	}
+
+	@Pure
+	@Prelude("~gt")
+	public static boolean gt(final float a, final float b) {
+		return a > b;
+	}
+
+	@Pure
+	@Prelude("~gt")
+	public static boolean gt(final long a, final long b) {
+		return a > b;
+	}
+
+	@Pure
+	@Prelude("~gt")
+	public static boolean gt(final short a, final short b) {
+		return a > b;
+	}
+
 
 }

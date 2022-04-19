@@ -1,168 +1,20 @@
 package byteback.core.converter.soottoboogie.expression;
 
-import byteback.core.converter.soottoboogie.Annotations;
-import byteback.core.converter.soottoboogie.NameConverter;
-import byteback.core.converter.soottoboogie.Prelude;
-import byteback.core.converter.soottoboogie.type.CasterProvider;
-import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
-import byteback.core.representation.soot.annotation.SootAnnotation;
-import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
-import byteback.core.representation.soot.body.SootExpression;
-import byteback.core.representation.soot.body.SootExpressionVisitor;
-import byteback.core.representation.soot.type.SootType;
-import byteback.core.representation.soot.type.SootTypeVisitor;
-import byteback.core.representation.soot.unit.SootField;
-import byteback.core.representation.soot.unit.SootMethod;
-import byteback.frontend.boogie.ast.AdditionOperation;
-import byteback.frontend.boogie.ast.AndOperation;
-import byteback.frontend.boogie.ast.BinaryExpression;
-import byteback.frontend.boogie.ast.BooleanLiteral;
-import byteback.frontend.boogie.ast.DivisionOperation;
-import byteback.frontend.boogie.ast.EqualsOperation;
-import byteback.frontend.boogie.ast.Expression;
-import byteback.frontend.boogie.ast.FunctionReference;
-import byteback.frontend.boogie.ast.GreaterThanEqualsOperation;
-import byteback.frontend.boogie.ast.GreaterThanOperation;
-import byteback.frontend.boogie.ast.LessThanEqualsOperation;
-import byteback.frontend.boogie.ast.LessThanOperation;
-import byteback.frontend.boogie.ast.List;
-import byteback.frontend.boogie.ast.MinusOperation;
-import byteback.frontend.boogie.ast.ModuloOperation;
-import byteback.frontend.boogie.ast.MultiplicationOperation;
-import byteback.frontend.boogie.ast.NegationOperation;
-import byteback.frontend.boogie.ast.NotEqualsOperation;
-import byteback.frontend.boogie.ast.NumberLiteral;
-import byteback.frontend.boogie.ast.OrOperation;
-import byteback.frontend.boogie.ast.RealLiteral;
-import byteback.frontend.boogie.ast.SubtractionOperation;
-import byteback.frontend.boogie.ast.TypeAccess;
-import byteback.frontend.boogie.ast.ValueReference;
-import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
-import java.util.Iterator;
-import java.util.Stack;
+import byteback.core.converter.soottoboogie.*;
+import byteback.core.converter.soottoboogie.type.*;
+import byteback.core.representation.soot.body.*;
+import byteback.core.representation.soot.type.*;
+import byteback.core.representation.soot.unit.*;
+import byteback.frontend.boogie.ast.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import soot.BooleanType;
 import soot.Local;
 import soot.Type;
-import soot.UnknownType;
 import soot.Value;
-import soot.jimple.AddExpr;
-import soot.jimple.AndExpr;
-import soot.jimple.ArrayRef;
-import soot.jimple.BinopExpr;
-import soot.jimple.CastExpr;
-import soot.jimple.CmpgExpr;
-import soot.jimple.CmplExpr;
-import soot.jimple.DivExpr;
-import soot.jimple.DoubleConstant;
-import soot.jimple.EqExpr;
-import soot.jimple.FloatConstant;
-import soot.jimple.GeExpr;
-import soot.jimple.GtExpr;
-import soot.jimple.InstanceFieldRef;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.IntConstant;
-import soot.jimple.InterfaceInvokeExpr;
-import soot.jimple.LeExpr;
-import soot.jimple.LengthExpr;
-import soot.jimple.LongConstant;
-import soot.jimple.LtExpr;
-import soot.jimple.MulExpr;
-import soot.jimple.NeExpr;
-import soot.jimple.NegExpr;
-import soot.jimple.NullConstant;
-import soot.jimple.OrExpr;
-import soot.jimple.RemExpr;
-import soot.jimple.StaticInvokeExpr;
-import soot.jimple.SubExpr;
-import soot.jimple.VirtualInvokeExpr;
-import soot.jimple.XorExpr;
+import soot.jimple.*;
 
-public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
-
-	protected final Stack<Expression> operands;
-
-	protected final Stack<SootType> types;
-
-	public ExpressionExtractor() {
-		this.operands = new Stack<>();
-		this.types = new Stack<>();
-	}
-
-	public Expression visit(final SootExpression expression, final SootType type) {
-		types.push(type);
-
-		return super.visit(expression);
-	}
-
-	public Expression visit(final SootExpression expression) {
-		return visit(expression, new SootType(UnknownType.v()));
-	}
-
-	public SootType getType() {
-		return types.peek();
-	}
-
-	public void pushExpression(final Expression expression) {
-		operands.push(expression);
-	}
-
-	public void pushCastExpression(final Expression expression, final SootType fromType) {
-		final var caster = new CasterProvider(getType()).visit(fromType);
-		operands.push(caster.apply(expression));
-	}
-
-	public void pushCastExpression(final Expression expression, final Value value) {
-		pushCastExpression(expression, new SootType(value.getType()));
-	}
-
-	public void pushBinaryExpression(final BinopExpr source, final BinaryExpression expression) {
-		final var left = new SootExpression(source.getOp1());
-		final var right = new SootExpression(source.getOp2());
-		expression.setLeftOperand(visit(left, getType()));
-		expression.setRightOperand(visit(right, getType()));
-		pushExpression(expression);
-	}
-
-	public void pushSpecialBinaryExpression(final BinopExpr source, final FunctionReference reference) {
-		final var left = new SootExpression(source.getOp1());
-		final var right = new SootExpression(source.getOp2());
-		reference.addArgument(visit(left));
-		reference.addArgument(visit(right));
-		pushExpression(reference);
-	}
-
-	public List<Expression> convertArguments(final SootMethod method, final Iterable<SootExpression> sources) {
-		final List<Expression> arguments = new List<>();
-		final Iterator<SootType> typeIterator = method.getBody().getParameterLocals().stream().map(Local::getType)
-				.map(SootType::new).iterator();
-		final Iterator<SootExpression> sourceIterator = sources.iterator();
-
-		while (typeIterator.hasNext() && sourceIterator.hasNext()) {
-			arguments.add(visit(sourceIterator.next(), typeIterator.next()));
-		}
-
-		return arguments;
-	}
-
-	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final var referenceBuilder = new FunctionReferenceBuilder();
-		final String methodName = method.getAnnotation(Annotations.PRELUDE_ANNOTATION).flatMap(SootAnnotation::getValue)
-				.map((element) -> new StringElementExtractor().visit(element))
-				.orElseGet(() -> NameConverter.methodName(method));
-		referenceBuilder.prependArgument(Prelude.getHeapVariable().makeValueReference()).name(methodName)
-				.addArguments(convertArguments(method, arguments));
-		pushExpression(referenceBuilder.build());
-	}
-
-	public void caseInstanceInvokeExpr(final InstanceInvokeExpr invoke) {
-		final var method = new SootMethod(invoke.getMethod());
-		final var base = new SootExpression(invoke.getBase());
-		final Iterable<SootExpression> arguments = Stream.concat(Stream.of(base),
-				invoke.getArgs().stream().map(SootExpression::new))::iterator;
-		pushFunctionReference(method, arguments);
-	}
+public class ExpressionExtractor extends ExpressionVisitor {
 
 	@Override
 	public void caseStaticInvokeExpr(final StaticInvokeExpr invoke) {
@@ -172,13 +24,12 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	}
 
 	@Override
-	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invoke) {
-		caseInstanceInvokeExpr(invoke);
-	}
-
-	@Override
-	public void caseInterfaceInvokeExpr(final InterfaceInvokeExpr invoke) {
-		caseInstanceInvokeExpr(invoke);
+	public void caseInstanceInvokeExpr(final InstanceInvokeExpr invoke) {
+		final var method = new SootMethod(invoke.getMethod());
+		final var base = new SootExpression(invoke.getBase());
+		final Iterable<SootExpression> arguments = Stream.concat(Stream.of(base),
+				invoke.getArgs().stream().map(SootExpression::new))::iterator;
+		pushFunctionReference(method, arguments);
 	}
 
 	public void pushCmpExpression(final BinopExpr cmp) {
@@ -240,7 +91,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 			@Override
 			public void caseDefault(final Type type) {
-				throw new IllegalArgumentException("Bitwise OR is currently not supported for type " + type);
+				throw new ExpressionConversionException("Bitwise OR is currently not supported for type " + type);
 			}
 
 		});
@@ -257,7 +108,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 			@Override
 			public void caseDefault(final Type type) {
-				throw new IllegalArgumentException("Bitwise AND is currently not supported for type " + type);
+				throw new ExpressionConversionException("Bitwise AND is currently not supported for type " + type);
 			}
 
 		});
@@ -274,7 +125,7 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 			@Override
 			public void caseDefault(final Type type) {
-				throw new IllegalArgumentException("Bitwise XOR is currently not supported for type " + type);
+				throw new ExpressionConversionException("Bitwise XOR is currently not supported for type " + type);
 			}
 
 		});
@@ -398,15 +249,8 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 	}
 
 	@Override
-	public void caseDefault(final Value expression) {
-		throw new UnsupportedOperationException("Unable to convert Jimple expression " + expression + " to Boogie");
-	}
-
-	@Override
-	public Expression result() {
-		types.pop();
-
-		return operands.pop();
+	public void caseDefault(final Value value) {
+		throw new ExpressionConversionException("Unable to convert Jimple expression " + value + " to Boogie");
 	}
 
 }

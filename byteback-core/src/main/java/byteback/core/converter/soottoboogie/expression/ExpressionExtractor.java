@@ -61,7 +61,9 @@ import soot.jimple.FloatConstant;
 import soot.jimple.GeExpr;
 import soot.jimple.GtExpr;
 import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.IntConstant;
+import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.LeExpr;
 import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
@@ -154,6 +156,14 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 		pushExpression(referenceBuilder.build());
 	}
 
+	public void caseInstanceInvokeExpr(final InstanceInvokeExpr invoke) {
+		final var method = new SootMethod(invoke.getMethod());
+		final var base = new SootExpression(invoke.getBase());
+		final Iterable<SootExpression> arguments = Stream.concat(Stream.of(base),
+				invoke.getArgs().stream().map(SootExpression::new))::iterator;
+		pushFunctionReference(method, arguments);
+	}
+
 	@Override
 	public void caseStaticInvokeExpr(final StaticInvokeExpr invoke) {
 		final var method = new SootMethod(invoke.getMethod());
@@ -163,11 +173,12 @@ public class ExpressionExtractor extends SootExpressionVisitor<Expression> {
 
 	@Override
 	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invoke) {
-		final var method = new SootMethod(invoke.getMethod());
-		final var base = new SootExpression(invoke.getBase());
-		final Iterable<SootExpression> arguments = Stream.concat(Stream.of(base),
-				invoke.getArgs().stream().map(SootExpression::new))::iterator;
-		pushFunctionReference(method, arguments);
+		caseInstanceInvokeExpr(invoke);
+	}
+
+	@Override
+	public void caseInterfaceInvokeExpr(final InterfaceInvokeExpr invoke) {
+		caseInstanceInvokeExpr(invoke);
 	}
 
 	public void pushCmpExpression(final BinopExpr cmp) {

@@ -19,7 +19,6 @@ import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.stream.Stream;
 import soot.BooleanType;
 import soot.Local;
 import soot.Unit;
@@ -94,11 +93,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	@Override
 	public void caseSpecialInvokeExpr(final SpecialInvokeExpr invoke) {
-		final var method = new SootMethod(invoke.getMethod());
-		final var base = new SootExpression(invoke.getBase());
-		final Iterable<SootExpression> arguments = Stream.concat(Stream.of(base),
-				invoke.getArgs().stream().map(SootExpression::new))::iterator;
-		pushFunctionReference(method, arguments);
+		caseInstanceInvokeExpr(invoke);
 	}
 
 	@Override

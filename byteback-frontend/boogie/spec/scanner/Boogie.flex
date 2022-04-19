@@ -86,6 +86,7 @@ BvType = "bv" {DecIntegerLiteral}
     "havoc" { return symbol(Terminals.HAVOC); }
     "call" { return symbol(Terminals.CALL); }
     "if" { return symbol(Terminals.IF); }
+    "then" { return symbol(Terminals.THEN); }
     "else" { return symbol(Terminals.ELSE); }
     "while" { return symbol(Terminals.WHILE); }
     "break" { return symbol(Terminals.BREAK); }

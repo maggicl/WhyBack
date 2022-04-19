@@ -247,5 +247,4 @@ public interface Operator {
 		return a > b;
 	}
 
-
 }

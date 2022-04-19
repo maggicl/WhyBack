@@ -93,14 +93,14 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 	}
 
 	public void pushBinding(final SootMethod method, final Iterable<SootExpression> arguments) {
-    throw new ConversionException("Cannot bind a free variable");
-  }
+		throw new ConversionException("Cannot bind a free variable");
+	}
 
 	@Override
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-    if (method.getSootClass().equals(Annotations.BINDING_CLASS.get())) {
-      pushBinding(method, arguments);
-    } else if (method.getSootClass().equals(Annotations.QUANTIFIER_CLASS.get())) {
+		if (method.getSootClass().equals(Annotations.BINDING_CLASS.get())) {
+			pushBinding(method, arguments);
+		} else if (method.getSootClass().equals(Annotations.QUANTIFIER_CLASS.get())) {
 			pushQuantifier(method, arguments);
 		} else if (method.getSootClass().equals(Annotations.SPECIAL_CLASS.get())) {
 			pushSpecial(method, arguments);

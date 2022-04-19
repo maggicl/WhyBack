@@ -223,4 +223,28 @@ public interface Operator {
 		return a < b;
 	}
 
+	@Pure
+	@Prelude("gte")
+	public static boolean gte(final double a, final double b) {
+		return a < b;
+	}
+
+	@Pure
+	@Prelude("gte")
+	public static boolean gte(final float a, final float b) {
+		return a < b;
+	}
+
+	@Pure
+	@Prelude("gte")
+	public static boolean gte(final long a, final long b) {
+		return a < b;
+	}
+
+	@Pure
+	@Prelude("gte")
+	public static boolean gte(final short a, final short b) {
+		return a < b;
+	}
+
 }

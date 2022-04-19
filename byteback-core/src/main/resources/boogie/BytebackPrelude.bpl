@@ -55,12 +55,19 @@ procedure ~array(l: int) returns (~ret: Reference);
 // -------------------------------------------------------------------
 // Binary operators
 // -------------------------------------------------------------------
-function ~cmp(a: real, b: real) returns (int);
+function ~cmp<t>(a: t, b: t) returns (int);
 
-axiom (forall i: real, j: real :: i < j ==> ~cmp(i, j) == -1);
-axiom (forall i: real, j: real :: i > j ==> ~cmp(i, j) == 1);
-axiom (forall i: real, j: real :: i == j ==> ~cmp(i, j) == 0);
+axiom (forall i: real, j: real :: i < j <==> ~cmp(i, j) == -1);
+axiom (forall i: real, j: real :: i > j <==> ~cmp(i, j) == 1);
+axiom (forall i: real, j: real :: i == j <==> ~cmp(i, j) == 0);
 
+axiom (forall i: int, j: int :: i < j <==> ~cmp(i, j) == -1);
+axiom (forall i: int, j: int :: i > j <==> ~cmp(i, j) == 1);
+axiom (forall i: int, j: int :: i == j <==> ~cmp(i, j) == 0);
+
+// -------------------------------------------------------------------
+// Prelude definitions
+// -------------------------------------------------------------------
 function ~and(~heap: Store, a: bool, b: bool) returns (bool)
 { a && b }
 
@@ -73,17 +80,21 @@ function ~implies(~heap: Store, a: bool, b: bool) returns (bool)
 function ~iff(~heap: Store, a: bool, b: bool) returns (bool)
 { a <==> b }
 
-function ~lt(~heap: Store, a: real, b: real) returns (bool)
-{ a < b }
+function ~lt<t>(~heap: Store, a: t, b:  t) returns (bool);
+axiom (forall ~heap: Store, a: real, b: real :: ~lt(~heap, a, b) <==> a < b);
+axiom (forall ~heap: Store, a: int, b: int :: ~lt(~heap, a, b) <==> a < b);
 
-function ~lte(~heap: Store, a: real, b: real) returns (bool)
-{ a <= b }
+function ~lte<t>(~heap: Store, a: t, b: t) returns (bool);
+axiom (forall ~heap: Store, a: real, b: real :: ~lte(~heap, a, b) <==> a <= b);
+axiom (forall ~heap: Store, a: int, b: int :: ~lte(~heap, a, b) <==> a <= b);
 
-function ~gt(~heap: Store, a: real, b: real) returns (bool)
-{ a > b }
+function ~gt<t>(~heap: Store, a: t, b: t) returns (bool);
+axiom (forall ~heap: Store, a: real, b: real :: ~gt(~heap, a, b) <==> a > b);
+axiom (forall ~heap: Store, a: int, b: int :: ~gt(~heap, a, b) <==> a > b);
 
-function ~gte(~heap: Store, a: real, b: real) returns (bool)
-{ a >= b }
+function ~gte<t>(~heap: Store, a: t, b: t) returns (bool);
+axiom (forall ~heap: Store, a: real, b: real :: ~gte(~heap, a, b) <==> a >= b);
+axiom (forall ~heap: Store, a: int, b: int :: ~gte(~heap, a, b) <==> a >= b);
 
 function ~eq<t>(~heap: Store, a: t, b: t) returns (bool)
 { a == b }

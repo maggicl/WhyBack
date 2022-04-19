@@ -16,7 +16,8 @@ public class Array {
 	@Condition
 	public static boolean sum_of_positive_integers_is_positive(int[] as, int returns) {
 		int index = Binding.INTEGER();
-		return implies(forall(index, and(lt(index, as.length), gte(index, 0))), gte(returns, 0));
+		return implies(forall(index, implies(and(lt(index, as.length), gte(index, 0)), gte(as[index], 0))),
+				gte(returns, 0));
 	}
 
 	@Condition

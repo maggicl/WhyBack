@@ -35,8 +35,7 @@ public class Substitutor {
 
 	protected void handleDependencies(final Set<Local> dependencies) {
 		if (dependencies.size() > 0) {
-			throw new ConversionException(
-					"Dependency found, the next substituted expressions may be invalid");
+			throw new ConversionException("Dependency found, the next substituted expressions may be invalid");
 		}
 	}
 

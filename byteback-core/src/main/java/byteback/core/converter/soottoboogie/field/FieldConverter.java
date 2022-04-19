@@ -27,7 +27,7 @@ public class FieldConverter {
 			bindingBuilder.typeAccess(fieldTypeAccess);
 			bindingBuilder.name(NameConverter.fieldName(field));
 			constantDeclaration.setBinding(bindingBuilder.build());
-		} catch(ConversionException exception) {
+		} catch (ConversionException exception) {
 			throw new FieldConversionException(field, exception);
 		}
 

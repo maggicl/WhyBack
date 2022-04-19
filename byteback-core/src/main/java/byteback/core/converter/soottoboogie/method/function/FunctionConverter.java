@@ -73,7 +73,7 @@ public class FunctionConverter {
 			functionBuilder.name(NameConverter.methodName(method));
 			buildSignature(functionBuilder, method);
 			buildExpression(functionBuilder, method);
-		} catch(final ConversionException exception) {
+		} catch (final ConversionException exception) {
 			throw new FunctionConversionException(method, exception);
 		}
 

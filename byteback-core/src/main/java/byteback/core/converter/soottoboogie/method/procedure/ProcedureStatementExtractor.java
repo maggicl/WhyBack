@@ -3,8 +3,8 @@ package byteback.core.converter.soottoboogie.method.procedure;
 import byteback.core.converter.soottoboogie.LocalUseExtractor;
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
-import byteback.core.converter.soottoboogie.statement.StatementConversionException;
 import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
+import byteback.core.converter.soottoboogie.statement.StatementConversionException;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
@@ -115,7 +115,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 			@Override
 			public void caseDefault(final Value value) {
-				throw new StatementConversionException(assignment, "Unknown left hand side argument in assignment: " + assignment);
+				throw new StatementConversionException(assignment,
+						"Unknown left hand side argument in assignment: " + assignment);
 			}
 
 		});

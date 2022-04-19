@@ -1,9 +1,11 @@
-package byteback.core.converter.soottoboogie;
+package byteback.core.converter.soottoboogie.method.function;
 
 import static org.junit.Assert.assertEquals;
 
 import byteback.core.RegressionParameter;
-import byteback.core.converter.soottoboogie.method.function.FunctionConverter;
+import byteback.core.converter.soottoboogie.Annotations;
+import byteback.core.converter.soottoboogie.ConverterFixture;
+import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.representation.soot.unit.SootClass;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
 import byteback.frontend.boogie.ast.PrintUtil;
@@ -52,7 +54,6 @@ public class FunctionConverterIntegrationTest extends ConverterFixture {
 
 	@Test
 	public void Convert_GivenRegressionSet_ReturnsExpectedCode() {
-		System.out.println(PrintUtil.toString(parameter.actual));
 		assertEquals(PrintUtil.toString(parameter.expected), PrintUtil.toString(parameter.actual));
 	}
 

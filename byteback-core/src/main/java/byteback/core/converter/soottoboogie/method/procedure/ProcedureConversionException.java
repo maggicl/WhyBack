@@ -20,8 +20,7 @@ public class ProcedureConversionException extends ConversionException {
 	@Override
 	public String getMessage() {
 
-		return "Exception while converting procedure method " + method.getIdentifier() + ":\n" +
-				super.getMessage();
+		return "Exception while converting procedure method " + method.getIdentifier() + ":\n" + super.getMessage();
 	}
 
 }

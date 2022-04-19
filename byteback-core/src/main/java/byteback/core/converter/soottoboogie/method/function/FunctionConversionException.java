@@ -20,8 +20,7 @@ public class FunctionConversionException extends ConversionException {
 	@Override
 	public String getMessage() {
 
-		return "Exception while converting pure method " + method.getIdentifier() + ":\n" +
-				super.getMessage();
+		return "Exception while converting pure method " + method.getIdentifier() + ":\n" + super.getMessage();
 	}
 
 }

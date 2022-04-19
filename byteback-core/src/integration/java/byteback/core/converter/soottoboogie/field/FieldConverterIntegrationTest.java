@@ -1,9 +1,10 @@
-package byteback.core.converter.soottoboogie;
+package byteback.core.converter.soottoboogie.field;
 
 import static org.junit.Assert.assertEquals;
 
 import byteback.core.RegressionParameter;
-import byteback.core.converter.soottoboogie.field.FieldConverter;
+import byteback.core.converter.soottoboogie.ConverterFixture;
+import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.representation.soot.unit.SootClass;
 import byteback.frontend.boogie.ast.ConstantDeclaration;
 import byteback.frontend.boogie.ast.PrintUtil;

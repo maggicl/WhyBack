@@ -149,7 +149,7 @@ public class ProcedureConverter {
 			buildSignature(procedureBuilder, method);
 			buildSpecifications(procedureBuilder, method);
 			buildBody(procedureBuilder, method);
-		} catch(ConversionException exception) {
+		} catch (ConversionException exception) {
 			throw new ProcedureConversionException(method, exception);
 		}
 

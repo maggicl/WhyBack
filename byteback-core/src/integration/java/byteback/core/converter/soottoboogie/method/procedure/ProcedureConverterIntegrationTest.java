@@ -1,9 +1,11 @@
-package byteback.core.converter.soottoboogie;
+package byteback.core.converter.soottoboogie.method.procedure;
 
 import static org.junit.Assert.assertEquals;
 
 import byteback.core.RegressionParameter;
-import byteback.core.converter.soottoboogie.method.procedure.ProcedureConverter;
+import byteback.core.converter.soottoboogie.Annotations;
+import byteback.core.converter.soottoboogie.ConverterFixture;
+import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.representation.soot.unit.SootClass;
 import byteback.frontend.boogie.ast.ConstantDeclaration;
 import byteback.frontend.boogie.ast.PrintUtil;
@@ -36,8 +38,8 @@ public class ProcedureConverterIntegrationTest extends ConverterFixture {
 			return clazz.methods().flatMap((method) -> {
 				if (!method.getAnnotation(Annotations.PURE_ANNOTATION).isPresent()
 						&& !method.getAnnotation(Annotations.CONDITION_ANNOTATION).isPresent()) {
-					final String boogieName = NameConverter.methodName(method);
-					final Optional<ProcedureDeclaration> expected = program.lookupProcedure(boogieName)
+					final String name = NameConverter.methodName(method);
+					final Optional<ProcedureDeclaration> expected = program.lookupProcedure(name)
 							.map(Procedure::getProcedureDeclaration);
 
 					if (expected.isPresent()) {
@@ -60,7 +62,6 @@ public class ProcedureConverterIntegrationTest extends ConverterFixture {
 
 	@Test
 	public void Convert_GivenRegressionSet_ReturnsExpectedCode() {
-		System.out.println(PrintUtil.toString(parameter.actual));
 		assertEquals(PrintUtil.toString(parameter.expected), PrintUtil.toString(parameter.actual));
 	}
 

@@ -5,8 +5,6 @@ package byteback.annotations;
  */
 public interface Quantifier {
 
-	public static int INTEGER = 0;
-
 	public static boolean exists(int $, boolean p) {
 		return p;
 	}

@@ -16,6 +16,8 @@ aspect Variable {
 
   Body implements Scope;
 
+  QuantifierExpression implements Scope;
+
   /**
    * Scope collections
    */
@@ -36,6 +38,8 @@ aspect Variable {
   eq ImplementationDeclaration.getChild().getScope() = getImplementation();
 
   eq Body.getChild().getScope() = this;
+
+  eq QuantifierExpression.getChild().getScope() = this;
 
   /**
    * References collection.

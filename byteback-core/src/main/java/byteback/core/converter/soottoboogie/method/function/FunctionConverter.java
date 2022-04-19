@@ -69,7 +69,9 @@ public class FunctionConverter {
 	public FunctionDeclaration convert(final SootMethod method) {
 		final var functionBuilder = new FunctionDeclarationBuilder();
 
-		try {
+    System.out.println(method.getBody());
+
+    try {
 			functionBuilder.name(NameConverter.methodName(method));
 			buildSignature(functionBuilder, method);
 			buildExpression(functionBuilder, method);

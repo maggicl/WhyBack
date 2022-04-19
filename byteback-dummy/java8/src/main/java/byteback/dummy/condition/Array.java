@@ -1,9 +1,8 @@
 package byteback.dummy.condition;
 
-import byteback.annotations.Quantifier;
 import byteback.annotations.Contract.Condition;
 import byteback.annotations.Contract.Ensure;
-
+import byteback.annotations.Binding;
 import static byteback.annotations.Quantifier.forall;
 import static byteback.annotations.Operator.lt;
 import static byteback.annotations.Operator.eq;
@@ -15,7 +14,7 @@ public class Array {
 
   @Condition
   public static boolean sum_of_positive_integers_is_positive(int[] as, int returns) {
-    int index = Quantifier.INTEGER;
+    int index = Binding.INTEGER();
     return implies(forall(index, and(lt(index, as.length), gte(index, 0))), gte(returns, 0));
   }
 

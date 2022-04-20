@@ -4,7 +4,7 @@ procedure byteback.dummy.condition.Array.$init$##(this: Reference) returns ()
   return;
 }
 
-procedure byteback.dummy.condition.Array.sum#int$#(as: Reference) returns (~ret: int)
+procedure byteback.dummy.condition.Array.sum#int?#(as: Reference) returns (~ret: int)
   ensures ~implies(~heap,
     (forall index : int :: ~implies(~heap,
                         ~and(~heap,
@@ -35,7 +35,7 @@ label1:
   return;
 }
 
-procedure byteback.dummy.condition.Array.assignsLastElement#int$#(as: Reference) returns ()
+procedure byteback.dummy.condition.Array.assignsLastElement#int?#(as: Reference) returns ()
   ensures ~eq(~heap, ~get(~heap, as, ~Array.int, ~lengthof(~heap, as) - 1), 1);
 {
   ~heap := ~insert(~heap, as, ~Array.int, ~lengthof(~heap, as) - 1, 1);

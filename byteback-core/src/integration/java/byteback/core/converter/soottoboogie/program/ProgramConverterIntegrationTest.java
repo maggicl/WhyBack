@@ -1,6 +1,5 @@
 package byteback.core.converter.soottoboogie.program;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -51,7 +50,6 @@ public class ProgramConverterIntegrationTest extends ConverterFixture {
 	@Test
 	public void Convert_GivenRegressionSet_ReturnsProgramsWithMatchingProcedures() {
     for (Procedure procedure : parameter.expected.procedures()) {
-      System.err.println(procedure.getName());
       assertTrue(parameter.actual.lookupProcedure(procedure.getName()).isPresent());
     }
 	}

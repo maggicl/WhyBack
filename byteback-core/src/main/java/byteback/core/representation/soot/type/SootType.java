@@ -1,6 +1,13 @@
 package byteback.core.representation.soot.type;
 
 import byteback.core.representation.Visitable;
+import soot.IntType;
+import soot.LongType;
+import soot.ShortType;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.DoubleType;
+import soot.FloatType;
 
 /**
  * Encapsulates a Soot type representation, visitable using a
@@ -14,7 +21,35 @@ public class SootType implements Visitable<SootTypeVisitor<?>> {
 
 	private final soot.Type sootType;
 
-	/**
+  public static SootType booleanType() {
+    return new SootType(BooleanType.v());
+  }
+
+  public static SootType byteType() {
+    return new SootType(ByteType.v());
+  }
+
+  public static SootType shortType() {
+    return new SootType(ShortType.v());
+  }
+
+  public static SootType intType() {
+    return new SootType(IntType.v());
+  }
+
+  public static SootType longType() {
+    return new SootType(LongType.v());
+  }
+
+  public static SootType floatType() {
+    return new SootType(FloatType.v());
+  }
+
+  public static SootType doubleType() {
+    return new SootType(DoubleType.v());
+  }
+
+  /**
 	 * Constructs a {@link SootType} from a {@link soot.Type} instance.
 	 *
 	 * @param sootType

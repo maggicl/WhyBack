@@ -11,7 +11,6 @@ procedure byteback.dummy.procedure.Simple.empty##() returns ()
 
 procedure byteback.dummy.procedure.Simple.emptyWhile##() returns ()
 {
-
 label2:
   if (~int(false) == 0) {
     goto label1;
@@ -21,7 +20,6 @@ label2:
 
 label1:
   return;
-
 }
 
 procedure byteback.dummy.procedure.Simple.emptyDoWhile##() returns ()

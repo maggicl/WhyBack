@@ -4,7 +4,7 @@ procedure byteback.dummy.procedure.Array.$init$##(this: Reference) returns ()
   return;
 }
 
-procedure byteback.dummy.procedure.Array.sum#int$#(as: Reference) returns (~ret: int)
+procedure byteback.dummy.procedure.Array.sum#int?#(as: Reference) returns (~ret: int)
 {
   var c: int;
   var l4: int;
@@ -29,7 +29,7 @@ label1:
   return;
 }
 
-procedure byteback.dummy.procedure.Array.assignsLastElement#int$#(as: Reference) returns ()
+procedure byteback.dummy.procedure.Array.assignsLastElement#int?#(as: Reference) returns ()
 {
   ~heap := ~insert(~heap, as, ~Array.int, ~lengthof(~heap, as) - 1, 1);
   return;

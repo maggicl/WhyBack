@@ -1,3 +1,9 @@
+procedure byteback.dummy.procedure.Array.$init$##(this: Reference) returns ()
+{
+  call java.lang.Object.$init$##(this);
+  return;
+}
+
 procedure byteback.dummy.procedure.Array.sum#int$#(as: Reference) returns (~ret: int)
 {
   var c: int;

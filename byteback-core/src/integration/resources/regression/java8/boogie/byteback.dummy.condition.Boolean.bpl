@@ -1,3 +1,9 @@
+procedure byteback.dummy.condition.Boolean.$init$##(this: Reference) returns ()
+{
+  call java.lang.Object.$init$##(this);
+  return;
+} 
+
 procedure byteback.dummy.condition.Boolean.shortCircuitingAnd#boolean#boolean#(a: bool, b: bool) returns (~ret: bool)
   ensures ~implies(~heap, a && b, ~ret);
 {

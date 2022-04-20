@@ -1,3 +1,9 @@
+procedure byteback.dummy.function.Integer.$init$##(this: Reference) returns ()
+{
+  call java.lang.Object.$init$##(this);
+  return;
+}
+
 function byteback.dummy.function.Integer.addition#int#int#(~heap: Store, a: int, b: int) returns (int)
 {
     a + b
@@ -58,12 +64,6 @@ function byteback.dummy.function.Integer.assignPlus#int#(~heap: Store, a: int) r
 {
     a + 1
 }
-
-function byteback.dummy.function.Integer.assignPlusIndirect#int#(~heap: Store, a: int) returns (int)
-{
-    a + 1 + 2 + 3 + 4 + 5
-}
-
 
 function byteback.dummy.function.Integer.nestedPlus#int#(~heap: Store, a: int) returns (int)
 {

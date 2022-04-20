@@ -1,3 +1,9 @@
+procedure byteback.dummy.condition.Simple.$init$##(this: Reference) returns ()
+{
+  call java.lang.Object.$init$##(this);
+  return;
+}
+
 procedure byteback.dummy.condition.Simple.returnsOne##() returns (~ret: int)
   ensures ~eq(~heap, ~ret, 1);
 {

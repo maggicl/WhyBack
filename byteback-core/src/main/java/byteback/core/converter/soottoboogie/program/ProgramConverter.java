@@ -11,8 +11,14 @@ import java.util.stream.Stream;
 
 public class ProgramConverter {
 
-	public static Program convert(final SootClass clazz) {
-		final Program program = new Program();
+  private static final ProgramConverter instance = new ProgramConverter();
+
+  public static ProgramConverter instance() {
+    return instance;
+  }
+
+	public Program convert(final SootClass clazz) {
+		final var program = new Program();
 		clazz.fields().forEach((field) -> program.addDeclaration(FieldConverter.instance().convert(field)));
 		clazz.methods().forEach((method) -> {
 			if (method.getAnnotation(Annotations.PURE_ANNOTATION).isPresent()) {
@@ -25,8 +31,8 @@ public class ProgramConverter {
 		return program;
 	}
 
-	public static Program convert(final Stream<SootClass> classes) {
-		final Program program = new Program();
+	public Program convert(final Stream<SootClass> classes) {
+		final var program = new Program();
 		classes.forEach((clazz) -> program.merge(convert(clazz)));
 
 		return Prelude.loadProgram().merge(program);

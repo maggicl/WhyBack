@@ -2,7 +2,7 @@ package byteback.core.converter.soottoboogie.field;
 
 import static org.junit.Assert.assertEquals;
 
-import byteback.core.RegressionParameter;
+import byteback.core.Parameter;
 import byteback.core.converter.soottoboogie.ConverterFixture;
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.representation.soot.unit.SootClass;
@@ -26,7 +26,7 @@ public class FieldConverterIntegrationTest extends ConverterFixture {
 	}
 
 	@Parameters
-	public static Iterable<RegressionParameter<ConstantDeclaration>> getParameters() throws IOException {
+	public static Iterable<Parameter<ConstantDeclaration>> getParameters() throws IOException {
 		return getRegressionEntries("java8").flatMap((entry) -> {
 			final SootClass clazz = entry.getKey();
 			final Program program = entry.getValue();
@@ -37,14 +37,14 @@ public class FieldConverterIntegrationTest extends ConverterFixture {
 						.flatMap(Variable::getConstantDeclaration).get();
 				final ConstantDeclaration actual = FieldConverter.instance().convert(field);
 
-				return new RegressionParameter<>(expected, actual);
+				return new Parameter<>(expected, actual);
 			});
 		})::iterator;
 	}
 
-	private final RegressionParameter<ConstantDeclaration> parameter;
+	private final Parameter<ConstantDeclaration> parameter;
 
-	public FieldConverterIntegrationTest(final RegressionParameter<ConstantDeclaration> parameter) {
+	public FieldConverterIntegrationTest(final Parameter<ConstantDeclaration> parameter) {
 		this.parameter = parameter;
 	}
 

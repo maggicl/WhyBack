@@ -1,3 +1,9 @@
+procedure byteback.dummy.function.Boolean.$init$##(this: Reference) returns ()
+{
+  call java.lang.Object.$init$##(this);
+  return;
+}
+
 function byteback.dummy.function.Boolean.or#boolean#boolean#(~heap: Store, a: bool, b: bool) returns (bool)
 {
     a || b

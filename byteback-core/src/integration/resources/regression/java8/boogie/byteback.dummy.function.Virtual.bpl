@@ -1,3 +1,9 @@
+procedure byteback.dummy.function.Virtual.$init$##(this: Reference) returns ()
+{
+  call java.lang.Object.$init$##(this);
+  return;
+}
+
 function byteback.dummy.function.Virtual.getThis##(~heap: Store, this: Reference) returns (Reference)
 {
     this

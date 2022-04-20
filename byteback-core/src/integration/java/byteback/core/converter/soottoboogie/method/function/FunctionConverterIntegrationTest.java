@@ -2,7 +2,7 @@ package byteback.core.converter.soottoboogie.method.function;
 
 import static org.junit.Assert.assertEquals;
 
-import byteback.core.RegressionParameter;
+import byteback.core.Parameter;
 import byteback.core.converter.soottoboogie.Annotations;
 import byteback.core.converter.soottoboogie.ConverterFixture;
 import byteback.core.converter.soottoboogie.NameConverter;
@@ -27,7 +27,7 @@ public class FunctionConverterIntegrationTest extends ConverterFixture {
 	}
 
 	@Parameters
-	public static Iterable<RegressionParameter<FunctionDeclaration>> getParameters() throws IOException {
+	public static Iterable<Parameter<FunctionDeclaration>> getParameters() throws IOException {
 		return getRegressionEntries("java8").flatMap((entry) -> {
 			final SootClass clazz = entry.getKey();
 			final Program program = entry.getValue();
@@ -38,7 +38,7 @@ public class FunctionConverterIntegrationTest extends ConverterFixture {
 					final FunctionDeclaration expected = program.lookupFunction(name).get().getFunctionDeclaration();
 					final FunctionDeclaration actual = FunctionConverter.instance().convert(method);
 
-					return Stream.of(new RegressionParameter<>(expected, actual));
+					return Stream.of(new Parameter<>(expected, actual));
 				}
 
 				return Stream.empty();
@@ -46,9 +46,9 @@ public class FunctionConverterIntegrationTest extends ConverterFixture {
 		})::iterator;
 	}
 
-	private final RegressionParameter<FunctionDeclaration> parameter;
+	private final Parameter<FunctionDeclaration> parameter;
 
-	public FunctionConverterIntegrationTest(final RegressionParameter<FunctionDeclaration> parameter) {
+	public FunctionConverterIntegrationTest(final Parameter<FunctionDeclaration> parameter) {
 		this.parameter = parameter;
 	}
 

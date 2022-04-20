@@ -2,6 +2,12 @@ const byteback.dummy.procedure.Field.field: Field int;
 
 const byteback.dummy.procedure.Field.object: Field Reference;
 
+procedure byteback.dummy.procedure.Field.$init$##(this: Reference) returns ()
+{
+  call java.lang.Object.$init$##(this);
+  return;
+}
+
 procedure byteback.dummy.procedure.Field.assignsField##(this: Reference) returns ()
 {
   ~heap := ~update(~heap, this, byteback.dummy.procedure.Field.field, 1);

@@ -1,3 +1,9 @@
+procedure byteback.dummy.function.Real.$init$##(this: Reference) returns ()
+{
+  call java.lang.Object.$init$##(this);
+  return;
+}
+
 function byteback.dummy.function.Real.division#double#double#(~heap: Store, a: real, b: real) returns (real)
 {
     a / b

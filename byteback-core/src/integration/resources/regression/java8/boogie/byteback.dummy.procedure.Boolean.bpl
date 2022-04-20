@@ -1,3 +1,9 @@
+procedure byteback.dummy.procedure.Boolean.$init$##(this: Reference) returns ()
+{
+  call java.lang.Object.$init$##(this);
+  return;
+} 
+
 procedure byteback.dummy.procedure.Boolean.shortCircuitingAnd#boolean#boolean#(a: bool, b: bool) returns (~ret: bool)
 {
   var $stack2: bool;

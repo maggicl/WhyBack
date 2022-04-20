@@ -11,6 +11,14 @@ aspect Procedure {
     getProcedure() to Program.procedures();
 
   /**
+   * Assignments collections.
+   */
+  coll LinkedList<AssignmentStatement> Procedure.assignments();
+
+  AssignmentStatement contributes
+    this to Procedure.assignments() for getProcedure();
+
+  /**
    * NTA definitions.
    */
   syn nta Procedure ProcedureDeclaration.getProcedure();
@@ -60,6 +68,13 @@ aspect Procedure {
   inh lazy List<Specification> Procedure.getSpecificationList();
 
   eq ProcedureDeclaration.getChild().getSpecificationList() = getSpecificationList();
+
+  /**
+   * Link statement to procedure.
+   */
+  inh lazy Procedure Statement.getProcedure();
+
+  eq ProcedureDeclaration.getChild().getProcedure() = getProcedure();
 
   /**
    * Check if procedures modifies a certain value reference.

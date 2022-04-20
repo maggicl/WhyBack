@@ -1,0 +1,19 @@
+aspect ConditionInference {
+
+  syn ProcedureDeclaration ProcedureDeclaration.inferModifies();
+
+  eq ProcedureDeclaration.inferModifies() {
+    final ProcedureDeclaration declaration = rootedCopy();
+
+    for (AssignmentStatement assignment : getProcedure().assignments()) {
+      final Accessor accessor = assignment.getTarget().getAccessor();
+
+      if (accessor.variable().isEmpty()) {
+        declaration.addSpecification(new FrameCondition(false, new List<>(ValueReference.of(accessor.getName()))));
+      }
+    }
+
+    return declaration;
+  }
+  
+}

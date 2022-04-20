@@ -52,12 +52,7 @@ aspect Function {
   syn Expression Function.inline(List<Expression> arguments);
 
   eq Function.inline(List<Expression> arguments) {
-    // Collections cannot be populated in an unrooted tree, therefore
-    // we need to manually create a new root.
-    final Program program = new Program();
-    final FunctionDeclaration declaration = getFunctionDeclaration().fullCopy();
-
-    program.addDeclaration(declaration);
+    final FunctionDeclaration declaration = getFunctionDeclaration().rootedCopy();
 
     for (Variable variable : declaration.getFunction().variables()) {
       if (arguments.getNumChild() == 0) {

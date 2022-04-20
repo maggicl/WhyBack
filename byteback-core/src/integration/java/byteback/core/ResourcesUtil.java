@@ -18,11 +18,19 @@ public class ResourcesUtil {
 	private final static Path resourcesPath = Paths.get("src", "integration", "resources");
 
 	/**
-	 * Base path to the compiled resource folder.
+	 * Base path to the compiled resource directory.
 	 */
 	private final static Path compiledPath = resourcesPath.resolve("compiled");
 
+	/**
+	 * Base path to the expected files generated from the compiled classes.
+	 */
 	private final static Path regressionPath = resourcesPath.resolve("regression");
+
+	/**
+	 * Base path to the tests output directory.
+	 */
+	private final static Path outputPath = resourcesPath.resolve("output");
 
 	/**
 	 * Fetches the path to the jar of a dummy project.

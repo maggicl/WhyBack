@@ -3,9 +3,7 @@ aspect Optimization {
   syn ProcedureDeclaration ProcedureDeclaration.removeUnusedVariables();
 
   eq ProcedureDeclaration.removeUnusedVariables() {
-    final Program program = new Program();
-    final ProcedureDeclaration declaration = fullCopy();
-    program.addDeclaration(declaration);
+    final ProcedureDeclaration declaration = rootedCopy();
     declaration.getBody().removeUnusedVariables();
 
     return declaration;

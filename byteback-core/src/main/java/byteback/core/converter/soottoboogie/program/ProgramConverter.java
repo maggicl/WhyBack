@@ -11,11 +11,11 @@ import java.util.stream.Stream;
 
 public class ProgramConverter {
 
-  private static final ProgramConverter instance = new ProgramConverter();
+	private static final ProgramConverter instance = new ProgramConverter();
 
-  public static ProgramConverter instance() {
-    return instance;
-  }
+	public static ProgramConverter instance() {
+		return instance;
+	}
 
 	public Program convert(final SootClass clazz) {
 		final var program = new Program();

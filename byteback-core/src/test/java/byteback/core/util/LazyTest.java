@@ -22,17 +22,17 @@ public class LazyTest {
 		assertEquals(first, second);
 	}
 
-  @Test(expected = IllegalStateException.class)
-  public void Get_CalledOnEmpty_ThrowsIllegalStateException() {
-    Lazy.empty().get();
-  }
+	@Test(expected = IllegalStateException.class)
+	public void Get_CalledOnEmpty_ThrowsIllegalStateException() {
+		Lazy.empty().get();
+	}
 
-  public void invalidate_CalledBetweenGets_ResultsInDifferentValues() {
+	public void invalidate_CalledBetweenGets_ResultsInDifferentValues() {
 		final Lazy<Object> lazyValue = Lazy.from(() -> new Object());
 		final Object first = lazyValue.get();
-    lazyValue.invalidate();
-    final Object second = lazyValue.get();
+		lazyValue.invalidate();
+		final Object second = lazyValue.get();
 		assertNotEquals(first, second);
-  }
+	}
 
 }

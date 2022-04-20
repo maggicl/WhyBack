@@ -1,7 +1,6 @@
 plugins {
     id 'byteback.java-common-conventions'
     id 'byteback.java-integration-conventions'
-    id 'byteback.java-system-conventions'
     id 'application'
     id 'com.diffplug.spotless' version '6.3.0'
 }
@@ -34,7 +33,6 @@ def copyResources = tasks.register("copyResources", Copy) {
     }
     from jars
     into "src/integration/resources/compiled/"
-    into "src/system/resources/compiled/"
 }
 
 integration.dependsOn(copyResources)

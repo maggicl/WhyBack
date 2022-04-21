@@ -9,5 +9,13 @@ aspect Program {
 
     return new Program(declarations);
   }
+  
+  public void Program.inject(Program program) {
+    for (Declaration declaration : getDeclarationList()) {
+      program.addDeclaration(declaration.fullCopy());
+    }
+
+    program.flushCache();
+  }
 
 }

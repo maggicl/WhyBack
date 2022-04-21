@@ -22,4 +22,8 @@ aspect Declaration {
     return declaration;
   }
 
+  inh Program Declaration.getProgram();
+
+  eq Program.getChild().getProgram() = this;
+
 }

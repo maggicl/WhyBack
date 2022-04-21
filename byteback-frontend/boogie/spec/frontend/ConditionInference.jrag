@@ -1,19 +1,41 @@
+import java.util.Stack;
+import java.util.HashSet;
+import java.util.Set;
+
 aspect ConditionInference {
 
-  syn ProcedureDeclaration ProcedureDeclaration.inferModifies();
+  public void Procedure.addFrameCondition(ValueReference reference) {
+    final FrameCondition condition = new FrameCondition(false, new List<>(reference));
+    final Variable modified = reference.getAccessor().variable()
+      .orElseThrow(() -> new IllegalStateException("Cannot infer frame condition targeting an unbound variable"));
+    final Stack<Procedure> next = new Stack<>();
+    next.push(this);
 
-  eq ProcedureDeclaration.inferModifies() {
-    final ProcedureDeclaration declaration = rootedCopy();
+    while (!next.isEmpty()) {
+      final Procedure procedure = next.pop();
 
-    for (AssignmentStatement assignment : getProcedure().assignments()) {
-      final Accessor accessor = assignment.getTarget().getAccessor();
+      if (!procedure.modifies(modified)) {
+        final ProcedureDeclaration declaration = procedure.getProcedureDeclaration();
+        declaration.addSpecification(condition);
+        declaration.flushTreeCache();
 
-      if (accessor.variable().isEmpty()) {
-        declaration.addSpecification(new FrameCondition(false, new List<>(ValueReference.of(accessor.getName()))));
+        for (Procedure called : called()) {
+          next.push(procedure);
+        }
       }
     }
+  }
 
-    return declaration;
+  public void Variable.inferModifies() {
+    for (AssignmentStatement assignment : assignments()) {
+      assignment.getProcedure().addFrameCondition(makeValueReference());
+    }
+  }
+
+  public void Program.inferModifies() {
+    for (Variable variable : variables()) {
+      variable.inferModifies();
+    }
   }
   
 }

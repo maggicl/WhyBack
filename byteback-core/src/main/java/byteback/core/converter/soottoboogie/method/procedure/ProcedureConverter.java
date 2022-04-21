@@ -153,7 +153,7 @@ public class ProcedureConverter {
 			throw new ProcedureConversionException(method, exception);
 		}
 
-		return procedureBuilder.build().removeUnusedVariables();
+		return procedureBuilder.build();
 	}
 
 }

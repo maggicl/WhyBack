@@ -6,6 +6,7 @@ import byteback.core.Parameter;
 import byteback.core.converter.soottoboogie.Annotations;
 import byteback.core.converter.soottoboogie.ConverterFixture;
 import byteback.core.converter.soottoboogie.NameConverter;
+import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.representation.soot.unit.SootClass;
 import byteback.frontend.boogie.ast.ConstantDeclaration;
 import byteback.frontend.boogie.ast.PrintUtil;
@@ -36,14 +37,16 @@ public class ProcedureConverterIntegrationTest extends ConverterFixture {
 			final Program program = entry.getValue();
 
 			return clazz.methods().flatMap((method) -> {
-				if (!method.getAnnotation(Annotations.PURE_ANNOTATION).isPresent()
-						&& !method.getAnnotation(Annotations.CONDITION_ANNOTATION).isPresent()) {
+				if (method.getAnnotation(Annotations.PURE_ANNOTATION).isEmpty()
+						&& method.getAnnotation(Annotations.CONDITION_ANNOTATION).isEmpty()) {
 					final String name = NameConverter.methodName(method);
 					final Optional<ProcedureDeclaration> expected = program.lookupProcedure(name)
 							.map(Procedure::getProcedureDeclaration);
 
 					if (expected.isPresent()) {
-						final ProcedureDeclaration actual = ProcedureConverter.instance().convert(method);
+						final ProcedureDeclaration actual = ProcedureConverter.instance().convert(method).rootedCopy();
+						Prelude.inject(actual.getProgram());
+						actual.removeUnusedVariables();
 
 						return Stream.of(new Parameter<>(expected.get(), actual));
 					}

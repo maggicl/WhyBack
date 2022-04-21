@@ -5,6 +5,7 @@ aspect ASTNode {
     assert parent != null;
     final int index = parent.getIndexOfChild(this);
     parent.removeChild(index);
+    setParent(null);
   }
 
   public ASTNode ASTNode.getRoot() {

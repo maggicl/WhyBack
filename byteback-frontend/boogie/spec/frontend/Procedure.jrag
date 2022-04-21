@@ -3,7 +3,7 @@ import java.util.LinkedList;
 aspect Procedure {
 
   /**
-   * Scope collections.
+   * Scope collection.
    */
   coll EntityTable<Procedure> Program.procedures();
 
@@ -11,12 +11,31 @@ aspect Procedure {
     getProcedure() to Program.procedures();
 
   /**
-   * Assignments collections.
+   * Assignments collection.
    */
   coll LinkedList<AssignmentStatement> Procedure.assignments();
 
   AssignmentStatement contributes
-    this to Procedure.assignments() for getProcedure();
+    this to Procedure.assignments()
+    for getProcedure();
+
+  /**
+   * Calls collection.
+   */
+  coll LinkedList<Procedure> Procedure.called();
+
+  CallStatement contributes
+    getAccessor().procedure().orElse(null) to Procedure.called()
+    for getProcedure();
+
+  /**
+   * Frame conditions collection.
+   */
+  coll LinkedList<ValueReference> Procedure.frameConditions();
+
+  FrameCondition contributes
+    each getReferenceList() to Procedure.frameConditions()
+    for getProcedure();
 
   /**
    * NTA definitions.
@@ -24,6 +43,18 @@ aspect Procedure {
   syn nta Procedure ProcedureDeclaration.getProcedure();
 
   eq ProcedureDeclaration.getProcedure() = new Procedure(getDeclarator());
+
+  /**
+   * Link statement to procedure.
+   */
+  inh lazy Procedure Statement.getProcedure();
+
+  /**
+   * Link specification to procedure.
+   */
+  inh lazy Procedure Specification.getProcedure();
+
+  eq ProcedureDeclaration.getChild().getProcedure() = getProcedure();
 
   /**
    * Looking up procedures.
@@ -70,20 +101,15 @@ aspect Procedure {
   eq ProcedureDeclaration.getChild().getSpecificationList() = getSpecificationList();
 
   /**
-   * Link statement to procedure.
-   */
-  inh lazy Procedure Statement.getProcedure();
-
-  eq ProcedureDeclaration.getChild().getProcedure() = getProcedure();
-
-  /**
    * Check if procedures modifies a certain value reference.
    */
-  syn boolean Procedure.modifies(ValueReference reference);
+  syn boolean Procedure.modifies(Variable variable);
 
-  eq Procedure.modifies(ValueReference reference) {
-    for (Specification specification : getSpecificationList()) {
-      if (specification.modifies(reference)) {
+  eq Procedure.modifies(Variable variable) {
+    for (ValueReference reference : frameConditions()) {
+      final Variable modified = reference.getAccessor().variable().get();
+
+      if (modified.equals(variable)) {
         return true;
       }
     }
@@ -91,25 +117,4 @@ aspect Procedure {
     return false;
   }
 
-  syn boolean Specification.modifies(ValueReference reference);
-
-  eq PreCondition.modifies(ValueReference reference) = false;
-
-  eq PostCondition.modifies(ValueReference reference) = false;
-
-  eq LoopInvariant.modifies(ValueReference reference) = false;
-
-  eq FrameCondition.modifies(ValueReference reference) {
-    final String referencedName = reference.getAccessor().getName();
-
-    for (ValueReference modifiedReference : getReferenceList()) {
-      final String modifiedName = modifiedReference.getAccessor().getName();
-      
-      if (modifiedName.equals(referencedName)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
 }

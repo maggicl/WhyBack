@@ -21,7 +21,7 @@ public class ContextConverter {
 		final Program program = ProgramConverter.instance()
 				.convert(context.classes().filter((clazz) -> !clazz.isBasicClass() && !clazz.isPhantomClass()));
 
-    return program;
+		return program;
 	}
 
 }

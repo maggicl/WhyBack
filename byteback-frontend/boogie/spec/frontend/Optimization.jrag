@@ -1,29 +1,24 @@
 aspect Optimization {
 
-  syn ProcedureDeclaration ProcedureDeclaration.removeUnusedVariables();
-
-  eq ProcedureDeclaration.removeUnusedVariables() {
-    final ProcedureDeclaration declaration = rootedCopy();
-    declaration.getBody().removeUnusedVariables();
-
-    return declaration;
+  public void ProcedureDeclaration.removeUnusedVariables() {
+    getBody().removeUnusedVariables();
   }
 
-  syn boolean Body.removeUnusedVariables() circular [true];
+  public void Body.removeUnusedVariables() {
+    boolean done = false;
 
-  eq Body.removeUnusedVariables() {
-    boolean done = true;
+    while (!done) {
+      done = true;
 
-    for (Variable variable : variables()) {
-      if (variable.references().size() == 0) {
-        done = false;
-        variable.delete();
+      for (Variable variable : variables()) {
+        if (variable.references().size() == 0) {
+          done = false;
+          variable.delete();
+        }
       }
-    }
 
-    getRoot().flushCache();
-
-    return done;
+      getRoot().flushTreeCache();
+    } 
   }
 
 }

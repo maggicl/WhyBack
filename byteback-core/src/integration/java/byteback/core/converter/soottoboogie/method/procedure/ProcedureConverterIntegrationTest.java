@@ -45,8 +45,11 @@ public class ProcedureConverterIntegrationTest extends ConverterFixture {
 
 					if (expected.isPresent()) {
 						final ProcedureDeclaration actual = ProcedureConverter.instance().convert(method).rootedCopy();
-						Prelude.inject(actual.getProgram());
-						actual.removeUnusedVariables();
+            final Program root = actual.getProgram();
+
+						Prelude.inject(root);
+						root.removeUnusedVariables();
+            root.inferModifies();
 
 						return Stream.of(new Parameter<>(expected.get(), actual));
 					}
@@ -65,7 +68,7 @@ public class ProcedureConverterIntegrationTest extends ConverterFixture {
 
 	@Test
 	public void Convert_GivenRegressionSet_ReturnsExpectedCode() {
-		assertEquals(PrintUtil.toString(parameter.expected), PrintUtil.toString(parameter.actual));
+    assertEquals(PrintUtil.toString(parameter.expected), PrintUtil.toString(parameter.actual));
 	}
 
 }

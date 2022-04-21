@@ -37,6 +37,7 @@ label1:
 
 procedure byteback.dummy.condition.Array.assignsLastElement#int?#(as: Reference) returns ()
   ensures ~eq(~heap, ~get(~heap, as, ~Array.int, ~lengthof(~heap, as) - 1), 1);
+  modifies ~heap;
 {
   ~heap := ~insert(~heap, as, ~Array.int, ~lengthof(~heap, as) - 1, 1);
   return;

@@ -30,6 +30,7 @@ label1:
 }
 
 procedure byteback.dummy.procedure.Array.assignsLastElement#int?#(as: Reference) returns ()
+  modifies ~heap;
 {
   ~heap := ~insert(~heap, as, ~Array.int, ~lengthof(~heap, as) - 1, 1);
   return;

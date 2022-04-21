@@ -3,7 +3,7 @@ import java.util.LinkedList;
 aspect Procedure {
 
   /**
-   * Scope collection.
+   * Procedures defined in the program.
    */
   coll EntityTable<Procedure> Program.procedures();
 
@@ -11,16 +11,7 @@ aspect Procedure {
     getProcedure() to Program.procedures();
 
   /**
-   * Assignments collection.
-   */
-  coll LinkedList<AssignmentStatement> Procedure.assignments();
-
-  AssignmentStatement contributes
-    this to Procedure.assignments()
-    for getProcedure();
-
-  /**
-   * Calls collection.
+   * Procedures called.
    */
   coll LinkedList<Procedure> Procedure.called();
 
@@ -29,7 +20,16 @@ aspect Procedure {
     for getProcedure();
 
   /**
-   * Frame conditions collection.
+   * Procedures calling.
+   */
+  coll LinkedList<Procedure> Procedure.calling();
+
+  CallStatement contributes
+    getProcedure() to Procedure.calling()
+    for getAccessor().procedure().orElse(null);
+
+  /**
+   * Frame conditions used by procedure.
    */
   coll LinkedList<ValueReference> Procedure.frameConditions();
 

@@ -1,6 +1,7 @@
 const byteback.dummy.procedure.Counter.count: Field int;
 
 procedure byteback.dummy.procedure.Counter.main##() returns ()
+  modifies ~heap;
 {
   var $stack1: Reference;
   call $stack1 := ~new();
@@ -12,6 +13,7 @@ procedure byteback.dummy.procedure.Counter.main##() returns ()
 }
 
 procedure byteback.dummy.procedure.Counter.$init$##(this: Reference) returns ()
+  modifies ~heap;
 {
   call java.lang.Object.$init$##(this);
   ~heap := ~update(~heap, this, byteback.dummy.procedure.Counter.count, 0);
@@ -19,6 +21,7 @@ procedure byteback.dummy.procedure.Counter.$init$##(this: Reference) returns ()
 } 
 
 procedure byteback.dummy.procedure.Counter.increment##(this : Reference) returns ()
+  modifies ~heap;
 {
   ~heap := ~update(~heap, this, byteback.dummy.procedure.Counter.count,
     ~read(~heap, this, byteback.dummy.procedure.Counter.count) + 1);
@@ -26,6 +29,7 @@ procedure byteback.dummy.procedure.Counter.increment##(this : Reference) returns
 }
 
 procedure byteback.dummy.procedure.Counter.countTo10##(this : Reference) returns ()
+  modifies ~heap;
 {
   var i: int;
   i := 0;
@@ -44,6 +48,7 @@ label1:
 }
 
 procedure byteback.dummy.procedure.Counter.countTo10Indirectly##(this : Reference) returns ()
+  modifies ~heap;
 {
   var i: int;
   i := 0;

@@ -1,7 +1,15 @@
 aspect Optimization {
 
+  public void Program.removeUnusedVariables() {
+    for (Procedure procedure : procedures()) {
+      procedure.getProcedureDeclaration().removeUnusedVariables();
+    }
+  }
+
   public void ProcedureDeclaration.removeUnusedVariables() {
-    getBody().removeUnusedVariables();
+    if (hasBody()) {
+      getBody().removeUnusedVariables();
+    }
   }
 
   public void Body.removeUnusedVariables() {
@@ -17,6 +25,7 @@ aspect Optimization {
         }
       }
 
+      // TODO: find a more optimal way to reset the variables() collection.
       getRoot().flushTreeCache();
     } 
   }

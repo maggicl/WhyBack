@@ -37,5 +37,9 @@ aspect Entity {
   syn lazy String Entity.getName();
 
   eq Entity.getName() = getDeclarator().getName();
-    
+
+  inh lazy Declaration Entity.getDeclaration();
+
+  eq Declaration.getChild().getDeclaration() = this;
+
 }

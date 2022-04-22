@@ -9,7 +9,6 @@ aspect Print {
   }
 
   public class PrintUtil {
-
     // As for the current version, Jastadd does not support
     // default methods in interface definitions. This has recently
     // been fixed in the development version, so TODO: Upgrade

@@ -2,7 +2,6 @@ plugins {
     id 'byteback.java-common-conventions'
     id 'byteback.java-integration-conventions'
     id 'org.jastadd' version '1.14.5'
-    id 'com.diffplug.spotless' version '6.3.0'
 }
 
 dependencies {
@@ -20,18 +19,6 @@ jastadd {
     scanner.genDir = "build/generated-src/main/java/byteback/frontend/boogie/scanner"
 }
 
-spotless {
-    java {
-        importOrder()
-        removeUnusedImports()
-        eclipse()
-    }
-}
-
-/* Funnily enough, it is not necessary to add the generated source
-from jastadd to the source sets in order for the tests to run, but if
-the source set is not also manually added Intellij and Buildship
-will not even know that these classes exist. */
 java {
     sourceSets {
         main {

@@ -10,6 +10,8 @@ aspect Signature {
 
   Signature implements SignatureBinding;
 
-  syn List<OptionalBinding> FunctionSignature.getOutputBindingList() = new List(getOutputBinding());
+  syn nta List<OptionalBinding> FunctionSignature.getOutputBindingList();
+
+  eq FunctionSignature.getOutputBindingList() = new List(getOutputBinding());
 
 }

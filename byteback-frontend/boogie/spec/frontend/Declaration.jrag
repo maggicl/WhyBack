@@ -1,22 +1,22 @@
 aspect Declaration {
 
   /**
-   * Creates a rooted copy of the ProcedureDeclaration.
+   * Creates a rooted copy of the FunctionDeclaration.
    */
-  syn ProcedureDeclaration ProcedureDeclaration.rootedCopy() {
+  syn FunctionDeclaration FunctionDeclaration.rootedCopy() {
     final Program program = new Program();
-    final ProcedureDeclaration declaration = fullCopy();
+    final FunctionDeclaration declaration = fullCopy();
     program.addDeclaration(declaration);
 
     return declaration;
   }
 
   /**
-   * Creates a rooted copy of the FunctionDeclaration.
+   * Creates a rooted copy of a ProcedureDeclaration.
    */
-  syn FunctionDeclaration FunctionDeclaration.rootedCopy() {
+  syn ProcedureDeclaration ProcedureDeclaration.rootedCopy() {
     final Program program = new Program();
-    final FunctionDeclaration declaration = fullCopy();
+    final ProcedureDeclaration declaration = fullCopy();
     program.addDeclaration(declaration);
 
     return declaration;

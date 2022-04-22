@@ -153,7 +153,10 @@ public class ProcedureConverter {
 			throw new ProcedureConversionException(method, exception);
 		}
 
-		return procedureBuilder.build();
-	}
+		final ProcedureDeclaration declaration = procedureBuilder.build().rootedCopy();
+    declaration.removeUnusedVariables();
+
+    return declaration;
+  }
 
 }

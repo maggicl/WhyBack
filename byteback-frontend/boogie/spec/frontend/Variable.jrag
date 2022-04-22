@@ -49,7 +49,7 @@ aspect Variable {
   ValueReference contributes
     this when getAccessor().variable().isPresent() to Variable.references()
     for getAccessor().variable()
-      .orElseThrow(() -> new IllegalStateException("Cannot collect references addressing an unbound variable"));
+      .orElse(null);
 
   /**
    * Assignments collection.
@@ -59,7 +59,7 @@ aspect Variable {
   AssignmentStatement contributes
     this to Variable.assignments()
     for getTarget().getAccessor().variable()
-      .orElseThrow(() -> new IllegalStateException("Cannot collect assignments addressing an unbound variable"));
+      .orElse(null);
 
   /**
    * NTA definitions.

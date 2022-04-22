@@ -18,7 +18,7 @@ aspect ConditionInference {
       if (!procedure.modifies(modified)) {
         final ProcedureDeclaration declaration = procedure.getProcedureDeclaration();
         declaration.addSpecification(condition);
-        declaration.flushTreeCache();
+        getRoot().flushTreeCache();
 
         for (Procedure calling : calling()) {
           next.push(calling);

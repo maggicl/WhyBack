@@ -1,7 +1,16 @@
 import java.util.LinkedList;
 
+/**
+ * Methods and collections related to the {@link Variable}
+ * entities.
+ *
+ * @author paganma
+ */
 aspect Variable {
 
+  /**
+   * Interface for a {@link Variable} scope.
+   */
   interface Scope {
     EntityTable<Variable> variables();
   }
@@ -19,7 +28,7 @@ aspect Variable {
   QuantifierExpression implements Scope;
 
   /**
-   * Scope collections
+   * Collections of variables defined in a {@link Scope}.
    */
   coll EntityTable<Variable> Scope.variables();
 
@@ -27,6 +36,11 @@ aspect Variable {
     each getVariableList() to Scope.variables()
     for getScope();
 
+  /**
+   * Getter for the scope associated with this binding.
+   *
+   * @return The {@link Scope} associated with this {@link Binding}.
+   */
   inh Scope Binding.getScope();
 
   eq Program.getChild().getScope() = this;
@@ -42,7 +56,7 @@ aspect Variable {
   eq QuantifierExpression.getChild().getScope() = this;
 
   /**
-   * References collection.
+   * Collection of references to this variable. 
    */
   coll LinkedList<ValueReference> Variable.references();
 
@@ -52,7 +66,7 @@ aspect Variable {
       .orElse(null);
 
   /**
-   * Assignments collection.
+   * Collection of assignments to this variable.
    */
   coll LinkedList<AssignmentStatement> Variable.assignments();
 
@@ -62,7 +76,7 @@ aspect Variable {
       .orElse(null);
 
   /**
-   * NTA definitions.
+   * NTA definition of the {@link Variable} attribute.
    */
   syn nta List<Variable> Binding.getVariableList();
     
@@ -88,6 +102,9 @@ aspect Variable {
 
   /**
    * Lookup variables locally.
+   *
+   * @param The name of the variable.
+   * @return The local variable corresponding to the name.
    */
   syn lazy Optional<Variable> Scope.lookupLocalVariable(String name);
 
@@ -95,6 +112,9 @@ aspect Variable {
 
   /**
    * Lookup variables remotely.
+   *
+   * @param The name of the variable.
+   * @return The remote variable corresponding to the name.
    */
   eq Program.getChild().lookupRemoteVariable(String name) {
     return lookupLocalVariable(name);
@@ -136,6 +156,11 @@ aspect Variable {
     }
   }
 
+  /**
+   * Lookup a remote variable from the Accessor.
+   *
+   * @see Program#lookupRemoteVariable(String)
+   */
   inh lazy Optional<Variable> Accessor.lookupRemoteVariable(String name);
 
   syn lazy Optional<Variable> Accessor.variable();

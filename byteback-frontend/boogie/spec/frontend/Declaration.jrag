@@ -1,7 +1,15 @@
+/**
+ * Utility methods used by all the subtypes of Declaration.
+ *
+ * @author paganma
+ */
 aspect Declaration {
 
   /**
    * Creates a rooted copy of the FunctionDeclaration.
+   *
+   * @return A copy of this FunctionDeclaration that is rooted to a
+   * Program.
    */
   syn FunctionDeclaration FunctionDeclaration.rootedCopy() {
     final Program program = new Program();
@@ -13,6 +21,9 @@ aspect Declaration {
 
   /**
    * Creates a rooted copy of a ProcedureDeclaration.
+   *
+   * @return A copy of this ProcedureDeclaration that is rooted to a
+   * Program.
    */
   syn ProcedureDeclaration ProcedureDeclaration.rootedCopy() {
     final Program program = new Program();
@@ -22,6 +33,11 @@ aspect Declaration {
     return declaration;
   }
 
+  /**
+   * Links a declaration to the program.
+   *
+   * @return The program to which this declaration belongs.
+   */
   inh Program Declaration.getProgram();
 
   eq Program.getChild().getProgram() = this;

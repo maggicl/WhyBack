@@ -1,5 +1,16 @@
+/**
+ * Methods related to {@link Program} nodes.
+ *
+ * @author paganma
+ */
 aspect Program {
 
+  /**
+   * Merges two programs into a new program.
+   *
+   * @param program Program to be merged to this program.
+   * @return The merged program.
+   */
   syn Program Program.merge(Program program);
 
   eq Program.merge(Program program) {
@@ -10,6 +21,11 @@ aspect Program {
     return new Program(declarations);
   }
   
+  /**
+   * Injects the declarations of this program into another program.
+   *
+   * @param program Program to be injected.
+   */
   public void Program.inject(Program program) {
     for (Declaration declaration : getDeclarationList()) {
       program.addDeclaration(declaration.fullCopy());

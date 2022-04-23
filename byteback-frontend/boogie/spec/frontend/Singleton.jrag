@@ -1,3 +1,12 @@
+/**
+ * Singleton instances for AST nodes.
+ *
+ * It should be noted that in 99% of the cases creating a singleton
+ * instance of an AST node is an extremely bad idea, as any such
+ * node can only have a single parent node within a subtree.
+ *
+ * @author paganma
+ */
 aspect Singleton {
 
   /**
@@ -21,19 +30,4 @@ aspect Singleton {
     return instance;
   }
 
-  /**
-   * Quantifier singletons
-   */
-  private static final UniversalQuantifier UniversalQuantifier.instance = new UniversalQuantifier();
-
-  public static UniversalQuantifier UniversalQuantifier.instance() {
-    return instance;
-  }
-  
-  private static final ExistentialQuantifier ExistentialQuantifier.instance = new ExistentialQuantifier();
-
-  public static ExistentialQuantifier ExistentialQuantifier.instance() {
-    return instance;
-  }
-    
 }

@@ -1,16 +1,22 @@
 import java.util.Optional;
 
+/**
+ * Methods and collections related to the {@link TypeDefinition}
+ * entities.
+ *
+ * @author paganma
+ */
 aspect Type {
 
   /**
-   * Scope collections.
+   * Type definitions in the program.
    */
   coll EntityTable<TypeDefinition> Program.typeDefinitions();
 
   TypeDeclaration contributes getTypeDefinition() to Program.typeDefinitions();
 
   /**
-   * NTA definitions.
+   * NTA definition of the {@link TypeDefinition} attribute.
    */
   syn nta TypeDefinition TypeDeclaration.getTypeDefinition();
 
@@ -31,13 +37,6 @@ aspect Type {
   }
 
   /**
-   * Looking up type definitions.
-   */
-  syn lazy Optional<TypeDefinition> Accessor.type();
-
-  eq Accessor.type() = lookupTypeDefinition(getName());
-
-  /**
    * Lookup type definition in program.
    */
   syn lazy Optional<TypeDefinition> Program.lookupTypeDefinition(String name);
@@ -49,14 +48,26 @@ aspect Type {
   eq Program.getChild().lookupTypeDefinition(String name) = lookupTypeDefinition(name);
 
   /**
-   * Link type definitions with concrete types.
+   * Lookup {@link TypeDefinition} by the accessor's name.
+   *
+   * @return The {@link TypeDefinition} corresponding to this {@link
+   * Accessor}.
+   */
+  syn lazy Optional<TypeDefinition> Accessor.type();
+
+  eq Accessor.type() = lookupTypeDefinition(getName());
+
+  /**
+   * NTA definition of the {@link DefinedType} attribute.
    */
   syn nta DefinedType TypeDefinition.getType();
 
   eq TypeDefinition.getType() = new DefinedType();
 
   /**
-   * Link concrete types with their accessors.
+   * Creates a new type access.
+   *
+   * @return A {@link TypeAccess} for this type.
    */
   syn TypeAccess Type.makeTypeAccess();
 
@@ -75,18 +86,18 @@ aspect Type {
   eq DefinedType.makeTypeAccess() = new UnknownTypeAccess(makeAccessor(), new List<>());
 
   /**
-   * Defined type attributes. 
+   * Create a new {@link Accessor} for this defined type. 
+   *
+   * @return The new {@link Accessor} instance.
    */
   inh Accessor DefinedType.makeAccessor();
 
   eq TypeDeclaration.getChild().makeAccessor() = new Accessor(getDeclarator().getName());
 
-  inh lazy List<TypeParameter> DefinedType.getTypeParameterList();
-
-  eq TypeDeclaration.getChild().getTypeParameterList() = getTypeParameterList();
-
   /**
-   * Get String identifier from type access.
+   * Creates an identifier from this type access.
+   *
+   * @return The String identifier for this {@link TypeAccess}.
    */
   syn lazy String TypeAccess.getIdentifier();
 

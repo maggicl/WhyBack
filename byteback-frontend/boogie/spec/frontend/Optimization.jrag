@@ -24,9 +24,6 @@ aspect Optimization {
           variable.delete();
         }
       }
-
-      // TODO: find a more optimal way to reset the variables() collection.
-      getRoot().flushTreeCache();
     } 
   }
 

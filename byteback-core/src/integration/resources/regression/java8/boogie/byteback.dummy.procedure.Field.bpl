@@ -3,7 +3,6 @@ const byteback.dummy.procedure.Field.field: Field int;
 const byteback.dummy.procedure.Field.object: Field Reference;
 
 procedure byteback.dummy.procedure.Field.$init$##(this: Reference) returns ()
-  modifies ~heap;
 {
   call java.lang.Object.$init$##(this);
   return;

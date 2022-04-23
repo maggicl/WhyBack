@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import byteback.core.Parameter;
 import byteback.frontend.boogie.ast.Function;
-import byteback.frontend.boogie.ast.PrintUtil;
 import byteback.frontend.boogie.ast.Procedure;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.Variable;
@@ -47,7 +46,7 @@ public class ConverterIntegrationTest extends ConverterFixture {
       final Procedure actual = parameter.actual.lookupProcedure(expected.getName())
           .orElseThrow(() -> new IllegalStateException(
               "Generated code does not present a procedure declaration for " + expected.getName()));
-      assertEquals(PrintUtil.toString(expected.getDeclaration()), PrintUtil.toString(actual.getDeclaration()));
+      assertEquals(expected.getDeclaration().print(), actual.getDeclaration().print());
     }
   }
 
@@ -57,7 +56,7 @@ public class ConverterIntegrationTest extends ConverterFixture {
       final Function actual = parameter.actual.lookupFunction(expected.getName())
           .orElseThrow(() -> new IllegalStateException(
               "Generated code does not present a function declaration for " + expected.getName()));
-      assertEquals(PrintUtil.toString(expected.getDeclaration()), PrintUtil.toString(actual.getDeclaration()));
+      assertEquals(expected.getDeclaration().print(), actual.getDeclaration().print());
     }
   }
 
@@ -67,7 +66,7 @@ public class ConverterIntegrationTest extends ConverterFixture {
       final Variable actual = parameter.actual.lookupLocalVariable(expected.getName())
           .orElseThrow(() -> new IllegalStateException(
               "Generated code does not present a variable declaration for " + expected.getName()));
-      assertEquals(PrintUtil.toString(expected.getDeclaration()), PrintUtil.toString(actual.getDeclaration()));
+      assertEquals(expected.getDeclaration().print(), actual.getDeclaration().print());
     }
   }
 

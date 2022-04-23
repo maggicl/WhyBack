@@ -6,20 +6,15 @@ aspect Print {
 
     void print(StringBuilder builder);
 
-  }
-
-  public class PrintUtil {
-    // As for the current version, Jastadd does not support
-    // default methods in interface definitions. This has recently
-    // been fixed in the development version, so TODO: Upgrade
-    // Jastadd version and move this function in the Printable
-    // interface.
-    public static String toString(final Printable printable) {
+    default String print() {
       final StringBuilder builder = new StringBuilder();
-      printable.print(builder);
+      print(builder);
       return builder.toString();
     }
 
+  }
+
+  public class PrintUtil {
     static void listPrint(final StringBuilder builder, final String separator,
                 final List<? extends Printable> list) {
 

@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     implementation "net.sf.beaver:beaver-rt:0.9.11"
+    jastadd2 "org.jastadd:jastadd:2.3.5"
 }
 
 jastadd {
@@ -17,6 +18,7 @@ jastadd {
     genDir = "build/generated-src/main/java"
     parser.genDir = "build/generated-src/main/java/byteback/frontend/boogie/parser"
     scanner.genDir = "build/generated-src/main/java/byteback/frontend/boogie/scanner"
+    jastaddOptions = [ "--flush=full", "--incremental=param", "--tracing=cache,flush" ]
 }
 
 java {

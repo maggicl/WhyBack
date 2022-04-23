@@ -8,6 +8,10 @@ aspect ASTNode {
     setParent(null);
   }
 
+  public boolean ASTNode.mayHaveRewrite() {
+    return false;
+  }
+
   public ASTNode ASTNode.getRoot() {
     ASTNode n = this;
 

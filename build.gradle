@@ -3,7 +3,9 @@ plugins {
 }
 
 subprojects {
+    repositories { mavenCentral() }
     apply plugin: 'com.diffplug.spotless'
+    apply plugin: 'java'
     spotless {
         java {
             targetExclude("build/generated-src/**/*.java")

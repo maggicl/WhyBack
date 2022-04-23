@@ -2,8 +2,12 @@ package byteback.core.converter.soottoboogie.program;
 
 import byteback.core.context.soot.SootContext;
 import byteback.frontend.boogie.ast.Program;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ContextConverter {
+
+	public static Logger log = LoggerFactory.getLogger(ContextConverter.class);
 
 	private static final ContextConverter instance = new ContextConverter(SootContext.instance());
 

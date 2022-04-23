@@ -42,13 +42,13 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 	}
 
 	public void pushExistentialQuantifier(Iterable<SootExpression> arguments) {
-    final Quantifier quantifier = new ExistentialQuantifier();
-    pushQuantifier(quantifier, arguments);
+		final Quantifier quantifier = new ExistentialQuantifier();
+		pushQuantifier(quantifier, arguments);
 	}
 
 	public void pushUniversalQuantifier(final Iterable<SootExpression> arguments) {
-    final Quantifier quantifier = new UniversalQuantifier();
-    pushQuantifier(quantifier, arguments);
+		final Quantifier quantifier = new UniversalQuantifier();
+		pushQuantifier(quantifier, arguments);
 	}
 
 	public void pushQuantifier(final SootMethod method, final Iterable<SootExpression> arguments) {

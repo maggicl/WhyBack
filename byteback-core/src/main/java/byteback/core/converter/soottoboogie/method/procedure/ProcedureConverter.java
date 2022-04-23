@@ -154,9 +154,9 @@ public class ProcedureConverter {
 		}
 
 		final ProcedureDeclaration declaration = procedureBuilder.build().rootedCopy();
-    declaration.removeUnusedVariables();
+		declaration.removeUnusedVariables();
 
-    return declaration;
-  }
+		return declaration;
+	}
 
 }

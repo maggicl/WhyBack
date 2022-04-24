@@ -1,6 +1,7 @@
 package byteback.core.converter.soottoboogie.expression;
 
 import byteback.core.converter.soottoboogie.*;
+import byteback.core.converter.soottoboogie.field.FieldConverter;
 import byteback.core.converter.soottoboogie.type.*;
 import byteback.core.representation.soot.body.*;
 import byteback.core.representation.soot.type.*;
@@ -228,7 +229,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
 		final var field = new SootField(instanceFieldReference.getField());
 		final var base = new SootExpression(instanceFieldReference.getBase());
-		final Expression reference = ValueReference.of(NameConverter.fieldName(field));
+		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
 		final Expression heapAccess = Prelude.getHeapAccessExpression(visit(base), reference);
 		pushCastExpression(heapAccess, field.getType());
 	}

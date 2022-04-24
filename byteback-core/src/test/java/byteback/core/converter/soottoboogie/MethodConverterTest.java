@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootMethod;
 import java.util.Collections;
@@ -11,7 +12,7 @@ import java.util.List;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class NameConverterTest {
+public class MethodConverterTest {
 
 	@Test
 	public void MethodName_GivenConstructorWithoutParameters_ReturnsValidName() {
@@ -19,7 +20,7 @@ public class NameConverterTest {
 		when(method.getSootClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("<init>");
 		when(method.getParameterTypes()).thenReturn(Collections.emptyList());
-		assertEquals(NameConverter.methodName(method), "dummy.Test.$init$##");
+		assertEquals(MethodConverter.methodName(method), "dummy.Test.$init$##");
 	}
 
 	@Test
@@ -28,7 +29,7 @@ public class NameConverterTest {
 		when(method.getSootClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("test");
 		when(method.getParameterTypes()).thenReturn(Collections.emptyList());
-		assertEquals(NameConverter.methodName(method), "dummy.Test.test##");
+		assertEquals(MethodConverter.methodName(method), "dummy.Test.test##");
 	}
 
 	@Test
@@ -39,7 +40,7 @@ public class NameConverterTest {
 		when(method.getSootClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("test");
 		when(method.getParameterTypes()).thenReturn(List.of(type));
-		assertEquals(NameConverter.methodName(method), "dummy.Test.test#int?#");
+		assertEquals(MethodConverter.methodName(method), "dummy.Test.test#int?#");
 	}
 
 	@Test
@@ -50,7 +51,7 @@ public class NameConverterTest {
 		when(method.getSootClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("test");
 		when(method.getParameterTypes()).thenReturn(List.of(type));
-		assertEquals(NameConverter.methodName(method), "dummy.Test.test#int#");
+		assertEquals(MethodConverter.methodName(method), "dummy.Test.test#int#");
 	}
 
 }

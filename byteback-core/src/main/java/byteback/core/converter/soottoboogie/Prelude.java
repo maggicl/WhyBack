@@ -5,14 +5,13 @@ import byteback.core.util.Lazy;
 import byteback.frontend.boogie.ast.Assignee;
 import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.BooleanType;
+import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.DefinedType;
 import byteback.frontend.boogie.ast.Expression;
-import byteback.frontend.boogie.ast.FrameCondition;
 import byteback.frontend.boogie.ast.Function;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.IntegerType;
 import byteback.frontend.boogie.ast.Label;
-import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.Procedure;
 import byteback.frontend.boogie.ast.Program;
 import byteback.frontend.boogie.ast.RealType;
@@ -31,209 +30,380 @@ import java.io.InputStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Facade class interfacing to the prelude file.
+ *
+ * @author paganma
+ */
 public class Prelude {
 
-	private static final Logger log = LoggerFactory.getLogger(Prelude.class);
+  private static final Logger log = LoggerFactory.getLogger(Prelude.class);
 
-	private static final Lazy<Program> preamble = Lazy.from(Prelude::initializeProgram);
+  /**
+   * Path to the prelude file included in the resources.
+   */
+  private static final String PRELUDE_PATH = "boogie/BytebackPrelude.bpl";
 
-	public static Program loadProgram() {
-		return preamble.get();
-	}
+  private static final Lazy<Program> PRELUDE_PROGRAM = Lazy.from(Prelude::initializeProgram);
 
-	public static Program initializeProgram() {
-		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		final InputStream stream = loader.getResourceAsStream("boogie/BytebackPrelude.bpl");
-		assert stream != null;
-		final var reader = new InputStreamReader(stream);
+  /**
+   * Lazily loads the prelude on request.
+   *
+   * @return The prelude {@link Program}.
+   */
+  public static Program loadProgram() {
+    return PRELUDE_PROGRAM.get();
+  }
 
-		try {
-			return ParserUtil.parseBoogieProgram(reader);
-		} catch (final IOException exception) {
-			log.error("Exception while opening the preamble");
-			throw new RuntimeException(exception);
-		} catch (final Parser.Exception exception) {
-			log.error("Exception while parsing the preamble");
-			throw new RuntimeException(exception);
-		}
-	}
+  /**
+   * Parses and loads the prelude.
+   *
+   * @return The prelude {@link Program}.
+   */
+  public static Program initializeProgram() {
+    final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    final InputStream stream = loader.getResourceAsStream(PRELUDE_PATH);
+    assert stream != null;
+    final var reader = new InputStreamReader(stream);
 
-	public static Type getReferenceType() {
-		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Reference")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for Reference type"));
+    try {
+      return ParserUtil.parseBoogieProgram(reader);
+    } catch (final IOException exception) {
+      log.error("Exception while opening the preamble");
+      throw new RuntimeException(exception);
+    } catch (final Parser.Exception exception) {
+      log.error("Exception while parsing the preamble");
+      throw new RuntimeException(exception);
+    }
+  }
 
-		return typeDefinition.getType();
-	}
+  /**
+   * Getter for the reference-type model.
+   *
+   * @return The {@code Reference} {@link Type}.
+   */
+  public static Type getReferenceType() {
+    final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Reference")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for Reference type"));
 
-	public static Type getHeapType() {
-		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Store")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for heap Store type"));
+    return typeDefinition.getType();
+  }
 
-		return typeDefinition.getType();
-	}
+  /**
+   * Getter for the heap-type model.
+   *
+   * @return The {@code Store} {@link Type}.
+   */
+  public static Type getHeapType() {
+    final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Store")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for Store type"));
 
-	public static DefinedType getFieldType() {
-		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Field")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for Field type"));
+    return typeDefinition.getType();
+  }
 
-		return typeDefinition.getType();
-	}
+  /**
+   * Getter for the field-type model.
+   *
+   * @return The {@code Field} {@link Type}.
+   */
+  public static DefinedType getFieldType() {
+    final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Field")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for Field type"));
 
-	public static Type getBooleanType() {
-		return BooleanType.instance();
-	}
+    return typeDefinition.getType();
+  }
 
-	public static Type getIntegerType() {
-		return IntegerType.instance();
-	}
+  /**
+   * Getter for the Boogie boolean type.
+   *
+   * @return The {@code bool} {@link Type}.
+   */
+  public static Type getBooleanType() {
+    return BooleanType.instance();
+  }
 
-	public static Type getRealType() {
-		return RealType.instance();
-	}
+  /**
+   * Getter for the Boogie integer type.
+   *
+   * @return The {@code int} {@link Type}.
+   */
+  public static Type getIntegerType() {
+    return IntegerType.instance();
+  }
 
-	public static Variable getHeapVariable() {
-		return loadProgram().lookupLocalVariable("~heap")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap function"));
-	}
+  /**
+   * Getter for the Boogie real type.
+   *
+   * @return The {@code real} {@link Type}.
+   */
+  public static Type getRealType() {
+    return RealType.instance();
+  }
 
-	public static Variable getNullConstant() {
-		return loadProgram().lookupLocalVariable("~null")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~null function"));
-	}
+  /**
+   * Getter for the global variable representing the heap.
+   *
+   * @return The {@code ~heap} variable of type {@code Store}.
+   */
+  public static Variable getHeapVariable() {
+    return loadProgram().lookupLocalVariable("~heap")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap function"));
+  }
 
-	public static Function getHeapAccessFunction() {
-		return loadProgram().lookupFunction("~read")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~read function"));
-	}
+  /**
+   * Getter for the global variable representing the heap.
+   *
+   * @return The {@code ~heap} variable of type {@code Store}.
+   */
+  public static Variable getNullConstant() {
+    return loadProgram().lookupLocalVariable("~null")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for the ~null function"));
+  }
 
-	public static Function getArrayLengthFunction() {
-		return loadProgram().lookupFunction("~lengthof")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~lengthof function"));
-	}
+  /**
+   * Getter for the heap-read function.
+   *
+   * @return The {@code ~read} function.
+   */
+  public static Function getHeapAccessFunction() {
+    return loadProgram().lookupFunction("~read")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for the ~read function"));
+  }
 
-	public static Function getHeapUpdateFunction() {
-		return loadProgram().lookupFunction("~update")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update function"));
-	}
+  /**
+   * Getter for the heap-update function.
+   *
+   * @return The {@code ~update} function.
+   */
+  public static Function getHeapUpdateFunction() {
+    return loadProgram().lookupFunction("~update")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for the ~update function"));
+  }
 
-	public static Function getArrayAccessFunction() {
-		return loadProgram().lookupFunction("~get")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~getfunction"));
-	}
+  /**
+   * Getter for the "new" procedure instantiating new references.
+   *
+   * @return The {@code ~new} procedure.
+   */
+  public static Procedure getNewProcedure() {
+    return loadProgram().lookupProcedure("~new")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for the ~new procedure"));
+  }
 
-	public static Function getArrayUpdateFunction() {
-		return loadProgram().lookupFunction("~insert")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~insert"));
-	}
+  /**
+   * Getter for the array-length function.
+   *
+   * @return The {@code ~lengthof} function.
+   */
+  public static Function getArrayLengthFunction() {
+    return loadProgram().lookupFunction("~lengthof")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for the ~lengthof function"));
+  }
 
-	public static Procedure getNewProcedure() {
-		return loadProgram().lookupProcedure("~new")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~new procedure"));
-	}
+  /**
+   * Getter for the array-access function.
+   *
+   * @return The {@code ~get} function.
+   */
+  public static Function getArrayAccessFunction() {
+    return loadProgram().lookupFunction("~get")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for the ~getfunction"));
+  }
 
-	public static Expression getHeapAccessExpression(final Expression base, final Expression field) {
-		final FunctionReference reference = getHeapAccessFunction().makeFunctionReference();
-		reference.addArgument(getHeapVariable().makeValueReference());
-		reference.addArgument(base);
-		reference.addArgument(field);
+  /**
+   * Getter for the array-update function.
+   *
+   * @return The {@code ~insert} function.
+   */
+  public static Function getArrayUpdateFunction() {
+    return loadProgram().lookupFunction("~insert")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for the ~insert"));
+  }
 
-		return reference;
-	}
+  /**
+   * Getter for the int-caster.
+   *
+   * @return The {@code ~int} function.
+   */
+  public static FunctionReference getIntCaster() {
+    return loadProgram().lookupFunction("~int")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for ~int casting function"))
+        .makeFunctionReference();
+  }
 
-	public static Expression getLengthAccessExpression(final Expression array) {
-		final FunctionReference reference = getArrayLengthFunction().makeFunctionReference();
-		reference.addArgument(getHeapVariable().makeValueReference());
-		reference.addArgument(array);
+  /**
+   * Getter for the CMP operator.
+   *
+   * @return The {@code ~cmp} function.
+   */
+  public static FunctionReference getCmpReference() {
+    return loadProgram().lookupFunction("~cmp")
+        .orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp")).makeFunctionReference();
+  }
 
-		return reference;
-	}
+  /**
+   * Getter for the array field constant of a specified type.
+   *
+   * @param typeAccess The type of the array field.
+   * @return The {@code ~Array.*} field variable.
+   */
+  public static Variable getArrayTypeVariable(final TypeAccess typeAccess) {
+    final String arrayIdentifier = "~Array." + typeAccess.getIdentifier();
+    return loadProgram().lookupLocalVariable(arrayIdentifier)
+        .orElseThrow(() -> new IllegalStateException("Missing definition for array variable " + arrayIdentifier));
+  }
 
-	public static Variable getArrayTypeVariable(final TypeAccess typeAccess) {
-		final String arrayIdentifier = "~Array." + typeAccess.getIdentifier();
-		return loadProgram().lookupLocalVariable(arrayIdentifier).orElseThrow(
-				() -> new IllegalStateException("Missing definition for array variable " + arrayIdentifier));
-	}
+  /**
+   * Builder for a length-access expression.
+   *
+   * @param array The array to be accessed.
+   * @return The {@link Expression} accessing the length of the array.
+   */
+  public static Expression getLengthAccessExpression(final Expression array) {
+    final FunctionReference reference = getArrayLengthFunction().makeFunctionReference();
+    reference.addArgument(getHeapVariable().makeValueReference());
+    reference.addArgument(array);
 
-	public static Expression getArrayAccessExpression(final TypeAccess typeAccess, final Expression base,
-			final Expression index) {
-		final FunctionReference reference = getArrayAccessFunction().makeFunctionReference();
-		final Variable arrayType = getArrayTypeVariable(typeAccess);
-		reference.addArgument(getHeapVariable().makeValueReference());
-		reference.addArgument(base);
-		reference.addArgument(arrayType.makeValueReference());
-		reference.addArgument(index);
+    return reference;
+  }
 
-		return reference;
-	}
+  /**
+   * Builder for a heap-access expression.
+   *
+   * @param base The base reference from which the field is being accessed.
+   * @param field The field that is being accessed.
+   * @return The heap access {@link Expression}.
+   */
+  public static Expression getHeapAccessExpression(final Expression base, final Expression field) {
+    final FunctionReference reference = getHeapAccessFunction().makeFunctionReference();
+    reference.addArgument(getHeapVariable().makeValueReference());
+    reference.addArgument(base);
+    reference.addArgument(field);
 
-	public static Statement getHeapUpdateStatement(final Expression base, final Expression field,
-			final Expression value) {
-		final FunctionReference updateReference = getHeapUpdateFunction().makeFunctionReference();
-		final ValueReference heapReference = getHeapVariable().makeValueReference();
-		final var heapAssignee = Assignee.of(heapReference);
-		updateReference.addArgument(heapReference);
-		updateReference.addArgument(base);
-		updateReference.addArgument(field);
-		updateReference.addArgument(value);
+    return reference;
+  }
 
-		return new AssignmentStatement(heapAssignee, updateReference);
-	}
+  /**
+   * Builder for an array-access expression.
+   *
+   * @param typeAccess The type of the array being accessed.
+   * @param base The array being accessed.
+   * @param index The index of the array being accessed.
+   * @return The {@link Expression} accessing the given array at the given index.
+   */
+  public static Expression getArrayAccessExpression(final TypeAccess typeAccess, final Expression base,
+      final Expression index) {
+    final FunctionReference reference = getArrayAccessFunction().makeFunctionReference();
+    final Variable arrayType = getArrayTypeVariable(typeAccess);
+    reference.addArgument(getHeapVariable().makeValueReference());
+    reference.addArgument(base);
+    reference.addArgument(arrayType.makeValueReference());
+    reference.addArgument(index);
 
-	public static Statement getArrayUpdateStatement(final TypeAccess typeAccess, final Expression base,
-			final Expression index, final Expression value) {
-		final FunctionReference updateReference = getArrayUpdateFunction().makeFunctionReference();
-		final ValueReference heapReference = getHeapVariable().makeValueReference();
-		final Variable arrayType = getArrayTypeVariable(typeAccess);
-		final var heapAssignee = Assignee.of(heapReference);
-		updateReference.addArgument(heapReference);
-		updateReference.addArgument(base);
-		updateReference.addArgument(arrayType.makeValueReference());
-		updateReference.addArgument(index);
-		updateReference.addArgument(value);
+    return reference;
+  }
 
-		return new AssignmentStatement(heapAssignee, updateReference);
-	}
+  /**
+   * Builder for a heap-update expression.
+   *
+   * @param base The base reference from which the field is being updated.
+   * @param field The field that is being updated.
+   * @return The {@link Expression} updating the field.
+   */
+  public static Statement getHeapUpdateStatement(final Expression base, final Expression field,
+      final Expression value) {
+    final FunctionReference updateReference = getHeapUpdateFunction().makeFunctionReference();
+    final ValueReference heapReference = getHeapVariable().makeValueReference();
+    final Assignee heapAssignee = Assignee.of(heapReference);
+    updateReference.addArgument(heapReference);
+    updateReference.addArgument(base);
+    updateReference.addArgument(field);
+    updateReference.addArgument(value);
 
-	public static TypeAccess getFieldTypeAccess(final TypeAccess baseTypeAccess) {
-		final UnknownTypeAccess fieldTypeAccess = getFieldType().makeTypeAccess();
-		fieldTypeAccess.addArgument(baseTypeAccess);
+    return new AssignmentStatement(heapAssignee, updateReference);
+  }
 
-		return fieldTypeAccess;
-	}
+  /**
+   * Builder for an array-update expression.
+   *
+   * @param base The base reference from which the field is being updated.
+   * @param field The field that is being updated.
+   * @return The {@link Expression} updating the field.
+   */
+  public static Statement getArrayUpdateStatement(final TypeAccess typeAccess, final Expression base,
+      final Expression index, final Expression value) {
+    final FunctionReference updateReference = getArrayUpdateFunction().makeFunctionReference();
+    final ValueReference heapReference = getHeapVariable().makeValueReference();
+    final Variable arrayType = getArrayTypeVariable(typeAccess);
+    final Assignee heapAssignee = Assignee.of(heapReference);
+    updateReference.addArgument(heapReference);
+    updateReference.addArgument(base);
+    updateReference.addArgument(arrayType.makeValueReference());
+    updateReference.addArgument(index);
+    updateReference.addArgument(value);
 
-	public static BoundedBindingBuilder getReturnBindingBuilder() {
-		return new BoundedBindingBuilder().addName("~ret");
-	}
+    return new AssignmentStatement(heapAssignee, updateReference);
+  }
 
-	public static ValueReference getReturnValueReference() {
-		return ValueReference.of("~ret");
-	}
+  /**
+   * Builder for a field type-access.
+   *
+   * @param typeAccess The base type of the field.
+   * @return The {@link TypeAccess} targeting the type of the field.
+   */
+  public static TypeAccess getFieldTypeAccess(final TypeAccess typeAccess) {
+    final UnknownTypeAccess fieldTypeAccess = getFieldType().makeTypeAccess();
+    fieldTypeAccess.addArgument(typeAccess);
 
-	public static Label makeLabel(final int index) {
-		return new Label("label" + index);
-	}
+    return fieldTypeAccess;
+  }
 
-	public static ValueReference makeValueReference(final int index) {
-		return ValueReference.of("~sym" + index);
-	}
+  /**
+   * Builder for the procedure's return binding.
+   *
+   * @param typeAccess The type of the return binding.
+   * @return The {@code ~ret} {@link BoundedBinding}.
+   */
+  public static BoundedBinding getReturnBinding(final TypeAccess typeAccess) {
+    return new BoundedBindingBuilder().addName("~ret").typeAccess(typeAccess).build();
+  }
 
-	public static FrameCondition makeHeapFrameCondition() {
-		return new FrameCondition(false, new List<ValueReference>(ValueReference.of("~heap")));
-	}
+  /**
+   * Getter for the procedure's return reference.
+   *
+   * @return The {@code ~ret} {@link ValueReference}.
+   */ 
+  public static ValueReference getReturnValueReference() {
+    return ValueReference.of("~ret");
+  }
 
-	public static FunctionReference getIntCaster() {
-		return loadProgram().lookupFunction("~int")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for ~int casting function"))
-				.makeFunctionReference();
-	}
+  /**
+   * Creates a new label from its index. 
+   *
+   * @param index The index of the label.
+   * @return The new {@link Label} statement.
+   */
+  public static Label makeLabel(final int index) {
+    return new Label("label" + index);
+  }
 
-	public static FunctionReference getCmpReference() {
-		return loadProgram().lookupFunction("~cmp")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp")).makeFunctionReference();
-	}
+  /**
+   * Creates a new temporary value reference from a unique index.
+   *
+   * @param index The index of the temporary variable.
+   * @return The new {@link ValueReference} to the temporary variable.
+   */
+  public static ValueReference makeValueReference(final int index) {
+    return ValueReference.of("~sym" + index);
+  }
 
-	public static void inject(final Program program) {
-		loadProgram().inject(program);
-	}
+  /**
+   * Injects the prelude into a given program.
+   *
+   * @param program The program to be injected.
+   */
+  public static void inject(final Program program) {
+    loadProgram().inject(program);
+  }
 
 }

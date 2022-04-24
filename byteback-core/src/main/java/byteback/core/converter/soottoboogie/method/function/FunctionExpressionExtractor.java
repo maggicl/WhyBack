@@ -99,7 +99,7 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 
 	@Override
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-    final SootClass clazz = method.getSootClass();
+		final SootClass clazz = method.getSootClass();
 		if (AnnotationContext.isBindingClass(clazz)) {
 			pushBinding(method, arguments);
 		} else if (AnnotationContext.isQuantifierClass(clazz)) {

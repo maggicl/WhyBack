@@ -12,9 +12,9 @@ public class Main {
 
 	public static void convert(final Configuration configuration) {
 		final var converter = ContextConverter.instance();
-    SootContext.instance().configure(configuration);
-    log.info("Converting classes");
-    System.out.println(converter.convert().print());
+		SootContext.instance().configure(configuration);
+		log.info("Converting classes");
+		System.out.println(converter.convert().print());
 	}
 
 	public static void main(final String[] args) {
@@ -26,9 +26,9 @@ public class Main {
 			if (configuration.getHelp()) {
 				configuration.getJCommander().usage();
 			} else {
-        convert(configuration);
-      }
-    } catch (final ParameterException exception) {
+				convert(configuration);
+			}
+		} catch (final ParameterException exception) {
 			log.error("Error while parsing program arguments: {}", exception.getMessage());
 			exception.getJCommander().usage();
 		}

@@ -1,7 +1,6 @@
 package byteback.core.converter.soottoboogie.field;
 
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.unit.SootField;
@@ -17,15 +16,22 @@ public class FieldConverter {
 		return instance;
 	}
 
+	public static String fieldName(final SootField field) {
+		final String fieldName = field.getName();
+		final String className = field.getSootClass().getName();
+
+		return className + "." + fieldName;
+	}
+
 	public ConstantDeclaration convert(final SootField field) {
-		final ConstantDeclaration constantDeclaration = new ConstantDeclaration();
+		final var constantDeclaration = new ConstantDeclaration();
 		final var bindingBuilder = new SetBindingBuilder();
 
 		try {
 			final TypeAccess baseTypeAccess = new TypeAccessExtractor().visit(field.getType());
 			final TypeAccess fieldTypeAccess = Prelude.getFieldTypeAccess(baseTypeAccess);
 			bindingBuilder.typeAccess(fieldTypeAccess);
-			bindingBuilder.name(NameConverter.fieldName(field));
+			bindingBuilder.name(fieldName(field));
 			constantDeclaration.setBinding(bindingBuilder.build());
 		} catch (ConversionException exception) {
 			throw new FieldConversionException(field, exception);

@@ -8,6 +8,12 @@ import java.util.Set;
 import soot.Local;
 import soot.ValueBox;
 
+/**
+ * Extractor class for the {@link Local} subexpressions present in a given
+ * expression.
+ *
+ * @author paganma
+ */
 public class LocalUseExtractor extends SootExpressionVisitor<Set<Local>> {
 
 	private final Set<Local> usedLocals;
@@ -16,6 +22,13 @@ public class LocalUseExtractor extends SootExpressionVisitor<Set<Local>> {
 		this.usedLocals = new HashSet<>();
 	}
 
+	/**
+	 * Extracts all the locals used in a given expression.
+	 *
+	 * @param expression
+	 *            The expression to be scanned.
+	 * @return The {@link Local} subexpressions present in the given expression.
+	 */
 	public Set<Local> visit(final SootExpression expression) {
 		final Collection<ValueBox> useBoxes = expression.getUseBoxes();
 

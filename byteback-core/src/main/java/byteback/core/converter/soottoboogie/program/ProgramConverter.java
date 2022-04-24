@@ -18,7 +18,7 @@ public class ProgramConverter {
 	}
 
 	public Program convert(final SootClass clazz) {
-    final var program = new Program();
+		final var program = new Program();
 		clazz.fields().forEach((field) -> program.addDeclaration(FieldConverter.instance().convert(field)));
 		clazz.methods().forEach((method) -> {
 			if (method.getAnnotation(AnnotationContext.PURE_ANNOTATION).isPresent()) {
@@ -32,10 +32,10 @@ public class ProgramConverter {
 	}
 
 	public Program convert(final Stream<SootClass> classes) {
-    final Program program = Prelude.loadProgram();
-    classes.forEach((clazz) -> convert(clazz).inject(program));
+		final Program program = Prelude.loadProgram();
+		classes.forEach((clazz) -> convert(clazz).inject(program));
 
-    return program;
+		return program;
 	}
 
 }

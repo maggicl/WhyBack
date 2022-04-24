@@ -95,11 +95,11 @@ public class SootClass {
 		return sootClass.getNumber();
 	}
 
-  public String getPackageName() {
-    return sootClass.getPackageName();
-  }
+	public String getPackageName() {
+		return sootClass.getPackageName();
+	}
 
-  @Override
+	@Override
 	public boolean equals(Object object) {
 		return object instanceof SootClass && getNumber() == ((SootClass) object).getNumber();
 	}

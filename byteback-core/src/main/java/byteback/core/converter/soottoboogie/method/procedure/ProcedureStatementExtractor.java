@@ -1,9 +1,9 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.LocalUseExtractor;
-import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
+import byteback.core.converter.soottoboogie.field.FieldConverter;
 import byteback.core.converter.soottoboogie.statement.StatementConversionException;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootExpression;
@@ -89,7 +89,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				};
 				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, referenceSupplier, assignment);
 				final Expression assigned = extractor.visit(right, left.getType());
-				final Expression fieldReference = ValueReference.of(NameConverter.fieldName(field));
+				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
 				addStatement(Prelude.getHeapUpdateStatement(boogieBase, fieldReference, assigned));
 			}

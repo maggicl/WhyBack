@@ -19,7 +19,6 @@ public class FieldConversionException extends ConversionException {
 
 	@Override
 	public String getMessage() {
-
 		return "Exception while converting field " + field.getName() + ":\n" + super.getMessage();
 	}
 

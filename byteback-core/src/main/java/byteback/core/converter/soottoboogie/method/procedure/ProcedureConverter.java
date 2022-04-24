@@ -2,8 +2,8 @@ package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.AnnotationContext;
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.function.FunctionManager;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
@@ -31,7 +31,7 @@ import soot.Local;
 import soot.Type;
 import soot.VoidType;
 
-public class ProcedureConverter {
+public class ProcedureConverter extends MethodConverter {
 
 	private static final ProcedureConverter instance = new ProcedureConverter();
 
@@ -65,8 +65,8 @@ public class ProcedureConverter {
 			@Override
 			public void caseDefault(final Type type) {
 				final TypeAccess typeAccess = new TypeAccessExtractor().visit(method.getReturnType());
-				final BoundedBinding binding = Prelude.getReturnBindingBuilder().typeAccess(typeAccess).build();
-				signatureBuilder.addOutputBinding(binding);
+        final BoundedBinding binding = Prelude.getReturnBinding(typeAccess);
+        signatureBuilder.addOutputBinding(binding);
 			}
 
 		});
@@ -145,7 +145,7 @@ public class ProcedureConverter {
 		final var procedureBuilder = new ProcedureDeclarationBuilder();
 
 		try {
-			procedureBuilder.name(NameConverter.methodName(method));
+			procedureBuilder.name(methodName(method));
 			buildSignature(procedureBuilder, method);
 			buildSpecifications(procedureBuilder, method);
 			buildBody(procedureBuilder, method);

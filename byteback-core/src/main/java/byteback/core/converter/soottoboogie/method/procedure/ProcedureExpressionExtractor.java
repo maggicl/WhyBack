@@ -2,6 +2,7 @@ package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.*;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
+import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.procedure.ProcedureStatementExtractor.ReferenceSupplier;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.type.SootType;
@@ -40,7 +41,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	public TargetedCallStatement makeCall(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final var callBuilder = new TargetedCallStatementBuilder();
-		callBuilder.name(NameConverter.methodName(method));
+		callBuilder.name(MethodConverter.methodName(method));
 		callBuilder.arguments(new List<Expression>().addAll(convertArguments(method, arguments)));
 
 		return callBuilder.build();
@@ -58,13 +59,13 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 	}
 
 	public void addContract(final SootMethod method, final Iterable<SootExpression> arguments) {
-    final String name = method.getName();
-    final Iterator<SootExpression> iterator = arguments.iterator();
+		final String name = method.getName();
+		final Iterator<SootExpression> iterator = arguments.iterator();
 		final SootExpression argument = iterator.next();
 		final Expression condition = visit(argument, new SootType(BooleanType.v()));
 		assert !iterator.hasNext() : "Wrong number of arguments to contract method";
 
-    if (name.equals(AnnotationContext.ASSERTION_NAME)) {
+		if (name.equals(AnnotationContext.ASSERTION_NAME)) {
 			bodyExtractor.addStatement(new AssertStatement(condition));
 		} else if (name.equals(AnnotationContext.ASSUMPTION_NAME)) {
 			bodyExtractor.addStatement(new AssumeStatement(condition));
@@ -77,8 +78,8 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	@Override
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-    final SootClass clazz = method.getSootClass();
-    final boolean isPure = method.getAnnotation(AnnotationContext.PURE_ANNOTATION).isPresent();
+		final SootClass clazz = method.getSootClass();
+		final boolean isPure = method.getAnnotation(AnnotationContext.PURE_ANNOTATION).isPresent();
 
 		if (isPure) {
 			super.pushFunctionReference(method, arguments);

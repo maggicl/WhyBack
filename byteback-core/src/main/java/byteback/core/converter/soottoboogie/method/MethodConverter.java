@@ -1,11 +1,10 @@
-package byteback.core.converter.soottoboogie;
+package byteback.core.converter.soottoboogie.method;
 
 import byteback.core.representation.soot.type.SootType;
-import byteback.core.representation.soot.unit.SootField;
 import byteback.core.representation.soot.unit.SootMethod;
 import java.util.Iterator;
 
-public class NameConverter {
+public abstract class MethodConverter {
 
 	public static String methodName(final SootMethod method) {
 		final var builder = new StringBuilder();
@@ -26,13 +25,6 @@ public class NameConverter {
 		}
 
 		return builder.toString();
-	}
-
-	public static String fieldName(final SootField field) {
-		final String fieldName = field.getName();
-		final String className = field.getSootClass().getName();
-
-		return className + "." + fieldName;
 	}
 
 }

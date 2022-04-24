@@ -1,8 +1,8 @@
 package byteback.core.converter.soottoboogie.method.function;
 
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
@@ -17,7 +17,7 @@ import soot.Local;
 import soot.Type;
 import soot.VoidType;
 
-public class FunctionConverter {
+public class FunctionConverter extends MethodConverter {
 
 	private static final FunctionConverter instance = new FunctionConverter();
 
@@ -70,7 +70,7 @@ public class FunctionConverter {
 		final var functionBuilder = new FunctionDeclarationBuilder();
 
 		try {
-			functionBuilder.name(NameConverter.methodName(method));
+			functionBuilder.name(methodName(method));
 			buildSignature(functionBuilder, method);
 			buildExpression(functionBuilder, method);
 		} catch (final ConversionException exception) {

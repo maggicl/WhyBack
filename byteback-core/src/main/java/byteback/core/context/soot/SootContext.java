@@ -23,10 +23,9 @@ import soot.options.Options;
  * <p>
  * Note that since this class wraps every singleton that is managed by Soot,
  * modifying the global soot options externally may result in an undefined
- * behavior of this context. To solve this, one possible solution could be to
- * isolate the Soot singletons by using another classloader. This would in
- * principle also allow us to keep multiple Soot contexts at the same time,
- * without being constrained to the singleton pattern.
+ * behavior of this context.
+ *
+ * @author paganma
  */
 public class SootContext {
 
@@ -185,12 +184,19 @@ public class SootContext {
 		return scene().getClasses().stream().map(SootClass::new);
 	}
 
+	/**
+	 * Configures the context for the main conversion job.
+	 *
+	 * @param configuration
+	 *            The {@link Configuration} object containing the {@code --class}
+	 *            and {@code --classpath} options specified by the user.
+	 */
 	public void configure(final Configuration configuration) {
 		for (final Path path : configuration.getClassPaths()) {
 			prependClassPath(path);
-    }
+		}
 
-    for (final String className : configuration.getStartingClasses()) {
+		for (final String className : configuration.getStartingClasses()) {
 			loadClassAndSupport(className);
 		}
 	}

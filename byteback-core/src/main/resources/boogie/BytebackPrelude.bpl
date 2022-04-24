@@ -11,10 +11,14 @@ type Store = [Reference]<a>[Field a]a;
 var ~heap: Store;
 
 function ~read<a>(h: Store, r: Reference, f: Field a) returns (a)
-{ h[r][f] }
+{
+  h[r][f]
+}
 
 function ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
-{ h[r := h[r][f := v]] }
+{
+  h[r := h[r][f := v]]
+}
 
 procedure ~new() returns (~ret: Reference);
 
@@ -78,16 +82,24 @@ axiom (forall i: int, j: int :: i == j <==> ~cmp(i, j) == 0);
 // Prelude definitions
 // -------------------------------------------------------------------
 function ~and(~heap: Store, a: bool, b: bool) returns (bool)
-{ a && b }
+{
+  a && b
+}
 
 function ~or(~heap: Store, a: bool, b: bool) returns (bool)
-{ a || b }
+{
+  a || b
+}
 
 function ~implies(~heap: Store, a: bool, b: bool) returns (bool)
-{ a ==> b }
+{
+  a ==> b
+}
 
 function ~iff(~heap: Store, a: bool, b: bool) returns (bool)
-{ a <==> b }
+{
+  a <==> b
+}
 
 function ~lt<t>(~heap: Store, a: t, b:  t) returns (bool);
 axiom (forall ~heap: Store, a: real, b: real :: ~lt(~heap, a, b) <==> a < b);

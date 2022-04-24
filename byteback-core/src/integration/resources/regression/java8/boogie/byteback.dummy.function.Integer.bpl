@@ -22,7 +22,7 @@ function byteback.dummy.function.Integer.multiplication#int#int#(~heap: Store, a
 // TODO: Model integer division
 function byteback.dummy.function.Integer.division#int#int#(~heap: Store, a: int, b: int) returns (int)
 {
-    a / b
+    a div b
 }
 
 function byteback.dummy.function.Integer.modulo#int#int#(~heap: Store, a: int, b: int) returns (int)

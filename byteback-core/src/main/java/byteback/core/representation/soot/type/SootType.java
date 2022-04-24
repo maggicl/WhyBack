@@ -1,6 +1,7 @@
 package byteback.core.representation.soot.type;
 
 import byteback.core.representation.Visitable;
+import byteback.core.representation.soot.unit.SootClass;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.DoubleType;
@@ -49,6 +50,10 @@ public class SootType implements Visitable<SootTypeVisitor<?>> {
 		return new SootType(DoubleType.v());
 	}
 
+	public static SootType referenceType(final SootClass clazz) {
+		return clazz.getType();
+	}
+
 	/**
 	 * Constructs a {@link SootType} from a {@link soot.Type} instance.
 	 *
@@ -57,6 +62,10 @@ public class SootType implements Visitable<SootTypeVisitor<?>> {
 	 */
 	public SootType(final soot.Type sootType) {
 		this.sootType = sootType;
+	}
+
+	public SootType getMachineType() {
+		return new SootType(soot.Type.toMachineType(sootType));
 	}
 
 	/**

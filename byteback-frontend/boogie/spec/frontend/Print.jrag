@@ -403,8 +403,12 @@ aspect Print {
     builder.append("*");
   }
 
-  public void DivisionOperation.printOperator(final StringBuilder builder) {
+  public void RealDivisionOperation.printOperator(final StringBuilder builder) {
     builder.append("/");
+  }
+
+  public void IntegerDivisionOperation.printOperator(final StringBuilder builder) {
+    builder.append("div");
   }
 
   public void ModuloOperation.printOperator(final StringBuilder builder) {

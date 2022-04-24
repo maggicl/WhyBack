@@ -178,9 +178,11 @@ MultiplicationOperation multiplication_operation
     {: return new MultiplicationOperation(lhs, rhs); :}
     ;
 
-DivisionOperation division_operation
+Expression division_operation
     = expression6.lhs DIVIDE expression7.rhs
-    {: return new DivisionOperation(lhs, rhs); :}
+    {: return new RealDivisionOperation(lhs, rhs); :}
+    | expression6.lhs DIV expression7.rhs
+    {: return new IntegerDivisionOperation(lhs, rhs); :}
     ;
 
 ModuloOperation modulo_operation

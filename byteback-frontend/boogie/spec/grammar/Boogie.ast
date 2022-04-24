@@ -147,7 +147,9 @@ SubtractionOperation : BinaryExpression;
 
 MultiplicationOperation : BinaryExpression;
 
-DivisionOperation : BinaryExpression;
+RealDivisionOperation : BinaryExpression;
+
+IntegerDivisionOperation : BinaryExpression;
 
 ModuloOperation : BinaryExpression;
 

@@ -113,6 +113,10 @@ public class SootMethod {
 		return sootMethod.getNumber();
 	}
 
+	public boolean isStatic() {
+		return sootMethod.isStatic();
+	}
+
 	@Override
 	public boolean equals(Object object) {
 		return object instanceof SootMethod && getNumber() == ((SootMethod) object).getNumber();

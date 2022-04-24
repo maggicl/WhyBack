@@ -103,6 +103,10 @@ public class ProcedureConverter extends MethodConverter {
 				.getSootMethod(sourceName, parameterTypes, new SootType(BooleanType.v()))
 				.orElseThrow(() -> new ConversionException("Could not find condition method " + sourceName));
 
+		if (source.isStatic() != target.isStatic()) {
+			throw new ConversionException("Incompatible target type for condition method " + sourceName);
+		}
+
 		return FunctionManager.instance().convert(source).getFunction().inline(arguments);
 	}
 

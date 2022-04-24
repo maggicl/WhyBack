@@ -10,6 +10,7 @@ import byteback.frontend.boogie.ast.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import soot.BooleanType;
+import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.Value;
@@ -49,7 +50,19 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 	@Override
 	public void caseDivExpr(final DivExpr division) {
-		pushBinaryExpression(division, new DivisionOperation());
+		getType().getMachineType().apply(new SootTypeVisitor<>() {
+
+			@Override
+			public void caseIntType(final IntType integerType) {
+				pushBinaryExpression(division, new IntegerDivisionOperation());
+			}
+
+			@Override
+			public void caseDefault(final Type integerType) {
+				pushBinaryExpression(division, new RealDivisionOperation());
+			}
+
+		});
 	}
 
 	@Override

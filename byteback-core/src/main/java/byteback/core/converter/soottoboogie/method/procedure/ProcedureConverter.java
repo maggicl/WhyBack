@@ -65,8 +65,8 @@ public class ProcedureConverter extends MethodConverter {
 			@Override
 			public void caseDefault(final Type type) {
 				final TypeAccess typeAccess = new TypeAccessExtractor().visit(method.getReturnType());
-        final BoundedBinding binding = Prelude.getReturnBinding(typeAccess);
-        signatureBuilder.addOutputBinding(binding);
+				final BoundedBinding binding = Prelude.getReturnBinding(typeAccess);
+				signatureBuilder.addOutputBinding(binding);
 			}
 
 		});

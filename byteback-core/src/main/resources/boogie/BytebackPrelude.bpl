@@ -19,6 +19,15 @@ function ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
 procedure ~new() returns (~ret: Reference);
 
 // -------------------------------------------------------------------
+// Type model
+// -------------------------------------------------------------------
+type Type;
+
+const ~Object.Type: Field Type;
+
+axiom (forall h: Store, t: Type :: h[~null][~Object.Type] <: t);
+
+// -------------------------------------------------------------------
 // Array model
 // -------------------------------------------------------------------
 type Array a = Field [int]a;

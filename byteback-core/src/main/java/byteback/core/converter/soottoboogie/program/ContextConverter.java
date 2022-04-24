@@ -1,6 +1,7 @@
 package byteback.core.converter.soottoboogie.program;
 
 import byteback.core.context.soot.SootContext;
+import byteback.core.converter.soottoboogie.AnnotationContext;
 import byteback.frontend.boogie.ast.Program;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +23,8 @@ public class ContextConverter {
 	}
 
 	public Program convert() {
-		final Program program = ProgramConverter.instance()
-				.convert(context.classes().filter((clazz) -> !clazz.isBasicClass() && !clazz.isPhantomClass()));
+    final Program program = ProgramConverter.instance()
+      .convert(context.classes().filter((clazz) -> !AnnotationContext.isAnnotationClass(clazz) && !clazz.isBasicClass() && !clazz.isPhantomClass()));
 
 		return program;
 	}

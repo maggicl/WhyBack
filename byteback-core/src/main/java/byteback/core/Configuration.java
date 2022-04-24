@@ -2,6 +2,7 @@ package byteback.core;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import java.nio.file.Path;
 import java.util.List;
 
 public class Configuration {
@@ -10,7 +11,7 @@ public class Configuration {
 	private boolean help;
 
 	@Parameter(names = {"-cp", "--classpath"}, description = "Classpath to be converted", required = true)
-	private List<String> classPaths;
+	private List<Path> classPaths;
 
 	@Parameter(names = {"-c", "--class"}, description = "Starting class for the conversion", required = true)
 	private List<String> startingClasses;
@@ -27,7 +28,7 @@ public class Configuration {
 		return help;
 	}
 
-	public List<String> getClassPaths() {
+	public List<Path> getClassPaths() {
 		return classPaths;
 	}
 

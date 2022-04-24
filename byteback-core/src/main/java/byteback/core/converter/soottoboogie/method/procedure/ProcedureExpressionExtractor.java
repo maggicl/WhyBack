@@ -3,9 +3,9 @@ package byteback.core.converter.soottoboogie.method.procedure;
 import byteback.core.converter.soottoboogie.*;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
 import byteback.core.converter.soottoboogie.method.procedure.ProcedureStatementExtractor.ReferenceSupplier;
-import byteback.core.representation.soot.annotation.SootAnnotation;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.type.SootType;
+import byteback.core.representation.soot.unit.SootClass;
 import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
@@ -16,7 +16,6 @@ import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
 import java.util.Iterator;
-import java.util.Optional;
 import soot.BooleanType;
 import soot.Local;
 import soot.Unit;
@@ -58,17 +57,18 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		bodyExtractor.addStatement(callStatement);
 	}
 
-	public void addSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final Iterator<SootExpression> iterator = arguments.iterator();
+	public void addContract(final SootMethod method, final Iterable<SootExpression> arguments) {
+    final String name = method.getName();
+    final Iterator<SootExpression> iterator = arguments.iterator();
 		final SootExpression argument = iterator.next();
 		final Expression condition = visit(argument, new SootType(BooleanType.v()));
-		assert !iterator.hasNext() : "Wrong number of arguments to special method";
+		assert !iterator.hasNext() : "Wrong number of arguments to contract method";
 
-		if (method.equals(Annotations.ASSERT_METHOD.get())) {
+    if (name.equals(AnnotationContext.ASSERTION_NAME)) {
 			bodyExtractor.addStatement(new AssertStatement(condition));
-		} else if (method.equals(Annotations.ASSUME_METHOD.get())) {
+		} else if (name.equals(AnnotationContext.ASSUMPTION_NAME)) {
 			bodyExtractor.addStatement(new AssumeStatement(condition));
-		} else if (method.equals(Annotations.INVARIANT_METHOD.get())) {
+		} else if (name.equals(AnnotationContext.INVARIANT_NAME)) {
 			bodyExtractor.addInvariant(condition);
 		} else {
 			throw new ConversionException("Unknown special method: " + method.getName());
@@ -77,12 +77,13 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	@Override
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final Optional<SootAnnotation> annotation = method.getAnnotation(Annotations.PURE_ANNOTATION);
+    final SootClass clazz = method.getSootClass();
+    final boolean isPure = method.getAnnotation(AnnotationContext.PURE_ANNOTATION).isPresent();
 
-		if (annotation.isPresent()) {
+		if (isPure) {
 			super.pushFunctionReference(method, arguments);
-		} else if (method.getSootClass().equals(Annotations.CONTRACT_CLASS.get())) {
-			addSpecial(method, arguments);
+		} else if (AnnotationContext.isContractClass(clazz)) {
+			addContract(method, arguments);
 		} else {
 			final TargetedCallStatement callStatement = makeCall(method, arguments);
 			addCall(callStatement);

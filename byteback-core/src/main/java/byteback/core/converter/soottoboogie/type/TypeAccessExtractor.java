@@ -12,6 +12,7 @@ import soot.FloatType;
 import soot.IntType;
 import soot.LongType;
 import soot.RefType;
+import soot.ShortType;
 import soot.Type;
 
 public class TypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
@@ -24,6 +25,11 @@ public class TypeAccessExtractor extends SootTypeVisitor<TypeAccess> {
 
 	@Override
 	public void caseByteType(final ByteType byteType) {
+		setTypeAccess(Prelude.getIntegerType().makeTypeAccess());
+	}
+
+	@Override
+	public void caseShortType(final ShortType shortType) {
 		setTypeAccess(Prelude.getIntegerType().makeTypeAccess());
 	}
 

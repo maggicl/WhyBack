@@ -1,6 +1,6 @@
 package byteback.core.converter.soottoboogie.method.function;
 
-import byteback.core.converter.soottoboogie.Annotations;
+import byteback.core.converter.soottoboogie.AnnotationContext;
 import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.LocalExtractor;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
@@ -8,6 +8,7 @@ import byteback.core.converter.soottoboogie.expression.Substitutor;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.type.SootType;
+import byteback.core.representation.soot.unit.SootClass;
 import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.ConditionalOperation;
 import byteback.frontend.boogie.ast.ExistentialQuantifier;
@@ -54,9 +55,9 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 	public void pushQuantifier(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final String quantifierName = method.getName();
 
-		if (quantifierName.equals(Annotations.EXISTENTIAL_QUANTIFIER_NAME)) {
+		if (quantifierName.equals(AnnotationContext.EXISTENTIAL_QUANTIFIER_NAME)) {
 			pushExistentialQuantifier(arguments);
-		} else if (quantifierName.equals(Annotations.UNIVERSAL_QUANTIFIER_NAME)) {
+		} else if (quantifierName.equals(AnnotationContext.UNIVERSAL_QUANTIFIER_NAME)) {
 			pushUniversalQuantifier(arguments);
 		} else {
 			throw new ConversionException("Unknown quantifier method: " + method.getName());
@@ -83,9 +84,9 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 	public void pushSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final String specialName = method.getName();
 
-		if (specialName.equals(Annotations.OLD_NAME)) {
+		if (specialName.equals(AnnotationContext.OLD_NAME)) {
 			pushOld(method, arguments);
-		} else if (specialName.equals(Annotations.CONDITIONAL_NAME)) {
+		} else if (specialName.equals(AnnotationContext.CONDITIONAL_NAME)) {
 			pushConditional(method, arguments);
 		} else {
 			throw new ConversionException("Unknown special method: " + method.getName());
@@ -98,11 +99,12 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 
 	@Override
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-		if (method.getSootClass().equals(Annotations.BINDING_CLASS.get())) {
+    final SootClass clazz = method.getSootClass();
+		if (AnnotationContext.isBindingClass(clazz)) {
 			pushBinding(method, arguments);
-		} else if (method.getSootClass().equals(Annotations.QUANTIFIER_CLASS.get())) {
+		} else if (AnnotationContext.isQuantifierClass(clazz)) {
 			pushQuantifier(method, arguments);
-		} else if (method.getSootClass().equals(Annotations.SPECIAL_CLASS.get())) {
+		} else if (AnnotationContext.isSpecialClass(clazz)) {
 			pushSpecial(method, arguments);
 		} else {
 			super.pushFunctionReference(method, arguments);

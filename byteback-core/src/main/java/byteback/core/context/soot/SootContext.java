@@ -1,5 +1,6 @@
 package byteback.core.context.soot;
 
+import byteback.core.Configuration;
 import byteback.core.representation.soot.unit.SootClass;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -182,6 +183,16 @@ public class SootContext {
 	 */
 	public Stream<SootClass> classes() {
 		return scene().getClasses().stream().map(SootClass::new);
+	}
+
+	public void configure(final Configuration configuration) {
+		for (final Path path : configuration.getClassPaths()) {
+			prependClassPath(path);
+    }
+
+    for (final String className : configuration.getStartingClasses()) {
+			loadClassAndSupport(className);
+		}
 	}
 
 }

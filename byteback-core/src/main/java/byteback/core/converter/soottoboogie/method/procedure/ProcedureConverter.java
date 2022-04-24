@@ -1,6 +1,6 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
-import byteback.core.converter.soottoboogie.Annotations;
+import byteback.core.converter.soottoboogie.AnnotationContext;
 import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.NameConverter;
 import byteback.core.converter.soottoboogie.Prelude;
@@ -119,9 +119,9 @@ public class ProcedureConverter {
 	}
 
 	public static void buildSpecifications(final ProcedureDeclarationBuilder builder, final SootMethod method) {
-		final Stream<Specification> preconditions = makeConditions(method, Annotations.REQUIRE_ANNOTATION)
+		final Stream<Specification> preconditions = makeConditions(method, AnnotationContext.REQUIRE_ANNOTATION)
 				.map((expression) -> new PreCondition(false, expression));
-		final Stream<Specification> postconditions = makeConditions(method, Annotations.ENSURE_ANNOTATION)
+		final Stream<Specification> postconditions = makeConditions(method, AnnotationContext.ENSURE_ANNOTATION)
 				.map((expression) -> new PostCondition(false, expression));
 
 		builder.specification(preconditions::iterator);

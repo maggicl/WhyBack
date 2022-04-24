@@ -1,6 +1,6 @@
 package byteback.core.converter.soottoboogie.program;
 
-import byteback.core.converter.soottoboogie.Annotations;
+import byteback.core.converter.soottoboogie.AnnotationContext;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.field.FieldConverter;
 import byteback.core.converter.soottoboogie.method.function.FunctionConverter;
@@ -18,12 +18,12 @@ public class ProgramConverter {
 	}
 
 	public Program convert(final SootClass clazz) {
-		final var program = new Program();
+    final var program = new Program();
 		clazz.fields().forEach((field) -> program.addDeclaration(FieldConverter.instance().convert(field)));
 		clazz.methods().forEach((method) -> {
-			if (method.getAnnotation(Annotations.PURE_ANNOTATION).isPresent()) {
+			if (method.getAnnotation(AnnotationContext.PURE_ANNOTATION).isPresent()) {
 				program.addDeclaration(FunctionConverter.instance().convert(method));
-			} else if (method.getAnnotation(Annotations.CONDITION_ANNOTATION).isEmpty()) {
+			} else if (method.getAnnotation(AnnotationContext.CONDITION_ANNOTATION).isEmpty()) {
 				program.addDeclaration(ProcedureConverter.instance().convert(method));
 			}
 		});
@@ -32,10 +32,10 @@ public class ProgramConverter {
 	}
 
 	public Program convert(final Stream<SootClass> classes) {
-		final var program = new Program();
-		classes.forEach((clazz) -> program.merge(convert(clazz)));
+    final Program program = Prelude.loadProgram();
+    classes.forEach((clazz) -> convert(clazz).inject(program));
 
-		return Prelude.loadProgram().merge(program);
+    return program;
 	}
 
 }

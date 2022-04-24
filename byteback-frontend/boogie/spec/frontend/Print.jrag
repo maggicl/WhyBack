@@ -28,7 +28,6 @@ aspect Print {
 
     static void indentedListPrint(final StringBuilder builder, final String separator, final int level,
                 final List<? extends Printable> list) {
-
       final Iterator<? extends Printable> iterator = list.iterator();
 
       while (iterator.hasNext()) {
@@ -159,8 +158,13 @@ aspect Print {
     }
 
     builder.append(getDeclarator().getName());
-    builder.append(" ");
-    PrintUtil.listPrint(builder, ", ", getTypeParameterList());
+
+    if (getTypeParameterList().getNumChild() > 0) {
+      builder.append(" ");
+      PrintUtil.listPrint(builder, ", ", getTypeParameterList());
+    }
+
+    builder.append(";");
   }
 
   public void TypeSynonymDeclaration.print(final StringBuilder builder) {
@@ -170,6 +174,7 @@ aspect Print {
     PrintUtil.listPrint(builder, ", ", getTypeParameterList());
     builder.append(" = ");
     getAliased().print(builder);
+    builder.append(";");
   }
 
   TypeParameter implements Printable;
@@ -181,6 +186,12 @@ aspect Print {
   Signature implements Printable;
 
   public void Signature.print(final StringBuilder builder) {
+    if (getTypeParameterList().getNumChild() > 0) {
+      builder.append("<");
+      PrintUtil.listPrint(builder, ", ", getTypeParameterList());
+      builder.append(">");
+    }
+
     builder.append("(");
     PrintUtil.listPrint(builder, ", ", getInputBindingList());
     builder.append(")");
@@ -258,14 +269,20 @@ aspect Print {
 
   public void UnknownTypeAccess.print(final StringBuilder builder) {
     getAccessor().print(builder);
-    builder.append(" ");
-    PrintUtil.listPrint(builder, " ", getArgumentList());
+
+    if (getArgumentList().getNumChild() > 0) {
+      builder.append(" ");
+      PrintUtil.listPrint(builder, " ", getArgumentList());
+    }
   }
 
   public void MapTypeAccess.print(final StringBuilder builder) {
-    builder.append("<");
-    PrintUtil.listPrint(builder, ", ", getTypeParameterList());
-    builder.append(">");
+    if (getTypeParameterList().getNumChild() > 0) {
+      builder.append("<");
+      PrintUtil.listPrint(builder, ", ", getTypeParameterList());
+      builder.append(">");
+    }
+
     builder.append("[");
     PrintUtil.listPrint(builder, ", ", getKeyTypeList());
     builder.append("]");

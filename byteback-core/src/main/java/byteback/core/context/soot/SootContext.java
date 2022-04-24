@@ -122,7 +122,7 @@ public class SootContext {
 	public SootClass loadClass(final String name) throws ClassLoadException {
 		try {
 			final soot.SootClass sootClass = scene().loadClass(name, soot.SootClass.BODIES);
-			log.info("Loaded {} in context", name);
+			log.info("Loaded {} into context", name);
 
 			return new SootClass(sootClass);
 		} catch (AssertionError exception) {
@@ -141,7 +141,7 @@ public class SootContext {
 	public SootClass loadClassAndSupport(final String name) throws ClassLoadException {
 		try {
 			final soot.SootClass sootClass = scene().loadClassAndSupport(name);
-			log.info("Loaded {} and support classes in context", name);
+			log.info("Loaded {} and support classes into context", name);
 
 			return new SootClass(sootClass);
 		} catch (AssertionError exception) {

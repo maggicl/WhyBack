@@ -12,7 +12,8 @@ public class Main {
 
 	public static void convert(final Configuration configuration) {
 		final var converter = ContextConverter.instance();
-		SootContext.instance().configure(configuration);
+    SootContext.instance().configure(configuration);
+    log.info("Converting classes");
     System.out.println(converter.convert().print());
 	}
 

@@ -15,8 +15,13 @@ The structure of ~byteback-dummy~ as for now will be divided based on the target
 ** DONE Implement conversion between methods and Boogie procedures
 ** DONE Implement interprocedural calls in Boogie procedures
 ** DONE Implement conversion between methods and Boogie conditions
-*** TODO Organize the better the conversion of conditions within the body.
-*** TODO Optimize the resulting Boogie code by removing unused variables.
-** TODO Implement array support.
-** TODO Model and implement quantifier expressions.
+*** DONE Implement the conversion of conditions within the body.
+** DONE Implement array support.
+** DONE Model and implement quantifier expressions.
+** TODO Implement basic model for Java classtypes.
+** TODO Implement basic model to track object allocation.
+** TODO Implement system tests using LLVM-lit.
 
+* Frontend
+** DONE Optimize the resulting Boogie code by removing unused variables.
+** TODO Compute warnings for missing definitions in generated code.

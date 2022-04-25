@@ -51,6 +51,8 @@ function ~lengthof(h: Store, r: Reference) returns (int)
   ~read(h, r, ~Array.length)
 }
 
+axiom (forall h: Store, r: Reference :: ~lengthof(h, r) >= 0);
+
 function ~get<a>(h: Store, r: Reference, f: Array a, i: int) returns (a)
 {
   ~read(h, r, f)[i]

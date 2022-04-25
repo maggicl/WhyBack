@@ -27,3 +27,4 @@ def copyResources = tasks.register("copyResources", Copy) {
 }
 
 integration.dependsOn(copyResources)
+processIntegrationResources.finalizedBy(copyResources)

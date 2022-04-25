@@ -35,7 +35,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	}
 
 	public void pushCmpExpression(final BinopExpr cmp) {
-		pushSpecialBinaryExpression(cmp, Prelude.getCmpReference());
+		pushSpecialBinaryExpression(cmp, Prelude.getCmpFunction().makeFunctionReference());
 	}
 
 	@Override

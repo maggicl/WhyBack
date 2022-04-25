@@ -1,10 +1,9 @@
-package byteback.core.converter.soottoboogie;
+package byteback.core.converter.soottoboogie.method;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootMethod;
 import java.util.Collections;

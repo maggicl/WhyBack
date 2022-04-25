@@ -16,7 +16,7 @@ public class LazyTest {
 
 	@Test
 	public void Get_CalledTwice_ReturnsSameValue() {
-		final Lazy<Object> lazyValue = Lazy.from(() -> new Object());
+		final Lazy<Object> lazyValue = Lazy.from(Object::new);
 		final Object first = lazyValue.get();
 		final Object second = lazyValue.get();
 		assertEquals(first, second);
@@ -28,7 +28,7 @@ public class LazyTest {
 	}
 
 	public void invalidate_CalledBetweenGets_ResultsInDifferentValues() {
-		final Lazy<Object> lazyValue = Lazy.from(() -> new Object());
+		final Lazy<Object> lazyValue = Lazy.from(Object::new);
 		final Object first = lazyValue.get();
 		lazyValue.invalidate();
 		final Object second = lazyValue.get();

@@ -8,7 +8,7 @@ import org.junit.Test;
 public class PreludeIntegrationTest {
 
 	@Test
-	public void InitializeProgram_GivenPrelude_DoesNotThrowExceptions() {
+	public void InitializeProgram_GivenUninitializedPrelude_DoesNotThrowExceptions() {
 		Prelude.initializeProgram();
 	}
 
@@ -20,25 +20,83 @@ public class PreludeIntegrationTest {
 	}
 
 	@Test
-	public void GetReferenceType_GivenPrelude_DoesNotThrowException() {
-		Prelude.getReferenceType();
+	public void GetReferenceType_GivenDefaultPrelude_ReturnsExpectedType() {
+		final Type type = Prelude.getReferenceType();
+		assertEquals("Reference", type.makeTypeAccess().getIdentifier());
 	}
 
 	@Test
-	public void GetHeapType_GivenPrelude_DoesNotThrowException() {
-		Prelude.getHeapType();
+	public void GetHeapType_GivenDefaultPrelude_ReturnsExpectedType() {
+		final Type type = Prelude.getHeapType();
+		assertEquals("Store", type.makeTypeAccess().getIdentifier());
 	}
 
 	@Test
-	public void GetHeapVariable_GivenPrelude_DoesNotThrowException() {
-		Prelude.getHeapVariable();
+	public void GetFieldType_GivenDefaultPrelude_ReturnsExpectedType() {
+		final Type type = Prelude.getFieldType();
+		assertEquals("Field", type.makeTypeAccess().getIdentifier());
 	}
 
 	@Test
-	public void GetHeapAccessExpression_GivenPrelude_DoesNotThrowException() {
-		final Expression base = ValueReference.of("reference");
-		final Expression field = ValueReference.of("Reference.field");
-		Prelude.getHeapAccessExpression(base, field);
+	public void GetHeapVariable_GivenDefaultPrelude_ReturnsExpectedVariable() {
+		final Variable variable = Prelude.getHeapVariable();
+		assertEquals("~heap", variable.getName());
+		assertEquals("Store", variable.getTypeAccess().getIdentifier());
+	}
+
+	@Test
+	public void GetNullConstant_GivenDefaultPrelude_ReturnsExpectedVariable() {
+		final Variable variable = Prelude.getNullConstant();
+		assertEquals("~null", variable.getName());
+		assertEquals("Reference", variable.getTypeAccess().getIdentifier());
+	}
+
+	@Test
+	public void GetHeapAccessFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
+		final Function function = Prelude.getHeapAccessFunction();
+		assertEquals("~read", function.getName());
+	}
+
+	@Test
+	public void GetHeapUpdateFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
+		final Function function = Prelude.getHeapUpdateFunction();
+		assertEquals("~update", function.getName());
+	}
+
+	@Test
+	public void GetNewProcedure_GivenDefaultPrelude_ReturnsExpectedProcedure() {
+		final Procedure procedure = Prelude.getNewProcedure();
+		assertEquals("~new", procedure.getName());
+	}
+
+	@Test
+	public void GetArrayProcedure_GivenDefaultPrelude_ReturnsExpectedProcedure() {
+		final Procedure procedure = Prelude.getArrayProcedure();
+		assertEquals("~array", procedure.getName());
+	}
+
+	@Test
+	public void GetArrayAccessFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
+		final Function function = Prelude.getArrayAccessFunction();
+		assertEquals("~get", function.getName());
+	}
+
+	@Test
+	public void GetArrayUpdateFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
+		final Function function = Prelude.getArrayUpdateFunction();
+		assertEquals("~insert", function.getName());
+	}
+
+	@Test
+	public void GetIntCastingFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
+		final Function function = Prelude.getIntCastingFunction();
+		assertEquals("~int", function.getName());
+	}
+
+	@Test
+	public void GetCmpFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
+		final Function function = Prelude.getCmpFunction();
+		assertEquals("~cmp", function.getName());
 	}
 
 }

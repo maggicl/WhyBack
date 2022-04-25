@@ -31,7 +31,7 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 			@Override
 			public void caseIntType(final IntType toType) {
 				setCaster((expression) -> {
-					final FunctionReference casting = Prelude.getIntCaster();
+					final FunctionReference casting = Prelude.getIntCastingFunction().makeFunctionReference();
 					casting.addArgument(expression);
 
 					return casting;

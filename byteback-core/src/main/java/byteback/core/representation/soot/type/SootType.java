@@ -1,7 +1,6 @@
 package byteback.core.representation.soot.type;
 
 import byteback.core.representation.Visitable;
-import byteback.core.representation.soot.unit.SootClass;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.DoubleType;
@@ -17,6 +16,8 @@ import soot.ShortType;
  * This type will eventually also be used as the base type for all Soot types
  * wrappers. For now this wrapping is not considered necessary, as there are no
  * features that are planned to be added to the Soot type hierarchy.
+ *
+ * @author paganma
  */
 public class SootType implements Visitable<SootTypeVisitor<?>> {
 
@@ -48,10 +49,6 @@ public class SootType implements Visitable<SootTypeVisitor<?>> {
 
 	public static SootType doubleType() {
 		return new SootType(DoubleType.v());
-	}
-
-	public static SootType referenceType(final SootClass clazz) {
-		return clazz.getType();
 	}
 
 	/**

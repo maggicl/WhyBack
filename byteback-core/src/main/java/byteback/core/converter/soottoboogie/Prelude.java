@@ -181,13 +181,23 @@ public class Prelude {
 	}
 
 	/**
-	 * Getter for the "new" procedure instantiating new references.
+	 * Getter for the "new" procedure, used to instantiate new references.
 	 *
 	 * @return The {@code ~new} procedure.
 	 */
 	public static Procedure getNewProcedure() {
 		return loadProgram().lookupProcedure("~new")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~new procedure"));
+	}
+
+	/**
+	 * Getter for the "new" procedure, used to instantiate new arrays.
+	 *
+	 * @return The {@code ~array} procedure.
+	 */
+	public static Procedure getArrayProcedure() {
+		return loadProgram().lookupProcedure("~array")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~array procedure"));
 	}
 
 	/**
@@ -225,10 +235,9 @@ public class Prelude {
 	 *
 	 * @return The {@code ~int} function.
 	 */
-	public static FunctionReference getIntCaster() {
+	public static Function getIntCastingFunction() {
 		return loadProgram().lookupFunction("~int")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for ~int casting function"))
-				.makeFunctionReference();
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~int casting function"));
 	}
 
 	/**
@@ -236,9 +245,9 @@ public class Prelude {
 	 *
 	 * @return The {@code ~cmp} function.
 	 */
-	public static FunctionReference getCmpReference() {
+	public static Function getCmpFunction() {
 		return loadProgram().lookupFunction("~cmp")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp")).makeFunctionReference();
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp"));
 	}
 
 	/**

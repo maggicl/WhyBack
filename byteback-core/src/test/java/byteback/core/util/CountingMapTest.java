@@ -11,9 +11,7 @@ public class CountingMapTest {
 		final CountingMap<Object, Object> map = new CountingMap<>();
 		final Object key = new Object();
 		final Object value = new Object();
-
 		map.put(key, value);
-
 		assertEquals((int) map.getAccessCount().get(key), 1);
 	}
 
@@ -23,10 +21,8 @@ public class CountingMapTest {
 		final Object key = new Object();
 		final Object value1 = new Object();
 		final Object value2 = new Object();
-
 		map.put(key, value1);
 		map.put(key, value2);
-
 		assertEquals((int) map.getAccessCount().get(key), 2);
 	}
 
@@ -36,10 +32,8 @@ public class CountingMapTest {
 		final Object key1 = new Object();
 		final Object key2 = new Object();
 		final Object value = new Object();
-
 		map.put(key1, value);
 		map.put(key2, value);
-
 		assertEquals((int) map.getAccessCount().get(key1), 1);
 		assertEquals((int) map.getAccessCount().get(key2), 1);
 	}

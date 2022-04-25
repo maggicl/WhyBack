@@ -188,7 +188,7 @@ public class SootContext {
 	 * Configures the context for the main conversion job.
 	 *
 	 * @param configuration
-	 *            The {@link Configuration} object containing the {@code --class}
+	 *            The {@link Configuration} instance including the {@code --class}
 	 *            and {@code --classpath} options specified by the user.
 	 */
 	public void configure(final Configuration configuration) {

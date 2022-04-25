@@ -1,29 +1,14 @@
 package byteback.core.converter.soottoboogie;
 
 import beaver.Parser;
+import byteback.core.Configuration;
 import byteback.core.util.Lazy;
-import byteback.frontend.boogie.ast.Assignee;
-import byteback.frontend.boogie.ast.AssignmentStatement;
-import byteback.frontend.boogie.ast.BooleanType;
-import byteback.frontend.boogie.ast.BoundedBinding;
-import byteback.frontend.boogie.ast.DefinedType;
-import byteback.frontend.boogie.ast.Expression;
-import byteback.frontend.boogie.ast.Function;
-import byteback.frontend.boogie.ast.FunctionReference;
-import byteback.frontend.boogie.ast.IntegerType;
-import byteback.frontend.boogie.ast.Label;
-import byteback.frontend.boogie.ast.Procedure;
-import byteback.frontend.boogie.ast.Program;
-import byteback.frontend.boogie.ast.RealType;
-import byteback.frontend.boogie.ast.Statement;
-import byteback.frontend.boogie.ast.Type;
-import byteback.frontend.boogie.ast.TypeAccess;
-import byteback.frontend.boogie.ast.TypeDefinition;
-import byteback.frontend.boogie.ast.UnknownTypeAccess;
-import byteback.frontend.boogie.ast.ValueReference;
-import byteback.frontend.boogie.ast.Variable;
+import byteback.frontend.boogie.ast.*;
 import byteback.frontend.boogie.builder.BoundedBindingBuilder;
 import byteback.frontend.boogie.util.ParserUtil;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,7 +29,37 @@ public class Prelude {
 	 */
 	private static final String PRELUDE_PATH = "boogie/BytebackPrelude.bpl";
 
+	/**
+	 * Stream from which the prelude will be loaded.
+	 */
+	private static InputStream stream;
+
+	/**
+	 * Lazily initialized prelude program.
+	 */
 	private static final Lazy<Program> PRELUDE_PROGRAM = Lazy.from(Prelude::initializeProgram);
+
+	/**
+	 * Configures the choice of prelude file.
+	 *
+	 * @param configuration
+	 *            A {@link Configuration} instance that may include the
+	 *            {@code --prelude} option specified by the user.
+	 */
+	public static void configure(final Configuration configuration) {
+		final String path = configuration.getPreludePath();
+
+		if (path != null) {
+			final File file = new File(path);
+
+			try {
+				stream = new FileInputStream(file);
+			} catch (final FileNotFoundException exception) {
+				throw new RuntimeException("Failed to find user-provided prelude file", exception);
+			}
+		}
+
+	}
 
 	/**
 	 * Lazily loads the prelude on request.
@@ -61,19 +76,20 @@ public class Prelude {
 	 * @return The prelude {@link Program}.
 	 */
 	public static Program initializeProgram() {
-		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		final InputStream stream = loader.getResourceAsStream(PRELUDE_PATH);
-		assert stream != null;
+		if (stream == null) {
+			final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			stream = loader.getResourceAsStream(PRELUDE_PATH);
+			assert stream != null;
+		}
+
 		final var reader = new InputStreamReader(stream);
 
 		try {
 			return ParserUtil.parseBoogieProgram(reader);
 		} catch (final IOException exception) {
-			log.error("Exception while opening the preamble");
-			throw new RuntimeException(exception);
+			throw new RuntimeException("Failed to open the preamble ", exception);
 		} catch (final Parser.Exception exception) {
-			log.error("Exception while parsing the preamble");
-			throw new RuntimeException(exception);
+			throw new RuntimeException("Failed to ", exception);
 		}
 	}
 

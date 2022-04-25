@@ -1,2 +1,0 @@
-RUN: %byteback --classpath %dummy_java8 --class byteback.dummy.condition.Counter > Counter.actual.bpl
-RUN: diff Counter.actual.bpl Counter.expected.bpl

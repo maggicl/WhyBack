@@ -1,6 +1,6 @@
 package byteback.core.converter.soottoboogie.expression;
 
-import byteback.core.converter.soottoboogie.AnnotationContext;
+import byteback.core.converter.soottoboogie.AnnotationNamespace;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.type.CasterProvider;
@@ -94,7 +94,7 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final var referenceBuilder = new FunctionReferenceBuilder();
-		final String methodName = method.getAnnotation(AnnotationContext.PRELUDE_ANNOTATION)
+		final String methodName = method.getAnnotation(AnnotationNamespace.PRELUDE_ANNOTATION)
 				.flatMap(SootAnnotation::getValue).map((element) -> new StringElementExtractor().visit(element))
 				.orElseGet(() -> MethodConverter.methodName(method));
 		referenceBuilder.name(methodName).prependArgument(Prelude.getHeapVariable().makeValueReference())

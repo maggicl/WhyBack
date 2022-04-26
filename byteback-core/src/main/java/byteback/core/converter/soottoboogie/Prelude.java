@@ -244,7 +244,6 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~instanceof function"));
 	}
 
-
 	/**
 	 * Getter for the array-access function.
 	 *
@@ -318,7 +317,8 @@ public class Prelude {
 	 *
 	 * @param reference
 	 *            The reference to the instance.
-	 * @param type The reference to the type to be checked.
+	 * @param type
+	 *            The reference to the type to be checked.
 	 * @return The {@link Expression} accessing the length of the array.
 	 */
 	public static Expression getTypeCheckExpression(final Expression instance, final Expression type) {

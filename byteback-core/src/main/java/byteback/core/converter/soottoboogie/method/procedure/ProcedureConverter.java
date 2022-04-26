@@ -1,23 +1,24 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
-import byteback.core.converter.soottoboogie.AnnotationContext;
+import byteback.core.converter.soottoboogie.AnnotationNamespace;
 import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.function.FunctionManager;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
+import byteback.core.representation.soot.annotation.SootAnnotationElement;
 import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
+import byteback.frontend.boogie.ast.Condition;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.PostCondition;
 import byteback.frontend.boogie.ast.PreCondition;
 import byteback.frontend.boogie.ast.ProcedureDeclaration;
-import byteback.frontend.boogie.ast.Specification;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.BoundedBindingBuilder;
@@ -25,8 +26,7 @@ import byteback.frontend.boogie.builder.ProcedureDeclarationBuilder;
 import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
 import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import java.util.Collection;
-import java.util.stream.Stream;
-import soot.BooleanType;
+import java.util.function.Supplier;
 import soot.Local;
 import soot.Type;
 import soot.VoidType;
@@ -74,43 +74,7 @@ public class ProcedureConverter extends MethodConverter {
 		builder.signature(signatureBuilder.build());
 	}
 
-	public static Stream<Expression> makeConditions(final SootMethod method, final String typeName) {
-		final Stream<String> sourceNames = method.getAnnotationValues(typeName)
-				.map((element) -> new StringElementExtractor().visit(element));
-		final List<Expression> arguments = makeParameters(method);
-
-		return sourceNames.map((sourceName) -> makeCondition(method, sourceName, arguments));
-	}
-
-	public static Expression makeCondition(final SootMethod target, final String sourceName,
-			final List<Expression> arguments) {
-		final Collection<SootType> parameterTypes = target.getParameterTypes();
-		final SootType returnType = target.getReturnType();
-		returnType.apply(new SootTypeVisitor<>() {
-
-			@Override
-			public void caseVoidType(final VoidType voidType) {
-				// Source will not include return parameter
-			}
-
-			@Override
-			public void caseDefault(final Type type) {
-				parameterTypes.add(returnType);
-			}
-
-		});
-		final SootMethod source = target.getSootClass()
-				.getSootMethod(sourceName, parameterTypes, new SootType(BooleanType.v()))
-				.orElseThrow(() -> new ConversionException("Could not find condition method " + sourceName));
-
-		if (source.isStatic() != target.isStatic()) {
-			throw new ConversionException("Incompatible target type for condition method " + sourceName);
-		}
-
-		return FunctionManager.instance().convert(source).getFunction().inline(arguments);
-	}
-
-	public static List<Expression> makeParameters(final SootMethod method) {
+	public static List<Expression> makeArguments(final SootMethod method) {
 		final List<Expression> references = new List<>(Prelude.getHeapVariable().makeValueReference());
 
 		for (Local local : method.getBody().getParameterLocals()) {
@@ -122,14 +86,64 @@ public class ProcedureConverter extends MethodConverter {
 		return references;
 	}
 
-	public static void buildSpecifications(final ProcedureDeclarationBuilder builder, final SootMethod method) {
-		final Stream<Specification> preconditions = makeConditions(method, AnnotationContext.REQUIRE_ANNOTATION)
-				.map((expression) -> new PreCondition(false, expression));
-		final Stream<Specification> postconditions = makeConditions(method, AnnotationContext.ENSURE_ANNOTATION)
-				.map((expression) -> new PostCondition(false, expression));
+	public static Expression makeConditionExpression(final SootMethod target, final String sourceName) {
+		final List<Expression> arguments = makeArguments(target);
+		final Collection<SootType> parameterTypes = target.getParameterTypes();
+		final SootType returnType = target.getReturnType();
+		returnType.apply(new SootTypeVisitor<>() {
 
-		builder.specification(preconditions::iterator);
-		builder.specification(postconditions::iterator);
+			@Override
+			public void caseVoidType(final VoidType voidType) {
+				// Source does not include a return parameter
+			}
+
+			@Override
+			public void caseDefault(final Type type) {
+				parameterTypes.add(returnType);
+			}
+
+		});
+		final SootMethod source = target.getSootClass()
+				.getSootMethod(sourceName, parameterTypes, SootType.booleanType())
+				.orElseThrow(() -> new ConversionException("Could not find condition method " + sourceName));
+
+		if (source.isStatic() != target.isStatic()) {
+			throw new ConversionException("Incompatible target type for condition method " + sourceName);
+		}
+
+		return FunctionManager.instance().convert(source).getFunction().inline(arguments);
+	}
+
+	public static void buildConditions(final ProcedureDeclarationBuilder builder, final SootMethod method) {
+		method.annotations().forEach((annotation) -> {
+			final Supplier<Condition> supplier;
+
+			switch (annotation.getTypeName()) {
+				case AnnotationNamespace.REQUIRE_ANNOTATION :
+				case AnnotationNamespace.REQUIRES_ANNOTATION :
+					supplier = PreCondition::new;
+					break;
+
+				case AnnotationNamespace.ENSURE_ANNOTATION :
+				case AnnotationNamespace.ENSURES_ANNOTATION :
+					supplier = PostCondition::new;
+					break;
+
+				default :
+					return;
+			}
+
+			final SootAnnotationElement element = annotation.getValue().orElseThrow(() -> new ConversionException(
+					"Annotation " + annotation.getTypeName() + " Requires a value argument"));
+			element.flatten().forEach((value) -> {
+				final Expression expression = makeConditionExpression(method,
+						new StringElementExtractor().visit(value));
+				final Condition condition = supplier.get();
+				condition.setFree(false);
+				condition.setExpression(expression);
+				builder.addSpecification(condition);
+			});
+		});
 	}
 
 	public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {
@@ -151,7 +165,7 @@ public class ProcedureConverter extends MethodConverter {
 		try {
 			procedureBuilder.name(methodName(method));
 			buildSignature(procedureBuilder, method);
-			buildSpecifications(procedureBuilder, method);
+			buildConditions(procedureBuilder, method);
 			buildBody(procedureBuilder, method);
 		} catch (ConversionException exception) {
 			throw new ProcedureConversionException(method, exception);

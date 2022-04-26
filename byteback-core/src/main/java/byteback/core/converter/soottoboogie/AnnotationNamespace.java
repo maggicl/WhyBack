@@ -8,7 +8,7 @@ import byteback.core.representation.soot.unit.SootClass;
  *
  * @author paganma
  */
-public class AnnotationContext {
+public class AnnotationNamespace {
 
 	/**
 	 * All the annotation classes must be located under this package. The classes
@@ -32,7 +32,11 @@ public class AnnotationContext {
 
 	public static final String REQUIRE_ANNOTATION = "Lbyteback/annotations/Contract$Require;";
 
+	public static final String REQUIRES_ANNOTATION = "Lbyteback/annotations/Contract$Requires;";
+
 	public static final String ENSURE_ANNOTATION = "Lbyteback/annotations/Contract$Ensure;";
+
+	public static final String ENSURES_ANNOTATION = "Lbyteback/annotations/Contract$Ensures;";
 
 	public static final String OLD_NAME = "old";
 

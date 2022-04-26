@@ -18,10 +18,22 @@ public class GCD {
 		return gte(returns, 0);
 	}
 
+	@Condition
+	public static boolean result_divides_both_arguments(int a, int b, int returns) {
+		return true;
+	}
+
 	@Require("arguments_are_positive")
 	@Ensure("result_is_positive")
+	@Ensure("result_divides_both_arguments")
 	public static int gcd(int a, int b) {
-		return 1;
+		if (a == b) {
+			return a;
+		} else if (a > b) {
+			return gcd(a - b, b);
+		} else {
+			return gcd(a, b - a);
+		}
 	}
 
 }

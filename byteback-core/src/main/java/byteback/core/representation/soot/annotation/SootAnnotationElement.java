@@ -1,6 +1,9 @@
 package byteback.core.representation.soot.annotation;
 
 import byteback.core.representation.Visitable;
+import java.util.stream.Stream;
+import soot.tagkit.AnnotationAnnotationElem;
+import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationStringElem;
 
@@ -17,12 +20,12 @@ public class SootAnnotationElement implements Visitable<SootAnnotationElementVis
 
 		@Override
 		public void caseDefault(final AnnotationElem element) {
+			System.out.println(element);
 			throw new IllegalArgumentException("Expected annotation element of type string, got " + element);
 		}
 
 		@Override
 		public String result() {
-
 			if (value == null) {
 				throw new IllegalStateException("Cannot retrieve String value");
 			} else {
@@ -32,10 +35,42 @@ public class SootAnnotationElement implements Visitable<SootAnnotationElementVis
 
 	}
 
+	private static void flatten(final Stream.Builder<SootAnnotationElement> builder, final AnnotationElem element) {
+		element.apply(new SootAnnotationElementVisitor<>() {
+
+			@Override
+			public void caseAnnotationArrayElem(final AnnotationArrayElem element) {
+				for (AnnotationElem value : element.getValues()) {
+					flatten(builder, value);
+				}
+			}
+
+			@Override
+			public void caseAnnotationAnnotationElem(final AnnotationAnnotationElem element) {
+				for (AnnotationElem value : element.getValue().getElems()) {
+					flatten(builder, value);
+				}
+			}
+
+			@Override
+			public void caseDefault(final AnnotationElem $) {
+				builder.add(new SootAnnotationElement(element));
+			}
+
+		});
+	}
+
 	private final AnnotationElem sootAnnotationElement;
 
 	public SootAnnotationElement(final AnnotationElem sootAnnotationElement) {
 		this.sootAnnotationElement = sootAnnotationElement;
+	}
+
+	public Stream<SootAnnotationElement> flatten() {
+		final Stream.Builder<SootAnnotationElement> builder = Stream.builder();
+		flatten(builder, sootAnnotationElement);
+
+		return builder.build();
 	}
 
 	public String getName() {

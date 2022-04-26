@@ -1,6 +1,7 @@
 package byteback.annotations;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -37,10 +38,17 @@ public interface Contract {
 		public String value();
 	}
 
+	@Repeatable(Ensures.class)
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-	public static @interface Ensure {
+	public @interface Ensure {
 		public String value();
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	public @interface Ensures {
+		public Ensure[] value();
 	}
 
 	/**

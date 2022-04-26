@@ -1,4 +1,4 @@
-type Type;
+type Type  = Reference;
 
 const ~Object.Type : Field Type;
 
@@ -18,15 +18,13 @@ function ~read<a>(h : Store, r : Reference, f : Field a) returns (a) { h[r][f] }
 
 function ~update<a>(h : Store, r : Reference, f : Field a, v : a) returns (Store) { h[r := h[r][f := v]] }
 
-procedure ~new() returns (~ret : Reference);
+function ~typeof(h : Store, r : Reference) returns (Type) { ~read(h, r, ~Object.Type) }
 
-type Global a;
+function ~instanceof(h : Store, r : Reference, t : Type) returns (bool) { (~typeof(h, r) == t) }
 
-type Table  = [Type]<a>[Global a]a;
+function ~allocated(h : Store, r : Reference) returns (bool);
 
-function ~fetch<a>(t : Table, r : Type, g : Global a) returns (a) { t[r][g] }
-
-function ~put<a>(t : Table, r : Type, g : Global a, v : a) returns (a) { t[r := t[r][g := v]] }
+procedure ~new(t : Type) returns (~ret : Reference);
 
 type Array a = Field [int]a;
 
@@ -108,6 +106,8 @@ function ~real<a>(a) returns (real);
 
 procedure java.lang.Object.$init$##(this : Reference) returns ();
 
+const unique java.lang.Object : Type;
+
 const unique byteback.dummy.complete.Sum : Type;
 
 procedure byteback.dummy.complete.Sum.$init$##(this : Reference) returns ()
@@ -121,7 +121,6 @@ function byteback.dummy.complete.Sum.positive_arguments_imply_positive_sum#int?#
 function byteback.dummy.complete.Sum.positive_arguments#int?#(~heap : Store, as : Reference) returns (bool) { (forall i : int :: ~implies(~heap, ~lt(~heap, i, ~lengthof(~heap, as)), ~gt(~heap, ~get(~heap, as, ~Array.int, i), 0))) }
 
 procedure byteback.dummy.complete.Sum.sum#int?#(as : Reference) returns (~ret : int)
-  ensures ~implies(~heap, byteback.dummy.complete.Sum.positive_arguments#int?#(~heap, as), ~gte(~heap, ~ret, 0));
 {
   var sum : int;
   var i : int;

@@ -71,11 +71,11 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		final Expression condition = visit(argument, SootType.booleanType());
 		assert !iterator.hasNext() : "Wrong number of arguments to contract method";
 
-		if (name.equals(AnnotationContext.ASSERTION_NAME)) {
+		if (name.equals(AnnotationNamespace.ASSERTION_NAME)) {
 			bodyExtractor.addStatement(new AssertStatement(condition));
-		} else if (name.equals(AnnotationContext.ASSUMPTION_NAME)) {
+		} else if (name.equals(AnnotationNamespace.ASSUMPTION_NAME)) {
 			bodyExtractor.addStatement(new AssumeStatement(condition));
-		} else if (name.equals(AnnotationContext.INVARIANT_NAME)) {
+		} else if (name.equals(AnnotationNamespace.INVARIANT_NAME)) {
 			bodyExtractor.addInvariant(condition);
 		} else {
 			throw new ConversionException("Unknown special method: " + method.getName());
@@ -85,11 +85,11 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 	@Override
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final SootClass clazz = method.getSootClass();
-		final boolean isPure = method.getAnnotation(AnnotationContext.PURE_ANNOTATION).isPresent();
+		final boolean isPure = method.getAnnotation(AnnotationNamespace.PURE_ANNOTATION).isPresent();
 
 		if (isPure) {
 			super.pushFunctionReference(method, arguments);
-		} else if (AnnotationContext.isContractClass(clazz)) {
+		} else if (AnnotationNamespace.isContractClass(clazz)) {
 			addContract(method, arguments);
 		} else {
 			final TargetedCallStatement callStatement = makeCall(method, arguments);

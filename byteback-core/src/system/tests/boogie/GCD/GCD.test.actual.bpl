@@ -1,4 +1,4 @@
-type Type;
+type Type  = Reference;
 
 const ~Object.Type : Field Type;
 
@@ -18,15 +18,13 @@ function ~read<a>(h : Store, r : Reference, f : Field a) returns (a) { h[r][f] }
 
 function ~update<a>(h : Store, r : Reference, f : Field a, v : a) returns (Store) { h[r := h[r][f := v]] }
 
-procedure ~new() returns (~ret : Reference);
+function ~typeof(h : Store, r : Reference) returns (Type) { ~read(h, r, ~Object.Type) }
 
-type Global a;
+function ~instanceof(h : Store, r : Reference, t : Type) returns (bool) { (~typeof(h, r) == t) }
 
-type Table  = [Type]<a>[Global a]a;
+function ~allocated(h : Store, r : Reference) returns (bool);
 
-function ~fetch<a>(t : Table, r : Type, g : Global a) returns (a) { t[r][g] }
-
-function ~put<a>(t : Table, r : Type, g : Global a, v : a) returns (a) { t[r := t[r][g := v]] }
+procedure ~new(t : Type) returns (~ret : Reference);
 
 type Array a = Field [int]a;
 
@@ -108,6 +106,8 @@ function ~real<a>(a) returns (real);
 
 procedure java.lang.Object.$init$##(this : Reference) returns ();
 
+const unique java.lang.Object : Type;
+
 const unique byteback.dummy.complete.GCD : Type;
 
 procedure byteback.dummy.complete.GCD.$init$##(this : Reference) returns ()
@@ -119,7 +119,24 @@ procedure byteback.dummy.complete.GCD.$init$##(this : Reference) returns ()
 procedure byteback.dummy.complete.GCD.gcd#int#int#(a : int, b : int) returns (~ret : int)
   requires (~gt(~heap, a, 0) && ~gt(~heap, b, 0));
   ensures ~gte(~heap, ~ret, 0);
+  ensures true;
 {
-  ~ret := 1;
+  var $stack3 : int;
+  var $stack5 : int;
+  if ((a != b)) {
+    goto label1;
+  }
+  ~ret := a;
+  return;
+label1:
+  if ((a <= b)) {
+    goto label2;
+  }
+  call $stack5 := byteback.dummy.complete.GCD.gcd#int#int#((a - b), b);
+  ~ret := $stack5;
+  return;
+label2:
+  call $stack3 := byteback.dummy.complete.GCD.gcd#int#int#(a, (b - a));
+  ~ret := $stack3;
   return;
 }

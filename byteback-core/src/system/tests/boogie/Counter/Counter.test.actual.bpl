@@ -1,4 +1,4 @@
-type Type;
+type Type  = Reference;
 
 const ~Object.Type : Field Type;
 
@@ -18,15 +18,13 @@ function ~read<a>(h : Store, r : Reference, f : Field a) returns (a) { h[r][f] }
 
 function ~update<a>(h : Store, r : Reference, f : Field a, v : a) returns (Store) { h[r := h[r][f := v]] }
 
-procedure ~new() returns (~ret : Reference);
+function ~typeof(h : Store, r : Reference) returns (Type) { ~read(h, r, ~Object.Type) }
 
-type Global a;
+function ~instanceof(h : Store, r : Reference, t : Type) returns (bool) { (~typeof(h, r) == t) }
 
-type Table  = [Type]<a>[Global a]a;
+function ~allocated(h : Store, r : Reference) returns (bool);
 
-function ~fetch<a>(t : Table, r : Type, g : Global a) returns (a) { t[r][g] }
-
-function ~put<a>(t : Table, r : Type, g : Global a, v : a) returns (a) { t[r := t[r][g := v]] }
+procedure ~new(t : Type) returns (~ret : Reference);
 
 type Array a = Field [int]a;
 
@@ -108,6 +106,8 @@ function ~real<a>(a) returns (real);
 
 procedure java.lang.Object.$init$##(this : Reference) returns ();
 
+const unique java.lang.Object : Type;
+
 const unique byteback.dummy.condition.Counter : Type;
 
 const unique byteback.dummy.condition.Counter.count : Field int;
@@ -116,7 +116,7 @@ procedure byteback.dummy.condition.Counter.main##() returns ()
   modifies ~heap;
 {
   var $stack1 : Reference;
-  call $stack1 := ~new();
+  call $stack1 := ~new(byteback.dummy.condition.Counter);
   call byteback.dummy.condition.Counter.$init$##($stack1);
   assert ~eq(~heap, ~read(~heap, $stack1, byteback.dummy.condition.Counter.count), 0);
   call byteback.dummy.condition.Counter.increment##($stack1);
@@ -129,7 +129,6 @@ procedure byteback.dummy.condition.Counter.main##() returns ()
 }
 
 procedure byteback.dummy.condition.Counter.$init$##(this : Reference) returns ()
-  ensures ~eq(~heap, ~read(~heap, this, byteback.dummy.condition.Counter.count), 0);
   modifies ~heap;
 {
   call java.lang.Object.$init$##(this);
@@ -138,7 +137,6 @@ procedure byteback.dummy.condition.Counter.$init$##(this : Reference) returns ()
 }
 
 procedure byteback.dummy.condition.Counter.increment##(this : Reference) returns ()
-  ensures ~eq(~heap, ~read(~heap, this, byteback.dummy.condition.Counter.count), (old(~read(~heap, this, byteback.dummy.condition.Counter.count)) + 1));
   modifies ~heap;
 {
   ~heap := ~update(~heap, this, byteback.dummy.condition.Counter.count, (~read(~heap, this, byteback.dummy.condition.Counter.count) + 1));
@@ -146,7 +144,6 @@ procedure byteback.dummy.condition.Counter.increment##(this : Reference) returns
 }
 
 procedure byteback.dummy.condition.Counter.countTo10##(this : Reference) returns ()
-  ensures ~eq(~heap, ~read(~heap, this, byteback.dummy.condition.Counter.count), (old(~read(~heap, this, byteback.dummy.condition.Counter.count)) + 10));
   modifies ~heap;
 {
   var i : int;
@@ -163,7 +160,6 @@ label1:
 }
 
 procedure byteback.dummy.condition.Counter.countTo10Indirectly##(this : Reference) returns ()
-  ensures ~eq(~heap, ~read(~heap, this, byteback.dummy.condition.Counter.count), (old(~read(~heap, this, byteback.dummy.condition.Counter.count)) + 10));
   modifies ~heap;
 {
   var i : int;

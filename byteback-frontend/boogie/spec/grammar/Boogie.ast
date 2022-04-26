@@ -243,10 +243,12 @@ Label ::= <Target:String>;
 // Specifications
 abstract Specification ::= <Free:Boolean>;
 
-PreCondition : Specification ::= Expression;
+abstract Condition : Specification ::= Expression;
 
-PostCondition : Specification ::= Expression;
+PreCondition : Condition;
+
+PostCondition : Condition;
+
+LoopInvariant : Condition; 
 
 FrameCondition : Specification ::= Reference:ValueReference*;
-
-LoopInvariant : Specification ::= Expression;

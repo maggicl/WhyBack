@@ -1,6 +1,6 @@
 package byteback.core.converter.soottoboogie.method.function;
 
-import byteback.core.converter.soottoboogie.AnnotationContext;
+import byteback.core.converter.soottoboogie.AnnotationNamespace;
 import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.LocalExtractor;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
@@ -55,9 +55,9 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 	public void pushQuantifier(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final String quantifierName = method.getName();
 
-		if (quantifierName.equals(AnnotationContext.EXISTENTIAL_QUANTIFIER_NAME)) {
+		if (quantifierName.equals(AnnotationNamespace.EXISTENTIAL_QUANTIFIER_NAME)) {
 			pushExistentialQuantifier(arguments);
-		} else if (quantifierName.equals(AnnotationContext.UNIVERSAL_QUANTIFIER_NAME)) {
+		} else if (quantifierName.equals(AnnotationNamespace.UNIVERSAL_QUANTIFIER_NAME)) {
 			pushUniversalQuantifier(arguments);
 		} else {
 			throw new ConversionException("Unknown quantifier method: " + method.getName());
@@ -84,9 +84,9 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 	public void pushSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final String specialName = method.getName();
 
-		if (specialName.equals(AnnotationContext.OLD_NAME)) {
+		if (specialName.equals(AnnotationNamespace.OLD_NAME)) {
 			pushOld(method, arguments);
-		} else if (specialName.equals(AnnotationContext.CONDITIONAL_NAME)) {
+		} else if (specialName.equals(AnnotationNamespace.CONDITIONAL_NAME)) {
 			pushConditional(method, arguments);
 		} else {
 			throw new ConversionException("Unknown special method: " + method.getName());
@@ -100,11 +100,11 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 	@Override
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final SootClass clazz = method.getSootClass();
-		if (AnnotationContext.isBindingClass(clazz)) {
+		if (AnnotationNamespace.isBindingClass(clazz)) {
 			pushBinding(method, arguments);
-		} else if (AnnotationContext.isQuantifierClass(clazz)) {
+		} else if (AnnotationNamespace.isQuantifierClass(clazz)) {
 			pushQuantifier(method, arguments);
-		} else if (AnnotationContext.isSpecialClass(clazz)) {
+		} else if (AnnotationNamespace.isSpecialClass(clazz)) {
 			pushSpecial(method, arguments);
 		} else {
 			super.pushFunctionReference(method, arguments);

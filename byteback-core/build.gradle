@@ -17,15 +17,25 @@ application {
 		mainClass = 'byteback.core.Main'
 }
 
-def copyResources = tasks.register('copyResources', Copy) {
+def getDummyJars() {
 		def jars = []
 
 		project(':byteback-dummy').subprojects.each { dummy ->
 				jars += dummy.shadowJar
 		}
 
-		from jars
+		return jars;
+}
+
+def copyIntegrationResources = tasks.register('copyIntegrationResources', Copy) {
+		from getDummyJars();
 		into 'src/integration/resources/compiled/'
 }
 
-integration.dependsOn(copyResources)
+def copySystemResources = tasks.register('copySystemResources', Copy) {
+		from getDummyJars();
+		into 'src/system/dummy/'
+}
+
+integration.dependsOn(copyIntegrationResources)
+installDist.dependsOn(copySystemResources)

@@ -20,6 +20,10 @@ public class SootAnnotation {
 		return tag.getElems().stream().map(SootAnnotationElement::new);
 	}
 
+	public Stream<SootAnnotationElement> subelements() {
+		return elements().flatMap(SootAnnotationElement::flatten);
+	}
+
 	public Optional<SootAnnotationElement> getValue() {
 		return elements().filter((element) -> element.getName().equals("value")).findFirst();
 	}

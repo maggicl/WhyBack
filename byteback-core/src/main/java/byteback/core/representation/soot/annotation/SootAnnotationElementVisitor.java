@@ -1,10 +1,10 @@
 package byteback.core.representation.soot.annotation;
 
 import byteback.core.representation.Visitor;
+import soot.tagkit.AbstractAnnotationElemTypeSwitch;
 import soot.tagkit.AnnotationElem;
-import soot.util.annotations.AnnotationElemSwitch;
 
-public abstract class SootAnnotationElementVisitor<R> extends AnnotationElemSwitch
+public abstract class SootAnnotationElementVisitor<R> extends AbstractAnnotationElemTypeSwitch
 		implements
 			Visitor<AnnotationElem, R> {
 

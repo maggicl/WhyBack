@@ -18,11 +18,6 @@ public class GCD {
 		return gte(returns, 0);
 	}
 
-	@Condition
-	public static boolean result_divides_both_arguments(int a, int b, int returns) {
-		return true;
-	}
-
 	@Require("arguments_are_positive")
 	@Ensure("result_is_positive")
 	@Ensure("result_divides_both_arguments")

@@ -17,13 +17,16 @@ import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
 import java.util.Iterator;
-import soot.BooleanType;
+import java.util.Optional;
+
 import soot.Local;
 import soot.Unit;
 import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
 
 public class ProcedureExpressionExtractor extends SubstitutingExtractor {
+
+	private static final ReferenceSupplier EMPTY_REFERENCE_SUPPLIER = () -> Optional.empty();
 
 	final ProcedureBodyExtractor bodyExtractor;
 
@@ -37,6 +40,10 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		this.bodyExtractor = bodyExtractor;
 		this.referenceSupplier = referenceSupplier;
 		this.unit = unit;
+	}
+
+	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor, final Unit unit) {
+		this(bodyExtractor, EMPTY_REFERENCE_SUPPLIER, unit);
 	}
 
 	public TargetedCallStatement makeCall(final SootMethod method, final Iterable<SootExpression> arguments) {
@@ -62,7 +69,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		final String name = method.getName();
 		final Iterator<SootExpression> iterator = arguments.iterator();
 		final SootExpression argument = iterator.next();
-		final Expression condition = visit(argument, new SootType(BooleanType.v()));
+		final Expression condition = visit(argument, SootType.booleanType());
 		assert !iterator.hasNext() : "Wrong number of arguments to contract method";
 
 		if (name.equals(AnnotationContext.ASSERTION_NAME)) {

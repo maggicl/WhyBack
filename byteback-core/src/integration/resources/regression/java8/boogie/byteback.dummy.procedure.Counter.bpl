@@ -1,4 +1,4 @@
-const byteback.dummy.procedure.Counter.count: Field int;
+const unique byteback.dummy.procedure.Counter.count: Field int;
 
 procedure byteback.dummy.procedure.Counter.main##() returns ()
   modifies ~heap;

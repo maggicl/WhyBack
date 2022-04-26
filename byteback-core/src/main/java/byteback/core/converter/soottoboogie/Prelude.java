@@ -130,6 +130,18 @@ public class Prelude {
 	}
 
 	/**
+	 * Getter for the reftype-type model.
+	 *
+	 * @return The {@link Type} corresponding to a generic reference type.
+	 */
+	public static DefinedType getTypeType() {
+		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Type")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for Type type"));
+
+		return typeDefinition.getType();
+	}
+
+	/**
 	 * Getter for the Boogie boolean type.
 	 *
 	 * @return The {@code bool} {@link Type}.

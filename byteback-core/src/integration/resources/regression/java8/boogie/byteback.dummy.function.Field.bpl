@@ -1,4 +1,4 @@
-const byteback.dummy.function.Field.field: Field int;
+const unique byteback.dummy.function.Field.field: Field int;
 
 procedure byteback.dummy.function.Field.$init$##(this: Reference) returns ()
 {

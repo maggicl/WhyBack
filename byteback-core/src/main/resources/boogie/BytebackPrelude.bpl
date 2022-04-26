@@ -44,6 +44,11 @@ function ~fetch<a>(t: Table, r: Type, g: Global a) returns (a)
   t[r][g]
 }
 
+function ~put<a>(t: Table, r: Type, g: Global a, v: a) returns (a)
+{
+  t[r := t[r][g := v]]
+}
+
 // -------------------------------------------------------------------
 // Array model
 // -------------------------------------------------------------------

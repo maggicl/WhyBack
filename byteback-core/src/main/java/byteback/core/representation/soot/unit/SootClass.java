@@ -1,6 +1,8 @@
 package byteback.core.representation.soot.unit;
 
 import byteback.core.representation.soot.type.SootType;
+import soot.RefType;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;

@@ -5,6 +5,7 @@ import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.field.FieldConverter;
 import byteback.core.converter.soottoboogie.method.function.FunctionConverter;
 import byteback.core.converter.soottoboogie.method.procedure.ProcedureConverter;
+import byteback.core.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.core.representation.soot.unit.SootClass;
 import byteback.frontend.boogie.ast.Program;
 import java.util.stream.Stream;
@@ -19,6 +20,7 @@ public class ProgramConverter {
 
 	public Program convert(final SootClass clazz) {
 		final var program = new Program();
+		program.addDeclaration(ReferenceTypeConverter.instance().convert(clazz));
 		clazz.fields().forEach((field) -> program.addDeclaration(FieldConverter.instance().convert(field)));
 		clazz.methods().forEach((method) -> {
 			if (method.getAnnotation(AnnotationContext.PURE_ANNOTATION).isPresent()) {

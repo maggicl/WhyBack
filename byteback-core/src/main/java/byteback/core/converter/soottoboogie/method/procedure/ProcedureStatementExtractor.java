@@ -9,7 +9,6 @@ import byteback.core.converter.soottoboogie.statement.StatementConversionExcepti
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
-import byteback.core.representation.soot.body.SootStatement;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootField;
@@ -43,8 +42,6 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	interface ReferenceSupplier extends Supplier<Optional<ValueReference>> {
 	}
-
-	private static final ReferenceSupplier EMPTY_REFERENCE_SUPPLIER = () -> Optional.empty();
 
 	private final ProcedureBodyExtractor bodyExtractor;
 
@@ -118,8 +115,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				};
 				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, referenceSupplier, assignment);
 				final Expression assigned = extractor.visit(right, left.getType());
-				final Expression indexReference = new ProcedureExpressionExtractor(bodyExtractor,
-						EMPTY_REFERENCE_SUPPLIER, assignment).visit(index);
+				final Expression indexReference = new ProcedureExpressionExtractor(bodyExtractor, assignment).visit(index);
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
 				addStatement(Prelude.getArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
 						indexReference, assigned));
@@ -144,8 +140,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final var operand = new SootExpression(returnStatement.getOp());
 		final ValueReference valueReference = Prelude.getReturnValueReference();
 		final var assignee = Assignee.of(valueReference);
-		final Expression expression = new ProcedureExpressionExtractor(bodyExtractor, EMPTY_REFERENCE_SUPPLIER,
-				returnStatement).visit(operand, bodyExtractor.getReturnType());
+		final Expression expression = new ProcedureExpressionExtractor(bodyExtractor, returnStatement).visit(operand, bodyExtractor.getReturnType());
 		addSingleAssignment(assignee, expression);
 		addStatement(new ReturnStatement());
 	}
@@ -163,7 +158,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final var ifBuilder = new IfStatementBuilder();
 		final var condition = new SootExpression(ifStatement.getCondition());
 		final Label label = bodyExtractor.getLabelCollector().fetchLabel(ifStatement.getTarget());
-		ifBuilder.condition(new ProcedureExpressionExtractor(bodyExtractor, EMPTY_REFERENCE_SUPPLIER, ifStatement)
+		ifBuilder.condition(new ProcedureExpressionExtractor(bodyExtractor, ifStatement)
 				.visit(condition, type)).thenStatement(new GotoStatement(label));
 		addStatement(ifBuilder.build());
 	}
@@ -171,7 +166,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 		final var invoke = new SootExpression(invokeStatement.getInvokeExpr());
-		invoke.apply(new ProcedureExpressionExtractor(bodyExtractor, EMPTY_REFERENCE_SUPPLIER, invokeStatement));
+		invoke.apply(new ProcedureExpressionExtractor(bodyExtractor, invokeStatement));
 	}
 
 	@Override

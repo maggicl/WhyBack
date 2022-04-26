@@ -1,3 +1,9 @@
+type Type;
+
+const ~Object.Type : Field Type;
+
+axiom (forall h : Store, t : Type :: (h[~null][~Object.Type] <: t));
+
 type Reference;
 
 const ~null : Reference;
@@ -14,11 +20,13 @@ function ~update<a>(h : Store, r : Reference, f : Field a, v : a) returns (Store
 
 procedure ~new() returns (~ret : Reference);
 
-type Type;
+type Global a;
 
-const ~Object.Type : Field Type;
+type Table  = [Type]<a>[Global a]a;
 
-axiom (forall h : Store, t : Type :: (h[~null][~Object.Type] <: t));
+function ~fetch<a>(t : Table, r : Type, g : Global a) returns (a) { t[r][g] }
+
+function ~put<a>(t : Table, r : Type, g : Global a, v : a) returns (a) { t[r := t[r][g := v]] }
 
 type Array a = Field [int]a;
 
@@ -97,6 +105,8 @@ axiom (~int(false) == 0);
 axiom (~int(true) == 1);
 
 function ~real<a>(a) returns (real);
+
+const byteback.dummy.complete.GCD : Type;
 
 procedure byteback.dummy.complete.GCD.$init$##(this : Reference) returns ()
 {

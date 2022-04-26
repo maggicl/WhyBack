@@ -1,8 +1,6 @@
 package byteback.core.representation.soot.unit;
 
 import byteback.core.representation.soot.type.SootType;
-import soot.RefType;
-
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -57,6 +55,14 @@ public class SootClass {
 
 	public SootType getType() {
 		return new SootType(sootClass.getType());
+	}
+
+	public SootClass getSuperClass() {
+		return new SootClass(sootClass.getSuperclass());
+	}
+
+	public Stream<SootClass> interfaces() {
+		return sootClass.getInterfaces().stream().map(SootClass::new);
 	}
 
 	/**

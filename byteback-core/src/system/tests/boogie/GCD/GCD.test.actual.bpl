@@ -6,7 +6,7 @@ axiom (forall h : Store, t : Type :: (h[~null][~Object.Type] <: t));
 
 type Reference;
 
-const ~null : Reference;
+const unique ~null : Reference;
 
 type Field a;
 
@@ -106,7 +106,9 @@ axiom (~int(true) == 1);
 
 function ~real<a>(a) returns (real);
 
-const byteback.dummy.complete.GCD : Type;
+procedure java.lang.Object.$init$##(this : Reference) returns ();
+
+const unique byteback.dummy.complete.GCD : Type;
 
 procedure byteback.dummy.complete.GCD.$init$##(this : Reference) returns ()
 {

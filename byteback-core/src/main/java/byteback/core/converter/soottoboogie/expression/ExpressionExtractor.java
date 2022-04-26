@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import soot.BooleanType;
 import soot.IntType;
 import soot.Local;
+import soot.RefType;
 import soot.Type;
 import soot.Value;
 import soot.jimple.*;
@@ -248,6 +249,15 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	}
 
 	@Override
+	public void caseStaticFieldRef(final StaticFieldRef staticFieldReference) {
+		final var field = new SootField(staticFieldReference.getField());
+		final SootClass base = field.getSootClass();
+		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
+		final Expression heapAccess = Prelude.getHeapAccessExpression(ValueReference.of(base.getName()), reference);
+		pushCastExpression(heapAccess, field.getType());
+	}
+
+	@Override
 	public void caseArrayRef(final ArrayRef arrayReference) {
 		final var base = new SootExpression(arrayReference.getBase());
 		final var arrayType = new SootType(arrayReference.getType());
@@ -263,8 +273,28 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	}
 
 	@Override
+	public void caseInstanceOfExpr(final InstanceOfExpr instanceOf) {
+		final var left = new SootExpression(instanceOf.getOp());
+		instanceOf.getCheckType().apply(new SootTypeVisitor<>() {
+
+			@Override
+			public void caseRefType(final RefType referenceType) {
+				final ValueReference typeReference = ValueReference.of(referenceType.getClassName());
+				pushExpression(Prelude.getTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference));
+			}
+
+			@Override
+			public void caseDefault(final Type type) {
+				throw new ConversionException("Cannot convert `instanceof` expressions for type " + type);
+			}
+
+		});
+	}
+
+	@Override
 	public void caseDefault(final Value value) {
-		throw new ExpressionConversionException(value, "Unable to convert expression of type " + value.getClass().getName());
+		throw new ExpressionConversionException(value,
+				"Unable to convert expression of type " + value.getClass().getName());
 	}
 
 }

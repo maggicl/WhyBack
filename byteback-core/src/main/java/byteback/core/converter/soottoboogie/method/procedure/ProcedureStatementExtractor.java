@@ -115,7 +115,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				};
 				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, referenceSupplier, assignment);
 				final Expression assigned = extractor.visit(right, left.getType());
-				final Expression indexReference = new ProcedureExpressionExtractor(bodyExtractor, assignment).visit(index);
+				final Expression indexReference = new ProcedureExpressionExtractor(bodyExtractor, assignment)
+						.visit(index);
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
 				addStatement(Prelude.getArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
 						indexReference, assigned));
@@ -140,7 +141,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final var operand = new SootExpression(returnStatement.getOp());
 		final ValueReference valueReference = Prelude.getReturnValueReference();
 		final var assignee = Assignee.of(valueReference);
-		final Expression expression = new ProcedureExpressionExtractor(bodyExtractor, returnStatement).visit(operand, bodyExtractor.getReturnType());
+		final Expression expression = new ProcedureExpressionExtractor(bodyExtractor, returnStatement).visit(operand,
+				bodyExtractor.getReturnType());
 		addSingleAssignment(assignee, expression);
 		addStatement(new ReturnStatement());
 	}
@@ -158,8 +160,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final var ifBuilder = new IfStatementBuilder();
 		final var condition = new SootExpression(ifStatement.getCondition());
 		final Label label = bodyExtractor.getLabelCollector().fetchLabel(ifStatement.getTarget());
-		ifBuilder.condition(new ProcedureExpressionExtractor(bodyExtractor, ifStatement)
-				.visit(condition, type)).thenStatement(new GotoStatement(label));
+		ifBuilder.condition(new ProcedureExpressionExtractor(bodyExtractor, ifStatement).visit(condition, type))
+				.thenStatement(new GotoStatement(label));
 		addStatement(ifBuilder.build());
 	}
 

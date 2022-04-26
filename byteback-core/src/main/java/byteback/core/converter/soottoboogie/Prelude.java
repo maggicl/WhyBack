@@ -12,8 +12,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Facade class interfacing to the prelude file.
@@ -21,8 +19,6 @@ import org.slf4j.LoggerFactory;
  * @author paganma
  */
 public class Prelude {
-
-	private static final Logger log = LoggerFactory.getLogger(Prelude.class);
 
 	/**
 	 * Path to the prelude file included in the resources.
@@ -108,7 +104,7 @@ public class Prelude {
 	/**
 	 * Getter for the heap-type model.
 	 *
-	 * @return The {@code Store} {@link Type}.
+	 * @return The definition of the {@code Store} {@link Type}.
 	 */
 	public static Type getHeapType() {
 		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Store")
@@ -120,7 +116,7 @@ public class Prelude {
 	/**
 	 * Getter for the field-type model.
 	 *
-	 * @return The {@code Field} {@link Type}.
+	 * @return The definition of the {@code Field} {@link Type}.
 	 */
 	public static DefinedType getFieldType() {
 		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Field")
@@ -239,6 +235,17 @@ public class Prelude {
 	}
 
 	/**
+	 * Getter for the instanceof function.
+	 *
+	 * @return The {@code ~instanceof} function.
+	 */
+	public static Function getTypeCheckFunction() {
+		return loadProgram().lookupFunction("~instanceof")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~instanceof function"));
+	}
+
+
+	/**
 	 * Getter for the array-access function.
 	 *
 	 * @return The {@code ~get} function.
@@ -302,6 +309,23 @@ public class Prelude {
 		final FunctionReference reference = getArrayLengthFunction().makeFunctionReference();
 		reference.addArgument(getHeapVariable().makeValueReference());
 		reference.addArgument(array);
+
+		return reference;
+	}
+
+	/**
+	 * Builder for a type-check expression.
+	 *
+	 * @param reference
+	 *            The reference to the instance.
+	 * @param type The reference to the type to be checked.
+	 * @return The {@link Expression} accessing the length of the array.
+	 */
+	public static Expression getTypeCheckExpression(final Expression instance, final Expression type) {
+		final FunctionReference reference = getTypeCheckFunction().makeFunctionReference();
+		reference.addArgument(getHeapVariable().makeValueReference());
+		reference.addArgument(instance);
+		reference.addArgument(type);
 
 		return reference;
 	}

@@ -1,9 +1,10 @@
 package byteback.dummy.complete;
 
+import static byteback.annotations.Contract.*;
+import static byteback.annotations.Operator.*;
+
 import byteback.annotations.Contract.Ensure;
 import byteback.annotations.Contract.Require;
-import static byteback.annotations.Operator.*;
-import static byteback.annotations.Contract.*;
 
 public class GCD {
 

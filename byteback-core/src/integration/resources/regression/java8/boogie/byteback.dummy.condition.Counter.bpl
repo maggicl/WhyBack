@@ -1,10 +1,12 @@
 const unique byteback.dummy.condition.Counter.count: Field int;
 
+const unique byteback.dummy.condition.Counter: Type;
+
 procedure byteback.dummy.condition.Counter.main##() returns ()
   modifies ~heap;
 {
   var $stack1: Reference;
-  call $stack1 := ~new();
+  call $stack1 := ~new(byteback.dummy.condition.Counter);
   call byteback.dummy.condition.Counter.$init$##($stack1);
   assert ~eq(~heap, ~read(~heap, $stack1, byteback.dummy.condition.Counter.count), 0);
   call byteback.dummy.condition.Counter.increment##($stack1);

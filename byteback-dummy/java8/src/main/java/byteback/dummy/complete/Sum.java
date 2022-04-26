@@ -1,17 +1,18 @@
 package byteback.dummy.complete;
 
-import byteback.annotations.Contract.Ensure;
-import byteback.annotations.Binding;
-import static byteback.annotations.Quantifier.*;
-import static byteback.annotations.Operator.*;
 import static byteback.annotations.Contract.*;
+import static byteback.annotations.Operator.*;
+import static byteback.annotations.Quantifier.*;
+
+import byteback.annotations.Binding;
+import byteback.annotations.Contract.Ensure;
 
 public class Sum {
 
 	@Pure
 	public static boolean positive_arguments_imply_positive_sum(int[] as, int ret) {
 		return implies(positive_arguments(as), gte(ret, 0));
-	} 
+	}
 
 	@Pure
 	public static boolean positive_arguments(int[] as) {

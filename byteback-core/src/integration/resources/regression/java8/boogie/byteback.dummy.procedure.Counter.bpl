@@ -1,10 +1,12 @@
 const unique byteback.dummy.procedure.Counter.count: Field int;
 
+const unique byteback.dummy.procedure.Counter: Type;
+
 procedure byteback.dummy.procedure.Counter.main##() returns ()
   modifies ~heap;
 {
   var $stack1: Reference;
-  call $stack1 := ~new();
+  call $stack1 := ~new(byteback.dummy.procedure.Counter);
   call byteback.dummy.procedure.Counter.$init$##($stack1);
   call byteback.dummy.procedure.Counter.increment##($stack1);
   call byteback.dummy.procedure.Counter.countTo10##($stack1);

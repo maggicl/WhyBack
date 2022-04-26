@@ -22,7 +22,7 @@ public class ReferenceTypeConverter {
 		bindingBuilder.name(clazz.getName());
 		constantDeclaration.setBinding(bindingBuilder.build());
 		constantDeclaration.setUnique(true);
-		
+
 		return constantDeclaration;
 	}
 

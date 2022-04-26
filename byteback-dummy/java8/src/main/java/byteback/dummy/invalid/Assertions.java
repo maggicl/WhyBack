@@ -5,5 +5,5 @@ public class Assertions {
 	public static void main() {
 		assert false;
 	}
-	
+
 }

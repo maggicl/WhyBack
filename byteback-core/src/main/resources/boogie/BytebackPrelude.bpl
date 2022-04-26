@@ -1,7 +1,7 @@
 // -------------------------------------------------------------------
 // Type model
 // -------------------------------------------------------------------
-type Type;
+type Type = Reference;
 
 const ~Object.Type: Field Type;
 
@@ -12,7 +12,7 @@ axiom (forall h: Store, t: Type :: h[~null][~Object.Type] <: t);
 // -------------------------------------------------------------------
 type Reference;
 
-const ~null: Reference;
+const unique ~null: Reference;
 
 type Field a;
 
@@ -30,24 +30,21 @@ function ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
   h[r := h[r][f := v]]
 }
 
-procedure ~new() returns (~ret: Reference);
-
-// -------------------------------------------------------------------
-// Globals model
-// -------------------------------------------------------------------
-type Global a;
-
-type Table = [Type]<a>[Global a]a;
-
-function ~fetch<a>(t: Table, r: Type, g: Global a) returns (a)
+function ~typeof(h: Store, r: Reference) returns (Type)
 {
-  t[r][g]
+  ~read(h, r, ~Object.Type)
 }
 
-function ~put<a>(t: Table, r: Type, g: Global a, v: a) returns (a)
+function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 {
-  t[r := t[r][g := v]]
+	~typeof(h, r) == t
 }
+
+function ~allocated(h: Store, r: Reference) returns (bool);
+
+procedure ~new(t: Type) returns (~ret: Reference);
+	ensures ~typeof(~heap, ~ret) == t;
+	ensures ~allocated(~heap, ~ret);
 
 // -------------------------------------------------------------------
 // Array model
@@ -158,3 +155,10 @@ function ~real<a>(a) returns (real);
 
 // int -> real
 // TODO
+
+// -------------------------------------------------------------------
+// Missing definitions
+// -------------------------------------------------------------------
+procedure java.lang.Object.$init$##(this: Reference) returns ();
+
+const unique java.lang.Object: Type;

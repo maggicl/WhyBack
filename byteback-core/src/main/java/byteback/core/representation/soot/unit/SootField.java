@@ -22,4 +22,8 @@ public class SootField {
 		return new SootType(sootField.getType());
 	}
 
+	public boolean isStatic() {
+		return sootField.isStatic();
+	}
+
 }

@@ -6,7 +6,7 @@ axiom (forall h : Store, t : Type :: (h[~null][~Object.Type] <: t));
 
 type Reference;
 
-const ~null : Reference;
+const unique ~null : Reference;
 
 type Field a;
 
@@ -106,9 +106,11 @@ axiom (~int(true) == 1);
 
 function ~real<a>(a) returns (real);
 
-const byteback.dummy.condition.Counter : Type;
+procedure java.lang.Object.$init$##(this : Reference) returns ();
 
-const byteback.dummy.condition.Counter.count : Field int;
+const unique byteback.dummy.condition.Counter : Type;
+
+const unique byteback.dummy.condition.Counter.count : Field int;
 
 procedure byteback.dummy.condition.Counter.main##() returns ()
   modifies ~heap;

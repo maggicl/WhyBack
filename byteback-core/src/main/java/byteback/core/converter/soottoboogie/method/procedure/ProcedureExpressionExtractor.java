@@ -18,7 +18,6 @@ import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
 import java.util.Iterator;
 import java.util.Optional;
-
 import soot.Local;
 import soot.Unit;
 import soot.jimple.NewExpr;
@@ -107,6 +106,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 	public void caseNewExpr(final NewExpr newExpression) {
 		final Procedure newProcedure = Prelude.getNewProcedure();
 		final TargetedCallStatement callStatement = newProcedure.makeTargetedCall();
+		callStatement.addArgument(ValueReference.of(newExpression.getBaseType().getClassName()));
 		addCall(callStatement);
 	}
 

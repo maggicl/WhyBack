@@ -264,7 +264,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 	@Override
 	public void caseDefault(final Value value) {
-		throw new ExpressionConversionException(value, "Unable to convert Jimple expression " + value + " to Boogie");
+		throw new ExpressionConversionException(value, "Unable to convert expression of type " + value.getClass().getName());
 	}
 
 }

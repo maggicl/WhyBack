@@ -100,6 +100,7 @@ function ~real<a>(a) returns (real);
 
 procedure byteback.dummy.complete.Sum.$init$##(this : Reference) returns ()
 {
+  call java.lang.Object.$init$##(this);
   return;
 }
 

@@ -1,5 +1,6 @@
 package byteback.dummy.procedure;
 
+@SuppressWarnings("unused")
 public class Simple {
 
 	public static void empty() {

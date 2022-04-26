@@ -2,7 +2,7 @@ package byteback.core.util;
 
 import java.util.function.Supplier;
 
-public class Lazy<T> {
+public class Lazy<T> implements Supplier<T> {
 
 	public static <T> Lazy<T> from(final Supplier<T> supplier) {
 		return new Lazy<>(supplier);

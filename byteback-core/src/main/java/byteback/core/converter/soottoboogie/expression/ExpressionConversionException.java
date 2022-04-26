@@ -17,8 +17,17 @@ public class ExpressionConversionException extends ConversionException {
 		this.value = value;
 	}
 
+	public ExpressionConversionException(final Value value) {
+		this(value, "Failed to convert expression " + value);
+	}
+
 	public Value getValue() {
 		return value;
+	}
+
+	@Override
+	public String getMessage() {
+		return "While converting expression " + value + ":\n" + super.getMessage();
 	}
 
 }

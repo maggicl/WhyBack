@@ -25,4 +25,9 @@ public class StatementConversionException extends ConversionException {
 		return unit;
 	}
 
+	@Override
+	public String getMessage() {
+		return "While converting statement " + unit + ":\n" + super.getMessage();
+	}
+
 }

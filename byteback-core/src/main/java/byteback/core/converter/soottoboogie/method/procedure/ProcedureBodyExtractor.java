@@ -133,7 +133,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		loopCollector.getByExit(unit).ifPresent((context) -> {
 			addStatement(context.getAssumptionPoint());
 		});
-		unit.apply(extractor);
+		extractor.visit(unit);
 	}
 
 	@Override

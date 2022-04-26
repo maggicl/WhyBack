@@ -1,4 +1,13 @@
 // -------------------------------------------------------------------
+// Type model
+// -------------------------------------------------------------------
+type Type;
+
+const ~Object.Type: Field Type;
+
+axiom (forall h: Store, t: Type :: h[~null][~Object.Type] <: t);
+
+// -------------------------------------------------------------------
 // Heap model
 // -------------------------------------------------------------------
 type Reference;
@@ -6,6 +15,7 @@ type Reference;
 const ~null: Reference;
 
 type Field a;
+
 type Store = [Reference]<a>[Field a]a;
 
 var ~heap: Store;
@@ -23,13 +33,16 @@ function ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
 procedure ~new() returns (~ret: Reference);
 
 // -------------------------------------------------------------------
-// Type model
+// Globals model
 // -------------------------------------------------------------------
-type Type;
+type Global a;
 
-const ~Object.Type: Field Type;
+type Table = [Type]<a>[Global a]a;
 
-axiom (forall h: Store, t: Type :: h[~null][~Object.Type] <: t);
+function ~fetch<a>(t: Table, r: Type, g: Global a) returns (a)
+{
+  t[r][g]
+}
 
 // -------------------------------------------------------------------
 // Array model

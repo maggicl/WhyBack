@@ -1,6 +1,7 @@
 package byteback.core;
 
 import byteback.core.context.soot.SootContext;
+import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.program.ContextConverter;
 import byteback.frontend.boogie.ast.Program;
@@ -17,7 +18,6 @@ public class Main {
 	public static Logger log = LoggerFactory.getLogger(Main.class);
 
 	public static void convert(final Configuration configuration) {
-		log.info("Converting classes");
 		final Program program = ContextConverter.instance().convert();
 		PrintStream output;
 
@@ -36,8 +36,8 @@ public class Main {
 			output = System.out;
 		}
 
-		log.info("Conversion completed");
 		output.print(program.print());
+		output.close();
 	}
 
 	public static void initialize(final Configuration configuration) {
@@ -48,6 +48,7 @@ public class Main {
 
 	public static void main(final String[] args) {
 		final var configuration = new Configuration();
+		final long startTime = System.currentTimeMillis();
 
 		try {
 			configuration.parse(args);
@@ -56,7 +57,16 @@ public class Main {
 				configuration.getJCommander().usage();
 			} else {
 				initialize(configuration);
-				convert(configuration);
+
+				try {
+					log.info("Converting classes");
+					convert(configuration);
+					final long conversionTime = System.currentTimeMillis() - startTime;
+					log.info("Conversion completed: {}ms", conversionTime);
+				} catch (final ConversionException exception) {
+					log.error("Conversion exception: ");
+					System.err.println(exception);
+				}
 			}
 		} catch (final ParameterException exception) {
 			log.error("Error while parsing program arguments: {}", exception.getMessage());

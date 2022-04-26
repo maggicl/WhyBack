@@ -1,5 +1,6 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
+import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.LocalUseExtractor;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
@@ -8,6 +9,7 @@ import byteback.core.converter.soottoboogie.statement.StatementConversionExcepti
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
+import byteback.core.representation.soot.body.SootStatement;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootField;
@@ -56,6 +58,16 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	public void addSingleAssignment(final Assignee assignee, final Expression expression) {
 		addStatement(new AssignmentStatement(assignee, expression));
+	}
+
+	public Body visit(final Unit unit) {
+		try {
+			unit.apply(this);
+
+			return result();
+		} catch (final ConversionException exception) {
+			throw new StatementConversionException(unit, exception);
+		}
 	}
 
 	@Override

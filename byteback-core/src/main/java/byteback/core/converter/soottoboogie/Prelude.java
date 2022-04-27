@@ -102,18 +102,6 @@ public class Prelude {
 	}
 
 	/**
-	 * Getter for the heap-type model.
-	 *
-	 * @return The definition of the {@code Store} {@link Type}.
-	 */
-	public static Type getHeapType() {
-		final TypeDefinition typeDefinition = loadProgram().lookupTypeDefinition("Store")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for Store type"));
-
-		return typeDefinition.getType();
-	}
-
-	/**
 	 * Getter for the field-type model.
 	 *
 	 * @return The definition of the {@code Field} {@link Type}.
@@ -169,16 +157,6 @@ public class Prelude {
 	 *
 	 * @return The {@code ~heap} variable of type {@code Store}.
 	 */
-	public static Variable getHeapVariable() {
-		return loadProgram().lookupLocalVariable("~heap")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap function"));
-	}
-
-	/**
-	 * Getter for the global variable representing the heap.
-	 *
-	 * @return The {@code ~heap} variable of type {@code Store}.
-	 */
 	public static Variable getNullConstant() {
 		return loadProgram().lookupLocalVariable("~null")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~null function"));
@@ -195,13 +173,13 @@ public class Prelude {
 	}
 
 	/**
-	 * Getter for the heap-update function.
+	 * Getter for the heap-update procedure.
 	 *
 	 * @return The {@code ~update} function.
 	 */
-	public static Function getHeapUpdateFunction() {
-		return loadProgram().lookupFunction("~update")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update function"));
+	public static Procedure getHeapUpdateProcedure() {
+		return loadProgram().lookupProcedure("~update")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update procedure"));
 	}
 
 	/**
@@ -251,7 +229,7 @@ public class Prelude {
 	 */
 	public static Function getArrayAccessFunction() {
 		return loadProgram().lookupFunction("~get")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~getfunction"));
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~get function"));
 	}
 
 	/**
@@ -259,9 +237,9 @@ public class Prelude {
 	 *
 	 * @return The {@code ~insert} function.
 	 */
-	public static Function getArrayUpdateFunction() {
-		return loadProgram().lookupFunction("~insert")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~insert"));
+	public static Procedure getArrayUpdateProcedure() {
+		return loadProgram().lookupProcedure("~insert")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~insert procedure"));
 	}
 
 	/**
@@ -306,7 +284,6 @@ public class Prelude {
 	 */
 	public static Expression getLengthAccessExpression(final Expression array) {
 		final FunctionReference reference = getArrayLengthFunction().makeFunctionReference();
-		reference.addArgument(getHeapVariable().makeValueReference());
 		reference.addArgument(array);
 
 		return reference;
@@ -323,7 +300,6 @@ public class Prelude {
 	 */
 	public static Expression getTypeCheckExpression(final Expression instance, final Expression type) {
 		final FunctionReference reference = getTypeCheckFunction().makeFunctionReference();
-		reference.addArgument(getHeapVariable().makeValueReference());
 		reference.addArgument(instance);
 		reference.addArgument(type);
 
@@ -341,7 +317,6 @@ public class Prelude {
 	 */
 	public static Expression getHeapAccessExpression(final Expression base, final Expression field) {
 		final FunctionReference reference = getHeapAccessFunction().makeFunctionReference();
-		reference.addArgument(getHeapVariable().makeValueReference());
 		reference.addArgument(base);
 		reference.addArgument(field);
 
@@ -363,7 +338,6 @@ public class Prelude {
 			final Expression index) {
 		final FunctionReference reference = getArrayAccessFunction().makeFunctionReference();
 		final Variable arrayType = getArrayTypeVariable(typeAccess);
-		reference.addArgument(getHeapVariable().makeValueReference());
 		reference.addArgument(base);
 		reference.addArgument(arrayType.makeValueReference());
 		reference.addArgument(index);
@@ -372,7 +346,7 @@ public class Prelude {
 	}
 
 	/**
-	 * Builder for a heap-update expression.
+	 * Builder for a heap-update statement.
 	 *
 	 * @param base
 	 *            The base reference from which the field is being updated.
@@ -382,19 +356,16 @@ public class Prelude {
 	 */
 	public static Statement getHeapUpdateStatement(final Expression base, final Expression field,
 			final Expression value) {
-		final FunctionReference updateReference = getHeapUpdateFunction().makeFunctionReference();
-		final ValueReference heapReference = getHeapVariable().makeValueReference();
-		final Assignee heapAssignee = Assignee.of(heapReference);
-		updateReference.addArgument(heapReference);
-		updateReference.addArgument(base);
-		updateReference.addArgument(field);
-		updateReference.addArgument(value);
+		final TargetedCallStatement statement = getHeapUpdateProcedure().makeTargetedCall();
+		statement.addArgument(base);
+		statement.addArgument(field);
+		statement.addArgument(value);
 
-		return new AssignmentStatement(heapAssignee, updateReference);
+		return statement;
 	}
 
 	/**
-	 * Builder for an array-update expression.
+	 * Builder for an array-update statement.
 	 *
 	 * @param base
 	 *            The base reference from which the field is being updated.
@@ -404,17 +375,14 @@ public class Prelude {
 	 */
 	public static Statement getArrayUpdateStatement(final TypeAccess typeAccess, final Expression base,
 			final Expression index, final Expression value) {
-		final FunctionReference updateReference = getArrayUpdateFunction().makeFunctionReference();
-		final ValueReference heapReference = getHeapVariable().makeValueReference();
+		final TargetedCallStatement statement = getArrayUpdateProcedure().makeTargetedCall();
 		final Variable arrayType = getArrayTypeVariable(typeAccess);
-		final Assignee heapAssignee = Assignee.of(heapReference);
-		updateReference.addArgument(heapReference);
-		updateReference.addArgument(base);
-		updateReference.addArgument(arrayType.makeValueReference());
-		updateReference.addArgument(index);
-		updateReference.addArgument(value);
+		statement.addArgument(base);
+		statement.addArgument(arrayType.makeValueReference());
+		statement.addArgument(index);
+		statement.addArgument(value);
 
-		return new AssignmentStatement(heapAssignee, updateReference);
+		return statement;
 	}
 
 	/**
@@ -432,7 +400,7 @@ public class Prelude {
 	}
 
 	/**
-	 * Builder for the procedure's return binding.
+	 * Builder for a procedure's return binding.
 	 *
 	 * @param typeAccess
 	 *            The type of the return binding.

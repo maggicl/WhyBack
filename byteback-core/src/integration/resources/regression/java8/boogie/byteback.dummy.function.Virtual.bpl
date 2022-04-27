@@ -4,12 +4,12 @@ procedure byteback.dummy.function.Virtual.$init$##(this: Reference) returns ()
   return;
 }
 
-function byteback.dummy.function.Virtual.getThis##(~heap: Store, this: Reference) returns (Reference)
+function byteback.dummy.function.Virtual.getThis##(this: Reference) returns (Reference)
 {
     this
 }
 
-function byteback.dummy.function.Virtual.getThat#byteback.dummy.function.Virtual#(~heap: Store, this: Reference, that: Reference) returns (Reference)
+function byteback.dummy.function.Virtual.getThat#byteback.dummy.function.Virtual#(this: Reference, that: Reference) returns (Reference)
 {
-    byteback.dummy.function.Virtual.getThis##(~heap, that)
+    byteback.dummy.function.Virtual.getThis##(that)
 }

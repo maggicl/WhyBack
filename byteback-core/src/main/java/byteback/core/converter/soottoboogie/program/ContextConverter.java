@@ -26,7 +26,8 @@ public class ContextConverter {
 		final Program program = ProgramConverter.instance()
 				.convert(context.classes().filter((clazz) -> !AnnotationNamespace.isAnnotationClass(clazz)
 						&& !clazz.isBasicClass() && !clazz.isPhantomClass()));
-		program.inferModifies();
+
+		program.propagateModifies();
 
 		return program;
 	}

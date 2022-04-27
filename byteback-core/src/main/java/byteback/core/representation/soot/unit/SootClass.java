@@ -89,10 +89,13 @@ public class SootClass {
 
 	public Optional<SootMethod> getSootMethod(final String name, final Collection<SootType> parameterTypes,
 			final SootType returnType) {
-
 		final String signature = SootMethod.formatSignature(name, parameterTypes, returnType);
 
-		return Optional.of(new SootMethod(sootClass.getMethod(signature)));
+		try {
+			return Optional.of(new SootMethod(sootClass.getMethod(signature)));
+		} catch (final RuntimeException exception) {
+			return Optional.empty();
+		}
 	}
 
 	public Optional<SootMethod> getSootMethod(final String name) {

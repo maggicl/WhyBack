@@ -1,7 +1,6 @@
 package byteback.core.converter.soottoboogie.method.function;
 
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.type.SootType;
@@ -36,8 +35,6 @@ public class FunctionConverter extends MethodConverter {
 
 	public static void buildSignature(final FunctionDeclarationBuilder functionBuilder, final SootMethod method) {
 		final FunctionSignatureBuilder signatureBuilder = new FunctionSignatureBuilder();
-		final OptionalBinding heapBinding = Prelude.getHeapVariable().makeOptionalBinding();
-		signatureBuilder.addInputBinding(heapBinding);
 
 		for (Local local : method.getBody().getParameterLocals()) {
 			signatureBuilder.addInputBinding(makeBinding(local));

@@ -10,55 +10,53 @@ import java.util.Set;
  */
 aspect ConditionInference {
 
-  /**
-   * Adds a frame condition to this procedure, and to all the
-   * procedures that may call this procedure in the program.
-   *
-   * The function performs a BFS starting from this procedure, and
-   * considers a node "visited" if it already presents the frame
-   * condition. As such, calling this function multiple times on the
-   * same variable will not add more than one frame condition to the
-   * call-tree.
-   *
-   * @param modified The variable that is being modified by this procedure.
-   */
-  public void Procedure.addFrameCondition(Variable modified) {
-    final FrameCondition condition = new FrameCondition(false, new List<>(modified.makeValueReference()));
-    final Stack<Procedure> next = new Stack<>();
-    next.push(this);
+	/**
+	 * Adds a frame condition to this procedure, and to all the
+	 * procedures that may call this procedure in the program.
+	 *
+	 * The function performs a BFS starting from this procedure, and
+	 * considers a node "visited" if it already presents the frame
+	 * condition. As such, calling this function multiple times on the
+	 * same variable will not add more than one frame condition to the
+	 * call-tree.
+	 *
+	 * @param modified The variable that is being modified by this procedure.
+	 */
+	public void Procedure.propagateModifies() {
+		final Stack<Procedure> next = new Stack<>();
 
-    while (!next.isEmpty()) {
-      final Procedure procedure = next.pop();
+		for (ValueReference reference : frameConditions()) {
+			final Variable modified = reference.getAccessor().lookupRemoteVariable().orElse(null);
 
-      if (!procedure.modifies(modified)) {
-        final ProcedureDeclaration declaration = procedure.getProcedureDeclaration();
-        declaration.addSpecification(condition.treeCopy());
+			if (modified == null) {
+				continue;
+			}
+			
+			final FrameCondition condition = new FrameCondition(false, new List<>(modified.makeValueReference()));
+			next.push(this);
 
-        for (Procedure caller : procedure.callers()) {
-          next.push(caller);
-        }
-      }
-    }
-  }
+			while (!next.isEmpty()) {
+				final Procedure procedure = next.pop();
 
-  /**
-   * Infer frame conditions for procedures that are modifying this
-   * variable.
-   */
-  public void Variable.inferModifies() {
-    for (AssignmentStatement assignment : assignments()) {
-      assignment.getProcedure().addFrameCondition(this);
-    }
-  }
+				for (Procedure caller : procedure.callers()) {
+					if (!caller.modifies(modified)) {
+						final ProcedureDeclaration declaration = caller.getProcedureDeclaration();
+						declaration.addSpecification(condition.treeCopy());
+						next.push(caller);
+					}
+				}
+			}
+		}
+	}
 
-  /**
-   * Infer frame conditions for procedures that are modifying global
-   * variables in this program.
-   */
-  public void Program.inferModifies() {
-    for (Variable variable : variables()) {
-      variable.inferModifies();
-    }
-  }
-  
+	/**
+	 * Infer frame conditions for procedures that are modifying global
+	 * variables in this program.
+	 */
+	public void Program.propagateModifies() {
+		for (Procedure procedure : procedures()) {
+			procedure.propagateModifies();
+		}
+	}
+	
 }

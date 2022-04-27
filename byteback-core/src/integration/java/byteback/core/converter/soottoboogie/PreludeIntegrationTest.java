@@ -25,23 +25,11 @@ public class PreludeIntegrationTest {
 		assertEquals("Reference", type.makeTypeAccess().getIdentifier());
 	}
 
-	@Test
-	public void GetHeapType_GivenDefaultPrelude_ReturnsExpectedType() {
-		final Type type = Prelude.getHeapType();
-		assertEquals("Store", type.makeTypeAccess().getIdentifier());
-	}
 
 	@Test
 	public void GetFieldType_GivenDefaultPrelude_ReturnsExpectedType() {
 		final Type type = Prelude.getFieldType();
 		assertEquals("Field", type.makeTypeAccess().getIdentifier());
-	}
-
-	@Test
-	public void GetHeapVariable_GivenDefaultPrelude_ReturnsExpectedVariable() {
-		final Variable variable = Prelude.getHeapVariable();
-		assertEquals("~heap", variable.getName());
-		assertEquals("Store", variable.getTypeAccess().getIdentifier());
 	}
 
 	@Test
@@ -58,9 +46,9 @@ public class PreludeIntegrationTest {
 	}
 
 	@Test
-	public void GetHeapUpdateFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.getHeapUpdateFunction();
-		assertEquals("~update", function.getName());
+	public void GetHeapUpdateProcedure_GivenDefaultPrelude_ReturnsExpectedFunction() {
+		final Procedure procedure = Prelude.getHeapUpdateProcedure();
+		assertEquals("~update", procedure.getName());
 	}
 
 	@Test
@@ -83,8 +71,8 @@ public class PreludeIntegrationTest {
 
 	@Test
 	public void GetArrayUpdateFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.getArrayUpdateFunction();
-		assertEquals("~insert", function.getName());
+		final Procedure procedure = Prelude.getArrayUpdateProcedure();
+		assertEquals("~insert", procedure.getName());
 	}
 
 	@Test

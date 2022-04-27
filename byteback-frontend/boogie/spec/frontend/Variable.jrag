@@ -61,8 +61,8 @@ aspect Variable {
   coll LinkedList<ValueReference> Variable.references();
 
   ValueReference contributes
-    this when getAccessor().variable().isPresent() to Variable.references()
-    for getAccessor().variable()
+    this when getAccessor().lookupRemoteVariable().isPresent() to Variable.references()
+    for getAccessor().lookupRemoteVariable()
       .orElse(null);
 
   /**
@@ -72,7 +72,7 @@ aspect Variable {
 
   AssignmentStatement contributes
     this to Variable.assignments()
-    for getTarget().getAccessor().variable()
+    for getTarget().getAccessor().lookupRemoteVariable()
       .orElse(null);
 
   /**
@@ -163,9 +163,9 @@ aspect Variable {
    */
   inh lazy Optional<Variable> Accessor.lookupRemoteVariable(String name);
 
-  syn lazy Optional<Variable> Accessor.variable();
+  syn lazy Optional<Variable> Accessor.lookupRemoteVariable();
 
-  eq Accessor.variable() = lookupRemoteVariable(getName());
+  eq Accessor.lookupRemoteVariable() = lookupRemoteVariable(getName());
 
   /**
    * Get type access used in variable.

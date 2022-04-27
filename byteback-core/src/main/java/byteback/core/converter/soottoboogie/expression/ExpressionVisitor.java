@@ -97,8 +97,8 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		final String methodName = method.getAnnotation(AnnotationNamespace.PRELUDE_ANNOTATION)
 				.flatMap(SootAnnotation::getValue).map((element) -> new StringElementExtractor().visit(element))
 				.orElseGet(() -> MethodConverter.methodName(method));
-		referenceBuilder.name(methodName).prependArgument(Prelude.getHeapVariable().makeValueReference())
-				.addArguments(convertArguments(method, arguments));
+		referenceBuilder.name(methodName);
+		referenceBuilder.addArguments(convertArguments(method, arguments));
 		pushExpression(referenceBuilder.build());
 	}
 

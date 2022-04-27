@@ -75,7 +75,7 @@ public class ProcedureConverter extends MethodConverter {
 	}
 
 	public static List<Expression> makeArguments(final SootMethod method) {
-		final List<Expression> references = new List<>(Prelude.getHeapVariable().makeValueReference());
+		final List<Expression> references = new List<>();
 
 		for (Local local : method.getBody().getParameterLocals()) {
 			references.add(ValueReference.of(local.getName()));

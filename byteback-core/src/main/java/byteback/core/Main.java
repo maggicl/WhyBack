@@ -22,14 +22,13 @@ public class Main {
 		PrintStream output;
 
 		if (configuration.getOutputPath() != null) {
-			final String fileName = configuration.getOutputPath();
-			final File file = new File(fileName);
+			final File file = configuration.getOutputPath().toFile();
 
 			try {
 				file.createNewFile();
 				output = new PrintStream(new FileOutputStream(file));
 			} catch (final IOException exception) {
-				log.error("Cannot output program to file {}", fileName);
+				log.error("Cannot output program to file {}", file.getPath());
 				throw new RuntimeException("Unable to produce output");
 			}
 		} else {
@@ -43,7 +42,7 @@ public class Main {
 	public static void initialize(final Configuration configuration) {
 		log.info("Configuring contexts");
 		SootContext.instance().configure(configuration);
-		Prelude.configure(configuration);
+		Prelude.instance().configure(configuration);
 	}
 
 	public static void main(final String[] args) {

@@ -17,10 +17,10 @@ public class Configuration {
 	private List<String> startingClasses;
 
 	@Parameter(names = {"-p", "--prelude"}, description = "Path to the prelude file")
-	private String preludePath;
+	private Path preludePath;
 
 	@Parameter(names = {"-o", "--output"}, description = "Path to the output verification conditions")
-	private String outputPath;
+	private Path outputPath;
 
 	private JCommander jCommander;
 
@@ -36,11 +36,11 @@ public class Configuration {
 		return startingClasses;
 	}
 
-	public String getPreludePath() {
+	public Path getPreludePath() {
 		return preludePath;
 	}
 
-	public String getOutputPath() {
+	public Path getOutputPath() {
 		return outputPath;
 	}
 

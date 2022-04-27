@@ -128,7 +128,7 @@ aspect Procedure {
 
   eq Procedure.modifies(Variable variable) {
     for (ValueReference reference : frameConditions()) {
-      final Variable modified = reference.getAccessor().lookupRemoteVariablee().orElse(null);
+      final Variable modified = reference.getAccessor().lookupRemoteVariable().orElse(null);
 
       if (variable.equals(modified)) {
         return true;

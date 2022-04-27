@@ -17,7 +17,7 @@ public class ReferenceTypeConverter {
 	public ConstantDeclaration convert(final SootClass clazz) {
 		final var constantDeclaration = new ConstantDeclaration();
 		final var bindingBuilder = new SetBindingBuilder();
-		final TypeAccess typeAccess = Prelude.getTypeType().makeTypeAccess();
+		final TypeAccess typeAccess = Prelude.instance().getTypeType().makeTypeAccess();
 		bindingBuilder.typeAccess(typeAccess);
 		bindingBuilder.name(clazz.getName());
 		constantDeclaration.setBinding(bindingBuilder.build());

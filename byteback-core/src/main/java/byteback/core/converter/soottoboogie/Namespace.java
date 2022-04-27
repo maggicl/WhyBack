@@ -8,7 +8,7 @@ import byteback.core.representation.soot.unit.SootClass;
  *
  * @author paganma
  */
-public class AnnotationNamespace {
+public class Namespace {
 
 	/**
 	 * All the annotation classes must be located under this package. The classes
@@ -23,6 +23,8 @@ public class AnnotationNamespace {
 	public static final String SPECIAL_CLASS_NAME = "byteback.annotations.Special";
 
 	public static final String BINDING_CLASS_NAME = "byteback.annotations.Binding";
+
+	public static final String LEMMA_ANNOTATION = "Lbyteback/annotations/Contract$Lemma;";
 
 	public static final String PRELUDE_ANNOTATION = "Lbyteback/annotations/Contract$Prelude;";
 

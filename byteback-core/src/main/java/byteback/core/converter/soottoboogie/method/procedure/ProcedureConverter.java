@@ -1,8 +1,8 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
-import byteback.core.converter.soottoboogie.AnnotationNamespace;
+import byteback.core.converter.soottoboogie.Namespace;
+import byteback.core.converter.soottoboogie.Convention;
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.function.FunctionManager;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
@@ -65,7 +65,7 @@ public class ProcedureConverter extends MethodConverter {
 			@Override
 			public void caseDefault(final Type type) {
 				final TypeAccess typeAccess = new TypeAccessExtractor().visit(method.getReturnType());
-				final BoundedBinding binding = Prelude.getReturnBinding(typeAccess);
+				final BoundedBinding binding = Convention.makeReturnBinding(typeAccess);
 				signatureBuilder.addOutputBinding(binding);
 			}
 
@@ -81,7 +81,7 @@ public class ProcedureConverter extends MethodConverter {
 			references.add(ValueReference.of(local.getName()));
 		}
 
-		references.add(Prelude.getReturnValueReference());
+		references.add(Convention.makeReturnReference());
 
 		return references;
 	}
@@ -119,13 +119,13 @@ public class ProcedureConverter extends MethodConverter {
 			final Supplier<Condition> supplier;
 
 			switch (annotation.getTypeName()) {
-				case AnnotationNamespace.REQUIRE_ANNOTATION :
-				case AnnotationNamespace.REQUIRES_ANNOTATION :
+				case Namespace.REQUIRE_ANNOTATION :
+				case Namespace.REQUIRES_ANNOTATION :
 					supplier = PreCondition::new;
 					break;
 
-				case AnnotationNamespace.ENSURE_ANNOTATION :
-				case AnnotationNamespace.ENSURES_ANNOTATION :
+				case Namespace.ENSURE_ANNOTATION :
+				case Namespace.ENSURES_ANNOTATION :
 					supplier = PostCondition::new;
 					break;
 
@@ -134,7 +134,8 @@ public class ProcedureConverter extends MethodConverter {
 			}
 
 			final SootAnnotationElement element = annotation.getValue().orElseThrow(() -> new ConversionException(
-					"Annotation " + annotation.getTypeName() + " Requires a value argument"));
+					"Annotation " + annotation.getTypeName() + " requires a value argument"));
+
 			element.flatten().forEach((value) -> {
 				final Expression expression = makeConditionExpression(method,
 						new StringElementExtractor().visit(value));
@@ -166,7 +167,10 @@ public class ProcedureConverter extends MethodConverter {
 			procedureBuilder.name(methodName(method));
 			buildSignature(procedureBuilder, method);
 			buildConditions(procedureBuilder, method);
-			buildBody(procedureBuilder, method);
+
+			if (method.hasBody() && method.annotation(Namespace.ENSURES_ANNOTATION).isEmpty()) {
+				buildBody(procedureBuilder, method);
+			}
 		} catch (ConversionException exception) {
 			throw new ProcedureConversionException(method, exception);
 		}

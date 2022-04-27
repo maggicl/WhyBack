@@ -25,6 +25,4 @@ def integration = tasks.register("integration", Test) {
     mustRunAfter test
 }
 
-check {
-    dependsOn integration
-}
+check.dependsOn integration

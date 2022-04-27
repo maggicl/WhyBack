@@ -27,7 +27,7 @@ public class FieldConverter {
 		final var constantDeclaration = new ConstantDeclaration();
 		final var bindingBuilder = new SetBindingBuilder();
 		final TypeAccess baseTypeAccess = new TypeAccessExtractor().visit(field.getType());
-		final TypeAccess fieldTypeAccess = Prelude.getFieldTypeAccess(baseTypeAccess);
+		final TypeAccess fieldTypeAccess = Prelude.instance().getFieldTypeAccess(baseTypeAccess);
 
 		try {
 			bindingBuilder.typeAccess(fieldTypeAccess);

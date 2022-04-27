@@ -1,7 +1,7 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
+import byteback.core.converter.soottoboogie.Convention;
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.expression.PartialSubstitutor;
 import byteback.core.converter.soottoboogie.expression.Substitutor;
 import byteback.core.representation.soot.body.SootBody;
@@ -28,7 +28,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		}
 
 		public ValueReference get(final TypeAccess typeAccess) {
-			final ValueReference reference = Prelude.makeValueReference(++variableCounter);
+			final ValueReference reference = Convention.makeValueReference(++variableCounter);
 			final VariableDeclaration declaration = reference.makeVariableDeclaration(typeAccess);
 			body.addLocalDeclaration(declaration);
 

@@ -1,7 +1,5 @@
 package byteback.core.converter.soottoboogie;
 
-import static org.junit.Assert.fail;
-
 import beaver.Parser;
 import byteback.core.Parameter;
 import byteback.core.ResourcesUtil;
@@ -19,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public class ConverterFixture extends SootClassFixture {
 
-	private static final Logger log = LoggerFactory.getLogger(ConverterFixture.class);
+	static final Logger log = LoggerFactory.getLogger(ConverterFixture.class);
 
 	public static Stream<Entry<SootClass, Program>> entries(final String jarName) throws IOException {
 		return ResourcesUtil.getBoogiePaths(jarName).flatMap((path) -> {
@@ -38,13 +36,12 @@ public class ConverterFixture extends SootClassFixture {
 				log.error("Error while parsing Boogie file {}", path, exception);
 			}
 
-			fail("failed to create test entry");
-
-			return Stream.empty();
+			throw new RuntimeException("Could not parse " + path);
 		});
 	}
 
 	public static Stream<Parameter<Program>> parameters(final String jarName) throws IOException {
+		Prelude.instance().loadDefault();
 		resetContext();
 
 		return entries(jarName).flatMap((entry) -> {
@@ -53,7 +50,7 @@ public class ConverterFixture extends SootClassFixture {
 			try {
 				final Program expected = entry.getValue();
 				final Program actual = ProgramConverter.instance().convert(clazz);
-				Prelude.inject(actual);
+				Prelude.instance().inject(actual);
 				actual.propagateModifies();
 
 				return Stream.of(new Parameter<>(expected, actual));
@@ -61,9 +58,7 @@ public class ConverterFixture extends SootClassFixture {
 				log.error("Error while converting class {} from {}", clazz.getName(), jarName);
 			}
 
-			fail("failed to convert test entry");
-
-			return Stream.empty();
+			throw new RuntimeException("Could not convert entry");
 		});
 	}
 

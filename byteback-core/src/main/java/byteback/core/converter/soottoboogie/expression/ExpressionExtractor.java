@@ -36,7 +36,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	}
 
 	public void pushCmpExpression(final BinopExpr cmp) {
-		pushSpecialBinaryExpression(cmp, Prelude.getCmpFunction().makeFunctionReference());
+		pushSpecialBinaryExpression(cmp, Prelude.instance().getCmpFunction().makeFunctionReference());
 	}
 
 	@Override
@@ -231,7 +231,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 	@Override
 	public void caseNullConstant(final NullConstant nullConstant) {
-		pushExpression(Prelude.getNullConstant().makeValueReference());
+		pushExpression(Prelude.instance().getNullConstant().makeValueReference());
 	}
 
 	@Override
@@ -244,7 +244,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final var field = new SootField(instanceFieldReference.getField());
 		final var base = new SootExpression(instanceFieldReference.getBase());
 		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
-		final Expression heapAccess = Prelude.getHeapAccessExpression(visit(base), reference);
+		final Expression heapAccess = Prelude.instance().getHeapAccessExpression(visit(base), reference);
 		pushCastExpression(heapAccess, field.getType());
 	}
 
@@ -253,7 +253,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final var field = new SootField(staticFieldReference.getField());
 		final SootClass base = field.getSootClass();
 		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
-		final Expression heapAccess = Prelude.getHeapAccessExpression(ValueReference.of(base.getName()), reference);
+		final Expression heapAccess = Prelude.instance().getHeapAccessExpression(ValueReference.of(base.getName()), reference);
 		pushCastExpression(heapAccess, field.getType());
 	}
 
@@ -263,13 +263,13 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final var arrayType = new SootType(arrayReference.getType());
 		final var index = new SootExpression(arrayReference.getIndex());
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(arrayType);
-		pushCastExpression(Prelude.getArrayAccessExpression(typeAccess, visit(base), visit(index)), arrayType);
+		pushCastExpression(Prelude.instance().getArrayAccessExpression(typeAccess, visit(base), visit(index)), arrayType);
 	}
 
 	@Override
 	public void caseLengthExpr(final LengthExpr length) {
 		final var operand = new SootExpression(length.getOp());
-		pushExpression(Prelude.getLengthAccessExpression(visit(operand)));
+		pushExpression(Prelude.instance().getLengthAccessExpression(visit(operand)));
 	}
 
 	@Override
@@ -280,7 +280,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 			@Override
 			public void caseRefType(final RefType referenceType) {
 				final ValueReference typeReference = ValueReference.of(referenceType.getClassName());
-				pushExpression(Prelude.getTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference));
+				pushExpression(Prelude.instance().getTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference));
 			}
 
 			@Override

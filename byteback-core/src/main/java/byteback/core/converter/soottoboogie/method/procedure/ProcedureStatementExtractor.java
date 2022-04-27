@@ -1,5 +1,6 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
+import byteback.core.converter.soottoboogie.Convention;
 import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.LocalUseExtractor;
 import byteback.core.converter.soottoboogie.Prelude;
@@ -100,7 +101,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression assigned = extractor.visit(right, left.getType());
 				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
-				addStatement(Prelude.getHeapUpdateStatement(boogieBase, fieldReference, assigned));
+				addStatement(Prelude.instance().getHeapUpdateStatement(boogieBase, fieldReference, assigned));
 			}
 
 			@Override
@@ -118,7 +119,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression indexReference = new ProcedureExpressionExtractor(bodyExtractor, assignment)
 						.visit(index);
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
-				addStatement(Prelude.getArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
+				addStatement(Prelude.instance().getArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
 						indexReference, assigned));
 			}
 
@@ -139,7 +140,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 	@Override
 	public void caseReturnStmt(final ReturnStmt returnStatement) {
 		final var operand = new SootExpression(returnStatement.getOp());
-		final ValueReference valueReference = Prelude.getReturnValueReference();
+		final ValueReference valueReference = Convention.makeReturnReference();
 		final var assignee = Assignee.of(valueReference);
 		final Expression expression = new ProcedureExpressionExtractor(bodyExtractor, returnStatement).visit(operand,
 				bodyExtractor.getReturnType());
@@ -173,7 +174,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	@Override
 	public void caseDefault(final Unit unit) {
-		throw new StatementConversionException(unit, "Cannot extract procedure with statement " + unit);
+		throw new StatementConversionException(unit, "Cannot extract statements of type " + unit.getClass().getName());
 	}
 
 	@Override

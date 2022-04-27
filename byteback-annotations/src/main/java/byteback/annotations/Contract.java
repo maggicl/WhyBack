@@ -23,6 +23,11 @@ public interface Contract {
 	public static @interface Pure {
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD})
+	public @interface Lemma {
+	}
+
 	/**
 	 * Declares that the function is already defined in the preamble.
 	 */
@@ -32,10 +37,17 @@ public interface Contract {
 		public String value();
 	}
 
+	@Repeatable(Requires.class)
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public static @interface Require {
 		public String value();
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	public @interface Requires {
+		public Require[] value();
 	}
 
 	@Repeatable(Ensures.class)

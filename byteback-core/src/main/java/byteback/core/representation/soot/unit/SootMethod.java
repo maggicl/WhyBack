@@ -83,20 +83,12 @@ public class SootMethod {
 		return body.get();
 	}
 
+	public boolean hasBody() {
+		return sootMethod.hasActiveBody();
+	}
+
 	public SootClass getSootClass() {
 		return new SootClass(sootMethod.getDeclaringClass());
-	}
-
-	public Optional<SootAnnotation> getAnnotation(final String name) {
-		return getAnnotations(name).findFirst();
-	}
-
-	public Stream<SootAnnotation> getAnnotations(final String name) {
-		return annotations().filter((tag) -> tag.getTypeName().equals(name));
-	}
-
-	public Stream<SootAnnotationElement> getAnnotationValues(final String name) {
-		return getAnnotations(name).flatMap((annotation) -> annotation.getValue().stream());
 	}
 
 	public Stream<SootAnnotation> annotations() {
@@ -107,6 +99,18 @@ public class SootMethod {
 		} else {
 			return Stream.empty();
 		}
+	}
+
+	public Optional<SootAnnotation> annotation(final String name) {
+		return annotations(name).findFirst();
+	}
+
+	public Stream<SootAnnotation> annotations(final String name) {
+		return annotations().filter((tag) -> tag.getTypeName().equals(name));
+	}
+
+	public Stream<SootAnnotationElement> annotationValues(final String name) {
+		return annotations(name).flatMap((annotation) -> annotation.getValue().stream());
 	}
 
 	public int getNumber() {

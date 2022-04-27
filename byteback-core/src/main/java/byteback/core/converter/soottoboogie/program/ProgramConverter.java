@@ -1,6 +1,6 @@
 package byteback.core.converter.soottoboogie.program;
 
-import byteback.core.converter.soottoboogie.AnnotationNamespace;
+import byteback.core.converter.soottoboogie.Namespace;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.field.FieldConverter;
 import byteback.core.converter.soottoboogie.method.function.FunctionConverter;
@@ -23,9 +23,9 @@ public class ProgramConverter {
 		program.addDeclaration(ReferenceTypeConverter.instance().convert(clazz));
 		clazz.fields().forEach((field) -> program.addDeclaration(FieldConverter.instance().convert(field)));
 		clazz.methods().forEach((method) -> {
-			if (method.getAnnotation(AnnotationNamespace.PURE_ANNOTATION).isPresent()) {
+			if (method.annotation(Namespace.PURE_ANNOTATION).isPresent()) {
 				program.addDeclaration(FunctionConverter.instance().convert(method));
-			} else if (method.getAnnotation(AnnotationNamespace.CONDITION_ANNOTATION).isEmpty()) {
+			} else if (method.annotation(Namespace.CONDITION_ANNOTATION).isEmpty()) {
 				program.addDeclaration(ProcedureConverter.instance().convert(method));
 			}
 		});
@@ -34,7 +34,7 @@ public class ProgramConverter {
 	}
 
 	public Program convert(final Stream<SootClass> classes) {
-		final Program program = Prelude.loadProgram();
+		final Program program = Prelude.instance().program();
 		classes.forEach((clazz) -> convert(clazz).inject(program));
 
 		return program;

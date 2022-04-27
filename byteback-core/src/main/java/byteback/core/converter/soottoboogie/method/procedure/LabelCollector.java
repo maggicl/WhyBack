@@ -1,7 +1,7 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
+import byteback.core.converter.soottoboogie.Convention;
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.frontend.boogie.ast.Label;
@@ -36,7 +36,7 @@ public class LabelCollector extends SootStatementVisitor<Map<Unit, Label>> {
 	}
 
 	public void branchTo(final Unit target) {
-		labels.put(target, Prelude.makeLabel(++counter));
+		labels.put(target, Convention.makeLabelStatement(++counter));
 	}
 
 	public void collect(final SootBody body) {

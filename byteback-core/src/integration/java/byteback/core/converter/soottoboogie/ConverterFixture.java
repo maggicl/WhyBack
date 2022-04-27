@@ -54,7 +54,7 @@ public class ConverterFixture extends SootClassFixture {
 				final Program expected = entry.getValue();
 				final Program actual = ProgramConverter.instance().convert(clazz);
 				Prelude.inject(actual);
-				actual.inferModifies();
+				actual.propagateModifies();
 
 				return Stream.of(new Parameter<>(expected, actual));
 			} catch (final ConversionException exception) {

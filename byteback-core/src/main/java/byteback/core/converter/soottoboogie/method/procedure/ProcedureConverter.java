@@ -1,8 +1,8 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
-import byteback.core.converter.soottoboogie.Namespace;
 import byteback.core.converter.soottoboogie.Convention;
 import byteback.core.converter.soottoboogie.ConversionException;
+import byteback.core.converter.soottoboogie.Namespace;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.function.FunctionManager;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
@@ -86,26 +86,13 @@ public class ProcedureConverter extends MethodConverter {
 		return references;
 	}
 
-	public static Expression makeConditionExpression(final SootMethod target, final String sourceName) {
+	public static Expression makeCondition(final SootMethod target, final String sourceName,
+			final Collection<SootType> sourceParameters) {
 		final List<Expression> arguments = makeArguments(target);
-		final Collection<SootType> parameterTypes = target.getParameterTypes();
-		final SootType returnType = target.getReturnType();
-		returnType.apply(new SootTypeVisitor<>() {
-
-			@Override
-			public void caseVoidType(final VoidType voidType) {
-				// Source does not include a return parameter
-			}
-
-			@Override
-			public void caseDefault(final Type type) {
-				parameterTypes.add(returnType);
-			}
-
-		});
 		final SootMethod source = target.getSootClass()
-				.getSootMethod(sourceName, parameterTypes, SootType.booleanType())
-				.orElseThrow(() -> new ConversionException("Could not find condition method " + sourceName));
+				.getSootMethod(sourceName, sourceParameters, SootType.booleanType())
+				.orElseThrow(() -> new ConversionException("Could not find condition method " + sourceName
+						+ " matching with the target method's signature " + target.getIdentifier()));
 
 		if (source.isStatic() != target.isStatic()) {
 			throw new ConversionException("Incompatible target type for condition method " + sourceName);
@@ -114,7 +101,9 @@ public class ProcedureConverter extends MethodConverter {
 		return FunctionManager.instance().convert(source).getFunction().inline(arguments);
 	}
 
-	public static void buildConditions(final ProcedureDeclarationBuilder builder, final SootMethod method) {
+	public static void buildSpecifications(final ProcedureDeclarationBuilder builder, final SootMethod method) {
+		final Collection<SootType> sourceParameters = method.getParameterTypes();
+
 		method.annotations().forEach((annotation) -> {
 			final Supplier<Condition> supplier;
 
@@ -126,6 +115,20 @@ public class ProcedureConverter extends MethodConverter {
 
 				case Namespace.ENSURE_ANNOTATION :
 				case Namespace.ENSURES_ANNOTATION :
+					final SootType returnType = method.getReturnType();
+					returnType.apply(new SootTypeVisitor<>() {
+
+						@Override
+						public void caseVoidType(final VoidType voidType) {
+							// Source does not include a return parameter
+						}
+
+						@Override
+						public void caseDefault(final Type type) {
+							sourceParameters.add(returnType);
+						}
+
+					});
 					supplier = PostCondition::new;
 					break;
 
@@ -137,8 +140,8 @@ public class ProcedureConverter extends MethodConverter {
 					"Annotation " + annotation.getTypeName() + " requires a value argument"));
 
 			element.flatten().forEach((value) -> {
-				final Expression expression = makeConditionExpression(method,
-						new StringElementExtractor().visit(value));
+				final String sourceName = new StringElementExtractor().visit(value);
+				final Expression expression = makeCondition(method, sourceName, sourceParameters);
 				final Condition condition = supplier.get();
 				condition.setFree(false);
 				condition.setExpression(expression);
@@ -161,21 +164,21 @@ public class ProcedureConverter extends MethodConverter {
 	}
 
 	public ProcedureDeclaration convert(final SootMethod method) {
-		final var procedureBuilder = new ProcedureDeclarationBuilder();
+		final var builder = new ProcedureDeclarationBuilder();
 
 		try {
-			procedureBuilder.name(methodName(method));
-			buildSignature(procedureBuilder, method);
-			buildConditions(procedureBuilder, method);
+			builder.name(methodName(method));
+			buildSignature(builder, method);
+			buildSpecifications(builder, method);
 
-			if (method.hasBody() && method.annotation(Namespace.ENSURES_ANNOTATION).isEmpty()) {
-				buildBody(procedureBuilder, method);
+			if (method.hasBody() && method.annotation(Namespace.LEMMA_ANNOTATION).isEmpty()) {
+				buildBody(builder, method);
 			}
 		} catch (ConversionException exception) {
 			throw new ProcedureConversionException(method, exception);
 		}
 
-		final ProcedureDeclaration declaration = procedureBuilder.build().rootedCopy();
+		final ProcedureDeclaration declaration = builder.build().rootedCopy();
 		declaration.removeUnusedVariables();
 
 		return declaration;

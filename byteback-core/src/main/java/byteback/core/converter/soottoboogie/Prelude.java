@@ -26,14 +26,16 @@ public class Prelude {
 		return instance;
 	}
 
-	private Program program; 
+	private Program program;
 
-	private Prelude() {}
+	private Prelude() {
+	}
 
 	/**
 	 * Parses and loads the prelude.
 	 *
-	 * @param stream The stream from which the prelude will be parsed.
+	 * @param stream
+	 *            The stream from which the prelude will be parsed.
 	 * @return The prelude {@link Program}.
 	 */
 	private void initializeProgram(final InputStream stream) {
@@ -61,7 +63,8 @@ public class Prelude {
 	/**
 	 * Loads the prelude program from an external file.
 	 *
-	 * @param path Path to the prelude file.
+	 * @param path
+	 *            Path to the prelude file.
 	 */
 	public void loadFile(final Path path) {
 		final File file = path.toFile();
@@ -77,8 +80,9 @@ public class Prelude {
 	/**
 	 * Configures the choice of prelude file.
 	 *
-	 * @param configuration A {@link Configuration} instance that may include the
-	 *                      {@code --prelude} option specified by the user.
+	 * @param configuration
+	 *            A {@link Configuration} instance that may include the
+	 *            {@code --prelude} option specified by the user.
 	 */
 	public void configure(final Configuration configuration) {
 		final Path path = configuration.getPreludePath();
@@ -94,7 +98,8 @@ public class Prelude {
 	 * Returns the prelude program, if loaded.
 	 *
 	 * @return The prelude {@link Program}.
-	 * @throws IllegalStateException If the prelude program was not loaded.
+	 * @throws IllegalStateException
+	 *             If the prelude program was not loaded.
 	 */
 	public Program program() {
 		if (program == null) {
@@ -208,6 +213,16 @@ public class Prelude {
 	}
 
 	/**
+	 * Getter for the instanceof function.
+	 *
+	 * @return The {@code ~instanceof} function.
+	 */
+	public Function getTypeCheckFunction() {
+		return program().lookupFunction("~instanceof")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~instanceof function"));
+	}
+
+	/**
 	 * Getter for the "new" procedure, used to instantiate new arrays.
 	 *
 	 * @return The {@code ~array} procedure.
@@ -225,16 +240,6 @@ public class Prelude {
 	public Function getArrayLengthFunction() {
 		return program().lookupFunction("~lengthof")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~lengthof function"));
-	}
-
-	/**
-	 * Getter for the instanceof function.
-	 *
-	 * @return The {@code ~instanceof} function.
-	 */
-	public Function getTypeCheckFunction() {
-		return program().lookupFunction("~instanceof")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~instanceof function"));
 	}
 
 	/**
@@ -273,25 +278,28 @@ public class Prelude {
 	 * @return The {@code ~cmp} function.
 	 */
 	public Function getCmpFunction() {
-		return program().lookupFunction("~cmp").orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp"));
+		return program().lookupFunction("~cmp")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp"));
 	}
 
 	/**
 	 * Getter for the array field constant of a specified type.
 	 *
-	 * @param typeAccess The type of the array field.
+	 * @param typeAccess
+	 *            The type of the array field.
 	 * @return The {@code ~Array.*} field variable.
 	 */
 	public Variable getArrayTypeVariable(final TypeAccess typeAccess) {
 		final String arrayIdentifier = "~Array." + typeAccess.getIdentifier();
-		return program().lookupLocalVariable(arrayIdentifier)
-				.orElseThrow(() -> new IllegalStateException("Missing definition for array variable " + arrayIdentifier));
+		return program().lookupLocalVariable(arrayIdentifier).orElseThrow(
+				() -> new IllegalStateException("Missing definition for array variable " + arrayIdentifier));
 	}
 
 	/**
 	 * Builder for a length-access expression.
 	 *
-	 * @param array The array to be accessed.
+	 * @param array
+	 *            The array to be accessed.
 	 * @return The {@link Expression} accessing the length of the array.
 	 */
 	public Expression getLengthAccessExpression(final Expression array) {
@@ -304,11 +312,13 @@ public class Prelude {
 	/**
 	 * Builder for a type-check expression.
 	 *
-	 * @param reference The reference to the instance.
-	 * @param type      The reference to the type to be checked.
+	 * @param reference
+	 *            The reference to the instance.
+	 * @param type
+	 *            The reference to the type to be checked.
 	 * @return The {@link Expression} accessing the length of the array.
 	 */
-	public Expression getTypeCheckExpression(final Expression instance, final Expression type) {
+	public Expression makeTypeCheckExpression(final Expression instance, final Expression type) {
 		final FunctionReference reference = getTypeCheckFunction().makeFunctionReference();
 		reference.addArgument(instance);
 		reference.addArgument(type);
@@ -319,11 +329,13 @@ public class Prelude {
 	/**
 	 * Builder for a heap-access expression.
 	 *
-	 * @param base  The base reference from which the field is being accessed.
-	 * @param field The field that is being accessed.
+	 * @param base
+	 *            The base reference from which the field is being accessed.
+	 * @param field
+	 *            The field that is being accessed.
 	 * @return The heap access {@link Expression}.
 	 */
-	public Expression getHeapAccessExpression(final Expression base, final Expression field) {
+	public Expression makeHeapAccessExpression(final Expression base, final Expression field) {
 		final FunctionReference reference = getHeapAccessFunction().makeFunctionReference();
 		reference.addArgument(base);
 		reference.addArgument(field);
@@ -334,12 +346,15 @@ public class Prelude {
 	/**
 	 * Builder for an array-access expression.
 	 *
-	 * @param typeAccess The type of the array being accessed.
-	 * @param base       The array being accessed.
-	 * @param index      The index of the array being accessed.
+	 * @param typeAccess
+	 *            The type of the array being accessed.
+	 * @param base
+	 *            The array being accessed.
+	 * @param index
+	 *            The index of the array being accessed.
 	 * @return The {@link Expression} accessing the given array at the given index.
 	 */
-	public Expression getArrayAccessExpression(final TypeAccess typeAccess, final Expression base,
+	public Expression makeArrayAccessExpression(final TypeAccess typeAccess, final Expression base,
 			final Expression index) {
 		final FunctionReference reference = getArrayAccessFunction().makeFunctionReference();
 		final Variable arrayType = getArrayTypeVariable(typeAccess);
@@ -353,11 +368,13 @@ public class Prelude {
 	/**
 	 * Builder for a heap-update statement.
 	 *
-	 * @param base  The base reference from which the field is being updated.
-	 * @param field The field that is being updated.
+	 * @param base
+	 *            The base reference from which the field is being updated.
+	 * @param field
+	 *            The field that is being updated.
 	 * @return The {@link Expression} updating the field.
 	 */
-	public Statement getHeapUpdateStatement(final Expression base, final Expression field, final Expression value) {
+	public Statement makeHeapUpdateStatement(final Expression base, final Expression field, final Expression value) {
 		final TargetedCallStatement statement = getHeapUpdateProcedure().makeTargetedCall();
 		statement.addArgument(base);
 		statement.addArgument(field);
@@ -369,12 +386,14 @@ public class Prelude {
 	/**
 	 * Builder for an array-update statement.
 	 *
-	 * @param base  The base reference from which the field is being updated.
-	 * @param field The field that is being updated.
+	 * @param base
+	 *            The base reference from which the field is being updated.
+	 * @param field
+	 *            The field that is being updated.
 	 * @return The {@link Expression} updating the field.
 	 */
-	public Statement getArrayUpdateStatement(final TypeAccess typeAccess, final Expression base, final Expression index,
-			final Expression value) {
+	public Statement makeArrayUpdateStatement(final TypeAccess typeAccess, final Expression base,
+			final Expression index, final Expression value) {
 		final TargetedCallStatement statement = getArrayUpdateProcedure().makeTargetedCall();
 		final Variable arrayType = getArrayTypeVariable(typeAccess);
 		statement.addArgument(base);
@@ -388,10 +407,11 @@ public class Prelude {
 	/**
 	 * Builder for a field type-access.
 	 *
-	 * @param typeAccess The base type of the field.
+	 * @param typeAccess
+	 *            The base type of the field.
 	 * @return The {@link TypeAccess} targeting the type of the field.
 	 */
-	public TypeAccess getFieldTypeAccess(final TypeAccess typeAccess) {
+	public TypeAccess makeFieldTypeAccess(final TypeAccess typeAccess) {
 		final UnknownTypeAccess fieldTypeAccess = getFieldType().makeTypeAccess();
 		fieldTypeAccess.addArgument(typeAccess);
 
@@ -401,7 +421,8 @@ public class Prelude {
 	/**
 	 * Injects the declarations of the loaded prelude in-place.
 	 *
-	 * @param program The program to be injected
+	 * @param program
+	 *            The program to be injected
 	 */
 	public void inject(final Program program) {
 		program().inject(program);

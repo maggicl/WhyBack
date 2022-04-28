@@ -20,7 +20,6 @@ public class SootAnnotationElement implements Visitable<SootAnnotationElementVis
 
 		@Override
 		public void caseDefault(final AnnotationElem element) {
-			System.out.println(element);
 			throw new IllegalArgumentException("Expected annotation element of type string, got " + element);
 		}
 

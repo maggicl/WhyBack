@@ -244,7 +244,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final var field = new SootField(instanceFieldReference.getField());
 		final var base = new SootExpression(instanceFieldReference.getBase());
 		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
-		final Expression heapAccess = Prelude.instance().getHeapAccessExpression(visit(base), reference);
+		final Expression heapAccess = Prelude.instance().makeHeapAccessExpression(visit(base), reference);
 		pushCastExpression(heapAccess, field.getType());
 	}
 
@@ -253,7 +253,8 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final var field = new SootField(staticFieldReference.getField());
 		final SootClass base = field.getSootClass();
 		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
-		final Expression heapAccess = Prelude.instance().getHeapAccessExpression(ValueReference.of(base.getName()), reference);
+		final Expression heapAccess = Prelude.instance().makeHeapAccessExpression(ValueReference.of(base.getName()),
+				reference);
 		pushCastExpression(heapAccess, field.getType());
 	}
 
@@ -263,7 +264,8 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final var arrayType = new SootType(arrayReference.getType());
 		final var index = new SootExpression(arrayReference.getIndex());
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(arrayType);
-		pushCastExpression(Prelude.instance().getArrayAccessExpression(typeAccess, visit(base), visit(index)), arrayType);
+		pushCastExpression(Prelude.instance().makeArrayAccessExpression(typeAccess, visit(base), visit(index)),
+				arrayType);
 	}
 
 	@Override
@@ -280,7 +282,8 @@ public class ExpressionExtractor extends ExpressionVisitor {
 			@Override
 			public void caseRefType(final RefType referenceType) {
 				final ValueReference typeReference = ValueReference.of(referenceType.getClassName());
-				pushExpression(Prelude.instance().getTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference));
+				pushExpression(Prelude.instance().makeTypeCheckExpression(ExpressionExtractor.this.visit(left),
+						typeReference));
 			}
 
 			@Override

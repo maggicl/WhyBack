@@ -63,18 +63,21 @@ public class FunctionConverter extends MethodConverter {
 		functionBuilder.expression(new FunctionBodyExtractor(method.getReturnType()).visit(method.getBody()));
 	}
 
+	private FunctionConverter() {
+	};
+
 	public FunctionDeclaration convert(final SootMethod method) {
-		final var functionBuilder = new FunctionDeclarationBuilder();
+		final var builder = new FunctionDeclarationBuilder();
 
 		try {
-			functionBuilder.name(methodName(method));
-			buildSignature(functionBuilder, method);
-			buildExpression(functionBuilder, method);
+			builder.name(methodName(method));
+			buildSignature(builder, method);
+			buildExpression(builder, method);
 		} catch (final ConversionException exception) {
 			throw new FunctionConversionException(method, exception);
 		}
 
-		return functionBuilder.build();
+		return builder.build();
 	}
 
 }

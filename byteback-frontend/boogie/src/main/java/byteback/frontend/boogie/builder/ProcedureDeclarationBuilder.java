@@ -10,11 +10,11 @@ public class ProcedureDeclarationBuilder extends DeclarationBuilder {
 
 	private Opt<Body> body;
 
-	private List<Specification> specification;
+	private List<Specification> specifications;
 
 	public ProcedureDeclarationBuilder() {
 		body = new Opt<>();
-		specification = new List<>();
+		specifications = new List<>();
 	}
 
 	public ProcedureDeclarationBuilder name(final String name) {
@@ -29,14 +29,14 @@ public class ProcedureDeclarationBuilder extends DeclarationBuilder {
 		return this;
 	}
 
-	public ProcedureDeclarationBuilder addSpecification(final Specification preCondition) {
-		specification.add(preCondition);
+	public ProcedureDeclarationBuilder addSpecification(final Specification specification) {
+		this.specifications.add(specification);
 
 		return this;
 	}
 
-	public ProcedureDeclarationBuilder specification(final Iterable<Specification> specification) {
-		this.specification.addAll(specification);
+	public ProcedureDeclarationBuilder addSpecifications(final Iterable<Specification> specification) {
+		this.specifications.addAll(specification);
 
 		return this;
 	}
@@ -56,7 +56,7 @@ public class ProcedureDeclarationBuilder extends DeclarationBuilder {
 			throw new IllegalArgumentException("Procedure declaration must include a signature");
 		}
 
-		return new ProcedureDeclaration(attributes, declarator, signature, specification, body);
+		return new ProcedureDeclaration(attributes, declarator, signature, specifications, body);
 	}
 
 }

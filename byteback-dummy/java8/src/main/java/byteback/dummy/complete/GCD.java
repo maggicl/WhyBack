@@ -14,7 +14,7 @@ public class GCD {
 	}
 
 	@Condition
-	public static boolean arguments_are_positive(int a, int b, int returns) {
+	public static boolean arguments_are_positive(int a, int b) {
 		return gt(a, 0) & gt(b, 0);
 	}
 
@@ -34,18 +34,12 @@ public class GCD {
 	public static int gcd(int a, int b) {
 		final int result;
 		if (a == b) {
-			assertion(divides(a, b));
-			assertion(divides(b, a));
 			return a;
 		} else if (a > b) {
 			result = gcd(a - b, b);
-			assertion(divides(result, b));
-			assertion(divides(result, a));
 			return result;
 		} else {
 			result = gcd(a, b - a);
-			assertion(divides(result, b));
-			assertion(divides(result, a));
 			return result;
 		}
 	}

@@ -101,7 +101,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression assigned = extractor.visit(right, left.getType());
 				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
-				addStatement(Prelude.instance().getHeapUpdateStatement(boogieBase, fieldReference, assigned));
+				addStatement(Prelude.instance().makeHeapUpdateStatement(boogieBase, fieldReference, assigned));
 			}
 
 			@Override
@@ -119,8 +119,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression indexReference = new ProcedureExpressionExtractor(bodyExtractor, assignment)
 						.visit(index);
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
-				addStatement(Prelude.instance().getArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
-						indexReference, assigned));
+				addStatement(Prelude.instance().makeArrayUpdateStatement(new TypeAccessExtractor().visit(type),
+						boogieBase, indexReference, assigned));
 			}
 
 			@Override

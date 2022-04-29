@@ -26,7 +26,6 @@ function ~allocated(r: Reference) returns (bool);
 procedure ~new(t: Type) returns (~ret: Reference);
 	ensures ~typeof(~heap, ~ret) == t;
 	ensures ~allocated(~ret);
-	modifies ~heap;
 
 // -------------------------------------------------------------------
 // Type model
@@ -66,10 +65,15 @@ function ~lengthof(r: Reference) returns (int);
 
 axiom (forall r: Reference :: ~lengthof(r) >= 0);
 
-function ~get<a>(r: Reference, f: Array a, i: int) returns (a);
+function {:inline} ~get<a>(h: Store, r: Reference, f: Array a, i: int) returns (a)
+{
+	~read(h, r, f)[i]
+}
 
-procedure ~insert<a>(r: Reference, f: Array a, i: int, e: a) returns ();
-	ensures ~get(r, f, i) == e;
+function {:inline} ~insert<a>(h: Store, r: Reference, f: Array a, i: int, e: a) returns (Store)
+{
+	~update(h, r, f, ~read(h, r, f)[i := e])
+}
 
 procedure ~array(l: int) returns (~ret: Reference);
   ensures ~lengthof(~ret) == l;
@@ -151,5 +155,7 @@ axiom ~int(true) == 1;
 // Missing definitions
 // -------------------------------------------------------------------
 procedure java.lang.Object.$init$##(this: Reference) returns ();
+
+procedure java.lang.Object.clone##(this: Reference) returns ();
 
 const unique java.lang.Object: Type;

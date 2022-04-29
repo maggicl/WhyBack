@@ -1,6 +1,7 @@
 package byteback.core.converter.soottoboogie.expression;
 
 import byteback.core.converter.soottoboogie.Namespace;
+import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.type.CasterProvider;
 import byteback.core.representation.soot.annotation.SootAnnotation;
@@ -13,6 +14,7 @@ import byteback.frontend.boogie.ast.BinaryExpression;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.List;
+import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
 import java.util.Iterator;
 import java.util.Stack;
@@ -93,10 +95,13 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final var referenceBuilder = new FunctionReferenceBuilder();
-		final String methodName = method.annotation(Namespace.PRELUDE_ANNOTATION).flatMap(SootAnnotation::getValue)
+		final ValueReference heapReference =  Prelude.instance().getHeapVariable()
+			.makeValueReference();
+		final String name = method.annotation(Namespace.PRELUDE_ANNOTATION).flatMap(SootAnnotation::getValue)
 				.map((element) -> new StringElementExtractor().visit(element))
 				.orElseGet(() -> MethodConverter.methodName(method));
-		referenceBuilder.name(methodName);
+		referenceBuilder.name(name);
+		referenceBuilder.prependArgument(heapReference);
 		referenceBuilder.addArguments(convertArguments(method, arguments));
 		pushExpression(referenceBuilder.build());
 	}

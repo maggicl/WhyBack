@@ -110,6 +110,18 @@ public class Prelude {
 	}
 
 	/**
+	 * Getter for the heap variable.
+	 *
+	 * @return The {@code ~heap} {@link Variable}.
+	 */
+	public Variable getHeapVariable() {
+		final Variable variable = program().lookupLocalVariable("~heap")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap variable"));
+
+		return variable;
+	}
+
+	/**
 	 * Getter for the reference type.
 	 *
 	 * @return The {@code Reference} {@link Type}.
@@ -193,13 +205,13 @@ public class Prelude {
 	}
 
 	/**
-	 * Getter for the heap-update procedure.
+	 * Getter for the heap-update function.
 	 *
 	 * @return The {@code ~update} function.
 	 */
-	public Procedure getHeapUpdateProcedure() {
-		return program().lookupProcedure("~update")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update procedure"));
+	public Function getHeapUpdateFunction() {
+		return program().lookupFunction("~update")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update function"));
 	}
 
 	/**
@@ -257,9 +269,9 @@ public class Prelude {
 	 *
 	 * @return The {@code ~insert} function.
 	 */
-	public Procedure getArrayUpdateProcedure() {
-		return program().lookupProcedure("~insert")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~insert procedure"));
+	public Function getArrayUpdateFunction() {
+		return program().lookupFunction("~insert")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~insert function"));
 	}
 
 	/**
@@ -358,6 +370,7 @@ public class Prelude {
 			final Expression index) {
 		final FunctionReference reference = getArrayAccessFunction().makeFunctionReference();
 		final Variable arrayType = getArrayTypeVariable(typeAccess);
+		reference.addArgument(getHeapVariable().makeValueReference());
 		reference.addArgument(base);
 		reference.addArgument(arrayType.makeValueReference());
 		reference.addArgument(index);
@@ -375,12 +388,14 @@ public class Prelude {
 	 * @return The {@link Expression} updating the field.
 	 */
 	public Statement makeHeapUpdateStatement(final Expression base, final Expression field, final Expression value) {
-		final TargetedCallStatement statement = getHeapUpdateProcedure().makeTargetedCall();
-		statement.addArgument(base);
-		statement.addArgument(field);
-		statement.addArgument(value);
+		final ValueReference heapReference = getHeapVariable().makeValueReference();
+		final FunctionReference updateReference = getHeapUpdateFunction().makeFunctionReference();
+		updateReference.addArgument(heapReference);
+		updateReference.addArgument(base);
+		updateReference.addArgument(field);
+		updateReference.addArgument(value);
 
-		return statement;
+		return new AssignmentStatement(new Assignee(heapReference.getAccessor()), updateReference);
 	}
 
 	/**
@@ -394,14 +409,16 @@ public class Prelude {
 	 */
 	public Statement makeArrayUpdateStatement(final TypeAccess typeAccess, final Expression base,
 			final Expression index, final Expression value) {
-		final TargetedCallStatement statement = getArrayUpdateProcedure().makeTargetedCall();
+		final ValueReference heapReference = getHeapVariable().makeValueReference();
+		final FunctionReference updateReference = getArrayUpdateFunction().makeFunctionReference();
 		final Variable arrayType = getArrayTypeVariable(typeAccess);
-		statement.addArgument(base);
-		statement.addArgument(arrayType.makeValueReference());
-		statement.addArgument(index);
-		statement.addArgument(value);
+		updateReference.addArgument(heapReference);
+		updateReference.addArgument(base);
+		updateReference.addArgument(arrayType.makeValueReference());
+		updateReference.addArgument(index);
+		updateReference.addArgument(value);
 
-		return statement;
+		return new AssignmentStatement(new Assignee(heapReference.getAccessor()), updateReference);
 	}
 
 	/**

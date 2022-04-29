@@ -49,6 +49,11 @@ public class InsertionSort {
 	}
 
 	@Condition
+	public static boolean near_indexes(final int[] xs, int i, int j) {
+		return eq(i, j + 1);
+	}
+
+	@Condition
 	public static boolean array_is_not_null(final int[] xs, int i, int j) {
 		return array_is_not_null(xs);
 	}
@@ -57,6 +62,12 @@ public class InsertionSort {
 	@Condition
 	public static boolean array_is_not_null(final int[] xs) {
 		return neq(xs, null);
+	}
+
+	@Condition
+	public static boolean array_invariance(final int[] xs, int i, int j) {
+		int m = Binding.integer();
+		return forall(m, implies(lte(0, m) & lt(m, xs.length) & neq(m, i) & neq(m, j), eq(old(xs[m]), xs[m])));
 	}
 
 	@Condition
@@ -78,21 +89,21 @@ public class InsertionSort {
 				invariant(lt(i, xs.length));
 				invariant(lte(0, j));
 				invariant(lte(j, i));
-				invariant(sorted(xs, 0, j));
-				invariant(sorted(xs, j, i + 1));
 				invariant(partitioned(xs, i, j));
+				invariant(sorted(xs, j, i + 1));
 
+				assertion(lte(xs[j], xs[j - 1]));
 				swap(xs, j, j - 1);
-
-				assertion(lte(xs[j], xs[i]));
 				assertion(lte(xs[j - 1], xs[j]));
 			}
 		}
 	}
 
+	@Require("near_indexes")
 	@Require("array_is_not_null")
 	@Require("bounded_indexes")
 	@Ensure("swapped")
+	@Ensure("array_invariance")
 	public static void swap(final int[] xs, int i, int j) {
 		final int y;
 		y = xs[i];

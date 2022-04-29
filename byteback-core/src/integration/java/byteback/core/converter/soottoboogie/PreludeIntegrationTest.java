@@ -47,7 +47,7 @@ public class PreludeIntegrationTest {
 
 	@Test
 	public void GetHeapUpdateProcedure_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Procedure procedure = Prelude.instance().getHeapUpdateProcedure();
+		final Procedure procedure = Prelude.instance().getHeapUpdateFunction();
 		assertEquals("~update", procedure.getName());
 	}
 

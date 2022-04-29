@@ -3,6 +3,7 @@ package byteback.core.converter.soottoboogie.method.procedure;
 import byteback.core.converter.soottoboogie.Convention;
 import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.Namespace;
+import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.function.FunctionManager;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
@@ -76,6 +77,8 @@ public class ProcedureConverter extends MethodConverter {
 
 	public static List<Expression> makeArguments(final SootMethod method) {
 		final List<Expression> references = new List<>();
+
+		references.add(Prelude.instance().getHeapVariable().makeValueReference());
 
 		for (Local local : method.getBody().getParameterLocals()) {
 			references.add(ValueReference.of(local.getName()));

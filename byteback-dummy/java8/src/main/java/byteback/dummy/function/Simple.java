@@ -10,14 +10,14 @@ public class Simple {
 
 	@Pure
 	public static boolean universalQuantifier() {
-		int i = Binding.INTEGER();
+		int i = Binding.integer();
 
 		return forall(i, true);
 	}
 
 	@Pure
 	public static boolean existentialQuantifier() {
-		int i = Binding.INTEGER();
+		int i = Binding.integer();
 
 		return exists(i, true);
 	}

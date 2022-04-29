@@ -92,7 +92,7 @@ public interface Operator {
 	 *            First operand.
 	 * @param b
 	 *            Second operand.
-	 * @return {@code true} if {@code a || b}.
+	 * @return {@code true} if {@code a == b}.
 	 */
 	@Pure
 	@Prelude("~eq")
@@ -145,6 +145,69 @@ public interface Operator {
 	@Pure
 	@Prelude("~eq")
 	public static boolean eq(final short a, final short b) {
+		return a == b;
+	}
+
+	/**
+	 * Object inequality.
+	 *
+	 * @param a
+	 *            First operand.
+	 * @param b
+	 *            Second operand.
+	 * @return {@code true} if {@code a != b}.
+	 */
+	@Pure
+	@Prelude("~neq")
+	public static boolean neq(final Object a, final Object b) {
+		return a.equals(b);
+	}
+
+	@Pure
+	@Prelude("~neq")
+	public static boolean neq(final boolean a, final boolean b) {
+		return a == b;
+	}
+
+	@Pure
+	@Prelude("~neq")
+	public static boolean neq(final byte a, final byte b) {
+		return a == b;
+	}
+
+	@Pure
+	@Prelude("~neq")
+	public static boolean neq(final int a, final int b) {
+		return a == b;
+	}
+
+	@Pure
+	@Prelude("~neq")
+	public static boolean neq(final char a, final char b) {
+		return a == b;
+	}
+
+	@Pure
+	@Prelude("~neq")
+	public static boolean neq(final double a, final double b) {
+		return a == b;
+	}
+
+	@Pure
+	@Prelude("~neq")
+	public static boolean neq(final float a, final float b) {
+		return a == b;
+	}
+
+	@Pure
+	@Prelude("~neq")
+	public static boolean neq(final long a, final long b) {
+		return a == b;
+	}
+
+	@Pure
+	@Prelude("~neq")
+	public static boolean neq(final short a, final short b) {
 		return a == b;
 	}
 

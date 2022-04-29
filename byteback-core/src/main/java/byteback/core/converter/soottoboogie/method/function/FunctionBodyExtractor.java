@@ -1,7 +1,7 @@
 package byteback.core.converter.soottoboogie.method.function;
 
 import byteback.core.converter.soottoboogie.LocalExtractor;
-import byteback.core.converter.soottoboogie.LocalUseExtractor;
+import byteback.core.converter.soottoboogie.DependencyExtractor;
 import byteback.core.converter.soottoboogie.expression.Substitutor;
 import byteback.core.converter.soottoboogie.statement.StatementConversionException;
 import byteback.core.representation.soot.body.SootExpression;
@@ -45,7 +45,7 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 			}
 
 		}.visit(right, left.getType());
-		substitutor.put(local, new LocalUseExtractor().visit(right), expression);
+		substitutor.put(local, new DependencyExtractor().visit(right), expression);
 	}
 
 	@Override

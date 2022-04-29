@@ -2,7 +2,7 @@ package byteback.annotations;
 
 public interface Binding {
 
-	public static int INTEGER() {
+	public static int integer() {
 		return 0;
 	}
 

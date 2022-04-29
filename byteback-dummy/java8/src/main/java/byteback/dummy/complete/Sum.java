@@ -16,7 +16,7 @@ public class Sum {
 
 	@Pure
 	public static boolean positive_arguments(int[] as) {
-		int i = Binding.INTEGER();
+		int i = Binding.integer();
 
 		return forall(i, implies(lt(i, as.length), gt(as[i], 0)));
 	}

@@ -112,9 +112,9 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	@Override
 	public void caseLocal(final Local local) {
-		final DefinitionCollector definitionCollector = bodyExtractor.getDefinitionCollector();
+		final UseDefinitionCollector definitionCollector = bodyExtractor.getDefinitionCollector();
 
-		if (!definitionCollector.hasSingleDefinition(local) || local.getUseBoxes().size() > 1) {
+		if (!(definitionCollector.definitionsOf(local).size() == 1) || definitionCollector.usesOf(local).size() > 1) {
 			pushCastExpression(ValueReference.of(local.getName()), local);
 		} else {
 			super.caseLocal(local);

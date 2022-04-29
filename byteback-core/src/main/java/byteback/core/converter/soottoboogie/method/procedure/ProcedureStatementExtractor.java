@@ -2,7 +2,7 @@ package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.Convention;
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.converter.soottoboogie.LocalUseExtractor;
+import byteback.core.converter.soottoboogie.DependencyExtractor;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.field.FieldConverter;
@@ -84,7 +84,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 				if (!assigned.equals(reference)) {
 					addSingleAssignment(Assignee.of(reference), assigned);
-					bodyExtractor.getSubstitutor().put(local, new LocalUseExtractor().visit(right), assigned);
+					bodyExtractor.getSubstitutor().put(local, new DependencyExtractor().visit(right), assigned);
 				}
 			}
 
@@ -121,6 +121,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
 				addStatement(Prelude.instance().makeArrayUpdateStatement(new TypeAccessExtractor().visit(type),
 						boogieBase, indexReference, assigned));
+				bodyExtractor.getSubstitutor().prune(arrayReference);
 			}
 
 			@Override

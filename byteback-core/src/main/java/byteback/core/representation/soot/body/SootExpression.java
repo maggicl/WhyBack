@@ -33,4 +33,9 @@ public class SootExpression implements Visitable<SootExpressionVisitor<?>> {
 				&& ((SootExpression) expression).sootExpression.equals(sootExpression);
 	}
 
+	@Override
+	public String toString() {
+		return sootExpression.toString();
+	}
+
 }

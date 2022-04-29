@@ -1,7 +1,8 @@
 package byteback.core.converter.soottoboogie.expression;
 
 import java.util.Set;
-import soot.Local;
+
+import soot.Value;
 
 public class PartialSubstitutor extends Substitutor {
 
@@ -10,8 +11,8 @@ public class PartialSubstitutor extends Substitutor {
 	}
 
 	@Override
-	public void handleDependencies(final Set<Local> dependencies) {
-		for (Local dependency : dependencies) {
+	public void handleDependencies(final Set<Value> dependencies) {
+		for (Value dependency : dependencies) {
 			substitutionIndex.remove(dependency);
 		}
 	}

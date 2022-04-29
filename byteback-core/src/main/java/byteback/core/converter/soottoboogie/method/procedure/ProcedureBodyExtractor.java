@@ -49,7 +49,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final Stack<LoopCollector.LoopContext> activeLoops;
 
-	private final DefinitionCollector definitions;
+	private final UseDefinitionCollector definitions;
 
 	private final Substitutor substitutor;
 
@@ -59,7 +59,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.variableProvider = new VariableProvider();
 		this.labelCollector = new LabelCollector();
 		this.loopCollector = new LoopCollector();
-		this.definitions = new DefinitionCollector();
+		this.definitions = new UseDefinitionCollector();
 		this.activeLoops = new Stack<>();
 		this.substitutor = new PartialSubstitutor();
 	}
@@ -109,7 +109,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		return substitutor;
 	}
 
-	public DefinitionCollector getDefinitionCollector() {
+	public UseDefinitionCollector getDefinitionCollector() {
 		return definitions;
 	}
 

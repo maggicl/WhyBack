@@ -5,6 +5,7 @@ import byteback.core.representation.soot.annotation.SootAnnotationElement;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.util.Lazy;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +27,7 @@ public class SootMethod {
 		return builder.toString();
 	}
 
-	static String formatParameters(final Collection<SootType> parameterTypes) {
+	static String formatParameters(final Iterable<SootType> parameterTypes) {
 		final StringBuilder builder = new StringBuilder();
 		final Iterator<SootType> iterator = parameterTypes.iterator();
 		builder.append("(");
@@ -66,13 +67,17 @@ public class SootMethod {
 	public String getIdentifier() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append(getName());
-		builder.append(formatParameters(getParameterTypes()));
+		builder.append(formatParameters(parameterTypes()::iterator));
 
 		return builder.toString();
 	}
 
+	public Stream<SootType> parameterTypes() {
+		return sootMethod.getParameterTypes().stream().map(SootType::new);
+	}
+
 	public List<SootType> getParameterTypes() {
-		return sootMethod.getParameterTypes().stream().map(SootType::new).collect(Collectors.toList());
+		return parameterTypes().collect(Collectors.toList());
 	}
 
 	public SootType getReturnType() {

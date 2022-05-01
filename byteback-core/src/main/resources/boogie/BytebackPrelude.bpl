@@ -21,7 +21,7 @@ function {:inline} ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns 
 	h[r := h[r][f := v]]
 }
 
-function ~allocated(r: Reference) returns (bool);
+function ~allocated(Reference) returns (bool);
 
 procedure ~new(t: Type) returns (~ret: Reference);
 	ensures ~typeof(~heap, ~ret) == t;
@@ -49,34 +49,35 @@ axiom (forall h: Store, t: Type :: ~typeof(h, ~null) <: t);
 // -------------------------------------------------------------------
 // Array model
 // -------------------------------------------------------------------
-type Array a = Field [int]a;
+type Box;
 
-const unique ~Array.bool: Array bool;
+function ~box<a>(a) returns (Box);
 
-const unique ~Array.int: Array int;
+function ~unbox<a>(Box) returns (a);
 
-const unique ~Array.real: Array real;
+axiom (forall <a> x : a :: { ~box(x) } ~unbox(~box(x)) == x);
 
-const unique ~Array.Reference: Array Reference;
+function ~element(int) returns (Field Box);
 
-const unique ~Array.length: Field int;
+function ~element_inverse<a>(Field a) returns (int);
+
+axiom (forall i: int :: { ~element(i) } ~element_inverse(~element(i)) == i);
 
 function ~lengthof(r: Reference) returns (int);
 
 axiom (forall r: Reference :: ~lengthof(r) >= 0);
 
-function {:inline} ~get<a>(h: Store, r: Reference, f: Array a, i: int) returns (a)
+procedure test()
+	modifies ~heap;
 {
-	~read(h, r, f)[i]
-}
+	var r: Reference;
 
-function {:inline} ~insert<a>(h: Store, r: Reference, f: Array a, i: int, e: a) returns (Store)
-{
-	~update(h, r, f, ~read(h, r, f)[i := e])
+	~heap := ~update(~heap, r, ~element(0), ~box(0));
+	~heap := ~update(~heap, r, ~element(1), ~box(1));
+	~heap := ~update(~heap, r, ~element(2), ~box(2));
+	~heap := ~update(~heap, r, ~element(3), ~box(3));
+	~heap := ~update(~heap, r, ~element(4), ~box(4));
 }
-
-procedure ~array(l: int) returns (~ret: Reference);
-  ensures ~lengthof(~ret) == l;
 
 // -------------------------------------------------------------------
 // Binary operators

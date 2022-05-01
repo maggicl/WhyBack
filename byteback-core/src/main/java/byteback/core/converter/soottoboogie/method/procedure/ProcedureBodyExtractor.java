@@ -4,6 +4,7 @@ import byteback.core.converter.soottoboogie.Convention;
 import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.expression.PartialSubstitutor;
 import byteback.core.converter.soottoboogie.expression.Substitutor;
+import byteback.core.converter.soottoboogie.method.procedure.LoopCollector.LoopContext;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.type.SootType;
@@ -47,7 +48,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final LoopCollector loopCollector;
 
-	private final Stack<LoopCollector.LoopContext> activeLoops;
+	private final Stack<LoopContext> activeLoops;
 
 	private final UseDefinitionCollector definitions;
 

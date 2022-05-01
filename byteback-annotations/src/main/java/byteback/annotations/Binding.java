@@ -6,15 +6,15 @@ public interface Binding {
 		return 0;
 	}
 
-	public static double REAL() {
+	public static double real() {
 		return 0.0;
 	}
 
-	public static Object REFERENCE() {
+	public static Object reference() {
 		return null;
 	}
 
-	public static boolean BOOLEAN() {
+	public static boolean bool() {
 		return false;
 	}
 

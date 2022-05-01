@@ -65,7 +65,7 @@ public class PreludeIntegrationTest {
 
 	@Test
 	public void GetArrayAccessFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.instance().getArrayAccessFunction();
+		final Function function = Prelude.instance().getArrayIndexFunction();
 		assertEquals("~get", function.getName());
 	}
 

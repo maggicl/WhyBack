@@ -18,7 +18,8 @@ import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
 import java.util.Iterator;
 import java.util.Stack;
-import soot.Local;
+import java.util.stream.Stream;
+
 import soot.UnknownType;
 import soot.Value;
 import soot.jimple.BinopExpr;
@@ -81,10 +82,15 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 	}
 
 	public List<Expression> convertArguments(final SootMethod method, final Iterable<SootExpression> sources) {
+		Stream<SootType> types = method.parameterTypes();
 		final List<Expression> arguments = new List<>();
-		final Iterator<SootType> typeIterator = method.getBody().getParameterLocals().stream().map(Local::getType)
-				.map(SootType::new).iterator();
 		final Iterator<SootExpression> sourceIterator = sources.iterator();
+
+		if (!method.isStatic()) {
+			types = Stream.concat(Stream.of(method.getSootClass().getType()), types);
+		}
+
+		final Iterator<SootType> typeIterator = types.iterator();
 
 		while (typeIterator.hasNext() && sourceIterator.hasNext()) {
 			arguments.add(visit(sourceIterator.next(), typeIterator.next()));

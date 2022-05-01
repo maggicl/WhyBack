@@ -10,105 +10,100 @@ import byteback.annotations.Contract.Ensure;
 
 public class InsertionSort {
 
-	@Pure
-	public static boolean sorted(final int[] xs, int start, int end) {
-		int i = Binding.integer();
-		int j = Binding.integer();
-
-		return forall(i,
-									forall(j,
-												 implies(lte(start, i) & lt(i, j) & lt(j, end),
-																 lte(xs[i], xs[j]))));
+	@Condition
+	public static boolean boundedness(final int[] a, final int i) {
+		return lte(0, i) & lt(i, a.length);
 	}
 
-	@Pure
-	public static boolean partitioned(final int[] xs, int i, int j) {
-		int m = Binding.integer();
-		int n = Binding.integer();
-
-		return forall(m,
-									forall(n,
-												 implies(lte(0, m) & lt(m, j) & lt(j, n) & lte(n, i),
-																 lte(xs[m], xs[n]))));
+	@Condition
+	public static boolean boundedness(final int[] a, final int i, final int m) {
+		return lte(i, m) & lt(m, a.length);
 	}
 
 	@Pure
-	@Condition
-	public static boolean sorted(final int[] xs) {
-		return sorted(xs, 0, xs.length);
+	public static boolean minimum(final int[] a, final int i, final int j, final int m) {
+		final int k = Binding.integer();
+
+		return forall(k, implies(lte(i, k) & lt(k, j), gte(a[k], a[m])));
 	}
 
 	@Condition
-	public static boolean swapped(final int[] xs, int i, int j) {
-		return eq(xs[i], old(xs[j])) & eq(xs[j], old(xs[i]));
+	public static boolean minimum(final int[] a, final int i, final int m) {
+		return minimum(a, i, a.length, m);
 	}
 
-	@Condition
-	public static boolean bounded_indexes(final int[] xs, int i, int j) {
-		return gte(i, 0) & gte(j, 0) & lt(i, xs.length) & lt(j, xs.length);
-	}
+	@Require("boundedness")
+	@Ensure("boundedness")
+	@Ensure("minimum")
+	public static int minimum(final int[] a, final int i) {
+		int m = i;
 
-	@Condition
-	public static boolean near_indexes(final int[] xs, int i, int j) {
-		return eq(i, j + 1);
-	}
+		for (int j = i; j < a.length; ++j) {
+			invariant(lte(i, j) & lte(j, a.length));
+			invariant(lte(i, m) & lt(m, a.length));
+			invariant(minimum(a, i, j, m));
 
-	@Condition
-	public static boolean array_is_not_null(final int[] xs, int i, int j) {
-		return array_is_not_null(xs);
-	}
-
-	@Pure
-	@Condition
-	public static boolean array_is_not_null(final int[] xs) {
-		return neq(xs, null);
-	}
-
-	@Condition
-	public static boolean array_invariance(final int[] xs, int i, int j) {
-		int m = Binding.integer();
-		return forall(m, implies(lte(0, m) & lt(m, xs.length) & neq(m, i) & neq(m, j), eq(old(xs[m]), xs[m])));
-	}
-
-	@Condition
-	public static boolean multi_element_array(final int[] xs) {
-		return gt(xs.length, 1);
-	}
-
-	@Require("array_is_not_null")
-	@Require("multi_element_array")
-	@Ensure("sorted")
-	public static void sort(final int[] xs) {
-		for (int i = 1; i < xs.length; ++i) {
-			invariant(lte(1, i));
-			invariant(lte(i, xs.length));
-			invariant(sorted(xs, 0, i));
-
-			for (int j = i; j > 0 && xs[j - 1] > xs[j]; --j) {
-				invariant(lte(1, i));
-				invariant(lt(i, xs.length));
-				invariant(lte(0, j));
-				invariant(lte(j, i));
-				invariant(partitioned(xs, i, j));
-				invariant(sorted(xs, j, i + 1));
-
-				assertion(lte(xs[j], xs[j - 1]));
-				swap(xs, j, j - 1);
-				assertion(lte(xs[j - 1], xs[j]));
+			if (a[j] < a[m]) {
+				m = j;
 			}
 		}
+
+		return m;
 	}
 
-	@Require("near_indexes")
-	@Require("array_is_not_null")
-	@Require("bounded_indexes")
+	@Condition
+	public static boolean swapped(final int[] a, final int i, final int j) {
+		return eq(old(a[i]), a[j]) & eq(old(a[j]), a[i]);
+	}
+
+	@Require("boundedness")
 	@Ensure("swapped")
-	@Ensure("array_invariance")
-	public static void swap(final int[] xs, int i, int j) {
+	public static void swap(final int[] a, final int i, final int j) {
 		final int y;
-		y = xs[i];
-		xs[i] = xs[j];
-		xs[j] = y;
+		y = a[i];
+		a[i] = a[j];
+		a[j] = y;
+	}
+
+	@Pure
+	public static boolean sorted(final int[] a, final int i, final int j) {
+		final int k = Binding.integer();
+
+		return forall(k, implies(lte(i, k) & lt(k, j), lte(a[k - 1], a[k])));
+	}
+
+	@Pure
+	public static boolean partitioned(final int[] a, final int c) {
+		final int k = Binding.integer();
+		final int l = Binding.integer();
+
+		return forall(k, forall(l, implies(lte(0, k) & lt(k, c) & lte(c, l) & lt(l, a.length), lte(a[k], a[l]))));
+	}
+
+	@Condition
+	public static boolean sortability(final int[] a) {
+		return gt(a.length, 1);
+	}
+
+	@Condition
+	public static boolean sortedness(final int[] a) {
+		return sorted(a, 0, a.length);
+	}
+
+	@Require("sortability")
+	@Ensure("sortedness")
+	public static void sort(final int[] a) {
+		for (int c = 0; c < a.length; ++c) {
+			invariant(lte(0, c) & lte(c, a.length));
+			invariant(partitioned(a, c));
+			invariant(sorted(a, 0, c));
+
+			int m = minimum(a, c);
+
+			swap(a, c, m);
+
+			assertion(sorted(a, 0, c + 1));
+		}
 	}
 
 }

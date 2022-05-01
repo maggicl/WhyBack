@@ -195,7 +195,14 @@ Expression expression7
     {: return e; :}
     | unary_expression.o
     {: return o; :}
+		| coercion_operation.o
+		{: return o; :}
     ;
+
+CoercionOperation coercion_operation
+		= expression8.e COLON type.a
+		{: return new CoercionOperation(e, a); :}
+		;
 
 UnaryExpression unary_expression
     = negation_operation.o

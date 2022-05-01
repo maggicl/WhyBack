@@ -275,8 +275,9 @@ aspect Print {
 		getAccessor().print(builder);
 
 		if (getArgumentList().getNumChild() > 0) {
-			builder.append(" ");
+			builder.append(" (");
 			PrintUtil.listPrint(builder, " ", getArgumentList());
+			builder.append(")");
 		}
 	}
 
@@ -317,6 +318,14 @@ aspect Print {
 	}
 
 	Expression implements Printable;
+
+	public void CoercionOperation.print(final StringBuilder builder) {
+		builder.append("(");
+		getOperand().print(builder);
+		builder.append(" : ");
+		getTarget().print(builder);
+		builder.append(")");
+	}
 
 	public void ConditionalOperation.print(final StringBuilder builder) {
 		builder.append("if ");

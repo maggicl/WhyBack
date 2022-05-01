@@ -111,6 +111,8 @@ abstract BinaryExpression : Expression ::= LeftOperand:Expression RightOperand:E
 
 abstract UnaryExpression: Expression ::= Operand:Expression;
 
+CoercionOperation : UnaryExpression ::= Target:TypeAccess;
+
 // If-Then expression
 ConditionalOperation : Expression ::= Condition:Expression Then:Expression Else:Expression;
 

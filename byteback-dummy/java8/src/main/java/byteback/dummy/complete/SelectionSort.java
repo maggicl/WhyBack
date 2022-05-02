@@ -7,7 +7,7 @@ import static byteback.annotations.Quantifier.*;
 import byteback.annotations.Binding;
 import byteback.annotations.Contract.Ensure;
 
-public class InsertionSort {
+public class SelectionSort {
 
 	@Condition
 	public static boolean boundedness(final int[] a, final int i) {
@@ -15,10 +15,17 @@ public class InsertionSort {
 	}
 
 	@Pure
+	@Condition
 	public static boolean minimum(final int[] a, final int i, final int j, final int m) {
 		final int k = Binding.integer();
 
 		return forall(k, implies(lte(i, k) & lt(k, j), gte(a[k], a[m])));
+	}
+
+	@Pure
+	@Condition
+	public static boolean minimum(final int[] a, final int i, final int m) {
+		return minimum(a, i, a.length, m);
 	}
 
 	@Require("boundedness")

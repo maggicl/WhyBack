@@ -197,21 +197,21 @@ public class Prelude {
 	/**
 	 * Getter for the heap-read function.
 	 *
-	 * @return The {@code ~read} function.
+	 * @return The {@code ~heap.read} function.
 	 */
 	public Function getHeapAccessFunction() {
-		return program().lookupFunction("~read")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~read function"));
+		return program().lookupFunction("~heap.read")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap.read function"));
 	}
 
 	/**
 	 * Getter for the heap-update function.
 	 *
-	 * @return The {@code ~update} function.
+	 * @return The {@code ~heap.update} function.
 	 */
 	public Function getHeapUpdateFunction() {
-		return program().lookupFunction("~update")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~update function"));
+		return program().lookupFunction("~heap.update")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap.update function"));
 	}
 
 	/**

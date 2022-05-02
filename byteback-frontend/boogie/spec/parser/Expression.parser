@@ -68,12 +68,12 @@ Expression expression2
     ;
 
 OrOperation or_operation
-    = expression3.lhs OR expression3.rhs
+    = expression3.lhs OR expression2.rhs
     {: return new OrOperation(lhs, rhs); :}
     ;
 
 AndOperation and_operation
-    = expression3.lhs AND expression3.rhs
+    = expression3.lhs AND expression2.rhs
     {: return new AndOperation(lhs, rhs); :}
     ;
 

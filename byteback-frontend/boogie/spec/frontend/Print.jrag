@@ -250,6 +250,7 @@ aspect Print {
 	WhereClause implements Printable;
 
 	public void WhereClause.print(final StringBuilder builder) {
+		builder.append(" where ");
 		getExpression().print(builder);
 	}
 

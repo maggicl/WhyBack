@@ -9,23 +9,37 @@ type Field a;
 
 type Store = [Reference]<a>[Field a]a;
 
-var ~heap: Store;
-
-function {:inline} ~read<a>(h: Store, r: Reference, f: Field a) returns (a)
+function {:inline} ~heap.read<a>(h: Store, r: Reference, f: Field a) returns (a)
 {
 	h[r][f]
 }
 
-function {:inline} ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
+function {:inline} ~heap.update<a>(h: Store, r: Reference, f: Field a, v: a) returns (Store)
 {
 	h[r := h[r][f := v]]
 }
 
-function ~succ(h1: Store, h2: Store) returns (bool);
+function ~heap.succ(h1: Store, h2: Store) returns (bool);
 
-axiom (forall <a> h: Store, r: Reference, f: Field a, v: a :: { ~update(h, r, f, v) } ~succ(h, ~update(h, r, f, v)));
+axiom (forall <a> h: Store, r: Reference, f: Field a, v: a ::
+	{ ~heap.update(h, r, f, v) }
+	~heap.isgood(~heap.update(h, r, f, v)) ==> ~heap.succ(h, ~heap.update(h, r, f, v)));
 
-axiom (forall h1: Store, h2: Store, h3: Store :: { ~succ(h1, h2), ~succ(h2, h3) } ~succ(h1, h2) && ~succ(h2, h3) ==> ~succ(h1, h3));
+axiom (forall h1: Store, h2: Store, h3: Store ::
+	{ ~heap.succ(h1, h2), ~heap.succ(h2, h3) }
+	h1 != h3 ==> ~heap.succ(h1, h2) && ~heap.succ(h2, h3) ==> ~heap.succ(h1, h3));
+
+axiom (forall h1: Store, h2: Store ::
+	~heap.succ(h1, h2) &&
+	(forall <a> r: Reference, f: Field a ::
+		{ ~heap.read(h2, r, f) }
+		~heap.read(h1, r, f) == ~heap.read(h2, r, f)));
+
+function ~heap.isgood(h: Store) returns (bool);
+
+function ~heap.isanchor(h: Store) returns (bool);
+
+var ~heap: Store where ~heap.isgood(~heap) && ~heap.isanchor(~heap);
 
 function ~allocated(Reference) returns (bool);
 
@@ -42,7 +56,7 @@ const ~Object.Type: Field Type;
 
 function ~typeof(h: Store, r: Reference) returns (Type)
 {
-  ~read(h, r, ~Object.Type)
+  ~heap.read(h, r, ~Object.Type)
 }
 
 function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
@@ -73,7 +87,8 @@ function ~lengthof(r: Reference) returns (int);
 
 axiom (forall r: Reference :: ~lengthof(r) >= 0);
 
-axiom (forall <a> h1: Store, h2: Store, r: Reference, i: int :: 0 <= i && i < ~lengthof(r) ==> ~read(h1, r, ~element(i)) == ~read(h2, r, ~element(i)));
+axiom (forall h1: Store, h2: Store, r: Reference , i: int ::
+	~heap.succ(h1, h2) && 0 <= i && i < ~lengthof(r) ==> ~heap.read(h1, r, ~element(i)) == ~heap.read(h2, r, ~element(i)));
 
 // -------------------------------------------------------------------
 // Binary operators

@@ -101,13 +101,17 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 
 	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
 		final var referenceBuilder = new FunctionReferenceBuilder();
-		final ValueReference heapReference =  Prelude.instance().getHeapVariable()
-			.makeValueReference();
 		final String name = method.annotation(Namespace.PRELUDE_ANNOTATION).flatMap(SootAnnotation::getValue)
 				.map((element) -> new StringElementExtractor().visit(element))
 				.orElseGet(() -> MethodConverter.methodName(method));
 		referenceBuilder.name(name);
-		referenceBuilder.prependArgument(heapReference);
+
+		if (method.annotation(Namespace.PRIMITIVE_ANNOTATION).isEmpty()) {
+			final ValueReference heapReference =  Prelude.instance().getHeapVariable()
+				.makeValueReference();
+			referenceBuilder.prependArgument(heapReference);
+		}
+
 		referenceBuilder.addArguments(convertArguments(method, arguments));
 		pushExpression(referenceBuilder.build());
 	}

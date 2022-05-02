@@ -21,6 +21,12 @@ function {:inline} ~update<a>(h: Store, r: Reference, f: Field a, v: a) returns 
 	h[r := h[r][f := v]]
 }
 
+function ~succ(h1: Store, h2: Store) returns (bool);
+
+axiom (forall <a> h: Store, r: Reference, f: Field a, v: a :: { ~update(h, r, f, v) } ~succ(h, ~update(h, r, f, v)));
+
+axiom (forall h1: Store, h2: Store, h3: Store :: { ~succ(h1, h2), ~succ(h2, h3) } ~succ(h1, h2) && ~succ(h2, h3) ==> ~succ(h1, h3));
+
 function ~allocated(Reference) returns (bool);
 
 procedure ~new(t: Type) returns (~ret: Reference);
@@ -67,17 +73,7 @@ function ~lengthof(r: Reference) returns (int);
 
 axiom (forall r: Reference :: ~lengthof(r) >= 0);
 
-procedure test()
-	modifies ~heap;
-{
-	var r: Reference;
-
-	~heap := ~update(~heap, r, ~element(0), ~box(0));
-	~heap := ~update(~heap, r, ~element(1), ~box(1));
-	~heap := ~update(~heap, r, ~element(2), ~box(2));
-	~heap := ~update(~heap, r, ~element(3), ~box(3));
-	~heap := ~update(~heap, r, ~element(4), ~box(4));
-}
+axiom (forall <a> h1: Store, h2: Store, r: Reference, i: int :: 0 <= i && i < ~lengthof(r) ==> ~read(h1, r, ~element(i)) == ~read(h2, r, ~element(i)));
 
 // -------------------------------------------------------------------
 // Binary operators
@@ -95,51 +91,75 @@ axiom (forall i: int, j: int :: i == j <==> ~cmp(i, j) == 0);
 // -------------------------------------------------------------------
 // Prelude definitions
 // -------------------------------------------------------------------
-function ~and(h: Store, a: bool, b: bool) returns (bool)
+function ~and(a: bool, b: bool) returns (bool)
 {
   a && b
 }
 
-function ~or(h: Store, a: bool, b: bool) returns (bool)
+function ~or(a: bool, b: bool) returns (bool)
 {
   a || b
 }
 
-function ~implies(h: Store, a: bool, b: bool) returns (bool)
+function ~implies(a: bool, b: bool) returns (bool)
 {
   a ==> b
 }
 
-function ~iff(h: Store, a: bool, b: bool) returns (bool)
+function ~iff(a: bool, b: bool) returns (bool)
 {
   a <==> b
 }
 
-function ~eq<t>(h: Store, a: t, b: t) returns (bool)
+function ~eq<t>(a: t, b: t) returns (bool)
 {
 	a == b
 }
 
-function ~neq<t>(h: Store, a: t, b: t) returns (bool)
+function ~neq<t>(a: t, b: t) returns (bool)
 {
 	a != b
 }
 
-function ~lt<t>(h: Store, a: t, b:  t) returns (bool);
-axiom (forall h: Store, a: real, b: real :: ~lt(h, a, b) <==> a < b);
-axiom (forall h: Store, a: int, b: int :: ~lt(h, a, b) <==> a < b);
+function ~int.lt(a: int, b: int) returns (bool)
+{
+	a < b
+}
 
-function ~lte<t>(h: Store, a: t, b: t) returns (bool);
-axiom (forall h: Store, a: real, b: real :: ~lte(h, a, b) <==> a <= b);
-axiom (forall h: Store, a: int, b: int :: ~lte(h, a, b) <==> a <= b);
+function ~real.lt(a: real, b: real) returns (bool)
+{
+	a < b
+}
 
-function ~gt<t>(h: Store, a: t, b: t) returns (bool);
-axiom (forall h: Store, a: real, b: real :: ~gt(h, a, b) <==> a > b);
-axiom (forall h: Store, a: int, b: int :: ~gt(h, a, b) <==> a > b);
+function ~int.lte(a: int, b: int) returns (bool)
+{
+	a <= b
+}
 
-function ~gte<t>(h: Store, a: t, b: t) returns (bool);
-axiom (forall h: Store, a: real, b: real :: ~gte(h, a, b) <==> a >= b);
-axiom (forall h: Store, a: int, b: int :: ~gte(h, a, b) <==> a >= b);
+function ~real.lte(a: real, b: real) returns (bool)
+{
+	a <= b
+}
+
+function ~int.gt(a: int, b: int) returns (bool)
+{
+	a > b
+}
+
+function ~real.gt(a: real, b: real) returns (bool)
+{
+	a > b
+}
+
+function ~int.gte(a: int, b: int) returns (bool)
+{
+	a >= b
+}
+
+function ~real.gte(a: real, b: real) returns (bool)
+{
+	a >= b
+}
 
 // -------------------------------------------------------------------
 // Casting operators

@@ -28,6 +28,11 @@ public interface Contract {
 	public @interface Lemma {
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD})
+	public @interface Primitive {
+	}
+
 	/**
 	 * Declares that the function is already defined in the preamble.
 	 */

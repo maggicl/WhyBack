@@ -192,6 +192,12 @@ axiom ~int(true) == 1;
 // -------------------------------------------------------------------
 procedure java.lang.Object.$init$##(this: Reference) returns ();
 
-procedure java.lang.Object.clone##(this: Reference) returns ();
+procedure java.lang.Object.clone##(this: Reference) returns (~ret: Reference);
+	requires this != ~null;
+	ensures this != ~ret;
+	ensures (forall <a> h: Store, f: Field Box ::
+	  { ~unbox(~heap.read(h, ~ret, f)) : a }
+		~heap.read(h, this, f) != ~heap.read(h, ~ret, f) && ~unbox(~heap.read(h, this, f)) : a == ~unbox(~heap.read(h, ~ret, f)) : a);
+	ensures ~lengthof(this) == ~lengthof(~ret);
 
 const unique java.lang.Object: Type;

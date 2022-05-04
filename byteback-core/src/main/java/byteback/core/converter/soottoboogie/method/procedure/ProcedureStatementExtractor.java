@@ -7,6 +7,7 @@ import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.field.FieldConverter;
 import byteback.core.converter.soottoboogie.statement.StatementConversionException;
+import byteback.core.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
@@ -26,6 +27,7 @@ import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
 import java.util.Optional;
 import java.util.function.Supplier;
+
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
@@ -38,6 +40,7 @@ import soot.jimple.InstanceFieldRef;
 import soot.jimple.InvokeStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
+import soot.jimple.StaticFieldRef;
 
 public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
@@ -102,6 +105,21 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
 				addStatement(Prelude.instance().makeHeapUpdateStatement(boogieBase, fieldReference, assigned));
+			}
+
+			@Override
+			public void caseStaticFieldRef(final StaticFieldRef staticFieldReference) {
+				final var field = new SootField(staticFieldReference.getField());
+				final ReferenceSupplier referenceSupplier = () -> {
+					final TypeAccess typeAccess = new TypeAccessExtractor().visit(field.getType());
+
+					return Optional.of(bodyExtractor.getVariableProvider().get(typeAccess));
+				};
+				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, referenceSupplier, assignment);
+				final Expression assigned = extractor.visit(right, left.getType());
+				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
+				final Expression boogieBase = ValueReference.of(ReferenceTypeConverter.typeName(field.getSootClass()));
+				addStatement(Prelude.instance().makeStaticUpdateStatement(boogieBase, fieldReference, assigned));
 			}
 
 			@Override

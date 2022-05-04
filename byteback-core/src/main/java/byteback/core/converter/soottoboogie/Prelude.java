@@ -204,6 +204,11 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap.read function"));
 	}
 
+	public Function getTypeReferenceFunction() {
+		return program().lookupFunction("~type.reference")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~type.reference function"));
+	}
+
 	/**
 	 * Getter for the heap-update function.
 	 *
@@ -349,6 +354,13 @@ public class Prelude {
 		return accessReference;
 	}
 
+	public Expression makeStaticAccessExpression(final Expression base, final Expression field) {
+		final FunctionReference referenceReference = getTypeReferenceFunction().makeFunctionReference();
+		referenceReference.addArgument(base);
+
+		return makeHeapAccessExpression(referenceReference, field);
+	}
+
 	/**
 	 * Builder for an array-access expression.
 	 *
@@ -391,6 +403,13 @@ public class Prelude {
 		updateReference.addArgument(value);
 
 		return new AssignmentStatement(new Assignee(heapReference.getAccessor()), updateReference);
+	}
+
+	public Statement makeStaticUpdateStatement(final Expression base, final Expression field, final Expression value) {
+		final FunctionReference referenceReference = getTypeReferenceFunction().makeFunctionReference();
+		referenceReference.addArgument(base);
+
+		return makeHeapUpdateStatement(referenceReference, field, value);
 	}
 
 	/**

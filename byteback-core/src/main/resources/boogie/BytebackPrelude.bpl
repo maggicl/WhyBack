@@ -50,7 +50,7 @@ procedure ~new(t: Type) returns (~ret: Reference);
 // -------------------------------------------------------------------
 // Type model
 // -------------------------------------------------------------------
-type Type = Reference;
+type Type;
 
 const ~Object.Type: Field Type;
 
@@ -65,6 +65,12 @@ function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 }
 
 axiom (forall h: Store, t: Type :: ~typeof(h, ~null) <: t);
+
+function ~type.reference(Type) returns (Reference);
+
+function ~type.reference_inverse(Reference) returns (Type);
+
+axiom (forall t: Type :: { ~type.reference(t) } ~type.reference_inverse(~type.reference(t)) == t);
 
 // -------------------------------------------------------------------
 // Array model

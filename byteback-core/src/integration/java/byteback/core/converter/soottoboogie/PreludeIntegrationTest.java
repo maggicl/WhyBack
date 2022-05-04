@@ -47,8 +47,8 @@ public class PreludeIntegrationTest {
 
 	@Test
 	public void GetHeapUpdateProcedure_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Procedure procedure = Prelude.instance().getHeapUpdateFunction();
-		assertEquals("~update", procedure.getName());
+		final Function function = Prelude.instance().getHeapUpdateFunction();
+		assertEquals("~update", function.getName());
 	}
 
 	@Test
@@ -64,15 +64,9 @@ public class PreludeIntegrationTest {
 	}
 
 	@Test
-	public void GetArrayAccessFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.instance().getArrayIndexFunction();
+	public void GetBoxFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
+		final Function function = Prelude.instance().getBoxFunction();
 		assertEquals("~get", function.getName());
-	}
-
-	@Test
-	public void GetArrayUpdateFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Procedure procedure = Prelude.instance().getArrayUpdateProcedure();
-		assertEquals("~insert", procedure.getName());
 	}
 
 	@Test

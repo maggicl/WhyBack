@@ -161,6 +161,11 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	}
 
 	@Override
+	public void caseCmpExpr(final CmpExpr cmp) {
+		pushCmpExpression(cmp);
+	}
+
+	@Override
 	public void caseEqExpr(final EqExpr equals) {
 		pushBinaryExpression(equals, new EqualsOperation());
 	}
@@ -230,7 +235,9 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 	@Override
 	public void caseFloatConstant(final FloatConstant floatConstant) {
-		pushExpression(new RealLiteral(floatConstant.toString()));
+		final String literal = floatConstant.toString();
+		final String strippedLiteral = literal.substring(0, literal.length() - 1);
+		pushExpression(new RealLiteral(strippedLiteral));
 	}
 
 	@Override
@@ -258,7 +265,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final SootClass base = field.getSootClass();
 		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
 		final Expression heapAccess = Prelude.instance()
-				.makeHeapAccessExpression(ValueReference.of(ReferenceTypeConverter.typeName(base)), reference);
+				.makeStaticAccessExpression(ValueReference.of(ReferenceTypeConverter.typeName(base)), reference);
 		pushCastExpression(heapAccess, field.getType());
 	}
 

@@ -257,7 +257,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final var field = new SootField(staticFieldReference.getField());
 		final SootClass base = field.getSootClass();
 		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
-		final Expression heapAccess = Prelude.instance().makeHeapAccessExpression(ValueReference.of(base.getName()),
+		final Expression heapAccess = Prelude.instance().makeHeapAccessExpression(ValueReference.of(ReferenceTypeConverter.typeName(base)),
 				reference);
 		pushCastExpression(heapAccess, field.getType());
 	}

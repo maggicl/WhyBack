@@ -10,6 +10,10 @@ public class ReferenceTypeConverter {
 
 	private static final ReferenceTypeConverter instance = new ReferenceTypeConverter();
 
+	public static String typeName(final SootClass clazz) {
+		return "$" + clazz.getName();
+	}
+
 	public static ReferenceTypeConverter instance() {
 		return instance;
 	}
@@ -19,7 +23,7 @@ public class ReferenceTypeConverter {
 		final var bindingBuilder = new SetBindingBuilder();
 		final TypeAccess typeAccess = Prelude.instance().getTypeType().makeTypeAccess();
 		bindingBuilder.typeAccess(typeAccess);
-		bindingBuilder.name(clazz.getName());
+		bindingBuilder.name(typeName(clazz));
 		constantDeclaration.setBinding(bindingBuilder.build());
 		constantDeclaration.setUnique(true);
 

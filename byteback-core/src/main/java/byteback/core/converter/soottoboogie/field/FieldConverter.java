@@ -20,7 +20,7 @@ public class FieldConverter {
 		final String fieldName = field.getName();
 		final String className = field.getSootClass().getName();
 
-		return className + "." + fieldName;
+		return "$" + className + "." + fieldName;
 	}
 
 	public ConstantDeclaration convert(final SootField field) {

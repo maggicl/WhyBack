@@ -19,7 +19,6 @@ import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.stream.Stream;
-
 import soot.UnknownType;
 import soot.Value;
 import soot.jimple.BinopExpr;
@@ -107,8 +106,7 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		referenceBuilder.name(name);
 
 		if (method.annotation(Namespace.PRIMITIVE_ANNOTATION).isEmpty()) {
-			final ValueReference heapReference =  Prelude.instance().getHeapVariable()
-				.makeValueReference();
+			final ValueReference heapReference = Prelude.instance().getHeapVariable().makeValueReference();
 			referenceBuilder.prependArgument(heapReference);
 		}
 

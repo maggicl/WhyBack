@@ -1,7 +1,7 @@
 package byteback.core.converter.soottoboogie.method.function;
 
-import byteback.core.converter.soottoboogie.LocalExtractor;
 import byteback.core.converter.soottoboogie.DependencyExtractor;
+import byteback.core.converter.soottoboogie.LocalExtractor;
 import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.expression.Substitutor;
 import byteback.core.converter.soottoboogie.statement.StatementConversionException;

@@ -2,7 +2,6 @@ package byteback.core.converter.soottoboogie;
 
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,8 +14,7 @@ import soot.jimple.StaticFieldRef;
 import soot.jimple.toolkits.infoflow.CachedEquivalentValue;
 
 /**
- * Extracts all the references upon which a given expression may
- * depend.
+ * Extracts all the references upon which a given expression may depend.
  *
  * @author paganma
  */

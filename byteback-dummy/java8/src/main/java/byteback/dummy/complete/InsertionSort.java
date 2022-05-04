@@ -14,21 +14,16 @@ public class InsertionSort {
 		final int k = Binding.integer();
 		final int m = Binding.integer();
 
-		return
-			forall(k, implies(lte(0, k) & lt(k, a.length),
-												exists(m, 
-															 implies(lte(0, m) & lt(m, b.length),
-																			 eq(a[k], b[m])))))
-			& eq(a.length, b.length);
+		return forall(k,
+				implies(lte(0, k) & lt(k, a.length), exists(m, implies(lte(0, m) & lt(m, b.length), eq(a[k], b[m])))))
+				& eq(a.length, b.length);
 	}
 
 	@Pure
 	public static boolean sorted(final int[] a, final int i, final int j) {
 		final int k = Binding.integer();
 
-		return forall(k,
-									implies(lt(i, k) & lt(k, j),
-													lte(a[k - 1], a[k])));
+		return forall(k, implies(lt(i, k) & lt(k, j), lte(a[k - 1], a[k])));
 	}
 
 	@Condition

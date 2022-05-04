@@ -5,7 +5,6 @@ import byteback.core.representation.soot.annotation.SootAnnotationElement;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.util.Lazy;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;

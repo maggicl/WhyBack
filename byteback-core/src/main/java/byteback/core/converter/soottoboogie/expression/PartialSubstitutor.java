@@ -1,7 +1,6 @@
 package byteback.core.converter.soottoboogie.expression;
 
 import java.util.Set;
-
 import soot.Value;
 
 public class PartialSubstitutor extends Substitutor {

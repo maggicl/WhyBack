@@ -1,6 +1,7 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.*;
+import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.procedure.ProcedureStatementExtractor.ReferenceSupplier;
@@ -115,7 +116,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		final UseDefinitionCollector definitionCollector = bodyExtractor.getDefinitionCollector();
 
 		if (!(definitionCollector.definitionsOf(local).size() == 1) || definitionCollector.usesOf(local).size() > 1) {
-			pushCastExpression(ValueReference.of(local.getName()), local);
+			pushCastExpression(ValueReference.of(ExpressionExtractor.localName(local)), local);
 		} else {
 			super.caseLocal(local);
 		}

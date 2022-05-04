@@ -2,6 +2,7 @@ package byteback.core.converter.soottoboogie.method.function;
 
 import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.type.SootType;
@@ -29,7 +30,7 @@ public class FunctionConverter extends MethodConverter {
 		final var type = new SootType(local.getType());
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
 		final OptionalBindingBuilder bindingBuilder = new OptionalBindingBuilder();
-		bindingBuilder.name(local.getName()).typeAccess(typeAccess);
+		bindingBuilder.name(ExpressionExtractor.localName(local)).typeAccess(typeAccess);
 
 		return bindingBuilder.build();
 	}

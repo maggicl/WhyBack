@@ -4,6 +4,7 @@ import byteback.core.converter.soottoboogie.Convention;
 import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.Namespace;
 import byteback.core.converter.soottoboogie.Prelude;
+import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.function.FunctionManager;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
@@ -44,7 +45,7 @@ public class ProcedureConverter extends MethodConverter {
 		final var type = new SootType(local.getType());
 		final var bindingBuilder = new BoundedBindingBuilder();
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
-		bindingBuilder.addName(local.getName()).typeAccess(typeAccess);
+		bindingBuilder.addName(ExpressionExtractor.localName(local)).typeAccess(typeAccess);
 
 		return bindingBuilder.build();
 	}
@@ -81,7 +82,7 @@ public class ProcedureConverter extends MethodConverter {
 		references.add(Prelude.instance().getHeapVariable().makeValueReference());
 
 		for (Local local : method.getBody().getParameterLocals()) {
-			references.add(ValueReference.of(local.getName()));
+			references.add(ValueReference.of(ExpressionExtractor.localName(local)));
 		}
 
 		references.add(Convention.makeReturnReference());

@@ -3,6 +3,7 @@ package byteback.core.converter.soottoboogie.method.function;
 import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.LocalExtractor;
 import byteback.core.converter.soottoboogie.Namespace;
+import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
 import byteback.core.converter.soottoboogie.expression.Substitutor;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
@@ -34,15 +35,15 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 		final Iterator<SootExpression> argumentsIterator = arguments.iterator();
 		final Local variableLocal = new LocalExtractor().visit(argumentsIterator.next());
 		bindingBuilder.typeAccess(new TypeAccessExtractor().visit(new SootType(variableLocal.getType())));
-		bindingBuilder.name(variableLocal.getName());
+		bindingBuilder.name(ExpressionExtractor.localName(variableLocal));
 		quantifierBuilder.quantifier(quantifier);
 		quantifierBuilder.addBinding(bindingBuilder.build());
-		quantifierBuilder.operand(visit(argumentsIterator.next(), new SootType(BooleanType.v())));
+		quantifierBuilder.operand(visit(argumentsIterator.next(), SootType.booleanType()));
 		pushExpression(quantifierBuilder.build());
 		assert !argumentsIterator.hasNext() : "Wrong number of arguments to quantifier";
 	}
 
-	public void pushExistentialQuantifier(Iterable<SootExpression> arguments) {
+	public void pushExistentialQuantifier(final Iterable<SootExpression> arguments) {
 		final Quantifier quantifier = new ExistentialQuantifier();
 		pushQuantifier(quantifier, arguments);
 	}

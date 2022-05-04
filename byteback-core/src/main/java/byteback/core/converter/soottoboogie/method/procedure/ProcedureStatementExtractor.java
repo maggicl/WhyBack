@@ -77,7 +77,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 			@Override
 			public void caseLocal(final Local local) {
-				final ValueReference reference = ValueReference.of(local.getName());
+				final ValueReference reference = ValueReference.of(ExpressionExtractor.localName(local));
 				final ReferenceSupplier referenceSupplier = () -> Optional.of(reference);
 				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, referenceSupplier, assignment);
 				final Expression assigned = extractor.visit(right, left.getType());

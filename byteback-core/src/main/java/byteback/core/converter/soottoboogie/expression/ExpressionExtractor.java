@@ -19,6 +19,10 @@ import soot.jimple.*;
 
 public class ExpressionExtractor extends ExpressionVisitor {
 
+	public static String localName(final Local local) {
+		return "$" + local.getName();
+	}
+
 	@Override
 	public void caseStaticInvokeExpr(final StaticInvokeExpr invoke) {
 		final var method = new SootMethod(invoke.getMethod());
@@ -236,7 +240,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 	@Override
 	public void caseLocal(final Local local) {
-		pushCastExpression(ValueReference.of(local.getName()), local);
+		pushCastExpression(ValueReference.of(localName(local)), local);
 	}
 
 	@Override

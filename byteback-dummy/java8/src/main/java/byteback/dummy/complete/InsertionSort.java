@@ -3,6 +3,7 @@ package byteback.dummy.complete;
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
 import static byteback.annotations.Quantifier.*;
+import static byteback.annotations.Special.*;
 
 import byteback.annotations.Binding;
 
@@ -25,21 +26,35 @@ public class InsertionSort {
 	public static boolean sorted(final int[] a, final int i, final int j) {
 		final int k = Binding.integer();
 
-		return forall(k, implies(lt(i, k) & lt(k, j), lte(a[k - 1], a[k])));
+		return forall(k,
+									implies(lt(i, k) & lt(k, j),
+													lte(a[k - 1], a[k])));
 	}
 
 	@Condition
-	public static boolean sortability(final int[] a) {
+	public static boolean array_is_not_empty(final int[] a) {
 		return gt(a.length, 0);
 	}
 
 	@Condition
-	public static boolean non_null(final int[] a) {
+	public static boolean array_is_not_null(final int[] a) {
 		return neq(a, null);
 	}
 
-	@Require("non_null")
-	@Require("sortability")
+	@Condition
+	public static boolean array_is_sorted(final int[] a) {
+		return sorted(a, 0, a.length);
+	}
+
+	@Condition
+	public static boolean array_is_permutated(final int[] a) {
+		return permutation(a, old(a));
+	}
+
+	@Require("array_is_not_null")
+	@Require("array_is_not_empty")
+	@Ensure("array_is_sorted")
+	@Ensure("array_is_permutated")
 	public static void sort(final int[] a) {
 		final int[] $old = a.clone();
 

@@ -25,8 +25,8 @@ public class BoundedBindingBuilder extends BindingBuilder {
 		return this;
 	}
 
-	public BoundedBindingBuilder whereClause(final WhereClause whereClause) {
-		this.whereClause = new Opt<>(whereClause);
+	public BoundedBindingBuilder whereClause(final Expression clause) {
+		this.whereClause = new Opt<>(new WhereClause(clause));
 
 		return this;
 	}

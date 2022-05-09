@@ -52,7 +52,9 @@ procedure ~new(t: Type) returns (~ret: Reference);
 // -------------------------------------------------------------------
 type Type;
 
-const ~Object.Type: Field Type;
+const unique ~Object.Type: Field Type;
+
+const unique ~Primitive: Type;
 
 function ~typeof(h: Store, r: Reference) returns (Type)
 {
@@ -95,6 +97,13 @@ axiom (forall r: Reference :: ~lengthof(r) >= 0);
 
 axiom (forall h1: Store, h2: Store, r: Reference , i: int ::
 	~heap.succ(h1, h2) && 0 <= i && i < ~lengthof(r) ==> ~heap.read(h1, r, ~element(i)) == ~heap.read(h2, r, ~element(i)));
+
+function ~array.type(Type) returns (Type);
+
+function ~array.type_inverse(Type) returns (Type);
+
+axiom (forall t: Type :: { ~array.type(t) } ~array.type_inverse(~array.type(t)) == t);
+
 
 // -------------------------------------------------------------------
 // Binary operators
@@ -196,13 +205,15 @@ axiom ~int(true) == 1;
 // -------------------------------------------------------------------
 // Missing definitions
 // -------------------------------------------------------------------
+const $java.lang.Object: Type;
+	
 procedure java.lang.Object.$init$##(this: Reference) returns ();
 
 procedure java.lang.Object.clone##(this: Reference) returns (~ret: Reference);
 	requires this != ~null;
 	ensures this != ~ret;
 	ensures (forall <a> h: Store, f: Field Box ::
-	  { ~unbox(~heap.read(h, ~ret, f)) : a }
+		{ ~unbox(~heap.read(h, ~ret, f)) : a }
 		~heap.read(h, this, f) != ~heap.read(h, ~ret, f) && ~unbox(~heap.read(h, this, f)) : a == ~unbox(~heap.read(h, ~ret, f)) : a);
 	ensures ~lengthof(this) == ~lengthof(~ret);
 

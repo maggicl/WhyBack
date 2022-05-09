@@ -121,6 +121,13 @@ public class Prelude {
 		return variable;
 	}
 
+	public Variable getPrimitiveTypeVariable() {
+		final Variable variable = program().lookupLocalVariable("~Primitive")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~Primitive variable"));
+
+		return variable;
+	}
+
 	/**
 	 * Getter for the reference type.
 	 *
@@ -207,6 +214,16 @@ public class Prelude {
 	public Function getTypeReferenceFunction() {
 		return program().lookupFunction("~type.reference")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~type.reference function"));
+	}
+
+	public Function getTypeOfFunction() {
+		return program().lookupFunction("~typeof")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~typeof function"));
+	}
+
+	public Function getArrayTypeFunction() {
+		return program().lookupFunction("~array.type")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap.type function"));
 	}
 
 	/**

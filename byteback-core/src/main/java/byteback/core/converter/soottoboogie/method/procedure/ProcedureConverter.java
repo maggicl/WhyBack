@@ -8,6 +8,7 @@ import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.function.FunctionManager;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
+import byteback.core.converter.soottoboogie.type.TypeReferenceExtractor;
 import byteback.core.representation.soot.annotation.SootAnnotationElement;
 import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
 import byteback.core.representation.soot.type.SootType;
@@ -16,11 +17,14 @@ import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Condition;
+import byteback.frontend.boogie.ast.EqualsOperation;
 import byteback.frontend.boogie.ast.Expression;
+import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.PostCondition;
 import byteback.frontend.boogie.ast.PreCondition;
 import byteback.frontend.boogie.ast.ProcedureDeclaration;
+import byteback.frontend.boogie.ast.SymbolicReference;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.BoundedBindingBuilder;
@@ -44,8 +48,17 @@ public class ProcedureConverter extends MethodConverter {
 	public static BoundedBinding makeBinding(final Local local) {
 		final var type = new SootType(local.getType());
 		final var bindingBuilder = new BoundedBindingBuilder();
+		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(type);
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
 		bindingBuilder.addName(ExpressionExtractor.localName(local)).typeAccess(typeAccess);
+
+		if (typeReference != null) {
+			final FunctionReference typeOfReference = Prelude.instance().getTypeOfFunction().makeFunctionReference();
+			final ValueReference heapReference = Prelude.instance().getHeapVariable().makeValueReference();
+			typeOfReference.addArgument(heapReference);
+			typeOfReference.addArgument(ValueReference.of(ExpressionExtractor.localName(local)));
+			bindingBuilder.whereClause(new EqualsOperation(typeOfReference, typeReference));
+		}
 
 		return bindingBuilder.build();
 	}

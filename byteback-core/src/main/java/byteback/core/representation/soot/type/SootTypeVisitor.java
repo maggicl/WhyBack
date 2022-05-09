@@ -10,7 +10,8 @@ import soot.TypeSwitch;
 public abstract class SootTypeVisitor<R> extends TypeSwitch implements Visitor<Type, R> {
 
 	@Override
-	public abstract void caseDefault(Type type);
+	public void caseDefault(Type type) {
+	}
 
 	@Override
 	public void defaultCase(Type type) {

@@ -50,7 +50,7 @@ public class Namespace {
 
 	public static final String ASSERTION_NAME = "assertion";
 
-	public static final String CONDITIONAL_NAME = "ifThenElse";
+	public static final String CONDITIONAL_NAME = "conditional";
 
 	public static final String UNIVERSAL_QUANTIFIER_NAME = "forall";
 

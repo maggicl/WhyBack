@@ -34,7 +34,7 @@ public class Special {
 		return value;
 	}
 
-	public static boolean ifThenElse(final boolean condition, final boolean thenValue, final boolean elseValue) {
+	public static boolean conditional(final boolean condition, final boolean thenValue, final boolean elseValue) {
 		if (condition) {
 			return thenValue;
 		} else {
@@ -42,7 +42,7 @@ public class Special {
 		}
 	}
 
-	public static byte ifThenElse(final boolean condition, final byte thenValue, final byte elseValue) {
+	public static byte conditional(final boolean condition, final byte thenValue, final byte elseValue) {
 		if (condition) {
 			return thenValue;
 		} else {
@@ -50,7 +50,7 @@ public class Special {
 		}
 	}
 
-	public static short ifThenElse(final boolean condition, final short thenValue, final short elseValue) {
+	public static short conditional(final boolean condition, final short thenValue, final short elseValue) {
 		if (condition) {
 			return thenValue;
 		} else {
@@ -58,7 +58,7 @@ public class Special {
 		}
 	}
 
-	public static int ifThenElse(final boolean condition, final int thenValue, final int elseValue) {
+	public static int conditional(final boolean condition, final int thenValue, final int elseValue) {
 		if (condition) {
 			return thenValue;
 		} else {
@@ -66,7 +66,7 @@ public class Special {
 		}
 	}
 
-	public static long ifThenElse(final boolean condition, final long thenValue, final long elseValue) {
+	public static long conditional(final boolean condition, final long thenValue, final long elseValue) {
 		if (condition) {
 			return thenValue;
 		} else {
@@ -74,7 +74,7 @@ public class Special {
 		}
 	}
 
-	public static float ifThenElse(final boolean condition, final float thenValue, final float elseValue) {
+	public static float conditional(final boolean condition, final float thenValue, final float elseValue) {
 		if (condition) {
 			return thenValue;
 		} else {
@@ -82,7 +82,7 @@ public class Special {
 		}
 	}
 
-	public static double ifThenElse(final boolean condition, final double thenValue, final double elseValue) {
+	public static double conditional(final boolean condition, final double thenValue, final double elseValue) {
 		if (condition) {
 			return thenValue;
 		} else {
@@ -90,7 +90,7 @@ public class Special {
 		}
 	}
 
-	public static <T> T ifThenElse(final boolean condition, final T thenValue, final T elseValue) {
+	public static <T> T conditional(final boolean condition, final T thenValue, final T elseValue) {
 		if (condition) {
 			return thenValue;
 		} else {

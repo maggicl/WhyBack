@@ -14,6 +14,8 @@ import byteback.core.representation.soot.annotation.SootAnnotationElement.String
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.core.representation.soot.unit.SootMethod;
+import byteback.frontend.boogie.ast.Assignee;
+import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Condition;
@@ -45,29 +47,45 @@ public class ProcedureConverter extends MethodConverter {
 		return instance;
 	}
 
-	public static BoundedBinding makeBinding(final Local local) {
-		final var type = new SootType(local.getType());
+	public static String parameterName(final Local local) {
+		return "?" + local.getName();
+	}
+
+	public static BoundedBinding makeBinding(final String name, final SootType type) {
 		final var bindingBuilder = new BoundedBindingBuilder();
 		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(type);
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
-		bindingBuilder.addName(ExpressionExtractor.localName(local)).typeAccess(typeAccess);
+		bindingBuilder.addName(name).typeAccess(typeAccess);
 
 		if (typeReference != null) {
 			final FunctionReference typeOfReference = Prelude.instance().getTypeOfFunction().makeFunctionReference();
 			final ValueReference heapReference = Prelude.instance().getHeapVariable().makeValueReference();
 			typeOfReference.addArgument(heapReference);
-			typeOfReference.addArgument(ValueReference.of(ExpressionExtractor.localName(local)));
+			typeOfReference.addArgument(ValueReference.of(name));
 			bindingBuilder.whereClause(new EqualsOperation(typeOfReference, typeReference));
 		}
 
 		return bindingBuilder.build();
 	}
 
+	public static BoundedBinding makeBinding(final Local local, final String name) {
+		final var type = new SootType(local.getType());
+
+		return makeBinding(name, type);
+	}
+
+	public static BoundedBinding makeBinding(final Local local) {
+		final String name = ExpressionExtractor.localName(local);
+
+		return makeBinding(local, name);
+	}
+
 	public static void buildSignature(final ProcedureDeclarationBuilder builder, final SootMethod method) {
 		final var signatureBuilder = new ProcedureSignatureBuilder();
 
 		for (Local local : method.getBody().getParameterLocals()) {
-			signatureBuilder.addInputBinding(makeBinding(local));
+			final String parameterName = parameterName(local);
+			signatureBuilder.addInputBinding(makeBinding(local, parameterName));
 		}
 
 		method.getReturnType().apply(new SootTypeVisitor<>() {
@@ -95,7 +113,7 @@ public class ProcedureConverter extends MethodConverter {
 		references.add(Prelude.instance().getHeapVariable().makeValueReference());
 
 		for (Local local : method.getBody().getParameterLocals()) {
-			references.add(ValueReference.of(ExpressionExtractor.localName(local)));
+			references.add(ValueReference.of(parameterName(local)));
 		}
 
 		references.add(Convention.makeReturnReference());
@@ -175,6 +193,12 @@ public class ProcedureConverter extends MethodConverter {
 		for (Local local : method.getBody().getLocals()) {
 			final var variableBuilder = new VariableDeclarationBuilder();
 			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
+		}
+
+		for (Local local : method.getBody().getParameterLocals()) {
+			final var variableBuilder = new VariableDeclarationBuilder();
+			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
+			body.getStatementList().insertChild(new AssignmentStatement(Assignee.of(ValueReference.of(ExpressionExtractor.localName(local))), ValueReference.of(parameterName(local))), 0);
 		}
 
 		builder.body(body);

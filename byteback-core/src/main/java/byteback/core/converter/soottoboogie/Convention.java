@@ -56,4 +56,8 @@ public class Convention {
 		return ValueReference.of("~sym" + index);
 	}
 
+	public static String makeParameterName(final String name) {
+		return "!" + name;
+	}
+
 }

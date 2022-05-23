@@ -10,12 +10,12 @@ public interface Binding {
 		return 0.0;
 	}
 
-	public static Object reference() {
-		return null;
-	}
-
 	public static boolean bool() {
 		return false;
+	}
+
+	public static Object reference() {
+		return null;
 	}
 
 }

@@ -68,16 +68,6 @@ public class SelectionSort {
 		return forall(k, forall(l, implies(lte(0, k) & lt(k, c) & lte(c, l) & lt(l, a.length), lte(a[k], a[l]))));
 	}
 
-	@Pure
-	public static boolean permutation(final int[] a, final int[] b) {
-		final int k = Binding.integer();
-		final int m = Binding.integer();
-
-		return forall(k,
-				implies(lte(0, k) & lt(k, a.length), exists(m, implies(lte(0, m) & lt(m, b.length), eq(a[k], b[m])))))
-				& eq(a.length, b.length);
-	}
-
 	@Condition
 	public static boolean array_is_not_empty(final int[] a) {
 		return gt(a.length, 1);
@@ -93,23 +83,14 @@ public class SelectionSort {
 		return neq(a, null);
 	}
 
-	@Condition
-	public static boolean array_is_permutated(final int[] a) {
-		return permutation(a, old(a));
-	}
-
 	@Require("array_is_not_null")
 	@Require("array_is_not_empty")
 	@Ensure("array_is_sorted")
-	@Ensure("array_is_permutated")
 	public static void sort(final int[] a) {
-		final int[] $old = a.clone();
-
 		for (int c = 0; c < a.length; ++c) {
 			invariant(lte(0, c) & lte(c, a.length));
 			invariant(partitioned(a, c));
 			invariant(sorted(a, 0, c));
-			invariant(permutation(a, $old));
 
 			final int m = minimum(a, c);
 			final int y;

@@ -3,7 +3,6 @@ package byteback.dummy.complete;
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
 import static byteback.annotations.Quantifier.*;
-import static byteback.annotations.Special.*;
 
 import byteback.annotations.Binding;
 import byteback.annotations.Contract.Ensure;

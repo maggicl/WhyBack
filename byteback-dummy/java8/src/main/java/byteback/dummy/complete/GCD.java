@@ -8,21 +8,41 @@ public class GCD {
 
 	@Pure
 	public static int gcd_recursive(int a, int b) {
-		return conditional(eq(a, b), a,
-											 conditional(gt(a, b), gcd_recursive(a - b, b),
+		return conditional(eq(a, b),
+											 a,
+											 conditional(gt(a, b),
+																	 gcd_recursive(a - b, b),
 																	 gcd_recursive(a, b - a)));
 	}
 
-	public static int gcd(int a, int b) {
-		int c;
+	@Condition
+	public static boolean result_is_correct(int a, int b, int r) {
+		return eq(r, gcd_recursive(a, b));
+	}
 
-		while (b != 0) {
-			c = a % b;
-			a = b;
-			b = c;
+	@Condition
+	public static boolean arguments_are_positive(int a, int b) {
+		return gt(a, 0) & gt(b, 0);
+	}
+
+	@Require("arguments_are_positive")
+	@Ensure("result_is_correct")
+	public static int gcd(final int a, final int b) {
+		int r = a;
+		int x = b;
+
+		while (r != x) {
+			invariant(gt(r, 0) & gt(x, 0));
+			invariant(eq(gcd_recursive(r, x), gcd_recursive(a, b)));
+
+			if (r > x) {
+				r = r - x;
+			} else {
+				x = x - r;
+			}
 		}
 
-		return a;
+		return r;
 	}
 
 }

@@ -24,15 +24,14 @@ public class BinarySearch {
 	}
 
 	@Condition
-	public static boolean bounded_index(int a[], int n, int left, int right, int returns) {
+	public static boolean result_is_index(int a[], int n, int left, int right, int returns) {
 		return implies(lte(0, returns), eq(a[returns], n));
 	}
 
 	@Require("sorted_array")
 	@Require("bounded_indices")
-	@Ensure("bounded_index")
+	@Ensure("result_is_index")
 	public static int search(int a[], int n, int left, int right) {
-
 		if (left < right) {
 			int p = left + (right - left) / 2;
 

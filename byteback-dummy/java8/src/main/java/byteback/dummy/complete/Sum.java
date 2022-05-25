@@ -1,3 +1,7 @@
+// - linear search (integers, references, generics)
+// - max
+// - Instance sum
+
 package byteback.dummy.complete;
 
 import static byteback.annotations.Contract.*;

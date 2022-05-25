@@ -31,7 +31,7 @@ public class SootClass {
 	 * @return {@code true} if the instance refers to a basic class.
 	 */
 	public boolean isBasicClass() {
-		return sootClass.isJavaLibraryClass() || getName().startsWith("jdk");
+		return sootClass.isJavaLibraryClass() || getName().startsWith("jdk") || getName().startsWith("scala");
 	}
 
 	/**

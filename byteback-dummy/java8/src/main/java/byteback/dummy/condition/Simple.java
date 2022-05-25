@@ -9,39 +9,39 @@ import static byteback.annotations.Operator.implies;
 import static byteback.annotations.Operator.lte;
 import static byteback.annotations.Special.conditional;
 
-import byteback.annotations.Contract.Condition;
+import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Ensure;
 import byteback.annotations.Contract.Pure;
 import byteback.annotations.Contract.Require;
 
 public class Simple {
 
-	@Condition
+	@Predicate
 	public static boolean returns_1(int returns) {
 		return eq(returns, 1);
 	}
 
-	@Condition
+	@Predicate
 	public static boolean returns_argument(int a, int returns) {
 		return eq(returns, a);
 	}
 
-	@Condition
+	@Predicate
 	public static boolean argument_is_positive(int m, int returns) {
 		return gt(m, 0);
 	}
 
-	@Condition
+	@Predicate
 	public static boolean argument_is_positive(int m) {
 		return gt(m, 0);
 	}
 
-	@Condition
+	@Predicate
 	public static boolean returns_0(int returns) {
 		return true;
 	}
 
-	@Condition
+	@Predicate
 	public static boolean returns_0(long returns) {
 		return false;
 	}

@@ -15,12 +15,12 @@ public class GCD {
 																	 gcd_recursive(a, b - a)));
 	}
 
-	@Condition
+	@Predicate
 	public static boolean result_is_correct(int a, int b, int r) {
 		return eq(r, gcd_recursive(a, b));
 	}
 
-	@Condition
+	@Predicate
 	public static boolean arguments_are_positive(int a, int b) {
 		return gt(a, 0) & gt(b, 0);
 	}

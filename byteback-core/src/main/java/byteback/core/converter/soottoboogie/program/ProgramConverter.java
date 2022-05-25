@@ -25,7 +25,7 @@ public class ProgramConverter {
 		clazz.methods().forEach((method) -> {
 			if (method.annotation(Namespace.PURE_ANNOTATION).isPresent()) {
 				program.addDeclaration(FunctionConverter.instance().convert(method));
-			} else if (method.annotation(Namespace.CONDITION_ANNOTATION).isEmpty()) {
+			} else if (method.annotation(Namespace.PREDICATE_ANNOTATION).isEmpty()) {
 				program.addDeclaration(ProcedureConverter.instance().convert(method));
 			}
 		});

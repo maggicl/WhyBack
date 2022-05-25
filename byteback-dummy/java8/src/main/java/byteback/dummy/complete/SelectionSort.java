@@ -10,12 +10,12 @@ import byteback.annotations.Contract.Ensure;
 public class SelectionSort {
 
 	@Pure
-	@Condition
+	@Predicate
 	public static boolean bounded_index(final int[] a, final int i) {
 		return lte(0, i) & lt(i, a.length);
 	}
 
-	@Condition
+	@Predicate
 	public static boolean bounded_index(final int[] a, final int i, final int m) {
 		return bounded_index(a, m);
 	}
@@ -28,7 +28,7 @@ public class SelectionSort {
 	}
 
 	@Pure
-	@Condition
+	@Predicate
 	public static boolean is_minimum(final int[] a, final int i, final int m) {
 		return is_minimum(a, i, a.length, m);
 	}
@@ -67,17 +67,17 @@ public class SelectionSort {
 		return forall(k, forall(l, implies(lte(0, k) & lt(k, c) & lte(c, l) & lt(l, a.length), lte(a[k], a[l]))));
 	}
 
-	@Condition
+	@Predicate
 	public static boolean array_is_not_empty(final int[] a) {
 		return gt(a.length, 1);
 	}
 
-	@Condition
+	@Predicate
 	public static boolean array_is_sorted(final int[] a) {
 		return sorted(a, 0, a.length);
 	}
 
-	@Condition
+	@Predicate
 	public static boolean array_is_not_null(final int[] a) {
 		return neq(a, null);
 	}

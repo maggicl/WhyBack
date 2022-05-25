@@ -4,22 +4,22 @@ import static byteback.annotations.Contract.assertion;
 import static byteback.annotations.Operator.eq;
 import static byteback.annotations.Special.old;
 
-import byteback.annotations.Contract.Condition;
+import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Ensure;
 
 public class Counter {
 
-	@Condition
+	@Predicate
 	public boolean increments_count_by_1() {
 		return eq(count, old(count) + 1);
 	}
 
-	@Condition
+	@Predicate
 	public boolean increments_count_by_10() {
 		return eq(count, old(count) + 10);
 	}
 
-	@Condition
+	@Predicate
 	public boolean count_is_0() {
 		return eq(count, 0);
 	}

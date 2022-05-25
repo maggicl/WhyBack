@@ -6,12 +6,12 @@ import byteback.annotations.Operator.{eq => equal};
 
 class LinearSearch {
 
-  @Condition
+  @Predicate
   def bounded_indices(a: Array[Int], n: Int, left: Int, right: Int): Boolean = {
     return lte(0, left) & lte(left, right) & lte(right, a.length);
   }
 
-  @Condition
+  @Predicate
   def result_is_index(a: Array[Int], n: Int, left: Int, right: Int, returns: Int): Boolean = {
     return implies(lte(0, returns), equal(a(returns), n));
   }

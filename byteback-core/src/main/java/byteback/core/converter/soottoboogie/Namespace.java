@@ -30,7 +30,7 @@ public class Namespace {
 
 	public static final String PURE_ANNOTATION = "Lbyteback/annotations/Contract$Pure;";
 
-	public static final String CONDITION_ANNOTATION = "Lbyteback/annotations/Contract$Condition;";
+	public static final String PREDICATE_ANNOTATION = "Lbyteback/annotations/Contract$Predicate;";
 
 	public static final String REQUIRE_ANNOTATION = "Lbyteback/annotations/Contract$Require;";
 

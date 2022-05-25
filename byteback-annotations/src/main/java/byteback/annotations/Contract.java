@@ -78,7 +78,7 @@ public interface Contract {
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
-	public static @interface Condition {
+	public static @interface Predicate {
 	}
 
 	public static void assertion(boolean condition) {

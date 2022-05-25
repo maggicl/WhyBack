@@ -15,12 +15,12 @@ public class Max {
 		return forall(i, implies(lte(start, i) & lt(i, end), gte(n, a[i])));
 	}
 
-	@Condition
+	@Predicate
 	public static boolean array_is_not_empty(int a[]) {
 		return gt(a.length, 0);
 	}
 
-	@Condition
+	@Predicate
 	public static boolean result_is_max(int a[], int t) {
 		return max_in_range(a, t, 0, a.length);
 	}

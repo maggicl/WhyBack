@@ -8,7 +8,7 @@ import byteback.annotations.Binding;
 
 public class BinarySearch {
 
-	@Condition
+	@Predicate
 	public static boolean sorted_array(int a[], int n, int left, int right) {
 		int i = Binding.integer();
 		int j = Binding.integer();
@@ -18,12 +18,12 @@ public class BinarySearch {
 												 implies(lte(left, i) & lt(i, j) & lte(j, right), lte(a[i], a[j]))));
 	}
 
-	@Condition
+	@Predicate
 	public static boolean bounded_indices(int a[], int n, int left, int right) {
 		return lte(0, left) & lte(left, right) & lte(right, a.length);
 	}
 
-	@Condition
+	@Predicate
 	public static boolean result_is_index(int a[], int n, int left, int right, int returns) {
 		return implies(lte(0, returns), eq(a[returns], n));
 	}

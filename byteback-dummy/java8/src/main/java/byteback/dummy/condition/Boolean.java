@@ -3,22 +3,22 @@ package byteback.dummy.condition;
 import static byteback.annotations.Operator.implies;
 import static byteback.annotations.Operator.not;
 
-import byteback.annotations.Contract.Condition;
+import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Ensure;
 
 public class Boolean {
 
-	@Condition
+	@Predicate
 	public static boolean and_postcondition(boolean a, boolean b, boolean returns) {
 		return implies(a & b, returns);
 	}
 
-	@Condition
+	@Predicate
 	public static boolean or_postcondition(boolean a, boolean b, boolean returns) {
 		return implies(a | b, returns);
 	}
 
-	@Condition
+	@Predicate
 	public static boolean not_postcondition(boolean a, boolean returns) {
 		return implies(a, not(returns));
 	}

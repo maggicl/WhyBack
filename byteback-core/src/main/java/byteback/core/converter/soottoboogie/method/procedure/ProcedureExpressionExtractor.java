@@ -5,14 +5,17 @@ import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.procedure.ProcedureStatementExtractor.ReferenceSupplier;
+import byteback.core.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.type.SootType;
+import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.core.representation.soot.unit.SootClass;
 import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
+import byteback.frontend.boogie.ast.NumberLiteral;
 import byteback.frontend.boogie.ast.Procedure;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
@@ -20,7 +23,9 @@ import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
 import java.util.Iterator;
 import java.util.Optional;
 import soot.Local;
+import soot.RefType;
 import soot.Unit;
+import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
 
@@ -107,7 +112,34 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 	public void caseNewExpr(final NewExpr newExpression) {
 		final Procedure newProcedure = Prelude.instance().getNewProcedure();
 		final TargetedCallStatement callStatement = newProcedure.makeTargetedCall();
-		callStatement.addArgument(ValueReference.of(newExpression.getBaseType().getClassName()));
+		final SootClass baseType = new SootClass(newExpression.getBaseType().getSootClass());
+		final String typeName = ReferenceTypeConverter.typeName(baseType);
+		callStatement.addArgument(ValueReference.of(typeName));
+		addCall(callStatement);
+	}
+
+	@Override
+	public void caseNewArrayExpr(final NewArrayExpr arrayExpression) {
+		final Procedure arrayProcedure = Prelude.instance().getArrayProcedure();
+		final TargetedCallStatement callStatement = arrayProcedure.makeTargetedCall();
+
+		arrayExpression.getBaseType().apply(new SootTypeVisitor<>() {
+
+			@Override
+			public void caseRefType(final RefType referenceType) {
+				final SootClass baseType = new SootClass(referenceType.getSootClass());
+				final String typeName = ReferenceTypeConverter.typeName(baseType);
+				callStatement.addArgument(ValueReference.of(typeName));
+			}
+
+			@Override
+			public void caseDefault(final soot.Type type) {
+				callStatement.addArgument(Prelude.instance().getPrimitiveTypeConstant().makeValueReference());
+			}
+
+		});
+
+		callStatement.addArgument(new NumberLiteral(arrayExpression.getSize().toString()));
 		addCall(callStatement);
 	}
 

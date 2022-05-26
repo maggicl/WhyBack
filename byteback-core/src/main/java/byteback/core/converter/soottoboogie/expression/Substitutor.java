@@ -35,6 +35,11 @@ public class Substitutor {
 		return substitutionIndex;
 	}
 
+	public void clear() {
+		substitutionIndex.clear();
+		dependencyIndex.clear();
+	}
+
 	protected void handleDependencies(final Set<Value> dependencies) {
 		if (dependencies.size() > 0) {
 			throw new ConversionException("Dependency found, the next substituted expressions may be invalid");

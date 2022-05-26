@@ -121,7 +121,7 @@ public class Prelude {
 		return variable;
 	}
 
-	public Variable getPrimitiveTypeVariable() {
+	public Variable getPrimitiveTypeConstant() {
 		final Variable variable = program().lookupLocalVariable("~Primitive")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~Primitive variable"));
 

@@ -1,8 +1,8 @@
 package byteback.dummy.condition;
 
-import static byteback.annotations.Contract.assertion;
-import static byteback.annotations.Operator.eq;
-import static byteback.annotations.Special.old;
+import static byteback.annotations.Contract.*;
+import static byteback.annotations.Operator.*;
+import static byteback.annotations.Special.*;
 
 import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Ensure;
@@ -49,14 +49,22 @@ public class Counter {
 
 	@Ensure("increments_count_by_10")
 	public void countTo10() {
+		final int old_count = count;
+
 		for (int i = 0; i < 10; ++i) {
+			invariant(lte(0, i) & lte(i, 10));
+			invariant(eq(count, old_count + i));
 			count++;
 		}
 	}
 
 	@Ensure("increments_count_by_10")
 	public void countTo10Indirectly() {
+		final int old_count = count;
+
 		for (int i = 0; i < 10; ++i) {
+			invariant(lte(0, i) & lte(i, 10));
+			invariant(eq(count, old_count + i));
 			increment();
 		}
 	}

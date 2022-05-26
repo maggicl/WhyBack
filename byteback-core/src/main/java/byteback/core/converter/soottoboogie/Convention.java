@@ -53,7 +53,11 @@ public class Convention {
 	 * @return The new {@link ValueReference} to the temporary variable.
 	 */
 	public static ValueReference makeValueReference(final int index) {
-		return ValueReference.of("~sym" + index);
+		return ValueReference.of(makeVariableName(index));
+	}
+
+	public static String makeVariableName(final int index) {
+		return "~sym" + index;
 	}
 
 	public static String makeParameterName(final String name) {

@@ -17,6 +17,7 @@ import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.VariableDeclaration;
 import java.util.Stack;
 import soot.Unit;
+import soot.jimple.IfStmt;
 
 public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
@@ -115,6 +116,12 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 	}
 
 	@Override
+	public void caseIfStmt(final IfStmt ifStatement) {
+		caseDefault(ifStatement);
+		getSubstitutor().clear();
+	}
+
+	@Override
 	public void caseDefault(final Unit unit) {
 		final var extractor = new ProcedureStatementExtractor(this);
 		loopCollector.getByHead(unit).ifPresent((context) -> {
@@ -127,6 +134,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		});
 		labelCollector.getLabel(unit).ifPresent((label) -> {
 			body.addStatement(new LabelStatement(label));
+			getSubstitutor().clear();
 		});
 		loopCollector.getByExitTarget(unit).ifPresent((context) -> {
 			addStatement(context.getAssumptionPoint());

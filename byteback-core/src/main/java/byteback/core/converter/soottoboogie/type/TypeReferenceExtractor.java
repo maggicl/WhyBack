@@ -25,7 +25,7 @@ public class TypeReferenceExtractor extends SootTypeVisitor<SymbolicReference> {
 		SymbolicReference innerTypeReference = visit(new SootType(arrayType.baseType));
 
 		if (innerTypeReference == null) {
-			innerTypeReference = Prelude.instance().getPrimitiveTypeVariable().makeValueReference();
+			innerTypeReference = Prelude.instance().getPrimitiveTypeConstant().makeValueReference();
 		}
 
 		arrayTypeReference.addArgument(innerTypeReference);

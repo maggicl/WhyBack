@@ -104,6 +104,11 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t: Type :: { ~array.type(t) } ~array.type_inverse(~array.type(t)) == t);
 
+procedure ~array(t: Type, l: int) returns (~ret: Reference);
+	ensures ~typeof(~heap, ~ret) == ~array.type(t);
+	ensures ~allocated(~ret);
+	ensures ~lengthof(~ret) == l;
+
 
 // -------------------------------------------------------------------
 // Binary operators

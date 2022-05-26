@@ -29,4 +29,30 @@ public class LinearSearch {
 
 		return -1;
 	}
+
+	@Predicate
+	public static <T> boolean bounded_indices(T a[], T n, int left, int right) {
+		return lte(0, left) & lte(left, right) & lte(right, a.length);
+	}
+
+	@Predicate
+	public static <T> boolean result_is_index(T a[], T n, int left, int right, int returns) {
+		return implies(lte(0, returns), eq(a[returns], n));
+	}
+
+	@Require("bounded_indices")
+	@Ensure("result_is_index")
+	public static <T> int search(T[] a, T n, int left, int right) {
+
+		for (int i = left; i < right; ++i) {
+			invariant(lte(left, i) & lte(i, right));
+
+			if (a[i] == n) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
 }

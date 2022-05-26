@@ -16,7 +16,7 @@ public class GCD {
 	}
 
 	@Predicate
-	public static boolean result_is_correct(int a, int b, int r) {
+	public static boolean result_is_gcd(int a, int b, int r) {
 		return eq(r, gcd_recursive(a, b));
 	}
 
@@ -26,7 +26,7 @@ public class GCD {
 	}
 
 	@Require("arguments_are_positive")
-	@Ensure("result_is_correct")
+	@Ensure("result_is_gcd")
 	public static int gcd(final int a, final int b) {
 		int r = a;
 		int x = b;

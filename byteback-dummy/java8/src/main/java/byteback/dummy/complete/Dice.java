@@ -1,11 +1,22 @@
 package byteback.dummy.complete;
 
 import static byteback.annotations.Contract.*;
+import static byteback.annotations.Operator.*;
 
 public class Dice {
 
 	public interface Die {
 
+		default boolean outcome_is_positive(int max, int outcome) {
+			return lte(1, outcome);
+		}
+
+		default boolean outcome_is_leq_than_max(int max, int outcome) {
+			return lte(outcome, max);
+		}
+
+		@Ensure("outcome_is_positive")
+		@Ensure("outcome_is_leq_than_max")
 		public int roll(int max);
 
 	}
@@ -13,7 +24,7 @@ public class Dice {
 	public static class FaultyDie implements Die {
 		
 		public int roll(int max) {
-			return 1;
+			return 100;
 		}
 
 	}
@@ -23,6 +34,6 @@ public class Dice {
 		int max = 6;
 		int result = die.roll(max);
 
-		assertion(result < max);
+		assertion(lte(result, max));
 	}
 }

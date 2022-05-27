@@ -5,12 +5,17 @@ import byteback.core.representation.soot.annotation.SootAnnotationElement;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.util.Lazy;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import soot.Local;
+import soot.jimple.internal.JimpleLocal;
 import soot.tagkit.VisibilityAnnotationTag;
 
 public class SootMethod {
@@ -79,6 +84,10 @@ public class SootMethod {
 		return parameterTypes().collect(Collectors.toList());
 	}
 
+	public int getParameterCount() {
+		return sootMethod.getParameterCount();
+	}
+
 	public SootType getReturnType() {
 		return new SootType(sootMethod.getReturnType());
 	}
@@ -88,11 +97,26 @@ public class SootMethod {
 	}
 
 	public boolean hasBody() {
-		return sootMethod.hasActiveBody();
+		return sootMethod.hasActiveBody() || sootMethod.isConcrete();
 	}
 
 	public SootClass getSootClass() {
 		return new SootClass(sootMethod.getDeclaringClass());
+	}
+
+	public Collection<Local> getFakeParameterLocals() {
+		final List<Local> parameterLocals = new ArrayList<>();
+
+		if (!sootMethod.isStatic()) {
+			parameterLocals.add(new JimpleLocal("this", sootMethod.getDeclaringClass().getType()));
+		}
+
+		for (int i = 0; i < getParameterCount(); ++i) {
+			final String name = "p" + i;
+			parameterLocals.add(new JimpleLocal(name, sootMethod.getParameterType(i)));
+		}
+
+		return parameterLocals;
 	}
 
 	public Stream<SootAnnotation> annotations() {

@@ -82,8 +82,15 @@ public class ProcedureConverter extends MethodConverter {
 
 	public static void buildSignature(final ProcedureDeclarationBuilder builder, final SootMethod method) {
 		final var signatureBuilder = new ProcedureSignatureBuilder();
+		final Iterable<Local> parameterLocals;
 
-		for (Local local : method.getBody().getParameterLocals()) {
+		if (method.hasBody()) {
+			parameterLocals = method.getBody().getParameterLocals();
+		} else {
+			parameterLocals = method.getFakeParameterLocals();
+		}
+
+		for (Local local : parameterLocals) {
 			final String parameterName = parameterName(local);
 			signatureBuilder.addInputBinding(makeBinding(local, parameterName));
 		}
@@ -109,10 +116,17 @@ public class ProcedureConverter extends MethodConverter {
 
 	public static List<Expression> makeArguments(final SootMethod method) {
 		final List<Expression> references = new List<>();
+		final Iterable<Local> parameterLocals;
+
+		if (method.hasBody()) {
+			parameterLocals = method.getBody().getParameterLocals();
+		} else {
+			parameterLocals = method.getFakeParameterLocals();
+		}
 
 		references.add(Prelude.instance().getHeapVariable().makeValueReference());
 
-		for (Local local : method.getBody().getParameterLocals()) {
+		for (Local local : parameterLocals) {
 			references.add(ValueReference.of(parameterName(local)));
 		}
 

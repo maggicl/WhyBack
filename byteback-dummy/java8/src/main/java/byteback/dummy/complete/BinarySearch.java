@@ -15,7 +15,8 @@ public class BinarySearch {
 
 		return forall(i,
 									forall(j,
-												 implies(lte(left, i) & lt(i, j) & lte(j, right), lte(a[i], a[j]))));
+												 implies(lte(left, i) & lt(i, j) & lte(j, right),
+																 lte(a[i], a[j]))));
 	}
 
 	@Predicate
@@ -24,10 +25,18 @@ public class BinarySearch {
 	}
 
 	@Predicate
-	public static boolean result_is_index(int a[], int n, int left, int right, int returns) {
+	public static boolean result_is_index(int a[], int n, int left, int right,
+																				int returns) {
+
 		return implies(lte(0, returns), eq(a[returns], n));
 	}
 
+	@Predicate
+	public static boolean array_is_not_null(final int[] a, int n, int left, int right) {
+		return neq(a, null);
+	}
+
+	@Require("array_is_not_null")
 	@Require("sorted_array")
 	@Require("bounded_indices")
 	@Ensure("result_is_index")

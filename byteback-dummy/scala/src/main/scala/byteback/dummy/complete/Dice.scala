@@ -23,13 +23,18 @@ trait Die {
 
 class FaultyDie extends Die {
 
-  def roll(max: Int): Int = 100;
+  def result_is_max(max: Int, returns: Int): Boolean = {
+    return equal(max, returns);
+  }
+
+  @Ensure("result_is_max")
+  def roll(max: Int): Int = max;
 
 }
 
 class Dice {
 
-  def apply() {
+  def main(): Unit = {
     var die: Die = new FaultyDie();
     var max: Int = 6;
     var result: Int = die.roll(max);

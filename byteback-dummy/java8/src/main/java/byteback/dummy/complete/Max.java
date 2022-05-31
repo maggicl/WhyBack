@@ -9,6 +9,11 @@ import byteback.annotations.Binding;
 public class Max {
 
 	@Pure
+	public static boolean array_is_not_null(int a[]) {
+		return neq(a, null);
+	}
+
+	@Pure
 	public static boolean max_in_range(int a[], int n, int start, int end) {
 		int i = Binding.integer();
 
@@ -25,6 +30,7 @@ public class Max {
 		return max_in_range(a, t, 0, a.length);
 	}
 
+	@Require("array_is_not_null")
 	@Require("array_is_not_empty")
 	@Ensure("result_is_max")
 	public static int max(int a[]) {
@@ -41,4 +47,5 @@ public class Max {
 
 		return t;
 	}
+
 }

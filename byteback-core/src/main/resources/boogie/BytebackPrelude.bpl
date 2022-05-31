@@ -196,6 +196,11 @@ function ~real.gte(a: real, b: real) returns (bool)
 	a >= b
 }
 
+function ~not(a: bool) returns (bool)
+{
+	!a
+}
+
 // -------------------------------------------------------------------
 // Casting operators
 // -------------------------------------------------------------------

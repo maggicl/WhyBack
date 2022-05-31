@@ -114,7 +114,7 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		pushExpression(referenceBuilder.build());
 	}
 
-	abstract void caseInstanceInvokeExpr(final InstanceInvokeExpr invoke);
+	abstract public void caseInstanceInvokeExpr(final InstanceInvokeExpr invoke);
 
 	@Override
 	public void caseVirtualInvokeExpr(final VirtualInvokeExpr invoke) {

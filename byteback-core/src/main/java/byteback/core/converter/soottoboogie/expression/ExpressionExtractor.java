@@ -201,6 +201,11 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final var toType = new SootType(casting.getCastType());
 		final var fromType = new SootType(casting.getType());
 		final Function<Expression, Expression> caster = new CasterProvider(toType).visit(fromType);
+
+		if (caster.equals(Function.identity())) {
+			throw new ExpressionConversionException(casting, "Unsupported cast between " + fromType + " and " + toType);
+		}
+
 		pushExpression(caster.apply(visit(operand, fromType)));
 	}
 

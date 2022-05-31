@@ -22,9 +22,13 @@ public class Dice {
 	}
 
 	public static class FaultyDie implements Die {
+
+		public boolean result_is_max(int max, int returns) {
+			return eq(max, returns);
+		}
 		
 		public int roll(int max) {
-			return 100;
+			return max;
 		}
 
 	}

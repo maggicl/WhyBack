@@ -1,7 +1,6 @@
 package byteback.core;
 
 import byteback.core.context.soot.SootContext;
-import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.program.ContextConverter;
 import byteback.frontend.boogie.ast.Program;
@@ -57,15 +56,11 @@ public class Main {
 			} else {
 				initialize(configuration);
 
-				try {
 					log.info("Converting classes");
 					convert(configuration);
 					final long conversionTime = System.currentTimeMillis() - startTime;
 					log.info("Conversion completed: {}ms", conversionTime);
-				} catch (final ConversionException exception) {
-					log.error("Conversion exception: ");
-					System.err.println(exception);
-				}
+
 			}
 		} catch (final ParameterException exception) {
 			log.error("Error while parsing program arguments: {}", exception.getMessage());

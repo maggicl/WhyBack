@@ -141,94 +141,107 @@ procedure java.lang.Object.clone##(this : Reference) returns (~ret : Reference);
 
 const unique java.lang.Object : Type;
 
-const unique $byteback.dummy.complete.LinearSearch : Type;
+const unique $byteback.dummy.complete.Comparator : Type;
 
-procedure byteback.dummy.complete.LinearSearch.apply#int?#int#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : int), ?n));
+procedure byteback.dummy.complete.Comparator.main##() returns ()
 {
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  var $n : int;
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : int) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
+  var $$stack4 : Reference where (~typeof(~heap, $$stack4) == $byteback.dummy.complete.Comparator$LessThanComparator);
+  var $ltComparator : Reference where (~typeof(~heap, $ltComparator) == $byteback.dummy.complete.Comparator$LessThanComparator);
+  var $$stack5 : Reference where (~typeof(~heap, $$stack5) == $byteback.dummy.complete.Comparator$GreaterThanComparator);
+  var $gtComparator : Reference where (~typeof(~heap, $gtComparator) == $byteback.dummy.complete.Comparator$GreaterThanComparator);
+  var $a : bool;
+  var $b : bool;
+  call $$stack4 := ~new($byteback.dummy.complete.Comparator$LessThanComparator);
+  call byteback.dummy.complete.Comparator$LessThanComparator.$init$##($$stack4);
+  $ltComparator := $$stack4;
+  call $$stack5 := ~new($byteback.dummy.complete.Comparator$GreaterThanComparator);
+  call byteback.dummy.complete.Comparator$GreaterThanComparator.$init$##($$stack5);
+  $gtComparator := $$stack5;
+  call $a := byteback.dummy.complete.Comparator$LessThanComparator.compare#int#int#($$stack4, 2, 1);
+  assert ~not($a);
+  call $b := byteback.dummy.complete.Comparator$GreaterThanComparator.compare#int#int#($$stack5, 1, 2);
+  assert ~not($b);
   return;
 }
 
-procedure byteback.dummy.complete.LinearSearch.applyi#java.lang.Object?#java.lang.Object#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type($java.lang.Object)), ?n : Reference where (~typeof(~heap, ?n) == $java.lang.Object), ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : Reference), ?n));
+const unique $byteback.dummy.complete.Comparator$GreaterThanComparator : Type;
+
+procedure byteback.dummy.complete.Comparator$GreaterThanComparator.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$GreaterThanComparator)) returns ()
 {
-  var $$stack9 : Reference where (~typeof(~heap, $$stack9) == $java.lang.Object);
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type($java.lang.Object));
-  var $n : Reference where (~typeof(~heap, $n) == $java.lang.Object);
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$GreaterThanComparator);
   $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  $$stack9 := (~unbox(~heap.read(~heap, $a, ~element($i))) : Reference);
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : Reference) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
+  call byteback.dummy.complete.Comparator$DefaultComparator.$init$##($this);
   return;
 }
 
-procedure byteback.dummy.complete.LinearSearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch)) returns ()
+procedure byteback.dummy.complete.Comparator$GreaterThanComparator.compare#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$GreaterThanComparator), ?a : int, ?b : int) returns (~ret : bool)
+  ensures ~implies(~ret, ~int.lt(?a, ?b));
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
+  var $$stack3 : bool;
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$GreaterThanComparator);
+  var $a : int;
+  var $b : int;
+  $b := ?b;
+  $a := ?a;
+  $this := ?this;
+  if (($a <= $b)) {
+    goto label1;
+  }
+  $$stack3 := true;
+  goto label2;
+label1:
+  $$stack3 := false;
+label2:
+  ~ret := $$stack3;
+  return;
+}
+
+const unique $byteback.dummy.complete.Comparator$LessThanComparator : Type;
+
+procedure byteback.dummy.complete.Comparator$LessThanComparator.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$LessThanComparator)) returns ()
+{
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$LessThanComparator);
+  $this := ?this;
+  call byteback.dummy.complete.Comparator$DefaultComparator.$init$##($this);
+  return;
+}
+
+procedure byteback.dummy.complete.Comparator$LessThanComparator.compare#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$LessThanComparator), ?a : int, ?b : int) returns (~ret : bool)
+  ensures ~implies(~ret, ~int.lt(?a, ?b));
+{
+  var $$stack3 : bool;
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$LessThanComparator);
+  var $a : int;
+  var $b : int;
+  $b := ?b;
+  $a := ?a;
+  $this := ?this;
+  if (($a >= $b)) {
+    goto label1;
+  }
+  $$stack3 := true;
+  goto label2;
+label1:
+  $$stack3 := false;
+label2:
+  ~ret := $$stack3;
+  return;
+}
+
+const unique $byteback.dummy.complete.Comparator$DefaultComparator : Type;
+
+procedure byteback.dummy.complete.Comparator$DefaultComparator.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$DefaultComparator)) returns ()
+{
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$DefaultComparator);
   $this := ?this;
   call java.lang.Object.$init$##($this);
+  return;
+}
+
+procedure byteback.dummy.complete.Comparator$DefaultComparator.compare#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$DefaultComparator), ?a : int, ?b : int) returns (~ret : bool)
+{
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$DefaultComparator);
+  $this := ?this;
+  ~ret := true;
   return;
 }

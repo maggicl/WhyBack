@@ -141,94 +141,88 @@ procedure java.lang.Object.clone##(this : Reference) returns (~ret : Reference);
 
 const unique java.lang.Object : Type;
 
-const unique $byteback.dummy.complete.LinearSearch : Type;
+const unique $byteback.dummy.complete.Dice : Type;
 
-procedure byteback.dummy.complete.LinearSearch.apply#int?#int#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : int), ?n));
+procedure byteback.dummy.complete.Dice.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Dice)) returns ()
 {
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  var $n : int;
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : int) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
-  return;
-}
-
-procedure byteback.dummy.complete.LinearSearch.applyi#java.lang.Object?#java.lang.Object#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type($java.lang.Object)), ?n : Reference where (~typeof(~heap, ?n) == $java.lang.Object), ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : Reference), ?n));
-{
-  var $$stack9 : Reference where (~typeof(~heap, $$stack9) == $java.lang.Object);
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type($java.lang.Object));
-  var $n : Reference where (~typeof(~heap, $n) == $java.lang.Object);
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  $$stack9 := (~unbox(~heap.read(~heap, $a, ~element($i))) : Reference);
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : Reference) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
-  return;
-}
-
-procedure byteback.dummy.complete.LinearSearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch)) returns ()
-{
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Dice);
   $this := ?this;
   call java.lang.Object.$init$##($this);
+  return;
+}
+
+procedure byteback.dummy.complete.Dice.main##() returns ()
+{
+  var $$stack3 : Reference where (~typeof(~heap, $$stack3) == $byteback.dummy.complete.Dice$FixedDie);
+  var $die : Reference where (~typeof(~heap, $die) == $byteback.dummy.complete.Dice$FixedDie);
+  var $max : int;
+  var $result : int;
+  call $$stack3 := ~new($byteback.dummy.complete.Dice$FixedDie);
+  call byteback.dummy.complete.Dice$FixedDie.$init$##($$stack3);
+  $die := $$stack3;
+  $max := 6;
+  call $result := byteback.dummy.complete.Dice$FixedDie.roll#int#($$stack3, $max);
+  assert ~int.lte($result, $max);
+  return;
+}
+
+const unique $byteback.dummy.complete.Dice$Die : Type;
+
+procedure byteback.dummy.complete.Dice$Die.outcome_is_positive#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Dice$Die), ?max : int, ?outcome : int) returns (~ret : bool)
+{
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Dice$Die);
+  var $outcome : int;
+  $outcome := ?outcome;
+  $this := ?this;
+  ~ret := ~int.lte(1, $outcome);
+  return;
+}
+
+procedure byteback.dummy.complete.Dice$Die.outcome_is_leq_than_max#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Dice$Die), ?max : int, ?outcome : int) returns (~ret : bool)
+{
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Dice$Die);
+  var $max : int;
+  var $outcome : int;
+  $outcome := ?outcome;
+  $max := ?max;
+  $this := ?this;
+  ~ret := ~int.lte($outcome, $max);
+  return;
+}
+
+procedure byteback.dummy.complete.Dice$Die.roll#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Dice$Die), ?p0 : int) returns (~ret : int);
+  ensures ~int.lte(1, ~ret);
+  ensures ~int.lte(~ret, ?p0);
+
+const unique $byteback.dummy.complete.Dice$FixedDie : Type;
+
+procedure byteback.dummy.complete.Dice$FixedDie.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Dice$FixedDie)) returns ()
+{
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Dice$FixedDie);
+  $this := ?this;
+  call java.lang.Object.$init$##($this);
+  return;
+}
+
+procedure byteback.dummy.complete.Dice$FixedDie.result_is_max#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Dice$FixedDie), ?max : int, ?returns : int) returns (~ret : bool)
+{
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Dice$FixedDie);
+  var $max : int;
+  var $returns : int;
+  $returns := ?returns;
+  $max := ?max;
+  $this := ?this;
+  ~ret := ~eq($max, $returns);
+  return;
+}
+
+procedure byteback.dummy.complete.Dice$FixedDie.roll#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Dice$FixedDie), ?max : int) returns (~ret : int)
+  ensures ~eq(?max, ~ret);
+{
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Dice$FixedDie);
+  var $max : int;
+  $max := ?max;
+  $this := ?this;
+  ~ret := $max;
   return;
 }

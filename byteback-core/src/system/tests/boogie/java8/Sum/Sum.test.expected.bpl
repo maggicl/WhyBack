@@ -141,94 +141,49 @@ procedure java.lang.Object.clone##(this : Reference) returns (~ret : Reference);
 
 const unique java.lang.Object : Type;
 
-const unique $byteback.dummy.complete.LinearSearch : Type;
+const unique $byteback.dummy.complete.Sum : Type;
 
-procedure byteback.dummy.complete.LinearSearch.apply#int?#int#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : int), ?n));
+procedure byteback.dummy.complete.Sum.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Sum)) returns ()
 {
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  var $n : int;
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : int) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
-  return;
-}
-
-procedure byteback.dummy.complete.LinearSearch.applyi#java.lang.Object?#java.lang.Object#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type($java.lang.Object)), ?n : Reference where (~typeof(~heap, ?n) == $java.lang.Object), ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : Reference), ?n));
-{
-  var $$stack9 : Reference where (~typeof(~heap, $$stack9) == $java.lang.Object);
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type($java.lang.Object));
-  var $n : Reference where (~typeof(~heap, $n) == $java.lang.Object);
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  $$stack9 := (~unbox(~heap.read(~heap, $a, ~element($i))) : Reference);
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : Reference) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
-  return;
-}
-
-procedure byteback.dummy.complete.LinearSearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch)) returns ()
-{
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Sum);
   $this := ?this;
   call java.lang.Object.$init$##($this);
+  return;
+}
+
+function byteback.dummy.complete.Sum.positive_arguments_imply_positive_sum#int?#int#(~heap : Store, $as : Reference, $ret : int) returns (bool) { ~implies(byteback.dummy.complete.Sum.positive_arguments#int?#(~heap, $as), ~int.gte($ret, 0)) }
+
+function byteback.dummy.complete.Sum.positive_arguments#int?#(~heap : Store, $as : Reference) returns (bool) { (forall $i : int :: ~implies(~int.lt($i, ~lengthof($as)), ~int.gt((~unbox(~heap.read(~heap, $as, ~element($i))) : int), 0))) }
+
+procedure byteback.dummy.complete.Sum.sum#int?#(?as : Reference where (~typeof(~heap, ?as) == ~array.type(~Primitive))) returns (~ret : int)
+  ensures ~implies(byteback.dummy.complete.Sum.positive_arguments#int?#(~heap, ?as), ~int.gte(~ret, 0));
+{
+  var $sum : int;
+  var $i : int;
+  var $as : Reference where (~typeof(~heap, $as) == ~array.type(~Primitive));
+  $as := ?as;
+  $sum := 0;
+  $i := 0;
+  assert ~int.lte($i, ~lengthof($as));
+  assert ~int.gte($i, 0);
+  assert ~implies(byteback.dummy.complete.Sum.positive_arguments#int?#(~heap, $as), ~int.gte($sum, 0));
+label2:
+  assume ~int.lte($i, ~lengthof($as));
+  assume ~int.gte($i, 0);
+  assume ~implies(byteback.dummy.complete.Sum.positive_arguments#int?#(~heap, $as), ~int.gte($sum, 0));
+  if (($i >= ~lengthof($as))) {
+    goto label1;
+  }
+  $sum := ($sum + (~unbox(~heap.read(~heap, $as, ~element($i))) : int));
+  $i := ($i + 1);
+  assert ~int.lte($i, ~lengthof($as));
+  assert ~int.gte($i, 0);
+  assert ~implies(byteback.dummy.complete.Sum.positive_arguments#int?#(~heap, $as), ~int.gte($sum, 0));
+  goto label2;
+label1:
+  assume ~int.lte($i, ~lengthof($as));
+  assume ~int.gte($i, 0);
+  assume ~implies(byteback.dummy.complete.Sum.positive_arguments#int?#(~heap, $as), ~int.gte($sum, 0));
+  ~ret := $sum;
   return;
 }

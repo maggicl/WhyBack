@@ -143,13 +143,20 @@ const unique java.lang.Object : Type;
 
 const unique $byteback.dummy.complete.LinearSearch : Type;
 
-procedure byteback.dummy.complete.LinearSearch.apply#int?#int#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
+procedure byteback.dummy.complete.LinearSearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch)) returns ()
+{
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
+  $this := ?this;
+  call java.lang.Object.$init$##($this);
+  return;
+}
+
+procedure byteback.dummy.complete.LinearSearch.search#int?#int#int#int#(?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
   requires ~neq(?a, ~null);
   requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
   ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : int), ?n));
 {
   var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
   var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
   var $n : int;
   var $left : int;
@@ -158,7 +165,6 @@ procedure byteback.dummy.complete.LinearSearch.apply#int?#int#int#int#(?this : R
   $left := ?left;
   $n := ?n;
   $a := ?a;
-  $this := ?this;
   $i := $left;
   assert (~int.lte($left, $i) && ~int.lte($i, $right));
 label3:
@@ -183,14 +189,13 @@ label1:
   return;
 }
 
-procedure byteback.dummy.complete.LinearSearch.applyi#java.lang.Object?#java.lang.Object#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type($java.lang.Object)), ?n : Reference where (~typeof(~heap, ?n) == $java.lang.Object), ?left : int, ?right : int) returns (~ret : int)
+procedure byteback.dummy.complete.LinearSearch.search#java.lang.Object?#java.lang.Object#int#int#(?a : Reference where (~typeof(~heap, ?a) == ~array.type($java.lang.Object)), ?n : Reference where (~typeof(~heap, ?n) == $java.lang.Object), ?left : int, ?right : int) returns (~ret : int)
   requires ~neq(?a, ~null);
   requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
   ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : Reference), ?n));
 {
-  var $$stack9 : Reference where (~typeof(~heap, $$stack9) == $java.lang.Object);
+  var $$stack8 : Reference where (~typeof(~heap, $$stack8) == $java.lang.Object);
   var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
   var $a : Reference where (~typeof(~heap, $a) == ~array.type($java.lang.Object));
   var $n : Reference where (~typeof(~heap, $n) == $java.lang.Object);
   var $left : int;
@@ -199,7 +204,6 @@ procedure byteback.dummy.complete.LinearSearch.applyi#java.lang.Object?#java.lan
   $left := ?left;
   $n := ?n;
   $a := ?a;
-  $this := ?this;
   $i := $left;
   assert (~int.lte($left, $i) && ~int.lte($i, $right));
 label3:
@@ -207,7 +211,7 @@ label3:
   if (($i >= $right)) {
     goto label1;
   }
-  $$stack9 := (~unbox(~heap.read(~heap, $a, ~element($i))) : Reference);
+  $$stack8 := (~unbox(~heap.read(~heap, $a, ~element($i))) : Reference);
   assume (~int.lte($left, $i) && ~int.lte($i, $right));
   if (((~unbox(~heap.read(~heap, $a, ~element($i))) : Reference) != $n)) {
     goto label2;
@@ -222,13 +226,5 @@ label2:
 label1:
   assume (~int.lte($left, $i) && ~int.lte($i, $right));
   ~ret := -1;
-  return;
-}
-
-procedure byteback.dummy.complete.LinearSearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch)) returns ()
-{
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
   return;
 }

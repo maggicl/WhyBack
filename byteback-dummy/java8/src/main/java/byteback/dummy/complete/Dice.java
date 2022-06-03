@@ -21,20 +21,21 @@ public class Dice {
 
 	}
 
-	public static class FaultyDie implements Die {
+	public static class FixedDie implements Die {
 
 		public boolean result_is_max(int max, int returns) {
 			return eq(max, returns);
 		}
 		
+		@Ensure("result_is_max")
 		public int roll(int max) {
 			return max;
 		}
 
 	}
 
-	public static void throwDie() {
-		Die die = new FaultyDie();
+	public static void main() {
+		FixedDie die = new FixedDie();
 		int max = 6;
 		int result = die.roll(max);
 

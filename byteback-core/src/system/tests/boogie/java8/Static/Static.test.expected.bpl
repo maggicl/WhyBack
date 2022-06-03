@@ -141,94 +141,80 @@ procedure java.lang.Object.clone##(this : Reference) returns (~ret : Reference);
 
 const unique java.lang.Object : Type;
 
-const unique $byteback.dummy.complete.LinearSearch : Type;
+const unique $byteback.dummy.field.StaticField : Type;
 
-procedure byteback.dummy.complete.LinearSearch.apply#int?#int#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : int), ?n));
-{
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  var $n : int;
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : int) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
-  return;
-}
+const unique $byteback.dummy.field.StaticField.booleanField : Field (bool);
 
-procedure byteback.dummy.complete.LinearSearch.applyi#java.lang.Object?#java.lang.Object#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type($java.lang.Object)), ?n : Reference where (~typeof(~heap, ?n) == $java.lang.Object), ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : Reference), ?n));
-{
-  var $$stack9 : Reference where (~typeof(~heap, $$stack9) == $java.lang.Object);
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type($java.lang.Object));
-  var $n : Reference where (~typeof(~heap, $n) == $java.lang.Object);
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  $$stack9 := (~unbox(~heap.read(~heap, $a, ~element($i))) : Reference);
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : Reference) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
-  return;
-}
+const unique $byteback.dummy.field.StaticField.byteField : Field (int);
 
-procedure byteback.dummy.complete.LinearSearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch)) returns ()
+const unique $byteback.dummy.field.StaticField.shortField : Field (int);
+
+const unique $byteback.dummy.field.StaticField.intField : Field (int);
+
+const unique $byteback.dummy.field.StaticField.longField : Field (int);
+
+const unique $byteback.dummy.field.StaticField.floatField : Field (real);
+
+const unique $byteback.dummy.field.StaticField.doubleField : Field (real);
+
+const unique $byteback.dummy.field.StaticField.referenceField : Field (Reference);
+
+procedure byteback.dummy.field.StaticField.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.field.StaticField)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.field.StaticField);
   $this := ?this;
   call java.lang.Object.$init$##($this);
+  return;
+}
+
+procedure byteback.dummy.field.StaticField.initialized##() returns (~ret : bool)
+{
+  var $$stack11 : Reference where (~typeof(~heap, $$stack11) == $java.lang.Object);
+  var $$stack2 : bool;
+  if ((~int(~heap.read(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.booleanField)) != 0)) {
+    goto label8;
+  }
+  if ((~heap.read(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.byteField) != 1)) {
+    goto label8;
+  }
+  if ((~heap.read(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.shortField) != 1)) {
+    goto label8;
+  }
+  if ((~heap.read(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.intField) != 1)) {
+    goto label8;
+  }
+  if ((~cmp(~heap.read(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.longField), 1) != 0)) {
+    goto label8;
+  }
+  if ((~cmp(~heap.read(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.floatField), 1.0) != 0)) {
+    goto label8;
+  }
+  if ((~cmp(~heap.read(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.doubleField), 1.0) != 0)) {
+    goto label8;
+  }
+  $$stack11 := ~heap.read(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.referenceField);
+  if ((~heap.read(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.referenceField) != ~null)) {
+    goto label8;
+  }
+  $$stack2 := true;
+  goto label9;
+label8:
+  $$stack2 := false;
+label9:
+  ~ret := $$stack2;
+  return;
+}
+
+procedure byteback.dummy.field.StaticField.initialize##() returns ()
+  modifies ~heap;
+{
+  ~heap := ~heap.update(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.booleanField, false);
+  ~heap := ~heap.update(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.byteField, 1);
+  ~heap := ~heap.update(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.shortField, 1);
+  ~heap := ~heap.update(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.intField, 1);
+  ~heap := ~heap.update(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.longField, 1);
+  ~heap := ~heap.update(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.floatField, 1.0);
+  ~heap := ~heap.update(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.doubleField, 1.0);
+  ~heap := ~heap.update(~heap, ~type.reference($byteback.dummy.field.StaticField), $byteback.dummy.field.StaticField.referenceField, ~null);
   return;
 }

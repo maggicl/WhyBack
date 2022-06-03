@@ -38,7 +38,7 @@ public class LinearSearch {
 	}
 
 	@Predicate
-	public static <T> boolean array_is_not_null(T a[], int n, int left, int right) {
+	public static <T> boolean array_is_not_null(T a[], T n, int left, int right) {
 		return neq(a, null);
 	}
 

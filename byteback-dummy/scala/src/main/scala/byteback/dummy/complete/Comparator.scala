@@ -11,6 +11,7 @@ class DefaultComparator {
     return returns;
   }
 
+  @Ensure("compare_default")
   def compare(a: Int, b: Int): Boolean = {
     return true;
   }
@@ -23,6 +24,7 @@ class LessThanComparator extends DefaultComparator {
     return implies(returns, lt(a, b));
   }
 
+  @Ensure("compare_less_than")
   override def compare(a: Int, b: Int): Boolean = {
     return a < b;
   }
@@ -36,6 +38,7 @@ class GreaterThanComparator extends DefaultComparator {
     return implies(returns, gt(a, b));
   }
 
+  @Ensure("compare_greater_than")
   override def compare(a: Int, b: Int): Boolean = {
     return a > b;
   }

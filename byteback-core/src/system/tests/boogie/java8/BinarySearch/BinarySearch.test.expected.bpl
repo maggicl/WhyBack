@@ -141,15 +141,25 @@ procedure java.lang.Object.clone##(this : Reference) returns (~ret : Reference);
 
 const unique java.lang.Object : Type;
 
-const unique $byteback.dummy.complete.LinearSearch : Type;
+const unique $byteback.dummy.complete.BinarySearch : Type;
 
-procedure byteback.dummy.complete.LinearSearch.apply#int?#int#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
+procedure byteback.dummy.complete.BinarySearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.BinarySearch)) returns ()
+{
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.BinarySearch);
+  $this := ?this;
+  call java.lang.Object.$init$##($this);
+  return;
+}
+
+procedure byteback.dummy.complete.BinarySearch.search#int?#int#int#int#(?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
   requires ~neq(?a, ~null);
+  requires (forall $i : int :: (forall $j : int :: ~implies(((~int.lte(?left, $i) && ~int.lt($i, $j)) && ~int.lte($j, ?right)), ~int.lte((~unbox(~heap.read(~heap, ?a, ~element($i))) : int), (~unbox(~heap.read(~heap, ?a, ~element($j))) : int)))));
   requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
   ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : int), ?n));
 {
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
+  var $p : int;
+  var $$stack14 : int;
+  var $$stack15 : int;
   var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
   var $n : int;
   var $left : int;
@@ -158,77 +168,29 @@ procedure byteback.dummy.complete.LinearSearch.apply#int?#int#int#int#(?this : R
   $left := ?left;
   $n := ?n;
   $a := ?a;
-  $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
+  if (($left >= $right)) {
     goto label1;
   }
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : int) != $n)) {
+  $p := ($left + (($right - $left) div 2));
+  assert (~int.lte($left, $p) && ~int.lte($p, $right));
+  if (((~unbox(~heap.read(~heap, $a, ~element($p))) : int) >= $n)) {
     goto label2;
   }
-  ~ret := $i;
+  call $$stack15 := byteback.dummy.complete.BinarySearch.search#int?#int#int#int#($a, $n, $left, $p);
+  ~ret := $$stack15;
   return;
 label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
+  if (((~unbox(~heap.read(~heap, $a, ~element($p))) : int) <= $n)) {
+    goto label3;
+  }
+  call $$stack14 := byteback.dummy.complete.BinarySearch.search#int?#int#int#int#($a, $n, $p, $right);
+  ~ret := $$stack14;
   return;
-}
-
-procedure byteback.dummy.complete.LinearSearch.applyi#java.lang.Object?#java.lang.Object#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type($java.lang.Object)), ?n : Reference where (~typeof(~heap, ?n) == $java.lang.Object), ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : Reference), ?n));
-{
-  var $$stack9 : Reference where (~typeof(~heap, $$stack9) == $java.lang.Object);
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type($java.lang.Object));
-  var $n : Reference where (~typeof(~heap, $n) == $java.lang.Object);
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
 label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  $$stack9 := (~unbox(~heap.read(~heap, $a, ~element($i))) : Reference);
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : Reference) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
+  assert ~eq((~unbox(~heap.read(~heap, $a, ~element($p))) : int), $n);
+  ~ret := $p;
   return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
 label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
   ~ret := -1;
-  return;
-}
-
-procedure byteback.dummy.complete.LinearSearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch)) returns ()
-{
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
   return;
 }

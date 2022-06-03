@@ -141,94 +141,51 @@ procedure java.lang.Object.clone##(this : Reference) returns (~ret : Reference);
 
 const unique java.lang.Object : Type;
 
-const unique $byteback.dummy.complete.LinearSearch : Type;
+const unique $byteback.dummy.complete.GCD : Type;
 
-procedure byteback.dummy.complete.LinearSearch.apply#int?#int#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : int), ?n));
+procedure byteback.dummy.complete.GCD.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.GCD)) returns ()
 {
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  var $n : int;
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : int) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
-  return;
-}
-
-procedure byteback.dummy.complete.LinearSearch.applyi#java.lang.Object?#java.lang.Object#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type($java.lang.Object)), ?n : Reference where (~typeof(~heap, ?n) == $java.lang.Object), ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : Reference), ?n));
-{
-  var $$stack9 : Reference where (~typeof(~heap, $$stack9) == $java.lang.Object);
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type($java.lang.Object));
-  var $n : Reference where (~typeof(~heap, $n) == $java.lang.Object);
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  $$stack9 := (~unbox(~heap.read(~heap, $a, ~element($i))) : Reference);
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : Reference) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
-  return;
-}
-
-procedure byteback.dummy.complete.LinearSearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch)) returns ()
-{
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.GCD);
   $this := ?this;
   call java.lang.Object.$init$##($this);
+  return;
+}
+
+function byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap : Store, $a : int, $b : int) returns (int) { if ~eq($a, $b) then $a else if ~int.gt($a, $b) then byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, ($a - $b), $b) else byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $a, ($b - $a)) }
+
+procedure byteback.dummy.complete.GCD.gcd#int#int#(?a : int, ?b : int) returns (~ret : int)
+  requires (~int.gt(?a, 0) && ~int.gt(?b, 0));
+  ensures ~eq(~ret, byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, ?a, ?b));
+{
+  var $r : int;
+  var $x : int;
+  var $a : int;
+  var $b : int;
+  $b := ?b;
+  $a := ?a;
+  $r := $a;
+  $x := $b;
+  assert (~int.gt($r, 0) && ~int.gt($x, 0));
+  assert ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $r, $x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $a, $b));
+label4:
+  assume (~int.gt($r, 0) && ~int.gt($x, 0));
+  assume ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $r, $x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $a, $b));
+  if (($r == $x)) {
+    goto label1;
+  }
+  if (($r <= $x)) {
+    goto label2;
+  }
+  $r := ($r - $x);
+  goto label4;
+label2:
+  $x := ($x - $r);
+  assert (~int.gt($r, 0) && ~int.gt($x, 0));
+  assert ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $r, $x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $a, $b));
+  goto label4;
+label1:
+  assume (~int.gt($r, 0) && ~int.gt($x, 0));
+  assume ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $r, $x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $a, $b));
+  ~ret := $r;
   return;
 }

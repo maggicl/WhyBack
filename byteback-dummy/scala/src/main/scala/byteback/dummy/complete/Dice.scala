@@ -21,7 +21,7 @@ trait Die {
 
 }
 
-class FaultyDie extends Die {
+class FixedDie extends Die {
 
   def result_is_max(max: Int, returns: Int): Boolean = {
     return equal(max, returns);
@@ -35,7 +35,7 @@ class FaultyDie extends Die {
 class Dice {
 
   def main(): Unit = {
-    var die: Die = new FaultyDie();
+    var die: FixedDie = new FixedDie();
     var max: Int = 6;
     var result: Int = die.roll(max);
 

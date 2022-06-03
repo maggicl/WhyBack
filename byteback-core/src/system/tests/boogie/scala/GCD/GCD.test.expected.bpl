@@ -74,6 +74,11 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
 
+procedure ~array(t : Type, l : int) returns (~ret : Reference);
+  ensures (~typeof(~heap, ~ret) == ~array.type(t));
+  ensures ~allocated(~ret);
+  ensures (~lengthof(~ret) == l);
+
 function ~cmp<t>(a : t, b : t) returns (int);
 
 axiom (forall i : real, j : real :: ((i < j) <==> (~cmp(i, j) == -1)));
@@ -115,6 +120,8 @@ function ~real.gt(a : real, b : real) returns (bool) { (a > b) }
 function ~int.gte(a : int, b : int) returns (bool) { (a >= b) }
 
 function ~real.gte(a : real, b : real) returns (bool) { (a >= b) }
+
+function ~not(a : bool) returns (bool) { !a }
 
 function ~int<a>(a) returns (int);
 

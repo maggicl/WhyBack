@@ -46,7 +46,7 @@ public class Main {
 
 	public static void main(final String[] args) {
 		final var configuration = new Configuration();
-		final long startTime = System.currentTimeMillis();
+		final long totalStart = System.currentTimeMillis();
 
 		try {
 			configuration.parse(args);
@@ -56,11 +56,14 @@ public class Main {
 			} else {
 				initialize(configuration);
 
-					log.info("Converting classes");
-					convert(configuration);
-					final long conversionTime = System.currentTimeMillis() - startTime;
-					log.info("Conversion completed: {}ms", conversionTime);
+				final long conversionStart = System.currentTimeMillis();
 
+				log.info("Converting classes");
+				convert(configuration);
+				final long endTime = System.currentTimeMillis();
+				final long totalTime = endTime - totalStart;
+				final long conversionTime = endTime - conversionStart;
+				log.info("Conversion completed in {}ms, total time {}ms", conversionTime, totalTime);
 			}
 		} catch (final ParameterException exception) {
 			log.error("Error while parsing program arguments: {}", exception.getMessage());

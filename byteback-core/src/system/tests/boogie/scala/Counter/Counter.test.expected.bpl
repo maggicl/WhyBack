@@ -141,94 +141,90 @@ procedure java.lang.Object.clone##(this : Reference) returns (~ret : Reference);
 
 const unique java.lang.Object : Type;
 
-const unique $byteback.dummy.complete.LinearSearch : Type;
+const unique $byteback.dummy.complete.Counter : Type;
 
-procedure byteback.dummy.complete.LinearSearch.apply#int?#int#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : int), ?n));
+const unique $byteback.dummy.complete.Counter.count : Field (int);
+
+procedure byteback.dummy.complete.Counter.count##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Counter)) returns (~ret : int)
 {
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  var $n : int;
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Counter);
   $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : int) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
+  ~ret := ~heap.read(~heap, $this, $byteback.dummy.complete.Counter.count);
   return;
 }
 
-procedure byteback.dummy.complete.LinearSearch.applyi#java.lang.Object?#java.lang.Object#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch), ?a : Reference where (~typeof(~heap, ?a) == ~array.type($java.lang.Object)), ?n : Reference where (~typeof(~heap, ?n) == $java.lang.Object), ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : Reference), ?n));
+procedure byteback.dummy.complete.Counter.count_$eq#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Counter), ?x$1 : int) returns ()
+  modifies ~heap;
 {
-  var $$stack9 : Reference where (~typeof(~heap, $$stack9) == $java.lang.Object);
-  var $i : int;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type($java.lang.Object));
-  var $n : Reference where (~typeof(~heap, $n) == $java.lang.Object);
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Counter);
+  var $x$1 : int;
+  $x$1 := ?x$1;
   $this := ?this;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
-    goto label1;
-  }
-  $$stack9 := (~unbox(~heap.read(~heap, $a, ~element($i))) : Reference);
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : Reference) != $n)) {
-    goto label2;
-  }
-  ~ret := $i;
-  return;
-label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
-  goto label3;
-label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  ~ret := -1;
+  ~heap := ~heap.update(~heap, $this, $byteback.dummy.complete.Counter.count, $x$1);
   return;
 }
 
-procedure byteback.dummy.complete.LinearSearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch)) returns ()
+procedure byteback.dummy.complete.Counter.increment##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Counter)) returns ()
+  ensures ~eq(byteback.dummy.complete.Counter.count##(~heap, ?this), (old(byteback.dummy.complete.Counter.count##(~heap, ?this)) + 1));
+  modifies ~heap;
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
+  var $$stack1 : int;
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Counter);
+  $this := ?this;
+  call $$stack1 := byteback.dummy.complete.Counter.count##($this);
+  call byteback.dummy.complete.Counter.count_$eq#int#($this, ($$stack1 + 1));
+  return;
+}
+
+procedure byteback.dummy.complete.Counter.incrementTo10##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Counter)) returns ()
+  ensures ~eq(byteback.dummy.complete.Counter.count##(~heap, ?this), (old(byteback.dummy.complete.Counter.count##(~heap, ?this)) + 10));
+  modifies ~heap;
+{
+  var $old_count : int;
+  var $$stack7 : Reference where (~typeof(~heap, $$stack7) == $scala.Tuple2$mcII$sp);
+  var $$stack8 : int;
+  var $i : int;
+  var $$stack12 : bool;
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Counter);
+  $this := ?this;
+  $i := 0;
+  call $old_count := byteback.dummy.complete.Counter.count##($this);
+  assert (~int.lte(0, $i) && ~int.lte($i, 10));
+  assert $$stack12;
+label4:
+  assume (~int.lte(0, $i) && ~int.lte($i, 10));
+  assume $$stack12;
+  if (($i >= 10)) {
+    goto label1;
+  }
+  call $$stack7 := ~new($scala.Tuple2$mcII$sp);
+  call $$stack8 := byteback.dummy.complete.Counter.count##($this);
+  call scala.Tuple2$mcII$sp.$init$#int#int#($$stack7, $$stack8, ($old_count + $i));
+  if (($this != $$stack7)) {
+    goto label2;
+  }
+  $$stack12 := true;
+  goto label3;
+label2:
+  $$stack12 := false;
+label3:
+  call byteback.dummy.complete.Counter.increment##($this);
+  $i := ($i + 1);
+  assert (~int.lte(0, $i) && ~int.lte($i, 10));
+  assert $$stack12;
+  goto label4;
+label1:
+  assume (~int.lte(0, $i) && ~int.lte($i, 10));
+  assume $$stack12;
+  return;
+}
+
+procedure byteback.dummy.complete.Counter.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Counter)) returns ()
+  modifies ~heap;
+{
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Counter);
   $this := ?this;
   call java.lang.Object.$init$##($this);
+  ~heap := ~heap.update(~heap, $this, $byteback.dummy.complete.Counter.count, 0);
   return;
 }

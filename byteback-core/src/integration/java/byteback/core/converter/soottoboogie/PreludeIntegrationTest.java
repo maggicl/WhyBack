@@ -37,7 +37,6 @@ public class PreludeIntegrationTest {
 	public void GetNullConstant_GivenDefaultPrelude_ReturnsExpectedVariable() {
 		final Variable variable = Prelude.instance().getNullConstant();
 		assertEquals("~null", variable.getName());
-		assertEquals("Reference", variable.getTypeAccess().getIdentifier());
 	}
 
 	@Test

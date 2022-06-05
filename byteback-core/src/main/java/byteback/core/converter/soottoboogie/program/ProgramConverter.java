@@ -9,9 +9,7 @@ import byteback.core.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.core.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.core.representation.soot.unit.SootClass;
 import byteback.frontend.boogie.ast.Program;
-
 import java.util.stream.Stream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

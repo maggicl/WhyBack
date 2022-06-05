@@ -26,7 +26,7 @@ public class Dice {
 		public boolean result_is_max(int max, int returns) {
 			return eq(max, returns);
 		}
-		
+
 		@Ensure("result_is_max")
 		public int roll(int max) {
 			return max;

@@ -4,8 +4,8 @@ import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
 import static byteback.annotations.Special.*;
 
-import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Ensure;
+import byteback.annotations.Contract.Predicate;
 
 public class Counter {
 

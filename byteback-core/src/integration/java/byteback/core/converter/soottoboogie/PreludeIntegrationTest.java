@@ -3,12 +3,13 @@ package byteback.core.converter.soottoboogie;
 import static org.junit.Assert.assertEquals;
 
 import byteback.frontend.boogie.ast.*;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class PreludeIntegrationTest {
 
-	@Test
-	public void InitializeProgram_GivenUninitializedPrelude_DoesNotThrowExceptions() {
+	@BeforeClass
+	public static void before() {
 		Prelude.instance().loadDefault();
 	}
 
@@ -42,13 +43,13 @@ public class PreludeIntegrationTest {
 	@Test
 	public void GetHeapAccessFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
 		final Function function = Prelude.instance().getHeapAccessFunction();
-		assertEquals("~read", function.getName());
+		assertEquals("~heap.read", function.getName());
 	}
 
 	@Test
 	public void GetHeapUpdateProcedure_GivenDefaultPrelude_ReturnsExpectedFunction() {
 		final Function function = Prelude.instance().getHeapUpdateFunction();
-		assertEquals("~update", function.getName());
+		assertEquals("~heap.update", function.getName());
 	}
 
 	@Test
@@ -66,7 +67,13 @@ public class PreludeIntegrationTest {
 	@Test
 	public void GetBoxFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
 		final Function function = Prelude.instance().getBoxFunction();
-		assertEquals("~get", function.getName());
+		assertEquals("~box", function.getName());
+	}
+
+	@Test
+	public void GetUnboxFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
+		final Function function = Prelude.instance().getUnboxFunction();
+		assertEquals("~unbox", function.getName());
 	}
 
 	@Test

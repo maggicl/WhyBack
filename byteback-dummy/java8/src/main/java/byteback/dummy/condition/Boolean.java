@@ -3,8 +3,8 @@ package byteback.dummy.condition;
 import static byteback.annotations.Operator.implies;
 import static byteback.annotations.Operator.not;
 
-import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Ensure;
+import byteback.annotations.Contract.Predicate;
 
 public class Boolean {
 

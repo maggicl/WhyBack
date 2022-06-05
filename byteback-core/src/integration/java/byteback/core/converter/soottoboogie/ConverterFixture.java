@@ -27,7 +27,6 @@ public class ConverterFixture extends SootClassFixture {
 
 			try {
 				final Program program = ParserUtil.parseBoogieProgram(path);
-
 				log.info("Creating entry for {}", className);
 				return Stream.of(new SimpleEntry<>(clazz, program));
 			} catch (final IOException exception) {

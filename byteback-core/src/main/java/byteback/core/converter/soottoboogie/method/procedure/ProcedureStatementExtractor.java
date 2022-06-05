@@ -27,7 +27,6 @@ import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import soot.IntType;
 import soot.Local;
 import soot.Unit;

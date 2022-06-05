@@ -20,7 +20,7 @@ public class StaticField {
 
 	public static boolean initialized() {
 		return booleanField == false && byteField == 1 && shortField == 1 && intField == 1 && longField == 1
-			&& floatField == 1.0f && doubleField == 1.0 && referenceField == null;
+				&& floatField == 1.0f && doubleField == 1.0 && referenceField == null;
 	}
 
 	public static void initialize() {

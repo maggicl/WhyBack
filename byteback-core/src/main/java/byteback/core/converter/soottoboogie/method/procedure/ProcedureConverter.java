@@ -212,7 +212,10 @@ public class ProcedureConverter extends MethodConverter {
 		for (Local local : method.getBody().getParameterLocals()) {
 			final var variableBuilder = new VariableDeclarationBuilder();
 			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
-			body.getStatementList().insertChild(new AssignmentStatement(Assignee.of(ValueReference.of(ExpressionExtractor.localName(local))), ValueReference.of(parameterName(local))), 0);
+			body.getStatementList()
+					.insertChild(new AssignmentStatement(
+							Assignee.of(ValueReference.of(ExpressionExtractor.localName(local))),
+							ValueReference.of(parameterName(local))), 0);
 		}
 
 		builder.body(body);

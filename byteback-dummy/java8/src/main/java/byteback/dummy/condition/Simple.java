@@ -9,8 +9,8 @@ import static byteback.annotations.Operator.implies;
 import static byteback.annotations.Operator.lte;
 import static byteback.annotations.Special.conditional;
 
-import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Ensure;
+import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Pure;
 import byteback.annotations.Contract.Require;
 

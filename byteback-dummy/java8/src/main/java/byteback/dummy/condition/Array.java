@@ -8,8 +8,8 @@ import static byteback.annotations.Operator.lt;
 import static byteback.annotations.Quantifier.forall;
 
 import byteback.annotations.Binding;
-import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Ensure;
+import byteback.annotations.Contract.Predicate;
 
 public class Array {
 

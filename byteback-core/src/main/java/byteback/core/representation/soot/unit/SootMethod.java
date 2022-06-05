@@ -5,7 +5,6 @@ import byteback.core.representation.soot.annotation.SootAnnotationElement;
 import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.type.SootType;
 import byteback.core.util.Lazy;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import soot.Local;
 import soot.jimple.internal.JimpleLocal;
 import soot.tagkit.VisibilityAnnotationTag;

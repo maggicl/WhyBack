@@ -8,11 +8,7 @@ public class GCD {
 
 	@Pure
 	public static int gcd_recursive(int a, int b) {
-		return conditional(eq(a, b),
-											 a,
-											 conditional(gt(a, b),
-																	 gcd_recursive(a - b, b),
-																	 gcd_recursive(a, b - a)));
+		return conditional(eq(a, b), a, conditional(gt(a, b), gcd_recursive(a - b, b), gcd_recursive(a, b - a)));
 	}
 
 	@Predicate

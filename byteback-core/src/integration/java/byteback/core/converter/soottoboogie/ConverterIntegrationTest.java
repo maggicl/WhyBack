@@ -13,13 +13,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RunWith(Parameterized.class)
 public class ConverterIntegrationTest extends ConverterFixture {
-
-	private static final Logger log = LoggerFactory.getLogger(ConverterIntegrationTest.class);
 
 	@AfterClass
 	public static void after() {
@@ -40,10 +36,10 @@ public class ConverterIntegrationTest extends ConverterFixture {
 	@Test
 	public void Convert_GivenValidInputClass_ReturnsExpectedProcedures() {
 		for (Procedure expected : parameter.expected.procedures()) {
-			log.info("Comparing definitions for procedure {}", expected.getName());
 			final Procedure actual = parameter.actual.lookupProcedure(expected.getName())
 					.orElseThrow(() -> new IllegalStateException(
 							"Generated code does not present a procedure declaration for " + expected.getName()));
+			System.out.println(actual.getName());
 			assertEquals(expected.getDeclaration().print(), actual.getDeclaration().print());
 		}
 	}

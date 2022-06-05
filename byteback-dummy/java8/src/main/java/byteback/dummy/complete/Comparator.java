@@ -58,5 +58,5 @@ public interface Comparator {
 		final boolean b = gtComparator.compare(1, 2);
 		assertion(not(b));
 	}
-	
+
 }

@@ -4,11 +4,18 @@
 # Ignore Gradle build output directory
 build
 
-# Ignore Emacs projectile-mode file
+# Ignore compiled resources
+compiled
+
+# Ignore Emacs files
 .projectile
+\#*\#
 
 # Ignore Buildship files
 .settings
 .classpath
 .project
 bin/
+
+# Ignore idea files
+.idea

@@ -26,9 +26,21 @@ To run the system tests run the command:
 #+END_SRC
 
 * Installing
-Finally, to install the core application use:
+To create a distribution for each subproject run the following command:
 #+BEGIN_SRC bash
 ./gradlew install
 #+END_SRC
 
-	
+** Core Application	
+After running the command above, the installation of the core application can be found in
+
+~byteback/byteback-core/build/distributions~
+** Annotations Library
+The archive for the annotation library can be found in
+
+~byteback/byteback-annotations/build/libs/byteback-annotations.jar~
+
+** Boogie Frontned
+Finally, the Boogie frontend classes can be found in	 
+
+~byteback/byteback-frontend/boogie/build/libs/boogie.jar~

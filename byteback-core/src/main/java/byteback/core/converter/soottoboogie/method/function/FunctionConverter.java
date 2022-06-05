@@ -67,7 +67,7 @@ public class FunctionConverter extends MethodConverter {
 	}
 
 	private FunctionConverter() {
-	};
+	}
 
 	public FunctionDeclaration convert(final SootMethod method) {
 		final var builder = new FunctionDeclarationBuilder();

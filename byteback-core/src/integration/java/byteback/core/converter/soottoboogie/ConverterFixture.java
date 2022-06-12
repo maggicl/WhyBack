@@ -49,6 +49,11 @@ public class ConverterFixture extends SootClassFixture {
 			try {
 				final Program expected = entry.getValue();
 				final Program actual = ProgramConverter.instance().convert(clazz);
+
+				if (clazz.getName().equals("byteback.dummy.procedure.Switch")) {
+					System.out.println(actual.print());
+				}
+
 				Prelude.instance().inject(actual);
 				actual.inferModifies();
 

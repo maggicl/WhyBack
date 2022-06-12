@@ -11,6 +11,8 @@ import java.util.Optional;
 import soot.Unit;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.TableSwitchStmt;
 
 public class LabelCollector extends SootStatementVisitor<Map<Unit, Label>> {
 
@@ -41,6 +43,20 @@ public class LabelCollector extends SootStatementVisitor<Map<Unit, Label>> {
 
 	public void collect(final SootBody body) {
 		visit(body);
+	}
+
+	@Override
+	public void caseLookupSwitchStmt(final LookupSwitchStmt switchStatement) {
+		for (final Unit target : switchStatement.getTargets()) {
+			branchTo(target);
+		}
+	}
+
+	@Override
+	public void caseTableSwitchStmt(final TableSwitchStmt switchStatement) {
+		for (final Unit target : switchStatement.getTargets()) {
+			branchTo(target);
+		}
 	}
 
 	@Override

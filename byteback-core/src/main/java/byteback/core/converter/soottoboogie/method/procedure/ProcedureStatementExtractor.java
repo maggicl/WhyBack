@@ -17,14 +17,18 @@ import byteback.core.representation.soot.unit.SootField;
 import byteback.frontend.boogie.ast.Assignee;
 import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.Body;
+import byteback.frontend.boogie.ast.EqualsOperation;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.GotoStatement;
 import byteback.frontend.boogie.ast.Label;
+import byteback.frontend.boogie.ast.NumberLiteral;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
+
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 import soot.IntType;
@@ -36,10 +40,13 @@ import soot.jimple.AssignStmt;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.InstanceFieldRef;
+import soot.jimple.IntConstant;
 import soot.jimple.InvokeStmt;
+import soot.jimple.LookupSwitchStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.StaticFieldRef;
+import soot.jimple.TableSwitchStmt;
 
 public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
@@ -164,6 +171,41 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				bodyExtractor.getReturnType());
 		addSingleAssignment(assignee, expression);
 		addStatement(new ReturnStatement());
+	}
+
+	@Override
+	public void caseLookupSwitchStmt(final LookupSwitchStmt switchStatement) {
+		final Iterator<Unit> targets = switchStatement.getTargets().iterator();
+		final Iterator<IntConstant> values = switchStatement.getLookupValues().iterator();
+		final Expression key = new ProcedureExpressionExtractor(bodyExtractor, switchStatement)
+			.visit(new SootExpression(switchStatement.getKey()), SootType.intType());
+
+		while(targets.hasNext() && values.hasNext()) {
+			final Unit target = targets.next();
+			final SootExpression value = new SootExpression(values.next());
+			final var ifBuilder = new IfStatementBuilder();
+			final Expression index = new ProcedureExpressionExtractor(bodyExtractor, switchStatement).visit(value, SootType.intType());
+			final Label label = bodyExtractor.getLabelCollector().fetchLabel(target);
+
+			ifBuilder.condition(new EqualsOperation(index, key)).thenStatement(new GotoStatement(label));
+			addStatement(ifBuilder.build());
+		}
+	}
+
+	@Override
+	public void caseTableSwitchStmt(final TableSwitchStmt switchStatement) {
+		final Expression key = new ProcedureExpressionExtractor(bodyExtractor, switchStatement)
+			.visit(new SootExpression(switchStatement.getKey()), SootType.intType());
+
+		for (int i = switchStatement.getLowIndex(); i < switchStatement.getHighIndex(); ++i) {
+			final Unit target = switchStatement.getTarget(i);
+			final var ifBuilder = new IfStatementBuilder();
+			final Expression index = new NumberLiteral(Integer.toString(i));
+			final Label label = bodyExtractor.getLabelCollector().fetchLabel(target);
+
+			ifBuilder.condition(new EqualsOperation(index, key)).thenStatement(new GotoStatement(label));
+			addStatement(ifBuilder.build());
+		}
 	}
 
 	@Override

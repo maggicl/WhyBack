@@ -39,7 +39,6 @@ public class ConverterIntegrationTest extends ConverterFixture {
 			final Procedure actual = parameter.actual.lookupProcedure(expected.getName())
 					.orElseThrow(() -> new IllegalStateException(
 							"Generated code does not present a procedure declaration for " + expected.getName()));
-			System.out.println(actual.getName());
 			assertEquals(expected.getDeclaration().print(), actual.getDeclaration().print());
 		}
 	}

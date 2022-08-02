@@ -1,7 +1,7 @@
 package byteback.core.converter.soottoboogie.method;
 
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.representation.soot.unit.SootMethod;
+import soot.SootMethod;
 
 public class MethodConversionException extends ConversionException {
 

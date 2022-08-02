@@ -9,7 +9,7 @@ public class SootAnnotationElementVisitorIntegrationTest {
 
 	@Test
 	public void DefaultCase_CallsCaseDefault() {
-		final SootAnnotationElementVisitor<?> visitor = spy(SootAnnotationElementVisitor.class);
+		final SootAnnotationElemVisitor<?> visitor = spy(SootAnnotationElemVisitor.class);
 		visitor.defaultCase(null);
 		verify(visitor).caseDefault(null);
 	}

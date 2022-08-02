@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import org.junit.Test;
 import soot.RefType;
+import soot.SootClass;
 
 public class SootClassIntegrationTest extends SootClassFixture {
 
@@ -38,14 +39,14 @@ public class SootClassIntegrationTest extends SootClassFixture {
 	public void Methods_GivenUnitClass_ReturnsStreamWithConstructor() {
 		final String unitName = "byteback.dummy.context.Unit";
 		final SootClass clazz = getSootClass("java8", unitName);
-		assertTrue(clazz.methods().anyMatch((method) -> method.getName().equals("<init>")));
+		assertTrue(clazz.getMethods().stream().anyMatch((method) -> method.getName().equals("<init>")));
 	}
 
 	@Test
 	public void Methods_GivenStaticInitializerClass_ReturnsStreamWithClassInitializer() {
 		final String unitName = "byteback.dummy.context.StaticInitializer";
 		final SootClass clazz = getSootClass("java8", unitName);
-		assertTrue(clazz.methods().anyMatch((method) -> method.getName().equals("<clinit>")));
+		assertTrue(clazz.getMethods().stream().anyMatch((method) -> method.getName().equals("<clinit>")));
 	}
 
 	@Test

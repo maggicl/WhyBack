@@ -1,7 +1,7 @@
 package byteback.core.converter.soottoboogie.field;
 
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.representation.soot.unit.SootField;
+import soot.SootField;
 
 public class FieldConversionException extends ConversionException {
 

@@ -4,21 +4,22 @@ import byteback.core.converter.soottoboogie.Namespace;
 import byteback.core.converter.soottoboogie.Prelude;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.type.CasterProvider;
-import byteback.core.representation.soot.annotation.SootAnnotation;
-import byteback.core.representation.soot.annotation.SootAnnotationElement.StringElementExtractor;
-import byteback.core.representation.soot.body.SootExpression;
+import byteback.core.representation.soot.annotation.SootAnnotations;
+import byteback.core.representation.soot.annotation.SootAnnotationElems.StringElemExtractor;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
-import byteback.core.representation.soot.type.SootType;
-import byteback.core.representation.soot.unit.SootMethod;
+import byteback.core.representation.soot.unit.SootMethods;
 import byteback.frontend.boogie.ast.BinaryExpression;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
+
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
-import java.util.stream.Stream;
+import soot.SootMethod;
+import soot.Type;
 import soot.UnknownType;
 import soot.Value;
 import soot.jimple.BinopExpr;
@@ -30,24 +31,24 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 
 	protected final Stack<Expression> operands;
 
-	protected final Stack<SootType> types;
+	protected final Stack<Type> types;
 
 	public ExpressionVisitor() {
 		this.operands = new Stack<>();
 		this.types = new Stack<>();
 	}
 
-	public Expression visit(final SootExpression expression, final SootType type) {
+	public Expression visit(final Value value, final Type type) {
 		types.push(type);
 
-		return super.visit(expression);
+		return super.visit(value);
 	}
 
-	public Expression visit(final SootExpression expression) {
-		return visit(expression, new SootType(UnknownType.v()));
+	public Expression visit(final Value value) {
+		return visit(value, UnknownType.v());
 	}
 
-	public SootType getType() {
+	public Type getType() {
 		return types.peek();
 	}
 
@@ -55,41 +56,42 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		operands.push(expression);
 	}
 
-	public void pushCastExpression(final Expression expression, final SootType fromType) {
+	public void pushCastExpression(final Expression expression, final Type fromType) {
 		final var caster = new CasterProvider(getType()).visit(fromType);
 		operands.push(caster.apply(expression));
 	}
 
 	public void pushCastExpression(final Expression expression, final Value value) {
-		pushCastExpression(expression, new SootType(value.getType()));
+		pushCastExpression(expression, value.getType());
 	}
 
 	public void pushBinaryExpression(final BinopExpr source, final BinaryExpression expression) {
-		final var left = new SootExpression(source.getOp1());
-		final var right = new SootExpression(source.getOp2());
+		final Value left = source.getOp1();
+		final Value right = source.getOp2();
 		expression.setLeftOperand(visit(left, getType()));
 		expression.setRightOperand(visit(right, getType()));
 		pushExpression(expression);
 	}
 
 	public void pushSpecialBinaryExpression(final BinopExpr source, final FunctionReference reference) {
-		final var left = new SootExpression(source.getOp1());
-		final var right = new SootExpression(source.getOp2());
-		reference.addArgument(visit(left));
-		reference.addArgument(visit(right));
+		final Value left = source.getOp1();
+		final Value right = source.getOp2();
+		reference.addArgument(visit(left, getType()));
+		reference.addArgument(visit(right, getType()));
 		pushExpression(reference);
 	}
 
-	public List<Expression> convertArguments(final SootMethod method, final Iterable<SootExpression> sources) {
-		Stream<SootType> types = method.parameterTypes();
+	public List<Expression> convertArguments(final SootMethod method, final Iterable<Value> sources) {
+
+		final java.util.List<Type> types = new ArrayList<>(method.getParameterTypes());
 		final List<Expression> arguments = new List<>();
-		final Iterator<SootExpression> sourceIterator = sources.iterator();
 
 		if (!method.isStatic()) {
-			types = Stream.concat(Stream.of(method.getSootClass().getType()), types);
+			types.add(0, method.getDeclaringClass().getType());
 		}
 
-		final Iterator<SootType> typeIterator = types.iterator();
+		final Iterator<Value> sourceIterator = sources.iterator();
+		final Iterator<Type> typeIterator = types.iterator();
 
 		while (typeIterator.hasNext() && sourceIterator.hasNext()) {
 			arguments.add(visit(sourceIterator.next(), typeIterator.next()));
@@ -98,15 +100,18 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		return arguments;
 	}
 
-	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
+	public void pushFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
 		final var referenceBuilder = new FunctionReferenceBuilder();
-		final String name = method.annotation(Namespace.PRELUDE_ANNOTATION).flatMap(SootAnnotation::getValue)
-				.map((element) -> new StringElementExtractor().visit(element))
-				.orElseGet(() -> MethodConverter.methodName(method));
+		final String name = SootMethods
+			.getAnnotation(method, Namespace.PRELUDE_ANNOTATION)
+			.flatMap(SootAnnotations::getValue)
+			.map((element) -> new StringElemExtractor().visit(element))
+			.orElseGet(() -> MethodConverter.methodName(method));
 		referenceBuilder.name(name);
 
-		if (method.annotation(Namespace.PRIMITIVE_ANNOTATION).isEmpty()) {
-			final ValueReference heapReference = Prelude.instance().getHeapVariable().makeValueReference();
+		if (!SootMethods.hasAnnotation(method, Namespace.PRIMITIVE_ANNOTATION)) {
+			final ValueReference heapReference = Prelude.v().getHeapVariable()
+				.makeValueReference();
 			referenceBuilder.prependArgument(heapReference);
 		}
 

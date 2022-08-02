@@ -5,9 +5,7 @@ import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.expression.PartialSubstitutor;
 import byteback.core.converter.soottoboogie.expression.Substitutor;
 import byteback.core.converter.soottoboogie.method.procedure.LoopCollector.LoopContext;
-import byteback.core.representation.soot.body.SootBody;
 import byteback.core.representation.soot.body.SootStatementVisitor;
-import byteback.core.representation.soot.type.SootType;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.LabelStatement;
@@ -16,6 +14,7 @@ import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.ast.VariableDeclaration;
 import java.util.Stack;
+import soot.Type;
 import soot.Unit;
 import soot.jimple.IfStmt;
 
@@ -39,7 +38,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	}
 
-	private final SootType returnType;
+	private final Type returnType;
 
 	private final Body body;
 
@@ -51,28 +50,22 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final Stack<LoopContext> activeLoops;
 
-	private final UseDefinitionCollector definitions;
-
 	private final Substitutor substitutor;
 
-	public ProcedureBodyExtractor(final SootType returnType) {
+	public ProcedureBodyExtractor(final Type returnType) {
 		this.returnType = returnType;
 		this.body = new Body();
 		this.variableProvider = new VariableProvider();
 		this.labelCollector = new LabelCollector();
 		this.loopCollector = new LoopCollector();
-		this.definitions = new UseDefinitionCollector();
 		this.activeLoops = new Stack<>();
 		this.substitutor = new PartialSubstitutor();
 	}
 
-	public Body visit(final SootBody body) {
+	public Body visit(final soot.Body body) {
 		labelCollector.collect(body);
 		loopCollector.collect(body);
-		definitions.collect(body);
-		body.apply(this);
-
-		return result();
+		return super.visit(body);
 	}
 
 	public void addStatement(final Statement statement) {
@@ -91,7 +84,7 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		return body;
 	}
 
-	public SootType getReturnType() {
+	public Type getReturnType() {
 		return returnType;
 	}
 
@@ -109,10 +102,6 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	public Substitutor getSubstitutor() {
 		return substitutor;
-	}
-
-	public UseDefinitionCollector getDefinitionCollector() {
-		return definitions;
 	}
 
 	@Override

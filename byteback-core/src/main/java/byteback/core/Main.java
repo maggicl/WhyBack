@@ -18,7 +18,7 @@ public class Main {
 
 	public static void convert(final Configuration configuration) {
 		final Program program = ContextConverter.instance().convert();
-		PrintStream output;
+		final PrintStream output;
 
 		if (configuration.getOutputPath() != null) {
 			final File file = configuration.getOutputPath().toFile();
@@ -40,8 +40,8 @@ public class Main {
 
 	public static void initialize(final Configuration configuration) {
 		log.info("Configuring contexts");
-		SootContext.instance().configure(configuration);
-		Prelude.instance().configure(configuration);
+		SootContext.v().configure(configuration);
+		Prelude.v().configure(configuration);
 	}
 
 	public static void main(final String[] args) {

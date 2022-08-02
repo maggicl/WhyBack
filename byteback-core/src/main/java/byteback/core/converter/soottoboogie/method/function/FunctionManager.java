@@ -1,9 +1,9 @@
 package byteback.core.converter.soottoboogie.method.function;
 
-import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import soot.SootMethod;
 
 public class FunctionManager {
 
@@ -20,7 +20,7 @@ public class FunctionManager {
 	}
 
 	public FunctionDeclaration convert(final SootMethod method) {
-		return cache.computeIfAbsent(method, FunctionConverter.instance()::convert);
+		return cache.computeIfAbsent(method, FunctionConverter.v()::convert);
 	}
 
 }

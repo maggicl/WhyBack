@@ -9,11 +9,4 @@ public interface Visitor<T, R> {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	default <S extends Visitor<T, ?>> R visit(final Visitable<S> visitable) {
-		visitable.apply((S) this);
-
-		return result();
-	}
-
 }

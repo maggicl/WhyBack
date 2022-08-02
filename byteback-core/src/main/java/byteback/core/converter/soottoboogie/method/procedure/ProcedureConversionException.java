@@ -1,7 +1,7 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.representation.soot.unit.SootMethod;
+import soot.SootMethod;
 
 public class ProcedureConversionException extends ConversionException {
 
@@ -19,7 +19,7 @@ public class ProcedureConversionException extends ConversionException {
 
 	@Override
 	public String getMessage() {
-		return "While converting procedure method " + method.getIdentifier() + ":\n" + super.getMessage();
+		return "While converting procedure method " + method.getSignature() + ":\n" + super.getMessage();
 	}
 
 }

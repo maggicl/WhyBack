@@ -1,7 +1,7 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.statement.StatementConversionException;
-import byteback.core.representation.soot.body.SootBody;
+import byteback.core.representation.soot.body.SootBodies;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import soot.Body;
 import soot.Unit;
 import soot.jimple.IfStmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
@@ -65,8 +66,8 @@ public class LoopCollector {
 		this.exitTargetIndex = new HashMap<>();
 	}
 
-	public void collect(final SootBody body) {
-		for (Loop loop : body.getLoops()) {
+	public void collect(final Body body) {
+		for (Loop loop : SootBodies.getLoops(body)) {
 			final LoopContext loopContext = new LoopContext(loop);
 			headIndex.put(loop.getHead(), loopContext);
 			backJumpIndex.put(loop.getBackJumpStmt(), loopContext);

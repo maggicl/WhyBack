@@ -1,0 +1,3 @@
+RUN: %byteback --classpath %dummy_java8 --class byteback.dummy.procedure.Lambda -o %s.actual.bpl 
+
+CHECK: Conversion completed

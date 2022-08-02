@@ -1,16 +1,12 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.*;
-import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.procedure.ProcedureStatementExtractor.ReferenceSupplier;
 import byteback.core.converter.soottoboogie.type.ReferenceTypeConverter;
-import byteback.core.representation.soot.body.SootExpression;
-import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
-import byteback.core.representation.soot.unit.SootClass;
-import byteback.core.representation.soot.unit.SootMethod;
+import byteback.core.representation.soot.unit.SootMethods;
 import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;
@@ -22,9 +18,12 @@ import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
 import java.util.Iterator;
 import java.util.Optional;
-import soot.Local;
+import soot.BooleanType;
 import soot.RefType;
+import soot.SootClass;
+import soot.SootMethod;
 import soot.Unit;
+import soot.Value;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
@@ -51,7 +50,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		this(bodyExtractor, EMPTY_REFERENCE_SUPPLIER, unit);
 	}
 
-	public TargetedCallStatement makeCall(final SootMethod method, final Iterable<SootExpression> arguments) {
+	public TargetedCallStatement makeCall(final SootMethod method, final Iterable<Value> arguments) {
 		final var callBuilder = new TargetedCallStatementBuilder();
 		callBuilder.name(MethodConverter.methodName(method));
 		callBuilder.arguments(new List<Expression>().addAll(convertArguments(method, arguments)));
@@ -70,11 +69,11 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		bodyExtractor.addStatement(callStatement);
 	}
 
-	public void addContract(final SootMethod method, final Iterable<SootExpression> arguments) {
+	public void addContract(final SootMethod method, final Iterable<Value> arguments) {
 		final String name = method.getName();
-		final Iterator<SootExpression> iterator = arguments.iterator();
-		final SootExpression argument = iterator.next();
-		final Expression condition = visit(argument, SootType.booleanType());
+		final Iterator<Value> iterator = arguments.iterator();
+		final Value argument = iterator.next();
+		final Expression condition = visit(argument, BooleanType.v());
 		assert !iterator.hasNext() : "Wrong number of arguments to contract method";
 
 		if (name.equals(Namespace.ASSERTION_NAME)) {
@@ -89,9 +88,9 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 	}
 
 	@Override
-	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final SootClass clazz = method.getSootClass();
-		final boolean isPure = method.annotation(Namespace.PURE_ANNOTATION).isPresent();
+	public void pushFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
+		final SootClass clazz = method.getDeclaringClass();
+		final boolean isPure = SootMethods.getAnnotation(method, Namespace.PURE_ANNOTATION).isPresent();
 
 		if (isPure) {
 			super.pushFunctionReference(method, arguments);
@@ -110,9 +109,9 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	@Override
 	public void caseNewExpr(final NewExpr newExpression) {
-		final Procedure newProcedure = Prelude.instance().getNewProcedure();
+		final Procedure newProcedure = Prelude.v().getNewProcedure();
 		final TargetedCallStatement callStatement = newProcedure.makeTargetedCall();
-		final SootClass baseType = new SootClass(newExpression.getBaseType().getSootClass());
+		final SootClass baseType = newExpression.getBaseType().getSootClass();
 		final String typeName = ReferenceTypeConverter.typeName(baseType);
 		callStatement.addArgument(ValueReference.of(typeName));
 		addCall(callStatement);
@@ -120,38 +119,27 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	@Override
 	public void caseNewArrayExpr(final NewArrayExpr arrayExpression) {
-		final Procedure arrayProcedure = Prelude.instance().getArrayProcedure();
+		final Procedure arrayProcedure = Prelude.v().getArrayProcedure();
 		final TargetedCallStatement callStatement = arrayProcedure.makeTargetedCall();
 
 		arrayExpression.getBaseType().apply(new SootTypeVisitor<>() {
 
 			@Override
 			public void caseRefType(final RefType referenceType) {
-				final SootClass baseType = new SootClass(referenceType.getSootClass());
+				final SootClass baseType = referenceType.getSootClass();
 				final String typeName = ReferenceTypeConverter.typeName(baseType);
 				callStatement.addArgument(ValueReference.of(typeName));
 			}
 
 			@Override
 			public void caseDefault(final soot.Type type) {
-				callStatement.addArgument(Prelude.instance().getPrimitiveTypeConstant().makeValueReference());
+				callStatement.addArgument(Prelude.v().getPrimitiveTypeConstant().makeValueReference());
 			}
 
 		});
 
 		callStatement.addArgument(new NumberLiteral(arrayExpression.getSize().toString()));
 		addCall(callStatement);
-	}
-
-	@Override
-	public void caseLocal(final Local local) {
-		final UseDefinitionCollector definitionCollector = bodyExtractor.getDefinitionCollector();
-
-		if (!(definitionCollector.definitionsOf(local).size() == 1) || definitionCollector.usesOf(local).size() > 1) {
-			pushCastExpression(ValueReference.of(ExpressionExtractor.localName(local)), local);
-		} else {
-			super.caseLocal(local);
-		}
 	}
 
 }

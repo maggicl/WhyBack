@@ -4,12 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import byteback.core.ResourcesUtil;
-import byteback.core.representation.soot.unit.SootClass;
+import byteback.core.representation.soot.unit.SootClasses;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.Test;
+import soot.SootClass;
 
 public class SootContextIntegrationTest extends SootContextFixture {
 
@@ -116,7 +117,7 @@ public class SootContextIntegrationTest extends SootContextFixture {
 
 	@Test
 	public void Classes_GivenUnloadedScene_ReturnsBasicClassesStream() {
-		assertTrue(getContext().classes().allMatch(SootClass::isBasicClass));
+		assertTrue(getContext().classes().allMatch(SootClasses::isBasicClass));
 	}
 
 	@Test

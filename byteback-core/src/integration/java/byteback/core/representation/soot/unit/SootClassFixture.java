@@ -2,6 +2,7 @@ package byteback.core.representation.soot.unit;
 
 import byteback.core.ResourcesUtil;
 import byteback.core.context.soot.SootContextFixture;
+import soot.SootClass;
 
 public class SootClassFixture extends SootContextFixture {
 

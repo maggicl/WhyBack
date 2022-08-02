@@ -1,7 +1,7 @@
 package byteback.core.converter.soottoboogie.method.function;
 
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.representation.soot.unit.SootMethod;
+import soot.SootMethod;
 
 public class FunctionConversionException extends ConversionException {
 
@@ -20,7 +20,7 @@ public class FunctionConversionException extends ConversionException {
 	@Override
 	public String getMessage() {
 
-		return "Exception while converting pure method " + method.getIdentifier() + ":\n" + super.getMessage();
+		return "Exception while converting pure method " + method.getSignature() + ":\n" + super.getMessage();
 	}
 
 }

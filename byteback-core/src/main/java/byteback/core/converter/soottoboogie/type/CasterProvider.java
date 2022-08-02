@@ -1,7 +1,6 @@
 package byteback.core.converter.soottoboogie.type;
 
 import byteback.core.converter.soottoboogie.Prelude;
-import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionReference;
@@ -14,14 +13,23 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 
 	private Function<Expression, Expression> caster;
 
-	private final SootType toType;
+	private final Type toType;
 
-	public CasterProvider(final SootType toType) {
+	public CasterProvider(final Type toType) {
 		this.toType = toType;
 	}
 
 	public void setCaster(final Function<Expression, Expression> caster) {
 		this.caster = caster;
+	}
+
+	@Override
+	public Function<Expression, Expression> visit(final Type fromType) {
+		if (fromType == toType) {
+			return Function.identity();
+		} else {
+			return super.visit(fromType);
+		}
 	}
 
 	@Override
@@ -31,8 +39,7 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 			@Override
 			public void caseIntType(final IntType toType) {
 				setCaster((expression) -> {
-					final FunctionReference casting = Prelude.instance().getIntCastingFunction()
-							.makeFunctionReference();
+					final FunctionReference casting = Prelude.v().getIntCastingFunction().makeFunctionReference();
 					casting.addArgument(expression);
 
 					return casting;
@@ -41,7 +48,7 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 
 			@Override
 			public void caseDefault(final Type toType) {
-				setCaster(Function.identity());
+				throw new CastingModelException(fromType, toType);
 			}
 
 		});

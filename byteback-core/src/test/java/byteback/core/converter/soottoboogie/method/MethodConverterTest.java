@@ -4,19 +4,19 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import byteback.core.representation.soot.type.SootType;
-import byteback.core.representation.soot.unit.SootMethod;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
 import org.mockito.Mockito;
+import soot.SootMethod;
+import soot.Type;
 
 public class MethodConverterTest {
 
 	@Test
 	public void MethodName_GivenConstructorWithoutParameters_ReturnsValidName() {
 		final SootMethod method = mock(SootMethod.class, Mockito.RETURNS_DEEP_STUBS);
-		when(method.getSootClass().getName()).thenReturn("dummy.Test");
+		when(method.getDeclaringClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("<init>");
 		when(method.getParameterTypes()).thenReturn(Collections.emptyList());
 		assertEquals(MethodConverter.methodName(method), "dummy.Test.$init$##");
@@ -25,7 +25,7 @@ public class MethodConverterTest {
 	@Test
 	public void MethodName_GivenMethodWithoutParameters_ReturnsValidName() {
 		final SootMethod method = mock(SootMethod.class, Mockito.RETURNS_DEEP_STUBS);
-		when(method.getSootClass().getName()).thenReturn("dummy.Test");
+		when(method.getDeclaringClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("test");
 		when(method.getParameterTypes()).thenReturn(Collections.emptyList());
 		assertEquals(MethodConverter.methodName(method), "dummy.Test.test##");
@@ -34,9 +34,9 @@ public class MethodConverterTest {
 	@Test
 	public void MethodName_GivenMethodWithIntArrayParameter_ReturnsValidName() {
 		final SootMethod method = mock(SootMethod.class, Mockito.RETURNS_DEEP_STUBS);
-		final SootType type = mock(SootType.class);
+		final Type type = mock(Type.class);
 		when(type.toString()).thenReturn("int[]");
-		when(method.getSootClass().getName()).thenReturn("dummy.Test");
+		when(method.getDeclaringClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("test");
 		when(method.getParameterTypes()).thenReturn(List.of(type));
 		assertEquals(MethodConverter.methodName(method), "dummy.Test.test#int?#");
@@ -45,9 +45,9 @@ public class MethodConverterTest {
 	@Test
 	public void MethodName_GivenMethodWithIntegerParameter_ReturnsValidName() {
 		final SootMethod method = mock(SootMethod.class, Mockito.RETURNS_DEEP_STUBS);
-		final SootType type = mock(SootType.class);
+		final Type type = mock(Type.class);
 		when(type.toString()).thenReturn("int");
-		when(method.getSootClass().getName()).thenReturn("dummy.Test");
+		when(method.getDeclaringClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("test");
 		when(method.getParameterTypes()).thenReturn(List.of(type));
 		assertEquals(MethodConverter.methodName(method), "dummy.Test.test#int#");

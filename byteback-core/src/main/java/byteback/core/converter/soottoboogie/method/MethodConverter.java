@@ -1,16 +1,16 @@
 package byteback.core.converter.soottoboogie.method;
 
-import byteback.core.representation.soot.type.SootType;
-import byteback.core.representation.soot.unit.SootMethod;
 import java.util.Iterator;
+import soot.SootMethod;
+import soot.Type;
 
 public abstract class MethodConverter {
 
 	public static String methodName(final SootMethod method) {
 		final var builder = new StringBuilder();
-		final Iterator<SootType> typeIterator = method.getParameterTypes().iterator();
+		final Iterator<Type> typeIterator = method.getParameterTypes().iterator();
 		final String methodName = method.getName();
-		builder.append(method.getSootClass().getName());
+		builder.append(method.getDeclaringClass().getName());
 		builder.append(".");
 		builder.append(methodName.replace("<", "$").replace(">", "$"));
 		builder.append("#");

@@ -1,6 +1,6 @@
 package byteback.core.converter.soottoboogie;
 
-import byteback.core.representation.soot.unit.SootClass;
+import soot.SootClass;
 
 /**
  * Utility class containing the definitions of the special annotations necessary

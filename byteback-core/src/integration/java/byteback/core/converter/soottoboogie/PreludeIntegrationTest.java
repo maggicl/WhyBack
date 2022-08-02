@@ -10,80 +10,80 @@ public class PreludeIntegrationTest {
 
 	@BeforeClass
 	public static void before() {
-		Prelude.instance().loadDefault();
+		Prelude.v().loadDefault();
 	}
 
 	@Test
 	public void LoadProgram_CalledTwice_ReturnsTheSameInstance() {
 
-		final Program a = Prelude.instance().program();
-		final Program b = Prelude.instance().program();
+		final Program a = Prelude.v().program();
+		final Program b = Prelude.v().program();
 		assertEquals(b, a);
 	}
 
 	@Test
 	public void GetReferenceType_GivenDefaultPrelude_ReturnsExpectedType() {
-		final Type type = Prelude.instance().getReferenceType();
+		final Type type = Prelude.v().getReferenceType();
 		assertEquals("Reference", type.makeTypeAccess().getIdentifier());
 	}
 
 	@Test
 	public void GetFieldType_GivenDefaultPrelude_ReturnsExpectedType() {
-		final Type type = Prelude.instance().getFieldType();
+		final Type type = Prelude.v().getFieldType();
 		assertEquals("Field", type.makeTypeAccess().getIdentifier());
 	}
 
 	@Test
 	public void GetNullConstant_GivenDefaultPrelude_ReturnsExpectedVariable() {
-		final Variable variable = Prelude.instance().getNullConstant();
+		final Variable variable = Prelude.v().getNullConstant();
 		assertEquals("~null", variable.getName());
 	}
 
 	@Test
 	public void GetHeapAccessFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.instance().getHeapAccessFunction();
+		final Function function = Prelude.v().getHeapAccessFunction();
 		assertEquals("~heap.read", function.getName());
 	}
 
 	@Test
 	public void GetHeapUpdateProcedure_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.instance().getHeapUpdateFunction();
+		final Function function = Prelude.v().getHeapUpdateFunction();
 		assertEquals("~heap.update", function.getName());
 	}
 
 	@Test
 	public void GetNewProcedure_GivenDefaultPrelude_ReturnsExpectedProcedure() {
-		final Procedure procedure = Prelude.instance().getNewProcedure();
+		final Procedure procedure = Prelude.v().getNewProcedure();
 		assertEquals("~new", procedure.getName());
 	}
 
 	@Test
 	public void GetArrayProcedure_GivenDefaultPrelude_ReturnsExpectedProcedure() {
-		final Procedure procedure = Prelude.instance().getArrayProcedure();
+		final Procedure procedure = Prelude.v().getArrayProcedure();
 		assertEquals("~array", procedure.getName());
 	}
 
 	@Test
 	public void GetBoxFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.instance().getBoxFunction();
+		final Function function = Prelude.v().getBoxFunction();
 		assertEquals("~box", function.getName());
 	}
 
 	@Test
 	public void GetUnboxFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.instance().getUnboxFunction();
+		final Function function = Prelude.v().getUnboxFunction();
 		assertEquals("~unbox", function.getName());
 	}
 
 	@Test
 	public void GetIntCastingFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.instance().getIntCastingFunction();
+		final Function function = Prelude.v().getIntCastingFunction();
 		assertEquals("~int", function.getName());
 	}
 
 	@Test
 	public void GetCmpFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.instance().getCmpFunction();
+		final Function function = Prelude.v().getCmpFunction();
 		assertEquals("~cmp", function.getName());
 	}
 

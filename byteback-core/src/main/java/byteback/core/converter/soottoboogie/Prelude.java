@@ -22,7 +22,7 @@ public class Prelude {
 
 	private static Prelude instance = new Prelude();
 
-	public static Prelude instance() {
+	public static Prelude v() {
 		return instance;
 	}
 

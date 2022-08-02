@@ -9,11 +9,8 @@ import byteback.core.converter.soottoboogie.field.FieldConverter;
 import byteback.core.converter.soottoboogie.statement.StatementConversionException;
 import byteback.core.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
-import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
-import byteback.core.representation.soot.type.SootType;
-import byteback.core.representation.soot.unit.SootField;
 import byteback.frontend.boogie.ast.Assignee;
 import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.Body;
@@ -27,12 +24,13 @@ import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
-
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 import soot.IntType;
 import soot.Local;
+import soot.SootField;
+import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.ArrayRef;
@@ -79,8 +77,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	@Override
 	public void caseAssignStmt(final AssignStmt assignment) {
-		final var left = new SootExpression(assignment.getLeftOp());
-		final var right = new SootExpression(assignment.getRightOp());
+		final var left = assignment.getLeftOp();
+		final var right = assignment.getRightOp();
 
 		left.apply(new SootExpressionVisitor<>() {
 
@@ -99,8 +97,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 			@Override
 			public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
-				final var field = new SootField(instanceFieldReference.getField());
-				final var base = new SootExpression(instanceFieldReference.getBase());
+				final SootField field = instanceFieldReference.getField();
+				final Value base = instanceFieldReference.getBase();
 				final ReferenceSupplier referenceSupplier = () -> {
 					final TypeAccess typeAccess = new TypeAccessExtractor().visit(field.getType());
 
@@ -110,12 +108,12 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression assigned = extractor.visit(right, left.getType());
 				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
-				addStatement(Prelude.instance().makeHeapUpdateStatement(boogieBase, fieldReference, assigned));
+				addStatement(Prelude.v().makeHeapUpdateStatement(boogieBase, fieldReference, assigned));
 			}
 
 			@Override
 			public void caseStaticFieldRef(final StaticFieldRef staticFieldReference) {
-				final var field = new SootField(staticFieldReference.getField());
+				final SootField field = staticFieldReference.getField();
 				final ReferenceSupplier referenceSupplier = () -> {
 					final TypeAccess typeAccess = new TypeAccessExtractor().visit(field.getType());
 
@@ -124,15 +122,16 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, referenceSupplier, assignment);
 				final Expression assigned = extractor.visit(right, left.getType());
 				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
-				final Expression boogieBase = ValueReference.of(ReferenceTypeConverter.typeName(field.getSootClass()));
-				addStatement(Prelude.instance().makeStaticUpdateStatement(boogieBase, fieldReference, assigned));
+				final Expression boogieBase = ValueReference
+						.of(ReferenceTypeConverter.typeName(field.getDeclaringClass()));
+				addStatement(Prelude.v().makeStaticUpdateStatement(boogieBase, fieldReference, assigned));
 			}
 
 			@Override
 			public void caseArrayRef(final ArrayRef arrayReference) {
-				final var base = new SootExpression(arrayReference.getBase());
-				final var index = new SootExpression(arrayReference.getIndex());
-				final var type = new SootType(arrayReference.getType());
+				final Value base = arrayReference.getBase();
+				final Value index = arrayReference.getIndex();
+				final Type type = arrayReference.getType();
 				final ReferenceSupplier referenceSupplier = () -> {
 					final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
 
@@ -143,8 +142,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression indexReference = new ProcedureExpressionExtractor(bodyExtractor, assignment)
 						.visit(index);
 				final Expression boogieBase = new ExpressionExtractor().visit(base);
-				addStatement(Prelude.instance().makeArrayUpdateStatement(new TypeAccessExtractor().visit(type),
-						boogieBase, indexReference, assigned));
+				addStatement(Prelude.v().makeArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
+						indexReference, assigned));
 				bodyExtractor.getSubstitutor().prune(arrayReference);
 			}
 
@@ -164,7 +163,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	@Override
 	public void caseReturnStmt(final ReturnStmt returnStatement) {
-		final var operand = new SootExpression(returnStatement.getOp());
+		final Value operand = returnStatement.getOp();
 		final ValueReference valueReference = Convention.makeReturnReference();
 		final var assignee = Assignee.of(valueReference);
 		final Expression expression = new ProcedureExpressionExtractor(bodyExtractor, returnStatement).visit(operand,
@@ -178,13 +177,14 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final Iterator<Unit> targets = switchStatement.getTargets().iterator();
 		final Iterator<IntConstant> values = switchStatement.getLookupValues().iterator();
 		final Expression key = new ProcedureExpressionExtractor(bodyExtractor, switchStatement)
-			.visit(new SootExpression(switchStatement.getKey()), SootType.intType());
+				.visit(switchStatement.getKey(), IntType.v());
 
-		while(targets.hasNext() && values.hasNext()) {
+		while (targets.hasNext() && values.hasNext()) {
 			final Unit target = targets.next();
-			final SootExpression value = new SootExpression(values.next());
+			final Value value = values.next();
 			final var ifBuilder = new IfStatementBuilder();
-			final Expression index = new ProcedureExpressionExtractor(bodyExtractor, switchStatement).visit(value, SootType.intType());
+			final Expression index = new ProcedureExpressionExtractor(bodyExtractor, switchStatement).visit(value,
+					IntType.v());
 			final Label label = bodyExtractor.getLabelCollector().fetchLabel(target);
 
 			ifBuilder.condition(new EqualsOperation(index, key)).thenStatement(new GotoStatement(label));
@@ -195,7 +195,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 	@Override
 	public void caseTableSwitchStmt(final TableSwitchStmt switchStatement) {
 		final Expression key = new ProcedureExpressionExtractor(bodyExtractor, switchStatement)
-			.visit(new SootExpression(switchStatement.getKey()), SootType.intType());
+				.visit(switchStatement.getKey(), IntType.v());
 
 		for (int i = switchStatement.getLowIndex(); i < switchStatement.getHighIndex(); ++i) {
 			final Unit target = switchStatement.getTarget(i);
@@ -217,9 +217,9 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	@Override
 	public void caseIfStmt(final IfStmt ifStatement) {
-		final var type = new SootType(IntType.v());
 		final var ifBuilder = new IfStatementBuilder();
-		final var condition = new SootExpression(ifStatement.getCondition());
+		final Type type = IntType.v();
+		final Value condition = ifStatement.getCondition();
 		final Label label = bodyExtractor.getLabelCollector().fetchLabel(ifStatement.getTarget());
 		ifBuilder.condition(new ProcedureExpressionExtractor(bodyExtractor, ifStatement).visit(condition, type))
 				.thenStatement(new GotoStatement(label));
@@ -228,7 +228,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
-		final var invoke = new SootExpression(invokeStatement.getInvokeExpr());
+		final var invoke = invokeStatement.getInvokeExpr();
 		invoke.apply(new ProcedureExpressionExtractor(bodyExtractor, invokeStatement));
 	}
 

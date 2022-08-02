@@ -7,10 +7,6 @@ import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
 import byteback.core.converter.soottoboogie.expression.Substitutor;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
-import byteback.core.representation.soot.body.SootExpression;
-import byteback.core.representation.soot.type.SootType;
-import byteback.core.representation.soot.unit.SootClass;
-import byteback.core.representation.soot.unit.SootMethod;
 import byteback.frontend.boogie.ast.ConditionalOperation;
 import byteback.frontend.boogie.ast.ExistentialQuantifier;
 import byteback.frontend.boogie.ast.Expression;
@@ -22,6 +18,9 @@ import byteback.frontend.boogie.builder.SetBindingBuilder;
 import java.util.Iterator;
 import soot.BooleanType;
 import soot.Local;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Value;
 
 public class FunctionExpressionExtractor extends SubstitutingExtractor {
 
@@ -29,31 +28,31 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 		super(substitutor);
 	}
 
-	public void pushQuantifier(final Quantifier quantifier, final Iterable<SootExpression> arguments) {
+	public void pushQuantifier(final Quantifier quantifier, final Iterable<Value> arguments) {
 		final var quantifierBuilder = new QuantifierExpressionBuilder();
 		final var bindingBuilder = new SetBindingBuilder();
-		final Iterator<SootExpression> argumentsIterator = arguments.iterator();
+		final Iterator<Value> argumentsIterator = arguments.iterator();
 		final Local variableLocal = new LocalExtractor().visit(argumentsIterator.next());
-		bindingBuilder.typeAccess(new TypeAccessExtractor().visit(new SootType(variableLocal.getType())));
+		bindingBuilder.typeAccess(new TypeAccessExtractor().visit(variableLocal.getType()));
 		bindingBuilder.name(ExpressionExtractor.localName(variableLocal));
 		quantifierBuilder.quantifier(quantifier);
 		quantifierBuilder.addBinding(bindingBuilder.build());
-		quantifierBuilder.operand(visit(argumentsIterator.next(), SootType.booleanType()));
+		quantifierBuilder.operand(visit(argumentsIterator.next(), BooleanType.v()));
 		pushExpression(quantifierBuilder.build());
 		assert !argumentsIterator.hasNext() : "Wrong number of arguments to quantifier";
 	}
 
-	public void pushExistentialQuantifier(final Iterable<SootExpression> arguments) {
+	public void pushExistentialQuantifier(final Iterable<Value> arguments) {
 		final Quantifier quantifier = new ExistentialQuantifier();
 		pushQuantifier(quantifier, arguments);
 	}
 
-	public void pushUniversalQuantifier(final Iterable<SootExpression> arguments) {
+	public void pushUniversalQuantifier(final Iterable<Value> arguments) {
 		final Quantifier quantifier = new UniversalQuantifier();
 		pushQuantifier(quantifier, arguments);
 	}
 
-	public void pushQuantifier(final SootMethod method, final Iterable<SootExpression> arguments) {
+	public void pushQuantifier(final SootMethod method, final Iterable<Value> arguments) {
 		final String quantifierName = method.getName();
 
 		if (quantifierName.equals(Namespace.EXISTENTIAL_QUANTIFIER_NAME)) {
@@ -65,24 +64,24 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 		}
 	}
 
-	public void pushOld(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final Iterator<SootExpression> argumentsIterator = arguments.iterator();
-		final SootType argumentType = method.getParameterTypes().get(0);
+	public void pushOld(final SootMethod method, final Iterable<Value> arguments) {
+		final Iterator<Value> argumentsIterator = arguments.iterator();
+		final soot.Type argumentType = method.getParameterTypes().get(0);
 		pushExpression(new OldReference(visit(argumentsIterator.next(), argumentType)));
 		assert !argumentsIterator.hasNext() : "Wrong number of arguments to `old` reference";
 	}
 
-	public void pushConditional(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final Iterator<SootExpression> argumentsIterator = arguments.iterator();
-		final SootType argumentType = method.getParameterTypes().get(1);
-		final Expression condition = visit(argumentsIterator.next(), new SootType(BooleanType.v()));
+	public void pushConditional(final SootMethod method, final Iterable<Value> arguments) {
+		final Iterator<Value> argumentsIterator = arguments.iterator();
+		final soot.Type argumentType = method.getParameterTypes().get(1);
+		final Expression condition = visit(argumentsIterator.next(), BooleanType.v());
 		final Expression thenExpression = visit(argumentsIterator.next(), argumentType);
 		final Expression elseExpression = visit(argumentsIterator.next(), argumentType);
 		pushExpression(new ConditionalOperation(condition, thenExpression, elseExpression));
 		assert !argumentsIterator.hasNext() : "Wrong number of arguments to conditional expression";
 	}
 
-	public void pushSpecial(final SootMethod method, final Iterable<SootExpression> arguments) {
+	public void pushSpecial(final SootMethod method, final Iterable<Value> arguments) {
 		final String specialName = method.getName();
 
 		if (specialName.equals(Namespace.OLD_NAME)) {
@@ -94,13 +93,13 @@ public class FunctionExpressionExtractor extends SubstitutingExtractor {
 		}
 	}
 
-	public void pushBinding(final SootMethod method, final Iterable<SootExpression> arguments) {
+	public void pushBinding(final SootMethod method, final Iterable<Value> arguments) {
 		throw new ConversionException("Cannot bind a free variable");
 	}
 
 	@Override
-	public void pushFunctionReference(final SootMethod method, final Iterable<SootExpression> arguments) {
-		final SootClass clazz = method.getSootClass();
+	public void pushFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
+		final SootClass clazz = method.getDeclaringClass();
 		if (Namespace.isBindingClass(clazz)) {
 			pushBinding(method, arguments);
 		} else if (Namespace.isQuantifierClass(clazz)) {

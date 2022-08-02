@@ -2,6 +2,7 @@ package byteback.core.converter.soottoboogie.program;
 
 import byteback.core.context.soot.SootContext;
 import byteback.core.converter.soottoboogie.Namespace;
+import byteback.core.representation.soot.unit.SootClasses;
 import byteback.frontend.boogie.ast.Program;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,7 @@ public class ContextConverter {
 
 	public static Logger log = LoggerFactory.getLogger(ContextConverter.class);
 
-	private static final ContextConverter instance = new ContextConverter(SootContext.instance());
+	private static final ContextConverter instance = new ContextConverter(SootContext.v());
 
 	public static ContextConverter instance() {
 		return instance;
@@ -23,8 +24,9 @@ public class ContextConverter {
 	}
 
 	public Program convert() {
-		final Program program = ProgramConverter.instance().convert(context.classes().filter(
-				(clazz) -> !Namespace.isAnnotationClass(clazz) && !clazz.isBasicClass() && !clazz.isPhantomClass()));
+		final Program program = ProgramConverter.instance()
+				.convert(context.classes().filter((clazz) -> !Namespace.isAnnotationClass(clazz)
+						&& !SootClasses.isBasicClass(clazz) && !clazz.isPhantomClass()));
 
 		program.inferModifies();
 

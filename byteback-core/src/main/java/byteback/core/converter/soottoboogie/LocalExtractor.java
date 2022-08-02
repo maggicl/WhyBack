@@ -1,6 +1,5 @@
 package byteback.core.converter.soottoboogie;
 
-import byteback.core.representation.soot.body.SootExpression;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
 import soot.Local;
 import soot.Value;
@@ -13,21 +12,6 @@ import soot.Value;
 public class LocalExtractor extends SootExpressionVisitor<Local> {
 
 	private Local local;
-
-	/**
-	 * Extracts a local expected from an input expression.
-	 *
-	 * @param expression
-	 *            The input expression.
-	 * @return The expected {@link Local} expression.
-	 * @throws ConversionException
-	 *             If the input expression does not include a {@link Local}.
-	 */
-	public Local visit(final SootExpression expression) {
-		expression.apply(this);
-
-		return result();
-	}
 
 	@Override
 	public void caseLocal(final Local local) {

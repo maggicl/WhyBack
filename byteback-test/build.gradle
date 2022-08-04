@@ -1,0 +1,15 @@
+def testJars() {
+		def jars = []
+
+		subprojects.each { dummy ->
+				jars += dummy.shadowJar
+		}
+
+		return jars;
+}
+
+def system = tasks.register('system', Exec) {
+		workingDir './'
+		commandLine 'lit', './'
+		dependsOn project(':byteback-core').installDist
+}

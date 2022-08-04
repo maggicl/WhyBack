@@ -1,1 +1,0 @@
-RUN: %byteback --classpath %dummy_java8 --class byteback.dummy.invalid.Assertions -o %s.actual.bpl

@@ -3,4 +3,4 @@ rootProject.name = 'byteback'
 
 includeBuild('./conventions')
 
-include(':byteback-core', 'byteback-frontend:boogie', ':byteback-annotations', ':byteback-dummy:java8', ':byteback-dummy:scala', 'byteback-dummy:java17')
+include(':byteback-core', 'byteback-frontend:boogie', ':byteback-annotations', ':byteback-test', ':byteback-test:scala', ':byteback-test:java8', 'byteback-test:java17')

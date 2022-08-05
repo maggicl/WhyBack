@@ -66,9 +66,9 @@ public class ProcedureConverter extends MethodConverter {
 
 		if (typeReference != null) {
 			final FunctionReference typeOfReference = Prelude.v().getTypeOfFunction()
-				.makeFunctionReference();
+					.makeFunctionReference();
 			final ValueReference heapReference = Prelude.v().getHeapVariable()
-				.makeValueReference();
+					.makeValueReference();
 			typeOfReference.addArgument(heapReference);
 			typeOfReference.addArgument(ValueReference.of(name));
 			bindingBuilder.whereClause(new EqualsOperation(typeOfReference, typeReference));
@@ -91,7 +91,7 @@ public class ProcedureConverter extends MethodConverter {
 
 	public static Iterable<Local> getParameterLocals(final SootMethod method) {
 		if (SootMethods.hasBody(method)) {
-			return SootBodies.getParameterLocals(method.retrieveActiveBody()); 
+			return SootBodies.getParameterLocals(method.retrieveActiveBody());
 		} else {
 			return SootMethods.makeFakeParameterLocals(method);
 		}
@@ -151,10 +151,10 @@ public class ProcedureConverter extends MethodConverter {
 	}
 
 	public static void buildSpecification(final ProcedureDeclarationBuilder builder, final SootMethod method) {
-		final ArrayList<Type> parameters = new ArrayList<>(method.getParameterTypes());
 
 		SootMethods.getAnnotations(method).forEach((tag) -> {
 			SootAnnotations.getAnnotations(tag).forEach((sub) -> {
+				final ArrayList<Type> parameters = new ArrayList<>(method.getParameterTypes());
 				final Supplier<Condition> conditionSupplier;
 
 				switch (sub.getType()) {
@@ -184,6 +184,9 @@ public class ProcedureConverter extends MethodConverter {
 				final String name = new StringElemExtractor().visit(elem);
 				final SootClass clazz = method.getDeclaringClass();
 				final SootMethod source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
+
+				System.out.println(name);
+				System.out.println(parameters);
 
 				if (source == null) {
 					throw new ConversionException("Unable to find matching predicate " + name + " in class" + clazz.getName());

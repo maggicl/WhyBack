@@ -1,3 +1,7 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1 | filecheck %s
+ * RUN: diff %s.actual.bpl %s.expect.bpl
+ */
 package byteback.dummy.complete;
 
 import static byteback.annotations.Contract.*;
@@ -7,22 +11,25 @@ public class Dice {
 
 	public interface Die {
 
+		@Predicate
 		default boolean outcome_is_positive(int max, int outcome) {
 			return lte(1, outcome);
 		}
 
-		default boolean outcome_is_leq_than_max(int max, int outcome) {
+		@Predicate
+		default boolean outcome_is_leq_max(int max, int outcome) {
 			return lte(outcome, max);
 		}
 
 		@Ensure("outcome_is_positive")
-		@Ensure("outcome_is_leq_than_max")
+		@Ensure("outcome_is_leq_max")
 		public int roll(int max);
 
 	}
 
 	public static class FixedDie implements Die {
 
+		@Predicate
 		public boolean result_is_max(int max, int returns) {
 			return eq(max, returns);
 		}
@@ -42,3 +49,7 @@ public class Dice {
 		assertion(lte(result, max));
 	}
 }
+/**
+ * CHECK: Conversion completed
+ * RUN: %{verify} %s.actual.bpl
+ */

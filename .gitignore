@@ -19,3 +19,6 @@ bin/
 
 # Ignore idea files
 .idea
+
+# Ignore testing files
+*.actual.bpl

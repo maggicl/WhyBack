@@ -1,6 +1,6 @@
 /**
- * RUN: echo %{package}
- * RUN: echo %{class}
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1 | filecheck %s
+ * RUN: diff %s.actual.bpl %s.expect.bpl
  */
 package byteback.dummy.complete;
 
@@ -27,8 +27,7 @@ public class BinarySearch {
 
 	@Predicate
 	public static boolean result_is_index(int a[], int n, int left, int right, int returns) {
-
-		return implies(lte(0, returns), eq(a[returns], n));
+  	return implies(lte(0, returns), eq(a[returns], n));
 	}
 
 	@Predicate
@@ -60,3 +59,7 @@ public class BinarySearch {
 	}
 
 }
+/**
+ * CHECK: Conversion completed
+ * RUN: %{verify} %s.actual.bpl
+ */

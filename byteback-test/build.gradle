@@ -1,15 +1,16 @@
-def testJars() {
-		def jars = []
+subprojects {
+		def core = project(':byteback-core')
+		def system = tasks.register('system', Exec) {
+				def target = project.findProperty("TARGET")
+				if (target == null) {
+						target = project.sourceSets.main.java.srcDirs[0]
+				}
+				def verify = project.findProperty("VERIFY") != null
+				environment 'BYTEBACK_ROOT', core.installDist.destinationDir
+				environment 'TEST_JAR', project.shadowJar.archivePath
+				commandLine 'lit', '-a', '-i', target
 
-		subprojects.each { dummy ->
-				jars += dummy.shadowJar
+				dependsOn core.installDist
+				dependsOn project.shadowJar
 		}
-
-		return jars;
-}
-
-def system = tasks.register('system', Exec) {
-		workingDir './'
-		commandLine 'lit', './'
-		dependsOn project(':byteback-core').installDist
 }

@@ -54,7 +54,7 @@ public class SootMethods {
 	}
 
 	public static boolean hasBody(final SootMethod method) {
-		return method.retrieveActiveBody() != null;
+		return !method.isAbstract() && method.retrieveActiveBody() != null;
 	}
 
 }

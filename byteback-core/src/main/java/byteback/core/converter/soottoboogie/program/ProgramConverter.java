@@ -34,7 +34,6 @@ public class ProgramConverter {
 
 	public static void convertMethods(final Program program, final SootClass clazz) {
 		for (SootMethod method : clazz.getMethods()) {
-			System.out.println(method);
 			try {
 				log.info("Converting method {}", method.getSignature());
 				if (SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {
@@ -42,6 +41,7 @@ public class ProgramConverter {
 				} else if (!SootMethods.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION)) {
 					program.addDeclaration(ProcedureConverter.v().convert(method));
 				}
+				log.info("Method {} converted", method.getSignature());
 			} catch (final ConversionException exception) {
 				log.error("Conversion exception:");
 				exception.printStackTrace();
@@ -54,9 +54,7 @@ public class ProgramConverter {
 		log.info("Converting class {}", clazz.getName());
 		final var program = new Program();
 		program.addDeclaration(ReferenceTypeConverter.instance().convert(clazz));
-		System.out.println("Converting fields");
 		convertFields(program, clazz);
-		System.out.println("Converting methods");
 		convertMethods(program, clazz);
 
 		return program;

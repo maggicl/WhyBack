@@ -1,3 +1,7 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1 | filecheck %s
+ * RUN: diff %s.actual.bpl %s.expect.bpl
+ */
 package byteback.dummy.complete;
 
 import static byteback.annotations.Contract.*;
@@ -101,3 +105,7 @@ public class DoubleSelectionSort {
 	}
 
 }
+/**
+ * CHECK: Conversion completed
+ * RUN: %{verify} %s.actual.bpl
+ */

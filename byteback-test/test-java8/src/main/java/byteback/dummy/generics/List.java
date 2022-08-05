@@ -1,3 +1,7 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.expect.bpl 2>&1 | filecheck %s
+ * RUN: diff %s.actual.bpl %s.expect.bpl
+ */
 package byteback.dummy.generics;
 
 import static byteback.annotations.Contract.*;
@@ -10,17 +14,26 @@ public class List<T> {
 
 	private final List<T> tail;
 
+	@Pure
+	@Predicate
+	public boolean field_values(final T element, final List<T> tail) {
+		return eq(this.element, element) & eq(this.tail, tail);
+	}
+
+	@Predicate
+	public boolean field_values(final T element) {
+		return field_values(element, null);
+	}
+
+	@Ensure("field_values")
 	public List(final T element, final List<T> tail) {
 		this.element = element;
 		this.tail = tail;
 	}
 
+	@Ensure("field_values")
 	public List(final T element) {
 		this(element, null);
-	}
-
-	public List<T> add(final T element) {
-		return new List<T>(element, this);
 	}
 
 	@Pure
@@ -37,6 +50,11 @@ public class List<T> {
 		final Object a = new Object();
 		List<Object> l = new List<>(a);
 		assertion(eq(l.getElement(), a));
+		assertion(eq(l.getTail(), null));
 	}
 
 }
+/**
+ * CHECK: Conversion completed
+ * RUN: %{verify} %s.actual.bpl
+ */

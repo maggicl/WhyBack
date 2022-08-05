@@ -1,3 +1,7 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1 | filecheck %s
+ * RUN: diff %s.actual.bpl %s.expect.bpl
+ */
 package byteback.dummy.complete;
 
 import static byteback.annotations.Contract.*;
@@ -37,7 +41,7 @@ public interface Comparator {
 
 		@Predicate
 		public boolean compare_greater_than(int a, int b, boolean returns) {
-			return implies(returns, lt(a, b));
+			return implies(returns, gt(a, b));
 		}
 
 		@Ensure("compare_greater_than")
@@ -60,3 +64,7 @@ public interface Comparator {
 	}
 
 }
+/**
+ * CHECK: Conversion complete
+ * RUN: %{verify} %s.actual.bpl
+ */

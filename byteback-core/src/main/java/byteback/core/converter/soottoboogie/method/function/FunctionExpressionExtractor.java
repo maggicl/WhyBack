@@ -4,8 +4,6 @@ import byteback.core.converter.soottoboogie.ConversionException;
 import byteback.core.converter.soottoboogie.LocalExtractor;
 import byteback.core.converter.soottoboogie.Namespace;
 import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
-import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
-import byteback.core.converter.soottoboogie.expression.Substitutor;
 import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.frontend.boogie.ast.ConditionalOperation;
 import byteback.frontend.boogie.ast.ExistentialQuantifier;
@@ -22,11 +20,7 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Value;
 
-public class FunctionExpressionExtractor extends SubstitutingExtractor {
-
-	public FunctionExpressionExtractor(final Substitutor substitutor) {
-		super(substitutor);
-	}
+public class FunctionExpressionExtractor extends ExpressionExtractor {
 
 	public void pushQuantifier(final Quantifier quantifier, final Iterable<Value> arguments) {
 		final var quantifierBuilder = new QuantifierExpressionBuilder();

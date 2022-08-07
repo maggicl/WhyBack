@@ -7,6 +7,7 @@ import byteback.core.converter.soottoboogie.field.FieldConverter;
 import byteback.core.converter.soottoboogie.method.function.FunctionConverter;
 import byteback.core.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.core.converter.soottoboogie.type.ReferenceTypeConverter;
+import byteback.core.preprocessing.BodyAggregator;
 import byteback.core.representation.soot.unit.SootMethods;
 import byteback.frontend.boogie.ast.Program;
 import java.util.stream.Stream;
@@ -34,6 +35,9 @@ public class ProgramConverter {
 
 	public static void convertMethods(final Program program, final SootClass clazz) {
 		for (SootMethod method : clazz.getMethods()) {
+			if (SootMethods.hasBody(method)) {
+				method.setActiveBody(new BodyAggregator().transform(method.retrieveActiveBody()));
+			}
 			try {
 				log.info("Converting method {}", method.getSignature());
 				if (SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {
@@ -64,7 +68,6 @@ public class ProgramConverter {
 		final Program program = Prelude.v().program();
 		classes.forEach((clazz) -> {
 			try {
-				System.out.println(clazz);
 				convert(clazz).inject(program);
 			} catch (final ConversionException exception) {
 				log.error("Conversion exception: ");

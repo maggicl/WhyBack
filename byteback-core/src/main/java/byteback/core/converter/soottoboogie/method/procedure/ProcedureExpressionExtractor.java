@@ -1,7 +1,7 @@
 package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.*;
-import byteback.core.converter.soottoboogie.expression.SubstitutingExtractor;
+import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
 import byteback.core.converter.soottoboogie.method.procedure.ProcedureStatementExtractor.ReferenceSupplier;
 import byteback.core.converter.soottoboogie.type.ReferenceTypeConverter;
@@ -17,37 +17,31 @@ import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
 import java.util.Iterator;
-import java.util.Optional;
 import soot.BooleanType;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.Unit;
 import soot.Value;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
 
-public class ProcedureExpressionExtractor extends SubstitutingExtractor {
-
-	private static final ReferenceSupplier EMPTY_REFERENCE_SUPPLIER = () -> Optional.empty();
+public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	final ProcedureBodyExtractor bodyExtractor;
 
 	final ReferenceSupplier referenceSupplier;
 
-	final Unit unit;
+	public static final ReferenceSupplier defaultReferenceSupplier = () -> null;
 
 	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor,
-			final ReferenceSupplier referenceSupplier, final Unit unit) {
-		super(bodyExtractor.getSubstitutor());
+			final ReferenceSupplier referenceSupplier) {
 		this.bodyExtractor = bodyExtractor;
 		this.referenceSupplier = referenceSupplier;
-		this.unit = unit;
 	}
 
-	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor, final Unit unit) {
-		this(bodyExtractor, EMPTY_REFERENCE_SUPPLIER, unit);
+	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor) {
+		this(bodyExtractor, defaultReferenceSupplier);
 	}
 
 	public TargetedCallStatement makeCall(final SootMethod method, final Iterable<Value> arguments) {
@@ -60,16 +54,19 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 
 	public void addCall(final TargetedCallStatement callStatement) {
 		final List<ValueReference> targets = new List<ValueReference>();
-		referenceSupplier.get().ifPresent((reference) -> {
+
+		if (referenceSupplier != defaultReferenceSupplier) {
+			final ValueReference reference = referenceSupplier.get();
 			targets.add(reference);
 			pushExpression(reference);
-		});
-
+		} else {
+			pushExpression(null);
+		}
 		callStatement.setTargetList(targets);
 		bodyExtractor.addStatement(callStatement);
 	}
 
-	public void addContract(final SootMethod method, final Iterable<Value> arguments) {
+	public void addContractStatement(final SootMethod method, final Iterable<Value> arguments) {
 		final String name = method.getName();
 		final Iterator<Value> iterator = arguments.iterator();
 		final Value argument = iterator.next();
@@ -95,7 +92,7 @@ public class ProcedureExpressionExtractor extends SubstitutingExtractor {
 		if (isPure) {
 			super.pushFunctionReference(method, arguments);
 		} else if (Namespace.isContractClass(clazz)) {
-			addContract(method, arguments);
+			addContractStatement(method, arguments);
 		} else {
 			final TargetedCallStatement callStatement = makeCall(method, arguments);
 			addCall(callStatement);

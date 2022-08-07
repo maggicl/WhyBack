@@ -58,7 +58,7 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 
 	public void pushCastExpression(final Expression expression, final Type fromType) {
 		final var caster = new CasterProvider(getType()).visit(fromType);
-		operands.push(caster.apply(expression));
+		pushExpression(caster.apply(expression));
 	}
 
 	public void pushCastExpression(final Expression expression, final Value value) {

@@ -2,9 +2,8 @@ package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.Convention;
 import byteback.core.converter.soottoboogie.ConversionException;
-import byteback.core.converter.soottoboogie.expression.PartialSubstitutor;
-import byteback.core.converter.soottoboogie.expression.Substitutor;
 import byteback.core.converter.soottoboogie.method.procedure.LoopCollector.LoopContext;
+import byteback.core.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.Expression;
@@ -50,8 +49,6 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 
 	private final Stack<LoopContext> activeLoops;
 
-	private final Substitutor substitutor;
-
 	public ProcedureBodyExtractor(final Type returnType) {
 		this.returnType = returnType;
 		this.body = new Body();
@@ -59,12 +56,12 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		this.labelCollector = new LabelCollector();
 		this.loopCollector = new LoopCollector();
 		this.activeLoops = new Stack<>();
-		this.substitutor = new PartialSubstitutor();
 	}
 
 	public Body visit(final soot.Body body) {
 		labelCollector.collect(body);
 		loopCollector.collect(body);
+
 		return super.visit(body);
 	}
 
@@ -100,14 +97,15 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		return variableProvider;
 	}
 
-	public Substitutor getSubstitutor() {
-		return substitutor;
+	public ValueReference generateReference(final Type type) {
+		final TypeAccess access = new TypeAccessExtractor().visit(type);
+
+		return variableProvider.get(access);
 	}
 
 	@Override
 	public void caseIfStmt(final IfStmt ifStatement) {
 		caseDefault(ifStatement);
-		getSubstitutor().clear();
 	}
 
 	@Override
@@ -123,7 +121,6 @@ public class ProcedureBodyExtractor extends SootStatementVisitor<Body> {
 		});
 		labelCollector.getLabel(unit).ifPresent((label) -> {
 			body.addStatement(new LabelStatement(label));
-			getSubstitutor().clear();
 		});
 		loopCollector.getByExitTarget(unit).ifPresent((context) -> {
 			addStatement(context.getAssumptionPoint());

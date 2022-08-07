@@ -21,8 +21,6 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 
 	private final CountingMap<Local, Expression> expressionTable;
 
-	private final Substitutor substitutor;
-
 	private final Type returnType;
 
 	private Expression result;
@@ -30,7 +28,6 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 	public FunctionBodyExtractor(final Type returnType) {
 		this.returnType = returnType;
 		this.expressionTable = new CountingMap<>();
-		this.substitutor = new Substitutor(this.expressionTable);
 	}
 
 	@Override
@@ -38,7 +35,7 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 		final Value left = assignment.getLeftOp();
 		final Value right = assignment.getRightOp();
 		final Local local = new LocalExtractor().visit(left);
-		final Expression expression = new FunctionExpressionExtractor(substitutor) {
+		final Expression expression = new FunctionExpressionExtractor() {
 
 			@Override
 			public void pushBinding(final SootMethod method, final Iterable<Value> argumentsIterable) {
@@ -46,13 +43,12 @@ public class FunctionBodyExtractor extends SootStatementVisitor<Expression> {
 			}
 
 		}.visit(right, left.getType());
-		substitutor.put(local, new DependencyExtractor().visit(right), expression);
 	}
 
 	@Override
 	public void caseReturnStmt(final ReturnStmt returnStatement) {
 		final Value operand = returnStatement.getOp();
-		result = new FunctionExpressionExtractor(substitutor).visit(operand, returnType);
+		result = new FunctionExpressionExtractor().visit(operand, returnType);
 
 		for (Entry<Local, Integer> entry : expressionTable.getAccessCount().entrySet()) {
 			if (entry.getValue() == 0) {

@@ -141,56 +141,36 @@ procedure java.lang.Object.clone##(this : Reference) returns (~ret : Reference);
 
 const unique java.lang.Object : Type;
 
-const unique $byteback.dummy.complete.BinarySearch : Type;
+const unique $byteback.dummy.controlflow.EnhancedFor : Type;
 
-procedure byteback.dummy.complete.BinarySearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.BinarySearch)) returns ()
+procedure byteback.dummy.controlflow.EnhancedFor.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.controlflow.EnhancedFor)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.BinarySearch);
+  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.controlflow.EnhancedFor);
   $this := ?this;
   call java.lang.Object.$init$##($this);
   return;
 }
 
-procedure byteback.dummy.complete.BinarySearch.search#int?#int#int#int#(?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
-  requires ~neq(?a, ~null);
-  requires (forall $$stack6 : int :: (forall $$stack7 : int :: ~implies(((~int.lte(?left, $$stack6) && ~int.lt($$stack6, $$stack7)) && ~int.lte($$stack7, ?right)), ~int.lte((~unbox(~heap.read(~heap, ?a, ~element($$stack6))) : int), (~unbox(~heap.read(~heap, ?a, ~element($$stack7))) : int)))));
-  requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : int), ?n));
+function byteback.dummy.controlflow.EnhancedFor.contains#int?#int#(~heap : Store, $a : Reference, $x : int) returns (bool) { (exists $$stack3 : int :: ((~int.lte(0, $$stack3) && ~int.lt(0, ~lengthof($a))) && ~eq((~unbox(~heap.read(~heap, $a, ~element($$stack3))) : int), $x))) }
+
+procedure byteback.dummy.controlflow.EnhancedFor.forEach#int?#(?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive))) returns ()
 {
-  var ~sym1 : int;
-  var ~sym2 : int;
-  var $p : int;
+  var $l2 : int;
+  var $l3 : int;
   var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  var $n : int;
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
   $a := ?a;
-  if (($left >= $right)) {
+  $l2 := ~lengthof($a);
+  $l3 := 0;
+  assert byteback.dummy.controlflow.EnhancedFor.contains#int?#int#(~heap, $a, (~unbox(~heap.read(~heap, $a, ~element($l3))) : int));
+label2:
+  assume byteback.dummy.controlflow.EnhancedFor.contains#int?#int#(~heap, $a, (~unbox(~heap.read(~heap, $a, ~element($l3))) : int));
+  if (($l3 >= $l2)) {
     goto label1;
   }
-  $p := ($left + (($right - $left) div 2));
-  assert (~int.lte($left, $p) && ~int.lte($p, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($p))) : int) >= $n)) {
-    goto label2;
-  }
-  call ~sym1 := byteback.dummy.complete.BinarySearch.search#int?#int#int#int#($a, $n, $left, $p);
-  ~ret := ~sym1;
-  return;
-label2:
-  if (((~unbox(~heap.read(~heap, $a, ~element($p))) : int) <= $n)) {
-    goto label3;
-  }
-  call ~sym2 := byteback.dummy.complete.BinarySearch.search#int?#int#int#int#($a, $n, $p, $right);
-  ~ret := ~sym2;
-  return;
-label3:
-  assert ~eq((~unbox(~heap.read(~heap, $a, ~element($p))) : int), $n);
-  ~ret := $p;
-  return;
+  $l3 := ($l3 + 1);
+  assert byteback.dummy.controlflow.EnhancedFor.contains#int?#int#(~heap, $a, (~unbox(~heap.read(~heap, $a, ~element($l3))) : int));
+  goto label2;
 label1:
-  ~ret := -1;
+  assume byteback.dummy.controlflow.EnhancedFor.contains#int?#int#(~heap, $a, (~unbox(~heap.read(~heap, $a, ~element($l3))) : int));
   return;
 }

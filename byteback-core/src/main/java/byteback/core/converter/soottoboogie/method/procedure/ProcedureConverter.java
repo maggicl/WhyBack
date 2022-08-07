@@ -145,8 +145,6 @@ public class ProcedureConverter extends MethodConverter {
 			throw new ConversionException("Incompatible target type for condition method " + source.getName());
 		}
 
-		System.out.println(FunctionManager.instance().convert(source).getFunction().getDeclaration().print());
-
 		return FunctionManager.instance().convert(source).getFunction().inline(arguments);
 	}
 
@@ -184,9 +182,6 @@ public class ProcedureConverter extends MethodConverter {
 				final String name = new StringElemExtractor().visit(elem);
 				final SootClass clazz = method.getDeclaringClass();
 				final SootMethod source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
-
-				System.out.println(name);
-				System.out.println(parameters);
 
 				if (source == null) {
 					throw new ConversionException("Unable to find matching predicate " + name + " in class" + clazz.getName());

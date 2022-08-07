@@ -1,3 +1,6 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1
+ */
 package byteback.dummy.controlflow;
 
 import byteback.annotations.Binding;
@@ -10,15 +13,19 @@ public class EnhancedFor {
 
 	@Pure
 	public static boolean contains(int[] a, int x) {
-		int i = Binding.integer();
+		final int i = Binding.integer();
 
 		return exists(i, lte(0, i) & lt(0, a.length) & eq(a[i], x));
 	}
 
 	public static void forEach(int[] a) {
 		for (int x : a) {
-			invariant(contains(a, x));
+			assertion(contains(a, x));
 		}
 	}
-	
+
 }
+/**
+ * CHECK: Conversion completed
+ * RUN: %{verify} %s.actual.bpl
+ */

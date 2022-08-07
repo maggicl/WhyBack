@@ -1,9 +1,11 @@
 package byteback.annotations;
 
-public interface Binding {
+public class Binding {
+
+	static int state = 0;
 
 	public static int integer() {
-		return 0;
+		return state++;
 	}
 
 	public static double real() {

@@ -17,10 +17,8 @@ import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Stack;
 import soot.SootMethod;
 import soot.Type;
-import soot.UnknownType;
 import soot.Value;
 import soot.jimple.BinopExpr;
 import soot.jimple.InstanceInvokeExpr;
@@ -29,36 +27,31 @@ import soot.jimple.VirtualInvokeExpr;
 
 public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression> {
 
-	protected final Stack<Expression> operands;
+	protected Expression expression;
 
-	protected final Stack<Type> types;
+	protected final Type type;
 
-	public ExpressionVisitor() {
-		this.operands = new Stack<>();
-		this.types = new Stack<>();
+	public ExpressionVisitor(final Type type) {
+		this.type = type;
+	}
+
+	public abstract ExpressionVisitor makeExpressionVisitor(final Type type);
+
+	public Type getType() {
+		return type;
 	}
 
 	public Expression visit(final Value value, final Type type) {
-		types.push(type);
-
-		return super.visit(value);
+		return makeExpressionVisitor(type).visit(value);
 	}
 
-	public Expression visit(final Value value) {
-		return visit(value, UnknownType.v());
-	}
-
-	public Type getType() {
-		return types.peek();
-	}
-
-	public void pushExpression(final Expression expression) {
-		operands.push(expression);
+	public void setExpression(final Expression expression) {
+		this.expression = expression;
 	}
 
 	public void pushCastExpression(final Expression expression, final Type fromType) {
 		final var caster = new CasterProvider(getType()).visit(fromType);
-		pushExpression(caster.apply(expression));
+		setExpression(caster.apply(expression));
 	}
 
 	public void pushCastExpression(final Expression expression, final Value value) {
@@ -70,7 +63,7 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		final Value right = source.getOp2();
 		expression.setLeftOperand(visit(left, getType()));
 		expression.setRightOperand(visit(right, getType()));
-		pushExpression(expression);
+		setExpression(expression);
 	}
 
 	public void pushSpecialBinaryExpression(final BinopExpr source, final FunctionReference reference) {
@@ -78,7 +71,7 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		final Value right = source.getOp2();
 		reference.addArgument(visit(left, getType()));
 		reference.addArgument(visit(right, getType()));
-		pushExpression(reference);
+		setExpression(reference);
 	}
 
 	public List<Expression> convertArguments(final SootMethod method, final Iterable<Value> sources) {
@@ -116,7 +109,7 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		}
 
 		referenceBuilder.addArguments(convertArguments(method, arguments));
-		pushExpression(referenceBuilder.build());
+		setExpression(referenceBuilder.build());
 	}
 
 	abstract public void caseInstanceInvokeExpr(final InstanceInvokeExpr invoke);
@@ -133,9 +126,7 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 
 	@Override
 	public Expression result() {
-		types.pop();
-
-		return operands.pop();
+		return expression;
 	}
 
 }

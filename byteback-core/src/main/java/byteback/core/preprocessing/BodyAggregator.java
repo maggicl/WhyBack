@@ -39,7 +39,7 @@ public class BodyAggregator {
 		while (iterator.hasNext()) {
 			final Local local = iterator.next();
 
-			if (defCollector.usesOf(local).size() == 0) {
+			if (defCollector.valueUsesOf(local).size() == 0) {
 				locals.remove(local);
 			}
 		}
@@ -53,7 +53,7 @@ public class BodyAggregator {
 
 		while (!next.isEmpty()) {
 			final Local current = next.pop();
-			final Set<Unit> uses = defCollector.usesOf(current);
+			final Set<Unit> uses = defCollector.unitUsesOf(current);
 			visited.add(current);
 
 			for (Unit use : uses) {
@@ -65,32 +65,28 @@ public class BodyAggregator {
 					public void caseAssignStmt(final AssignStmt assignment) {
 						assignment.getLeftOp().apply(new SootExpressionVisitor<>() {
 
-							private void addNext(final Value value) {
+							@Override
+							public void caseLocal(final Local value) {
 								if (!visited.contains(local)) {
 									next.push(local);
-								} else {
+								} else if (local == value) {
 									looping.set(true);
 								}
 							}
 
 							@Override
-							public void caseLocal(final Local local) {
-								addNext(local);
-							}
-
-							@Override
 							public void caseArrayRef(final ArrayRef reference) {
-								addNext(reference);
+								looping.set(true);
 							}
 
 							@Override
 							public void caseStaticFieldRef(final StaticFieldRef reference) {
-								addNext(reference);
+								looping.set(true);
 							}
 
 							@Override
 							public void caseInstanceFieldRef(final InstanceFieldRef reference) {
-								addNext(reference);
+								looping.set(true);
 							}
 
 						});
@@ -109,8 +105,8 @@ public class BodyAggregator {
 
 	public GrimpBody transform(final Body source) {
 		final GrimpBody body = Grimp.v().newBody(source, "gb");
-		Iterator<Unit> iterator = body.getUnits().snapshotIterator();
-		defCollector.collect(source);
+		final Iterator<Unit> iterator = body.getUnits().snapshotIterator();
+		defCollector.collect(body);
 
 		while (iterator.hasNext()) {
 			final Unit unit = iterator.next();
@@ -123,7 +119,7 @@ public class BodyAggregator {
 					@Override
 					public void caseLocal(final Local local) {
 						final Set<Unit> definitions = defCollector.definitionsOf(local);
-						final Set<Unit> uses = defCollector.usesOf(local);
+						final Set<ValueBox> uses = defCollector.valueUsesOf(local);
 						if (definitions.size() == 1 && uses.size() == 1 && !hasLoop(local, unit)) {
 							definitions.iterator().next().apply(new SootStatementVisitor<>() {
 

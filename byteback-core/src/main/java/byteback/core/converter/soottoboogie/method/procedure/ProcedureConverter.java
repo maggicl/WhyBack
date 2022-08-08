@@ -232,10 +232,7 @@ public class ProcedureConverter extends MethodConverter {
 			throw new ProcedureConversionException(method, exception);
 		}
 
-		final ProcedureDeclaration declaration = builder.build().rootedCopy();
-		declaration.removeUnusedVariables();
-
-		return declaration;
+		return builder.build();
 	}
 
 }

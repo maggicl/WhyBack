@@ -66,9 +66,6 @@ public class FunctionConverter extends MethodConverter {
 		functionBuilder.expression(new FunctionBodyExtractor(method.getReturnType()).visit(method.retrieveActiveBody()));
 	}
 
-	private FunctionConverter() {
-	}
-
 	public FunctionDeclaration convert(final SootMethod method) {
 		final var builder = new FunctionDeclarationBuilder();
 

@@ -26,6 +26,15 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		return LOCAL_PREFIX + local.getName();
 	}
 
+	public ExpressionExtractor(final Type type) {
+		super(type);
+	}
+
+	@Override
+	public ExpressionVisitor makeExpressionVisitor(final Type type) {
+		return new ExpressionExtractor(type);
+	}
+
 	@Override
 	public void caseStaticInvokeExpr(final StaticInvokeExpr invoke) {
 		final SootMethod method = invoke.getMethod();
@@ -90,12 +99,12 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
-				pushExpression(new NegationOperation(expression));
+				setExpression(new NegationOperation(expression));
 			}
 
 			@Override
 			public void caseDefault(final Type type) {
-				pushExpression(new MinusOperation(expression));
+				setExpression(new MinusOperation(expression));
 			}
 
 		});
@@ -204,7 +213,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final Type fromType = casting.getType();
 		final Function<Expression, Expression> caster = new CasterProvider(toType).visit(fromType);
 
-		pushExpression(caster.apply(visit(operand, fromType)));
+		setExpression(caster.apply(visit(operand, fromType)));
 	}
 
 	@Override
@@ -213,12 +222,12 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
-				pushExpression(intConstant.value != 0 ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse());
+				setExpression(intConstant.value != 0 ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse());
 			}
 
 			@Override
 			public void caseDefault(final Type type) {
-				pushExpression(new NumberLiteral(intConstant.toString()));
+				setExpression(new NumberLiteral(intConstant.toString()));
 			}
 
 		});
@@ -228,24 +237,24 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	public void caseLongConstant(final LongConstant longConstant) {
 		final String literal = longConstant.toString();
 		final String strippedLiteral = literal.substring(0, literal.length() - 1);
-		pushExpression(new NumberLiteral(strippedLiteral));
+		setExpression(new NumberLiteral(strippedLiteral));
 	}
 
 	@Override
 	public void caseDoubleConstant(final DoubleConstant doubleConstant) {
-		pushExpression(new RealLiteral(doubleConstant.toString()));
+		setExpression(new RealLiteral(doubleConstant.toString()));
 	}
 
 	@Override
 	public void caseFloatConstant(final FloatConstant floatConstant) {
 		final String literal = floatConstant.toString();
 		final String strippedLiteral = literal.substring(0, literal.length() - 1);
-		pushExpression(new RealLiteral(strippedLiteral));
+		setExpression(new RealLiteral(strippedLiteral));
 	}
 
 	@Override
 	public void caseNullConstant(final NullConstant nullConstant) {
-		pushExpression(Prelude.v().getNullConstant().makeValueReference());
+		setExpression(Prelude.v().getNullConstant().makeValueReference());
 	}
 
 	@Override
@@ -284,7 +293,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	@Override
 	public void caseLengthExpr(final LengthExpr length) {
 		final Value operand = length.getOp();
-		pushExpression(Prelude.v().getLengthAccessExpression(visit(operand)));
+		setExpression(Prelude.v().getLengthAccessExpression(visit(operand)));
 	}
 
 	@Override
@@ -295,7 +304,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 			@Override
 			public void caseRefType(final RefType referenceType) {
 				final ValueReference typeReference = ValueReference.of(referenceType.getClassName());
-				pushExpression(
+				setExpression(
 						Prelude.v().makeTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference));
 			}
 

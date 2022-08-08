@@ -18,9 +18,19 @@ import soot.BooleanType;
 import soot.Local;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Type;
 import soot.Value;
 
 public class FunctionExpressionExtractor extends ExpressionExtractor {
+
+	public FunctionExpressionExtractor(final Type type) {
+		super(type);
+	}
+
+	@Override
+	public FunctionExpressionExtractor makeExpressionVisitor(final Type type) {
+		return new FunctionExpressionExtractor(type);
+	}
 
 	public void pushQuantifier(final Quantifier quantifier, final Iterable<Value> arguments) {
 		final var quantifierBuilder = new QuantifierExpressionBuilder();
@@ -32,7 +42,7 @@ public class FunctionExpressionExtractor extends ExpressionExtractor {
 		quantifierBuilder.quantifier(quantifier);
 		quantifierBuilder.addBinding(bindingBuilder.build());
 		quantifierBuilder.operand(visit(argumentsIterator.next(), BooleanType.v()));
-		pushExpression(quantifierBuilder.build());
+		setExpression(quantifierBuilder.build());
 		assert !argumentsIterator.hasNext() : "Wrong number of arguments to quantifier";
 	}
 
@@ -61,7 +71,7 @@ public class FunctionExpressionExtractor extends ExpressionExtractor {
 	public void pushOld(final SootMethod method, final Iterable<Value> arguments) {
 		final Iterator<Value> argumentsIterator = arguments.iterator();
 		final soot.Type argumentType = method.getParameterTypes().get(0);
-		pushExpression(new OldReference(visit(argumentsIterator.next(), argumentType)));
+		setExpression(new OldReference(visit(argumentsIterator.next(), argumentType)));
 		assert !argumentsIterator.hasNext() : "Wrong number of arguments to `old` reference";
 	}
 
@@ -71,7 +81,7 @@ public class FunctionExpressionExtractor extends ExpressionExtractor {
 		final Expression condition = visit(argumentsIterator.next(), BooleanType.v());
 		final Expression thenExpression = visit(argumentsIterator.next(), argumentType);
 		final Expression elseExpression = visit(argumentsIterator.next(), argumentType);
-		pushExpression(new ConditionalOperation(condition, thenExpression, elseExpression));
+		setExpression(new ConditionalOperation(condition, thenExpression, elseExpression));
 		assert !argumentsIterator.hasNext() : "Wrong number of arguments to conditional expression";
 	}
 

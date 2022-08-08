@@ -5,13 +5,17 @@ import byteback.core.util.Lazy;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import soot.Body;
 import soot.Local;
 import soot.Unit;
+import soot.ValueBox;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.UnitValueBoxPair;
 
 public class DefinitionsCollector {
 
@@ -41,10 +45,19 @@ public class DefinitionsCollector {
 		return definitions.get().getDefsOf(local).stream().collect(Collectors.toSet());
 	}
 
-	public Set<Unit> usesOf(final Local local) {
-		return definitions.get().getDefsOf(local).stream().flatMap((unit) -> {
-			return uses.get().getUsesOf(unit).stream().map((pair) -> pair.unit).collect(Collectors.toSet()).stream();
-		}).collect(Collectors.toSet());
+	public Stream<UnitValueBoxPair> usesOf(final Local local) {
+		return definitions.get().getDefsOf(local).stream()
+			.flatMap((unit) -> uses.get().getUsesOf(unit).stream());
+	}
+
+	public Set<Unit> unitUsesOf(final Local local) {
+		return usesOf(local).map((pair) -> pair.getUnit())
+			.collect(Collectors.toSet());
+	}
+
+	public Set<ValueBox> valueUsesOf(final Local local) {
+		return usesOf(local).map((pair) -> pair.getValueBox())
+			.collect(Collectors.toSet());
 	}
 
 }

@@ -194,7 +194,6 @@ procedure byteback.dummy.complete.LinearSearch.search#java.lang.Object?#java.lan
   requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
   ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : Reference), ?n));
 {
-  var $$stack8 : Reference where (~typeof(~heap, $$stack8) == $java.lang.Object);
   var $i : int;
   var $a : Reference where (~typeof(~heap, $a) == ~array.type($java.lang.Object));
   var $n : Reference where (~typeof(~heap, $n) == $java.lang.Object);
@@ -211,7 +210,6 @@ label3:
   if (($i >= $right)) {
     goto label1;
   }
-  $$stack8 := (~unbox(~heap.read(~heap, $a, ~element($i))) : Reference);
   assume (~int.lte($left, $i) && ~int.lte($i, $right));
   if (((~unbox(~heap.read(~heap, $a, ~element($i))) : Reference) != $n)) {
     goto label2;

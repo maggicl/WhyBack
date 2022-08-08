@@ -2,8 +2,8 @@ package byteback.core.converter.soottoboogie.method.procedure;
 
 import byteback.core.converter.soottoboogie.*;
 import byteback.core.converter.soottoboogie.expression.ExpressionExtractor;
+import byteback.core.converter.soottoboogie.expression.ExpressionVisitor;
 import byteback.core.converter.soottoboogie.method.MethodConverter;
-import byteback.core.converter.soottoboogie.method.procedure.ProcedureStatementExtractor.ReferenceSupplier;
 import byteback.core.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.core.representation.soot.unit.SootMethods;
@@ -21,7 +21,11 @@ import soot.BooleanType;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Type;
+import soot.UnknownType;
 import soot.Value;
+import soot.VoidType;
+import soot.grimp.NewInvokeExpr;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
@@ -30,18 +34,14 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	final ProcedureBodyExtractor bodyExtractor;
 
-	final ReferenceSupplier referenceSupplier;
-
-	public static final ReferenceSupplier defaultReferenceSupplier = () -> null;
-
-	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor,
-			final ReferenceSupplier referenceSupplier) {
+	public ProcedureExpressionExtractor(final Type type, final ProcedureBodyExtractor bodyExtractor) {
+		super(type);
 		this.bodyExtractor = bodyExtractor;
-		this.referenceSupplier = referenceSupplier;
 	}
 
-	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor) {
-		this(bodyExtractor, defaultReferenceSupplier);
+	@Override
+	public ExpressionVisitor makeExpressionVisitor(final Type type) {
+		return new ProcedureExpressionExtractor(type, bodyExtractor);
 	}
 
 	public TargetedCallStatement makeCall(final SootMethod method, final Iterable<Value> arguments) {
@@ -54,14 +54,14 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	public void addCall(final TargetedCallStatement callStatement) {
 		final List<ValueReference> targets = new List<ValueReference>();
-
-		if (referenceSupplier != defaultReferenceSupplier) {
-			final ValueReference reference = referenceSupplier.get();
+		final Type type = getType();
+		
+		if (type != VoidType.v() && type != UnknownType.v()) {
+			final ValueReference reference = bodyExtractor.generateReference(getType());
 			targets.add(reference);
-			pushExpression(reference);
-		} else {
-			pushExpression(null);
+			setExpression(reference);
 		}
+
 		callStatement.setTargetList(targets);
 		bodyExtractor.addStatement(callStatement);
 	}
@@ -102,6 +102,16 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 	@Override
 	public void caseSpecialInvokeExpr(final SpecialInvokeExpr invoke) {
 		caseInstanceInvokeExpr(invoke);
+	}
+
+	@Override
+	public void caseNewInvokeExpr(final NewInvokeExpr newInvocation) {
+		final Procedure newProcedure = Prelude.v().getNewProcedure();
+		final TargetedCallStatement callStatement = newProcedure.makeTargetedCall();
+		final SootClass baseType = newInvocation.getBaseType().getSootClass();
+		final String typeName = ReferenceTypeConverter.typeName(baseType);
+		callStatement.addArgument(ValueReference.of(typeName));
+		addCall(callStatement);
 	}
 
 	@Override

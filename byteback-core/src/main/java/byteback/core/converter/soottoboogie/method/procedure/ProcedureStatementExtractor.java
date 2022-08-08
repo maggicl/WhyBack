@@ -20,9 +20,10 @@ import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.NumberLiteral;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
-import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
+
+import java.util.EmptyStackException;
 import java.util.Iterator;
 import java.util.function.Supplier;
 import soot.IntType;
@@ -30,7 +31,9 @@ import soot.Local;
 import soot.SootField;
 import soot.Type;
 import soot.Unit;
+import soot.UnknownType;
 import soot.Value;
+import soot.VoidType;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.GotoStmt;
@@ -53,6 +56,10 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	public ProcedureStatementExtractor(final ProcedureBodyExtractor bodyExtractor) {
 		this.bodyExtractor = bodyExtractor;
+	}
+
+	public ProcedureExpressionExtractor makeExpressionExtractor(final Type type) {
+		return new ProcedureExpressionExtractor(type, bodyExtractor);
 	}
 
 	public ReferenceSupplier getReferenceSupplier(final Type type) {
@@ -87,41 +94,25 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 			@Override
 			public void caseLocal(final Local local) {
 				final ValueReference reference = ValueReference.of(ExpressionExtractor.localName(local));
-				final ReferenceSupplier referenceSupplier = () -> reference;
-				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, referenceSupplier);
-				final Expression assigned = extractor.visit(right, left.getType());
+				final Expression assigned = makeExpressionExtractor(left.getType()).visit(right);
 
-				if (!assigned.equals(reference)) {
-					addSingleAssignment(Assignee.of(reference), assigned);
-				}
+				addSingleAssignment(Assignee.of(reference), assigned);
 			}
 
 			@Override
 			public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
 				final SootField field = instanceFieldReference.getField();
 				final Value base = instanceFieldReference.getBase();
-				final ReferenceSupplier referenceSupplier = () -> {
-					final TypeAccess typeAccess = new TypeAccessExtractor().visit(field.getType());
-
-					return bodyExtractor.getVariableProvider().get(typeAccess);
-				};
-				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, referenceSupplier);
-				final Expression assigned = extractor.visit(right, left.getType());
+				final Expression assigned = makeExpressionExtractor(left.getType()).visit(right);
 				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
-				final Expression boogieBase = new ExpressionExtractor().visit(base);
+				final Expression boogieBase = new ExpressionExtractor(UnknownType.v()).visit(base);
 				addStatement(Prelude.v().makeHeapUpdateStatement(boogieBase, fieldReference, assigned));
 			}
 
 			@Override
 			public void caseStaticFieldRef(final StaticFieldRef staticFieldReference) {
 				final SootField field = staticFieldReference.getField();
-				final ReferenceSupplier referenceSupplier = () -> {
-					final TypeAccess typeAccess = new TypeAccessExtractor().visit(field.getType());
-
-					return bodyExtractor.getVariableProvider().get(typeAccess);
-				};
-				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, referenceSupplier);
-				final Expression assigned = extractor.visit(right, left.getType());
+				final Expression assigned = new ProcedureExpressionExtractor(left.getType(), bodyExtractor).visit(right);
 				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
 				final Expression boogieBase = ValueReference
 						.of(ReferenceTypeConverter.typeName(field.getDeclaringClass()));
@@ -133,23 +124,15 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Value base = arrayReference.getBase();
 				final Value index = arrayReference.getIndex();
 				final Type type = arrayReference.getType();
-				final ReferenceSupplier referenceSupplier = () -> {
-					final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
-
-					return bodyExtractor.getVariableProvider().get(typeAccess);
-				};
-				final var extractor = new ProcedureExpressionExtractor(bodyExtractor, referenceSupplier);
-				final Expression assigned = extractor.visit(right, left.getType());
-				final Expression indexReference = new ProcedureExpressionExtractor(bodyExtractor, getReferenceSupplier(IntType.v())).visit(index);
-				final Expression boogieBase = new ExpressionExtractor().visit(base);
-				addStatement(Prelude.v().makeArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
-						indexReference, assigned));
+				final Expression assigned = makeExpressionExtractor(left.getType()).visit(right);
+				final Expression indexReference = makeExpressionExtractor(IntType.v()).visit(index);
+				final Expression boogieBase = new ExpressionExtractor(UnknownType.v()).visit(base);
+				addStatement(Prelude.v().makeArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase, indexReference, assigned));
 			}
 
 			@Override
 			public void caseDefault(final Value value) {
-				throw new StatementConversionException(assignment,
-						"Unknown left hand side argument in assignment: " + assignment);
+				throw new StatementConversionException(assignment, "Unknown left hand side argument in assignment: " + assignment);
 			}
 
 		});
@@ -165,8 +148,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final Value operand = returnStatement.getOp();
 		final ValueReference valueReference = Convention.makeReturnReference();
 		final var assignee = Assignee.of(valueReference);
-		final Expression expression = new ProcedureExpressionExtractor(bodyExtractor, getReferenceSupplier(bodyExtractor.getReturnType())).visit(operand,
-				bodyExtractor.getReturnType());
+		final Expression expression = makeExpressionExtractor(bodyExtractor.getReturnType()).visit(operand);
 		addSingleAssignment(assignee, expression);
 		addStatement(new ReturnStatement());
 	}
@@ -175,15 +157,14 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 	public void caseLookupSwitchStmt(final LookupSwitchStmt switchStatement) {
 		final Iterator<Unit> targets = switchStatement.getTargets().iterator();
 		final Iterator<IntConstant> values = switchStatement.getLookupValues().iterator();
-		final Expression key = new ProcedureExpressionExtractor(bodyExtractor)
-				.visit(switchStatement.getKey(), IntType.v());
+		final Expression key = new ProcedureExpressionExtractor(IntType.v(), bodyExtractor)
+				.visit(switchStatement.getKey());
 
 		while (targets.hasNext() && values.hasNext()) {
 			final Unit target = targets.next();
 			final Value value = values.next();
 			final var ifBuilder = new IfStatementBuilder();
-			final Expression index = new ProcedureExpressionExtractor(bodyExtractor).visit(value,
-					IntType.v());
+			final Expression index = new ProcedureExpressionExtractor(IntType.v(), bodyExtractor).visit(value);
 			final Label label = bodyExtractor.getLabelCollector().fetchLabel(target);
 
 			ifBuilder.condition(new EqualsOperation(index, key)).thenStatement(new GotoStatement(label));
@@ -193,8 +174,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	@Override
 	public void caseTableSwitchStmt(final TableSwitchStmt switchStatement) {
-		final Expression key = new ProcedureExpressionExtractor(bodyExtractor)
-				.visit(switchStatement.getKey(), IntType.v());
+		final Expression key = new ProcedureExpressionExtractor(IntType.v(), bodyExtractor)
+				.visit(switchStatement.getKey());
 
 		for (int i = switchStatement.getLowIndex(); i < switchStatement.getHighIndex(); ++i) {
 			final Unit target = switchStatement.getTarget(i);
@@ -220,15 +201,19 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 		final Type type = IntType.v();
 		final Value condition = ifStatement.getCondition();
 		final Label label = bodyExtractor.getLabelCollector().fetchLabel(ifStatement.getTarget());
-		ifBuilder.condition(new ProcedureExpressionExtractor(bodyExtractor).visit(condition, type))
+		ifBuilder.condition(new ProcedureExpressionExtractor(type, bodyExtractor).visit(condition))
 				.thenStatement(new GotoStatement(label));
 		addStatement(ifBuilder.build());
 	}
 
 	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
+		try {
 		final var invoke = invokeStatement.getInvokeExpr();
-		invoke.apply(new ProcedureExpressionExtractor(bodyExtractor));
+		makeExpressionExtractor(VoidType.v()).visit(invoke);
+		} catch (EmptyStackException e) {
+			System.out.println("CAUGHT");
+		}
 	}
 
 	@Override

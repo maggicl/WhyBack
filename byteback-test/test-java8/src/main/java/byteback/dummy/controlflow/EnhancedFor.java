@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1 | filecheck %s
  */
 package byteback.dummy.controlflow;
 

@@ -145,18 +145,16 @@ const unique $byteback.dummy.complete.Comparator : Type;
 
 procedure byteback.dummy.complete.Comparator.main##() returns ()
 {
-  var $$stack4 : Reference where (~typeof(~heap, $$stack4) == $byteback.dummy.complete.Comparator$LessThanComparator);
-  var $$stack5 : Reference where (~typeof(~heap, $$stack5) == $byteback.dummy.complete.Comparator$GreaterThanComparator);
-  var $$stack6 : bool;
-  var $$stack8 : bool;
-  call $$stack4 := ~new($byteback.dummy.complete.Comparator$LessThanComparator);
-  call byteback.dummy.complete.Comparator$LessThanComparator.$init$##($$stack4);
-  call $$stack5 := ~new($byteback.dummy.complete.Comparator$GreaterThanComparator);
-  call byteback.dummy.complete.Comparator$GreaterThanComparator.$init$##($$stack5);
-  call $$stack6 := byteback.dummy.complete.Comparator$LessThanComparator.compare#int#int#($$stack4, 2, 1);
-  assert ~not($$stack6);
-  call $$stack8 := byteback.dummy.complete.Comparator$GreaterThanComparator.compare#int#int#($$stack5, 1, 2);
-  assert ~not($$stack8);
+  var ~sym1 : Reference;
+  var ~sym2 : bool;
+  var ~sym3 : Reference;
+  var ~sym4 : bool;
+  call ~sym1 := ~new($byteback.dummy.complete.Comparator$LessThanComparator);
+  call ~sym2 := byteback.dummy.complete.Comparator$LessThanComparator.compare#int#int#(~sym1, 2, 1);
+  assert ~not(~sym2);
+  call ~sym3 := ~new($byteback.dummy.complete.Comparator$GreaterThanComparator);
+  call ~sym4 := byteback.dummy.complete.Comparator$GreaterThanComparator.compare#int#int#(~sym3, 1, 2);
+  assert ~not(~sym4);
   return;
 }
 
@@ -237,6 +235,10 @@ procedure byteback.dummy.complete.Comparator$DefaultComparator.$init$##(?this : 
 procedure byteback.dummy.complete.Comparator$DefaultComparator.compare#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$DefaultComparator), ?a : int, ?b : int) returns (~ret : bool)
 {
   var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$DefaultComparator);
+  var $a : int;
+  var $b : int;
+  $b := ?b;
+  $a := ?a;
   $this := ?this;
   ~ret := true;
   return;

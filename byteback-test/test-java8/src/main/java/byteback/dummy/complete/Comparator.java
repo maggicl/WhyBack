@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1 | filecheck %s
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.expect.bpl 2>&1
  * RUN: diff %s.actual.bpl %s.expect.bpl
  */
 package byteback.dummy.complete;

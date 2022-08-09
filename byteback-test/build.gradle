@@ -8,7 +8,15 @@ subprojects {
 				def verify = project.findProperty("VERIFY") != null
 				environment 'BYTEBACK_ROOT', core.installDist.destinationDir
 				environment 'TEST_JAR', project.shadowJar.archivePath
-				commandLine 'lit', '-a', '-i', target
+				commandLine 'lit', '-i', target
+
+				dependsOn core.installDist
+				dependsOn project.shadowJar
+		}
+		def benchmark = tasks.register('benchmark', Exec) {
+				environment 'BYTEBACK_ROOT', core.installDist.destinationDir
+				environment 'TEST_JAR', project.shadowJar.archivePath
+				commandLine 'python benchmark.py'
 
 				dependsOn core.installDist
 				dependsOn project.shadowJar

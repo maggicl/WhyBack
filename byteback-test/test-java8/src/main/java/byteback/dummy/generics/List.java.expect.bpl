@@ -74,6 +74,10 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
 
+function {:inline } ~array.read<b>(h : Store, a : Reference, i : int) returns (b) { (~unbox(~heap.read(h, a, ~element(i))) : b) }
+
+function {:inline } ~array.update<b>(h : Store, a : Reference, i : int, v : b) returns (Store) { ~heap.update(h, a, ~element(i), ~box(v)) }
+
 procedure ~array(t : Type, l : int) returns (~ret : Reference);
   ensures (~typeof(~heap, ~ret) == ~array.type(t));
   ensures ~allocated(~ret);
@@ -147,21 +151,21 @@ const unique $byteback.dummy.generics.List.element : Field (Reference);
 
 const unique $byteback.dummy.generics.List.tail : Field (Reference);
 
-function byteback.dummy.generics.List.field_values#java.lang.Object#byteback.dummy.generics.List#(~heap : Store, $this : Reference, $element : Reference, $tail : Reference) returns (bool) { (~eq(~heap.read(~heap, $this, $byteback.dummy.generics.List.element), $element) && ~eq(~heap.read(~heap, $this, $byteback.dummy.generics.List.tail), $tail)) }
+function byteback.dummy.generics.List.field_values#java.lang.Object#byteback.dummy.generics.List#(~heap : Store, _this : Reference, _element : Reference, _tail : Reference) returns (bool) { (~eq(~heap.read(~heap, _this, $byteback.dummy.generics.List.element), _element) && ~eq(~heap.read(~heap, _this, $byteback.dummy.generics.List.tail), _tail)) }
 
 procedure byteback.dummy.generics.List.$init$#java.lang.Object#byteback.dummy.generics.List#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.generics.List), ?element : Reference where (~typeof(~heap, ?element) == $java.lang.Object), ?tail : Reference where (~typeof(~heap, ?tail) == $byteback.dummy.generics.List)) returns ()
   ensures (~eq(~heap.read(~heap, ?this, $byteback.dummy.generics.List.element), ?element) && ~eq(~heap.read(~heap, ?this, $byteback.dummy.generics.List.tail), ?tail));
   modifies ~heap;
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.generics.List);
-  var $element : Reference where (~typeof(~heap, $element) == $java.lang.Object);
-  var $tail : Reference where (~typeof(~heap, $tail) == $byteback.dummy.generics.List);
-  $tail := ?tail;
-  $element := ?element;
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
-  ~heap := ~heap.update(~heap, $this, $byteback.dummy.generics.List.element, $element);
-  ~heap := ~heap.update(~heap, $this, $byteback.dummy.generics.List.tail, $tail);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.generics.List);
+  var _element : Reference where (~typeof(~heap, _element) == $java.lang.Object);
+  var _tail : Reference where (~typeof(~heap, _tail) == $byteback.dummy.generics.List);
+  _this := ?this;
+  _element := ?element;
+  _tail := ?tail;
+  call java.lang.Object.$init$##(_this);
+  ~heap := ~heap.update(~heap, _this, $byteback.dummy.generics.List.element, _element);
+  ~heap := ~heap.update(~heap, _this, $byteback.dummy.generics.List.tail, _tail);
   return;
 }
 
@@ -169,32 +173,27 @@ procedure byteback.dummy.generics.List.$init$#java.lang.Object#(?this : Referenc
   ensures byteback.dummy.generics.List.field_values#java.lang.Object#byteback.dummy.generics.List#(~heap, ?this, ?element, ~null);
   modifies ~heap;
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.generics.List);
-  var $element : Reference where (~typeof(~heap, $element) == $java.lang.Object);
-  $element := ?element;
-  $this := ?this;
-  call byteback.dummy.generics.List.$init$#java.lang.Object#byteback.dummy.generics.List#($this, $element, ~null);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.generics.List);
+  var _element : Reference where (~typeof(~heap, _element) == $java.lang.Object);
+  _this := ?this;
+  _element := ?element;
+  call byteback.dummy.generics.List.$init$#java.lang.Object#byteback.dummy.generics.List#(_this, _element, ~null);
   return;
 }
 
-function byteback.dummy.generics.List.getElement##(~heap : Store, $this : Reference) returns (Reference) { ~heap.read(~heap, $this, $byteback.dummy.generics.List.element) }
+function byteback.dummy.generics.List.getElement##(~heap : Store, _this : Reference) returns (Reference) { ~heap.read(~heap, _this, $byteback.dummy.generics.List.element) }
 
-function byteback.dummy.generics.List.getTail##(~heap : Store, $this : Reference) returns (Reference) { ~heap.read(~heap, $this, $byteback.dummy.generics.List.tail) }
+function byteback.dummy.generics.List.getTail##(~heap : Store, _this : Reference) returns (Reference) { ~heap.read(~heap, _this, $byteback.dummy.generics.List.tail) }
 
 procedure byteback.dummy.generics.List.main##() returns ()
-  modifies ~heap;
 {
-  var $$stack2 : Reference where (~typeof(~heap, $$stack2) == $java.lang.Object);
-  var $$stack3 : Reference where (~typeof(~heap, $$stack3) == $byteback.dummy.generics.List);
-  var $$stack4 : Reference where (~typeof(~heap, $$stack4) == $java.lang.Object);
-  var $$stack6 : Reference where (~typeof(~heap, $$stack6) == $byteback.dummy.generics.List);
-  call $$stack2 := ~new($java.lang.Object);
-  call java.lang.Object.$init$##($$stack2);
-  call $$stack3 := ~new($byteback.dummy.generics.List);
-  call byteback.dummy.generics.List.$init$#java.lang.Object#($$stack3, $$stack2);
-  $$stack4 := byteback.dummy.generics.List.getElement##(~heap, $$stack3);
-  assert ~eq(byteback.dummy.generics.List.getElement##(~heap, $$stack3), $$stack2);
-  $$stack6 := byteback.dummy.generics.List.getTail##(~heap, $$stack3);
-  assert ~eq(byteback.dummy.generics.List.getTail##(~heap, $$stack3), ~null);
+  var ~sym1 : Reference;
+  var ~sym2 : Reference;
+  var _$stack2 : Reference where (~typeof(~heap, _$stack2) == $java.lang.Object);
+  call ~sym1 := ~new($java.lang.Object);
+  _$stack2 := ~sym1;
+  call ~sym2 := ~new($byteback.dummy.generics.List);
+  _$stack3 := ~sym2;
+  assert ~eq(_$stack2, _$stack2);
   return;
 }

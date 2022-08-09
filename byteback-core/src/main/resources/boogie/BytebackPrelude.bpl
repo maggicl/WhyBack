@@ -104,6 +104,12 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t: Type :: { ~array.type(t) } ~array.type_inverse(~array.type(t)) == t);
 
+function {:inline} ~array.read<b>(h: Store, a: Reference, i: int) returns (b)
+{ ~unbox(~heap.read(h, a, ~element(i))) : b }
+
+function {:inline} ~array.update<b>(h: Store, a: Reference, i: int, v: b) returns (Store)
+{ ~heap.update(h, a, ~element(i), ~box(v)) }
+	
 procedure ~array(t: Type, l: int) returns (~ret: Reference);
 	ensures ~typeof(~heap, ~ret) == ~array.type(t);
 	ensures ~allocated(~ret);

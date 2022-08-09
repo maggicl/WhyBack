@@ -74,6 +74,10 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
 
+function {:inline } ~array.read<b>(h : Store, a : Reference, i : int) returns (b) { (~unbox(~heap.read(h, a, ~element(i))) : b) }
+
+function {:inline } ~array.update<b>(h : Store, a : Reference, i : int, v : b) returns (Store) { ~heap.update(h, a, ~element(i), ~box(v)) }
+
 procedure ~array(t : Type, l : int) returns (~ret : Reference);
   ensures (~typeof(~heap, ~ret) == ~array.type(t));
   ensures ~allocated(~ret);
@@ -145,13 +149,13 @@ const unique $byteback.dummy.complete.DoubleInsertionSort : Type;
 
 procedure byteback.dummy.complete.DoubleInsertionSort.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.DoubleInsertionSort)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.DoubleInsertionSort);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.DoubleInsertionSort);
+  _this := ?this;
+  call java.lang.Object.$init$##(_this);
   return;
 }
 
-function byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap : Store, $a : Reference, $i : int, $j : int) returns (bool) { (forall $$stack4 : int :: ~implies((~int.lt($i, $$stack4) && ~int.lt($$stack4, $j)), ~real.lte((~unbox(~heap.read(~heap, $a, ~element(($$stack4 - 1)))) : real), (~unbox(~heap.read(~heap, $a, ~element($$stack4))) : real)))) }
+function byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap : Store, _a : Reference, _i : int, _j : int) returns (bool) { (forall _$stack4 : int :: ~implies((~int.lt(_i, _$stack4) && ~int.lt(_$stack4, _j)), ~real.lte((~array.read(~heap, _a, (_$stack4 - 1)) : real), (~array.read(~heap, _a, _$stack4) : real)))) }
 
 procedure byteback.dummy.complete.DoubleInsertionSort.sort#double?#(?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive))) returns ()
   requires ~neq(?a, ~null);
@@ -159,55 +163,55 @@ procedure byteback.dummy.complete.DoubleInsertionSort.sort#double?#(?a : Referen
   ensures byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, ?a, 0, ~lengthof(?a));
   modifies ~heap;
 {
-  var $y : real;
-  var $i : int;
-  var $j : int;
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  $a := ?a;
-  $i := 1;
-  assert (~int.lt(0, $i) && ~int.lte($i, ~lengthof($a)));
-  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, 0, $i);
+  var _y : real;
+  var _i : int;
+  var _j : int;
+  var _a : Reference where (~typeof(~heap, _a) == ~array.type(~Primitive));
+  _a := ?a;
+  _i := 1;
+  assert (~int.lt(0, _i) && ~int.lte(_i, ~lengthof(_a)));
+  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, 0, _i);
 label5:
-  assume (~int.lt(0, $i) && ~int.lte($i, ~lengthof($a)));
-  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, 0, $i);
-  if (($i >= ~lengthof($a))) {
+  assume (~int.lt(0, _i) && ~int.lte(_i, ~lengthof(_a)));
+  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, 0, _i);
+  if ((_i >= ~lengthof(_a))) {
     goto label1;
   }
-  $j := $i;
-  assert (~int.lte(0, $j) && ~int.lte($j, $i));
-  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, 0, $j);
-  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, $j, ($i + 1));
+  _j := _i;
+  assert (~int.lte(0, _j) && ~int.lte(_j, _i));
+  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, 0, _j);
+  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, _j, (_i + 1));
 label4:
-  assume (~int.lte(0, $j) && ~int.lte($j, $i));
-  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, 0, $j);
-  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, $j, ($i + 1));
-  if (($j <= 0)) {
+  assume (~int.lte(0, _j) && ~int.lte(_j, _i));
+  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, 0, _j);
+  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, _j, (_i + 1));
+  if ((_j <= 0)) {
     goto label3;
   }
-  assume (~int.lte(0, $j) && ~int.lte($j, $i));
-  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, 0, $j);
-  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, $j, ($i + 1));
-  if ((~cmp((~unbox(~heap.read(~heap, $a, ~element(($j - 1)))) : real), (~unbox(~heap.read(~heap, $a, ~element($j))) : real)) <= 0)) {
+  assume (~int.lte(0, _j) && ~int.lte(_j, _i));
+  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, 0, _j);
+  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, _j, (_i + 1));
+  if ((~cmp((~array.read(~heap, _a, (_j - 1)) : real), (~array.read(~heap, _a, _j) : real)) <= 0)) {
     goto label3;
   }
-  $y := (~unbox(~heap.read(~heap, $a, ~element($j))) : real);
-  ~heap := ~heap.update(~heap, $a, ~element($j), ~box((~unbox(~heap.read(~heap, $a, ~element(($j - 1)))) : real)));
-  ~heap := ~heap.update(~heap, $a, ~element(($j - 1)), ~box($y));
-  $j := ($j + -1);
-  assert (~int.lte(0, $j) && ~int.lte($j, $i));
-  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, 0, $j);
-  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, $j, ($i + 1));
+  _y := (~array.read(~heap, _a, _j) : real);
+  ~heap := ~array.update(~heap, _a, _j, (~array.read(~heap, _a, (_j - 1)) : real));
+  ~heap := ~array.update(~heap, _a, (_j - 1), _y);
+  _j := (_j + -1);
+  assert (~int.lte(0, _j) && ~int.lte(_j, _i));
+  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, 0, _j);
+  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, _j, (_i + 1));
   goto label4;
 label3:
-  assume (~int.lte(0, $j) && ~int.lte($j, $i));
-  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, 0, $j);
-  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, $j, ($i + 1));
-  $i := ($i + 1);
-  assert (~int.lt(0, $i) && ~int.lte($i, ~lengthof($a)));
-  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, 0, $i);
+  assume (~int.lte(0, _j) && ~int.lte(_j, _i));
+  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, 0, _j);
+  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, _j, (_i + 1));
+  _i := (_i + 1);
+  assert (~int.lt(0, _i) && ~int.lte(_i, ~lengthof(_a)));
+  assert byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, 0, _i);
   goto label5;
 label1:
-  assume (~int.lt(0, $i) && ~int.lte($i, ~lengthof($a)));
-  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, $a, 0, $i);
+  assume (~int.lt(0, _i) && ~int.lte(_i, ~lengthof(_a)));
+  assume byteback.dummy.complete.DoubleInsertionSort.sorted#double?#int#int#(~heap, _a, 0, _i);
   return;
 }

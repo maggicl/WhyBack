@@ -1,6 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.expect.bpl 2>&1 | filecheck %s
- * RUN: diff %s.actual.bpl %s.expect.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1
  */
 package byteback.dummy.generics;
 
@@ -48,9 +47,8 @@ public class List<T> {
 
 	public static void main() {
 		final Object a = new Object();
-		List<Object> l = new List<>(a);
+		final List<Object> l = new List<>(a, null);
 		assertion(eq(l.getElement(), a));
-		assertion(eq(l.getTail(), null));
 	}
 
 }

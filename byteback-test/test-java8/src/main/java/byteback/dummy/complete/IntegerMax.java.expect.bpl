@@ -74,6 +74,10 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
 
+function {:inline } ~array.read<b>(h : Store, a : Reference, i : int) returns (b) { (~unbox(~heap.read(h, a, ~element(i))) : b) }
+
+function {:inline } ~array.update<b>(h : Store, a : Reference, i : int, v : b) returns (Store) { ~heap.update(h, a, ~element(i), ~box(v)) }
+
 procedure ~array(t : Type, l : int) returns (~ret : Reference);
   ensures (~typeof(~heap, ~ret) == ~array.type(t));
   ensures ~allocated(~ret);
@@ -145,47 +149,47 @@ const unique $byteback.dummy.complete.IntegerMax : Type;
 
 procedure byteback.dummy.complete.IntegerMax.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.IntegerMax)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.IntegerMax);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.IntegerMax);
+  _this := ?this;
+  call java.lang.Object.$init$##(_this);
   return;
 }
 
-function byteback.dummy.complete.IntegerMax.array_is_not_null#int?#(~heap : Store, $a : Reference) returns (bool) { ~neq($a, ~null) }
+function byteback.dummy.complete.IntegerMax.array_is_not_null#int?#(~heap : Store, _a : Reference) returns (bool) { ~neq(_a, ~null) }
 
-function byteback.dummy.complete.IntegerMax.max_in_range#int?#int#int#int#(~heap : Store, $a : Reference, $n : int, $start : int, $end : int) returns (bool) { (forall $$stack5 : int :: ~implies((~int.lte($start, $$stack5) && ~int.lt($$stack5, $end)), ~int.gte($n, (~unbox(~heap.read(~heap, $a, ~element($$stack5))) : int)))) }
+function byteback.dummy.complete.IntegerMax.max_in_range#int?#int#int#int#(~heap : Store, _a : Reference, _n : int, _start : int, _end : int) returns (bool) { (forall _$stack5 : int :: ~implies((~int.lte(_start, _$stack5) && ~int.lt(_$stack5, _end)), ~int.gte(_n, (~array.read(~heap, _a, _$stack5) : int)))) }
 
 procedure byteback.dummy.complete.IntegerMax.max#int?#(?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive))) returns (~ret : int)
   requires ~neq(?a, ~null);
   requires ~int.gt(~lengthof(?a), 0);
   ensures byteback.dummy.complete.IntegerMax.max_in_range#int?#int#int#int#(~heap, ?a, ~ret, 0, ~lengthof(?a));
 {
-  var $t : int;
-  var $i : int;
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  $a := ?a;
-  $t := (~unbox(~heap.read(~heap, $a, ~element(0))) : int);
-  $i := 1;
-  assert (~int.lte(0, $i) && ~int.lte($i, ~lengthof($a)));
-  assert byteback.dummy.complete.IntegerMax.max_in_range#int?#int#int#int#(~heap, $a, $t, 0, $i);
+  var _t : int;
+  var _i : int;
+  var _a : Reference where (~typeof(~heap, _a) == ~array.type(~Primitive));
+  _a := ?a;
+  _t := (~array.read(~heap, _a, 0) : int);
+  _i := 1;
+  assert (~int.lte(0, _i) && ~int.lte(_i, ~lengthof(_a)));
+  assert byteback.dummy.complete.IntegerMax.max_in_range#int?#int#int#int#(~heap, _a, _t, 0, _i);
 label3:
-  assume (~int.lte(0, $i) && ~int.lte($i, ~lengthof($a)));
-  assume byteback.dummy.complete.IntegerMax.max_in_range#int?#int#int#int#(~heap, $a, $t, 0, $i);
-  if (($i >= ~lengthof($a))) {
+  assume (~int.lte(0, _i) && ~int.lte(_i, ~lengthof(_a)));
+  assume byteback.dummy.complete.IntegerMax.max_in_range#int?#int#int#int#(~heap, _a, _t, 0, _i);
+  if ((_i >= ~lengthof(_a))) {
     goto label1;
   }
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : int) <= $t)) {
+  if (((~array.read(~heap, _a, _i) : int) <= _t)) {
     goto label2;
   }
-  $t := (~unbox(~heap.read(~heap, $a, ~element($i))) : int);
+  _t := (~array.read(~heap, _a, _i) : int);
 label2:
-  $i := ($i + 1);
-  assert (~int.lte(0, $i) && ~int.lte($i, ~lengthof($a)));
-  assert byteback.dummy.complete.IntegerMax.max_in_range#int?#int#int#int#(~heap, $a, $t, 0, $i);
+  _i := (_i + 1);
+  assert (~int.lte(0, _i) && ~int.lte(_i, ~lengthof(_a)));
+  assert byteback.dummy.complete.IntegerMax.max_in_range#int?#int#int#int#(~heap, _a, _t, 0, _i);
   goto label3;
 label1:
-  assume (~int.lte(0, $i) && ~int.lte($i, ~lengthof($a)));
-  assume byteback.dummy.complete.IntegerMax.max_in_range#int?#int#int#int#(~heap, $a, $t, 0, $i);
-  ~ret := $t;
+  assume (~int.lte(0, _i) && ~int.lte(_i, ~lengthof(_a)));
+  assume byteback.dummy.complete.IntegerMax.max_in_range#int?#int#int#int#(~heap, _a, _t, 0, _i);
+  ~ret := _t;
   return;
 }

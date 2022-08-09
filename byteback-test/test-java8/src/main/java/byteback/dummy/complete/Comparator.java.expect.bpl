@@ -74,6 +74,10 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
 
+function {:inline } ~array.read<b>(h : Store, a : Reference, i : int) returns (b) { (~unbox(~heap.read(h, a, ~element(i))) : b) }
+
+function {:inline } ~array.update<b>(h : Store, a : Reference, i : int, v : b) returns (Store) { ~heap.update(h, a, ~element(i), ~box(v)) }
+
 procedure ~array(t : Type, l : int) returns (~ret : Reference);
   ensures (~typeof(~heap, ~ret) == ~array.type(t));
   ensures ~allocated(~ret);
@@ -149,11 +153,17 @@ procedure byteback.dummy.complete.Comparator.main##() returns ()
   var ~sym2 : bool;
   var ~sym3 : Reference;
   var ~sym4 : bool;
+  var _$new0 : Reference where (~typeof(~heap, _$new0) == $byteback.dummy.complete.Comparator$LessThanComparator);
+  var _$new1 : Reference where (~typeof(~heap, _$new1) == $byteback.dummy.complete.Comparator$GreaterThanComparator);
   call ~sym1 := ~new($byteback.dummy.complete.Comparator$LessThanComparator);
-  call ~sym2 := byteback.dummy.complete.Comparator$LessThanComparator.compare#int#int#(~sym1, 2, 1);
+  _$new0 := ~sym1;
+  call byteback.dummy.complete.Comparator$LessThanComparator.$init$##(_$new0);
+  call ~sym2 := byteback.dummy.complete.Comparator$LessThanComparator.compare#int#int#(_$new0, 2, 1);
   assert ~not(~sym2);
   call ~sym3 := ~new($byteback.dummy.complete.Comparator$GreaterThanComparator);
-  call ~sym4 := byteback.dummy.complete.Comparator$GreaterThanComparator.compare#int#int#(~sym3, 1, 2);
+  _$new1 := ~sym3;
+  call byteback.dummy.complete.Comparator$GreaterThanComparator.$init$##(_$new1);
+  call ~sym4 := byteback.dummy.complete.Comparator$GreaterThanComparator.compare#int#int#(_$new1, 1, 2);
   assert ~not(~sym4);
   return;
 }
@@ -162,31 +172,31 @@ const unique $byteback.dummy.complete.Comparator$GreaterThanComparator : Type;
 
 procedure byteback.dummy.complete.Comparator$GreaterThanComparator.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$GreaterThanComparator)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$GreaterThanComparator);
-  $this := ?this;
-  call byteback.dummy.complete.Comparator$DefaultComparator.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.Comparator$GreaterThanComparator);
+  _this := ?this;
+  call byteback.dummy.complete.Comparator$DefaultComparator.$init$##(_this);
   return;
 }
 
 procedure byteback.dummy.complete.Comparator$GreaterThanComparator.compare#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$GreaterThanComparator), ?a : int, ?b : int) returns (~ret : bool)
   ensures ~implies(~ret, ~int.gt(?a, ?b));
 {
-  var $$stack3 : bool;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$GreaterThanComparator);
-  var $a : int;
-  var $b : int;
-  $b := ?b;
-  $a := ?a;
-  $this := ?this;
-  if (($a <= $b)) {
+  var _$stack3 : bool;
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.Comparator$GreaterThanComparator);
+  var _a : int;
+  var _b : int;
+  _this := ?this;
+  _a := ?a;
+  _b := ?b;
+  if ((_a <= _b)) {
     goto label1;
   }
-  $$stack3 := true;
+  _$stack3 := true;
   goto label2;
 label1:
-  $$stack3 := false;
+  _$stack3 := false;
 label2:
-  ~ret := $$stack3;
+  ~ret := _$stack3;
   return;
 }
 
@@ -194,31 +204,31 @@ const unique $byteback.dummy.complete.Comparator$LessThanComparator : Type;
 
 procedure byteback.dummy.complete.Comparator$LessThanComparator.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$LessThanComparator)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$LessThanComparator);
-  $this := ?this;
-  call byteback.dummy.complete.Comparator$DefaultComparator.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.Comparator$LessThanComparator);
+  _this := ?this;
+  call byteback.dummy.complete.Comparator$DefaultComparator.$init$##(_this);
   return;
 }
 
 procedure byteback.dummy.complete.Comparator$LessThanComparator.compare#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$LessThanComparator), ?a : int, ?b : int) returns (~ret : bool)
   ensures ~implies(~ret, ~int.lt(?a, ?b));
 {
-  var $$stack3 : bool;
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$LessThanComparator);
-  var $a : int;
-  var $b : int;
-  $b := ?b;
-  $a := ?a;
-  $this := ?this;
-  if (($a >= $b)) {
+  var _$stack3 : bool;
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.Comparator$LessThanComparator);
+  var _a : int;
+  var _b : int;
+  _this := ?this;
+  _a := ?a;
+  _b := ?b;
+  if ((_a >= _b)) {
     goto label1;
   }
-  $$stack3 := true;
+  _$stack3 := true;
   goto label2;
 label1:
-  $$stack3 := false;
+  _$stack3 := false;
 label2:
-  ~ret := $$stack3;
+  ~ret := _$stack3;
   return;
 }
 
@@ -226,20 +236,20 @@ const unique $byteback.dummy.complete.Comparator$DefaultComparator : Type;
 
 procedure byteback.dummy.complete.Comparator$DefaultComparator.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$DefaultComparator)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$DefaultComparator);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.Comparator$DefaultComparator);
+  _this := ?this;
+  call java.lang.Object.$init$##(_this);
   return;
 }
 
 procedure byteback.dummy.complete.Comparator$DefaultComparator.compare#int#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Comparator$DefaultComparator), ?a : int, ?b : int) returns (~ret : bool)
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Comparator$DefaultComparator);
-  var $a : int;
-  var $b : int;
-  $b := ?b;
-  $a := ?a;
-  $this := ?this;
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.Comparator$DefaultComparator);
+  var _a : int;
+  var _b : int;
+  _this := ?this;
+  _a := ?a;
+  _b := ?b;
   ~ret := true;
   return;
 }

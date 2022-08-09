@@ -74,6 +74,10 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
 
+function {:inline } ~array.read<b>(h : Store, a : Reference, i : int) returns (b) { (~unbox(~heap.read(h, a, ~element(i))) : b) }
+
+function {:inline } ~array.update<b>(h : Store, a : Reference, i : int, v : b) returns (Store) { ~heap.update(h, a, ~element(i), ~box(v)) }
+
 procedure ~array(t : Type, l : int) returns (~ret : Reference);
   ensures (~typeof(~heap, ~ret) == ~array.type(t));
   ensures ~allocated(~ret);
@@ -145,46 +149,46 @@ const unique $byteback.dummy.complete.LinearSearch : Type;
 
 procedure byteback.dummy.complete.LinearSearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.LinearSearch)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.LinearSearch);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.LinearSearch);
+  _this := ?this;
+  call java.lang.Object.$init$##(_this);
   return;
 }
 
 procedure byteback.dummy.complete.LinearSearch.search#int?#int#int#int#(?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
   requires ~neq(?a, ~null);
   requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : int), ?n));
+  ensures ~implies(~int.lte(0, ~ret), ~eq((~array.read(~heap, ?a, ~ret) : int), ?n));
 {
-  var $i : int;
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  var $n : int;
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
+  var _i : int;
+  var _a : Reference where (~typeof(~heap, _a) == ~array.type(~Primitive));
+  var _n : int;
+  var _left : int;
+  var _right : int;
+  _a := ?a;
+  _n := ?n;
+  _left := ?left;
+  _right := ?right;
+  _i := _left;
+  assert (~int.lte(_left, _i) && ~int.lte(_i, _right));
 label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
+  assume (~int.lte(_left, _i) && ~int.lte(_i, _right));
+  if ((_i >= _right)) {
     goto label1;
   }
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : int) != $n)) {
+  assume (~int.lte(_left, _i) && ~int.lte(_i, _right));
+  if (((~array.read(~heap, _a, _i) : int) != _n)) {
     goto label2;
   }
-  ~ret := $i;
+  ~ret := _i;
   return;
 label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
+  assume (~int.lte(_left, _i) && ~int.lte(_i, _right));
+  _i := (_i + 1);
+  assert (~int.lte(_left, _i) && ~int.lte(_i, _right));
   goto label3;
 label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
+  assume (~int.lte(_left, _i) && ~int.lte(_i, _right));
   ~ret := -1;
   return;
 }
@@ -192,37 +196,37 @@ label1:
 procedure byteback.dummy.complete.LinearSearch.search#java.lang.Object?#java.lang.Object#int#int#(?a : Reference where (~typeof(~heap, ?a) == ~array.type($java.lang.Object)), ?n : Reference where (~typeof(~heap, ?n) == $java.lang.Object), ?left : int, ?right : int) returns (~ret : int)
   requires ~neq(?a, ~null);
   requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : Reference), ?n));
+  ensures ~implies(~int.lte(0, ~ret), ~eq((~array.read(~heap, ?a, ~ret) : Reference), ?n));
 {
-  var $i : int;
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type($java.lang.Object));
-  var $n : Reference where (~typeof(~heap, $n) == $java.lang.Object);
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  $i := $left;
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
+  var _i : int;
+  var _a : Reference where (~typeof(~heap, _a) == ~array.type($java.lang.Object));
+  var _n : Reference where (~typeof(~heap, _n) == $java.lang.Object);
+  var _left : int;
+  var _right : int;
+  _a := ?a;
+  _n := ?n;
+  _left := ?left;
+  _right := ?right;
+  _i := _left;
+  assert (~int.lte(_left, _i) && ~int.lte(_i, _right));
 label3:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (($i >= $right)) {
+  assume (~int.lte(_left, _i) && ~int.lte(_i, _right));
+  if ((_i >= _right)) {
     goto label1;
   }
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($i))) : Reference) != $n)) {
+  assume (~int.lte(_left, _i) && ~int.lte(_i, _right));
+  if (((~array.read(~heap, _a, _i) : Reference) != _n)) {
     goto label2;
   }
-  ~ret := $i;
+  ~ret := _i;
   return;
 label2:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
-  $i := ($i + 1);
-  assert (~int.lte($left, $i) && ~int.lte($i, $right));
+  assume (~int.lte(_left, _i) && ~int.lte(_i, _right));
+  _i := (_i + 1);
+  assert (~int.lte(_left, _i) && ~int.lte(_i, _right));
   goto label3;
 label1:
-  assume (~int.lte($left, $i) && ~int.lte($i, $right));
+  assume (~int.lte(_left, _i) && ~int.lte(_i, _right));
   ~ret := -1;
   return;
 }

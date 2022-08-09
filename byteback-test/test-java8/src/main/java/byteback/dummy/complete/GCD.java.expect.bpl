@@ -74,6 +74,10 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
 
+function {:inline } ~array.read<b>(h : Store, a : Reference, i : int) returns (b) { (~unbox(~heap.read(h, a, ~element(i))) : b) }
+
+function {:inline } ~array.update<b>(h : Store, a : Reference, i : int, v : b) returns (Store) { ~heap.update(h, a, ~element(i), ~box(v)) }
+
 procedure ~array(t : Type, l : int) returns (~ret : Reference);
   ensures (~typeof(~heap, ~ret) == ~array.type(t));
   ensures ~allocated(~ret);
@@ -145,47 +149,47 @@ const unique $byteback.dummy.complete.GCD : Type;
 
 procedure byteback.dummy.complete.GCD.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.GCD)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.GCD);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.GCD);
+  _this := ?this;
+  call java.lang.Object.$init$##(_this);
   return;
 }
 
-function byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap : Store, $a : int, $b : int) returns (int) { if ~eq($a, $b) then $a else if ~int.gt($a, $b) then byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, ($a - $b), $b) else byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $a, ($b - $a)) }
+function byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap : Store, _a : int, _b : int) returns (int) { if ~eq(_a, _b) then _a else if ~int.gt(_a, _b) then byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, (_a - _b), _b) else byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, _a, (_b - _a)) }
 
 procedure byteback.dummy.complete.GCD.gcd#int#int#(?a : int, ?b : int) returns (~ret : int)
   requires (~int.gt(?a, 0) && ~int.gt(?b, 0));
   ensures ~eq(~ret, byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, ?a, ?b));
 {
-  var $r : int;
-  var $x : int;
-  var $a : int;
-  var $b : int;
-  $b := ?b;
-  $a := ?a;
-  $r := $a;
-  $x := $b;
-  assert (~int.gt($r, 0) && ~int.gt($x, 0));
-  assert ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $r, $x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $a, $b));
+  var _r : int;
+  var _x : int;
+  var _a : int;
+  var _b : int;
+  _a := ?a;
+  _b := ?b;
+  _r := _a;
+  _x := _b;
+  assert (~int.gt(_r, 0) && ~int.gt(_x, 0));
+  assert ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, _r, _x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, _a, _b));
 label4:
-  assume (~int.gt($r, 0) && ~int.gt($x, 0));
-  assume ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $r, $x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $a, $b));
-  if (($r == $x)) {
+  assume (~int.gt(_r, 0) && ~int.gt(_x, 0));
+  assume ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, _r, _x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, _a, _b));
+  if ((_r == _x)) {
     goto label1;
   }
-  if (($r <= $x)) {
+  if ((_r <= _x)) {
     goto label2;
   }
-  $r := ($r - $x);
+  _r := (_r - _x);
   goto label4;
 label2:
-  $x := ($x - $r);
-  assert (~int.gt($r, 0) && ~int.gt($x, 0));
-  assert ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $r, $x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $a, $b));
+  _x := (_x - _r);
+  assert (~int.gt(_r, 0) && ~int.gt(_x, 0));
+  assert ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, _r, _x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, _a, _b));
   goto label4;
 label1:
-  assume (~int.gt($r, 0) && ~int.gt($x, 0));
-  assume ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $r, $x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, $a, $b));
-  ~ret := $r;
+  assume (~int.gt(_r, 0) && ~int.gt(_x, 0));
+  assume ~eq(byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, _r, _x), byteback.dummy.complete.GCD.gcd_recursive#int#int#(~heap, _a, _b));
+  ~ret := _r;
   return;
 }

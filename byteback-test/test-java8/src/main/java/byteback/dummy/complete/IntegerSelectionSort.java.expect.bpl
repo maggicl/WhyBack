@@ -74,6 +74,10 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
 
+function {:inline } ~array.read<b>(h : Store, a : Reference, i : int) returns (b) { (~unbox(~heap.read(h, a, ~element(i))) : b) }
+
+function {:inline } ~array.update<b>(h : Store, a : Reference, i : int, v : b) returns (Store) { ~heap.update(h, a, ~element(i), ~box(v)) }
+
 procedure ~array(t : Type, l : int) returns (~ret : Reference);
   ensures (~typeof(~heap, ~ret) == ~array.type(t));
   ensures ~allocated(~ret);
@@ -145,62 +149,62 @@ const unique $byteback.dummy.complete.IntegerSelectionSort : Type;
 
 procedure byteback.dummy.complete.IntegerSelectionSort.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.IntegerSelectionSort)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.IntegerSelectionSort);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.IntegerSelectionSort);
+  _this := ?this;
+  call java.lang.Object.$init$##(_this);
   return;
 }
 
-function byteback.dummy.complete.IntegerSelectionSort.bounded_index#int?#int#(~heap : Store, $a : Reference, $i : int) returns (bool) { (~int.lte(0, $i) && ~int.lt($i, ~lengthof($a))) }
+function byteback.dummy.complete.IntegerSelectionSort.bounded_index#int?#int#(~heap : Store, _a : Reference, _i : int) returns (bool) { (~int.lte(0, _i) && ~int.lt(_i, ~lengthof(_a))) }
 
-function byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap : Store, $a : Reference, $i : int, $j : int, $m : int) returns (bool) { (forall $$stack5 : int :: ~implies((~int.lte($i, $$stack5) && ~int.lt($$stack5, $j)), ~int.gte((~unbox(~heap.read(~heap, $a, ~element($$stack5))) : int), (~unbox(~heap.read(~heap, $a, ~element($m))) : int)))) }
+function byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap : Store, _a : Reference, _i : int, _j : int, _m : int) returns (bool) { (forall _$stack5 : int :: ~implies((~int.lte(_i, _$stack5) && ~int.lt(_$stack5, _j)), ~int.gte((~array.read(~heap, _a, _$stack5) : int), (~array.read(~heap, _a, _m) : int)))) }
 
-function byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#(~heap : Store, $a : Reference, $i : int, $m : int) returns (bool) { byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap, $a, $i, ~lengthof($a), $m) }
+function byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#(~heap : Store, _a : Reference, _i : int, _m : int) returns (bool) { byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap, _a, _i, ~lengthof(_a), _m) }
 
 procedure byteback.dummy.complete.IntegerSelectionSort.minimum#int?#int#(?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?i : int) returns (~ret : int)
   requires (~int.lte(0, ?i) && ~int.lt(?i, ~lengthof(?a)));
   ensures byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap, ?a, ?i, ~lengthof(?a), ~ret);
   ensures byteback.dummy.complete.IntegerSelectionSort.bounded_index#int?#int#(~heap, ?a, ~ret);
 {
-  var $m : int;
-  var $j : int;
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  var $i : int;
-  $i := ?i;
-  $a := ?a;
-  $m := $i;
-  $j := $i;
-  assert (~int.lte($i, $j) && ~int.lte($j, ~lengthof($a)));
-  assert (~int.lte($i, $m) && ~int.lt($m, ~lengthof($a)));
-  assert byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap, $a, $i, $j, $m);
+  var _m : int;
+  var _j : int;
+  var _a : Reference where (~typeof(~heap, _a) == ~array.type(~Primitive));
+  var _i : int;
+  _a := ?a;
+  _i := ?i;
+  _m := _i;
+  _j := _i;
+  assert (~int.lte(_i, _j) && ~int.lte(_j, ~lengthof(_a)));
+  assert (~int.lte(_i, _m) && ~int.lt(_m, ~lengthof(_a)));
+  assert byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap, _a, _i, _j, _m);
 label3:
-  assume (~int.lte($i, $j) && ~int.lte($j, ~lengthof($a)));
-  assume (~int.lte($i, $m) && ~int.lt($m, ~lengthof($a)));
-  assume byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap, $a, $i, $j, $m);
-  if (($j >= ~lengthof($a))) {
+  assume (~int.lte(_i, _j) && ~int.lte(_j, ~lengthof(_a)));
+  assume (~int.lte(_i, _m) && ~int.lt(_m, ~lengthof(_a)));
+  assume byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap, _a, _i, _j, _m);
+  if ((_j >= ~lengthof(_a))) {
     goto label1;
   }
-  if (((~unbox(~heap.read(~heap, $a, ~element($j))) : int) >= (~unbox(~heap.read(~heap, $a, ~element($m))) : int))) {
+  if (((~array.read(~heap, _a, _j) : int) >= (~array.read(~heap, _a, _m) : int))) {
     goto label2;
   }
-  $m := $j;
+  _m := _j;
 label2:
-  $j := ($j + 1);
-  assert (~int.lte($i, $j) && ~int.lte($j, ~lengthof($a)));
-  assert (~int.lte($i, $m) && ~int.lt($m, ~lengthof($a)));
-  assert byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap, $a, $i, $j, $m);
+  _j := (_j + 1);
+  assert (~int.lte(_i, _j) && ~int.lte(_j, ~lengthof(_a)));
+  assert (~int.lte(_i, _m) && ~int.lt(_m, ~lengthof(_a)));
+  assert byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap, _a, _i, _j, _m);
   goto label3;
 label1:
-  assume (~int.lte($i, $j) && ~int.lte($j, ~lengthof($a)));
-  assume (~int.lte($i, $m) && ~int.lt($m, ~lengthof($a)));
-  assume byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap, $a, $i, $j, $m);
-  ~ret := $m;
+  assume (~int.lte(_i, _j) && ~int.lte(_j, ~lengthof(_a)));
+  assume (~int.lte(_i, _m) && ~int.lt(_m, ~lengthof(_a)));
+  assume byteback.dummy.complete.IntegerSelectionSort.is_minimum#int?#int#int#int#(~heap, _a, _i, _j, _m);
+  ~ret := _m;
   return;
 }
 
-function byteback.dummy.complete.IntegerSelectionSort.sorted#int?#int#int#(~heap : Store, $a : Reference, $i : int, $j : int) returns (bool) { (forall $$stack4 : int :: ~implies((~int.lt($i, $$stack4) && ~int.lt($$stack4, $j)), ~int.lte((~unbox(~heap.read(~heap, $a, ~element(($$stack4 - 1)))) : int), (~unbox(~heap.read(~heap, $a, ~element($$stack4))) : int)))) }
+function byteback.dummy.complete.IntegerSelectionSort.sorted#int?#int#int#(~heap : Store, _a : Reference, _i : int, _j : int) returns (bool) { (forall _$stack4 : int :: ~implies((~int.lt(_i, _$stack4) && ~int.lt(_$stack4, _j)), ~int.lte((~array.read(~heap, _a, (_$stack4 - 1)) : int), (~array.read(~heap, _a, _$stack4) : int)))) }
 
-function byteback.dummy.complete.IntegerSelectionSort.partitioned#int?#int#(~heap : Store, $a : Reference, $c : int) returns (bool) { (forall $$stack4 : int :: (forall $$stack5 : int :: ~implies((((~int.lte(0, $$stack4) && ~int.lt($$stack4, $c)) && ~int.lte($c, $$stack5)) && ~int.lt($$stack5, ~lengthof($a))), ~int.lte((~unbox(~heap.read(~heap, $a, ~element($$stack4))) : int), (~unbox(~heap.read(~heap, $a, ~element($$stack5))) : int))))) }
+function byteback.dummy.complete.IntegerSelectionSort.partitioned#int?#int#(~heap : Store, _a : Reference, _c : int) returns (bool) { (forall _$stack4 : int :: (forall _$stack5 : int :: ~implies((((~int.lte(0, _$stack4) && ~int.lt(_$stack4, _c)) && ~int.lte(_c, _$stack5)) && ~int.lt(_$stack5, ~lengthof(_a))), ~int.lte((~array.read(~heap, _a, _$stack4) : int), (~array.read(~heap, _a, _$stack5) : int))))) }
 
 procedure byteback.dummy.complete.IntegerSelectionSort.sort#int?#(?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive))) returns ()
   requires ~neq(?a, ~null);
@@ -208,32 +212,36 @@ procedure byteback.dummy.complete.IntegerSelectionSort.sort#int?#(?a : Reference
   ensures byteback.dummy.complete.IntegerSelectionSort.sorted#int?#int#int#(~heap, ?a, 0, ~lengthof(?a));
   modifies ~heap;
 {
-  var $$stack11 : int;
-  var $c : int;
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  $a := ?a;
-  $c := 0;
-  assert (~int.lte(0, $c) && ~int.lte($c, ~lengthof($a)));
-  assert byteback.dummy.complete.IntegerSelectionSort.partitioned#int?#int#(~heap, $a, $c);
-  assert byteback.dummy.complete.IntegerSelectionSort.sorted#int?#int#int#(~heap, $a, 0, $c);
+  var ~sym1 : int;
+  var _$stack11 : int;
+  var _y : int;
+  var _c : int;
+  var _a : Reference where (~typeof(~heap, _a) == ~array.type(~Primitive));
+  _a := ?a;
+  _c := 0;
+  assert (~int.lte(0, _c) && ~int.lte(_c, ~lengthof(_a)));
+  assert byteback.dummy.complete.IntegerSelectionSort.partitioned#int?#int#(~heap, _a, _c);
+  assert byteback.dummy.complete.IntegerSelectionSort.sorted#int?#int#int#(~heap, _a, 0, _c);
 label2:
-  assume (~int.lte(0, $c) && ~int.lte($c, ~lengthof($a)));
-  assume byteback.dummy.complete.IntegerSelectionSort.partitioned#int?#int#(~heap, $a, $c);
-  assume byteback.dummy.complete.IntegerSelectionSort.sorted#int?#int#int#(~heap, $a, 0, $c);
-  if (($c >= ~lengthof($a))) {
+  assume (~int.lte(0, _c) && ~int.lte(_c, ~lengthof(_a)));
+  assume byteback.dummy.complete.IntegerSelectionSort.partitioned#int?#int#(~heap, _a, _c);
+  assume byteback.dummy.complete.IntegerSelectionSort.sorted#int?#int#int#(~heap, _a, 0, _c);
+  if ((_c >= ~lengthof(_a))) {
     goto label1;
   }
-  call $$stack11 := byteback.dummy.complete.IntegerSelectionSort.minimum#int?#int#($a, $c);
-  ~heap := ~heap.update(~heap, $a, ~element($$stack11), ~box((~unbox(~heap.read(~heap, $a, ~element($c))) : int)));
-  ~heap := ~heap.update(~heap, $a, ~element($c), ~box((~unbox(~heap.read(~heap, $a, ~element($c))) : int)));
-  $c := ($c + 1);
-  assert (~int.lte(0, $c) && ~int.lte($c, ~lengthof($a)));
-  assert byteback.dummy.complete.IntegerSelectionSort.partitioned#int?#int#(~heap, $a, $c);
-  assert byteback.dummy.complete.IntegerSelectionSort.sorted#int?#int#int#(~heap, $a, 0, $c);
+  call ~sym1 := byteback.dummy.complete.IntegerSelectionSort.minimum#int?#int#(_a, _c);
+  _$stack11 := ~sym1;
+  _y := (~array.read(~heap, _a, _c) : int);
+  ~heap := ~array.update(~heap, _a, _$stack11, (~array.read(~heap, _a, _c) : int));
+  ~heap := ~array.update(~heap, _a, _c, _y);
+  _c := (_c + 1);
+  assert (~int.lte(0, _c) && ~int.lte(_c, ~lengthof(_a)));
+  assert byteback.dummy.complete.IntegerSelectionSort.partitioned#int?#int#(~heap, _a, _c);
+  assert byteback.dummy.complete.IntegerSelectionSort.sorted#int?#int#int#(~heap, _a, 0, _c);
   goto label2;
 label1:
-  assume (~int.lte(0, $c) && ~int.lte($c, ~lengthof($a)));
-  assume byteback.dummy.complete.IntegerSelectionSort.partitioned#int?#int#(~heap, $a, $c);
-  assume byteback.dummy.complete.IntegerSelectionSort.sorted#int?#int#int#(~heap, $a, 0, $c);
+  assume (~int.lte(0, _c) && ~int.lte(_c, ~lengthof(_a)));
+  assume byteback.dummy.complete.IntegerSelectionSort.partitioned#int?#int#(~heap, _a, _c);
+  assume byteback.dummy.complete.IntegerSelectionSort.sorted#int?#int#int#(~heap, _a, 0, _c);
   return;
 }

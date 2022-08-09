@@ -21,6 +21,7 @@ import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Condition;
 import byteback.frontend.boogie.ast.EqualsOperation;
 import byteback.frontend.boogie.ast.Expression;
+import byteback.frontend.boogie.ast.ExtensionPoint;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.PostCondition;
@@ -205,13 +206,14 @@ public class ProcedureConverter extends MethodConverter {
 			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
 		}
 
+		final var assignments = new ExtensionPoint();
+		body.getStatementList().insertChild(assignments, 0);
+		
 		for (Local local : SootBodies.getParameterLocals(method.retrieveActiveBody())) {
 			final var variableBuilder = new VariableDeclarationBuilder();
+			final var assignment = new AssignmentStatement(Assignee.of(ValueReference.of(ExpressionExtractor.localName(local))), ValueReference.of(parameterName(local)));
 			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
-			body.getStatementList()
-					.insertChild(new AssignmentStatement(
-							Assignee.of(ValueReference.of(ExpressionExtractor.localName(local))),
-							ValueReference.of(parameterName(local))), 0);
+			assignments.addStatement(assignment);
 		}
 
 		builder.body(body);

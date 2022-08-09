@@ -39,7 +39,7 @@ public class BodyAggregator {
 		while (iterator.hasNext()) {
 			final Local local = iterator.next();
 
-			if (defCollector.valueUsesOf(local).size() == 0) {
+			if (defCollector.valueUsesOf(local).size() == 0 && defCollector.definitionsOf(local).size() == 0) {
 				locals.remove(local);
 			}
 		}
@@ -139,7 +139,7 @@ public class BodyAggregator {
 
 		removeUnusedLocals(body);
 
-		return body;
+		return new NewInvokeRemover().transform(body);
 	}
 
 }

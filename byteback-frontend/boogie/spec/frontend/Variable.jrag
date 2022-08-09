@@ -213,6 +213,15 @@ aspect Variable {
       typeAccess, new List<>(getAccessor().makeDeclarator()), new Opt<>())));
 
   /**
+   * Create assignee from reference.
+   */
+  syn Assignee ValueReference.makeAssignee();
+
+  eq ValueReference.makeAssignee() =
+		new Assignee(getAccessor());
+
+
+  /**
    * Delete a variable and all of its assignments.
    */
   public void Variable.delete() {

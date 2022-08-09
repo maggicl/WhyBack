@@ -74,6 +74,10 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
 
+function {:inline } ~array.read<b>(h : Store, a : Reference, i : int) returns (b) { (~unbox(~heap.read(h, a, ~element(i))) : b) }
+
+function {:inline } ~array.update<b>(h : Store, a : Reference, i : int, v : b) returns (Store) { ~heap.update(h, a, ~element(i), ~box(v)) }
+
 procedure ~array(t : Type, l : int) returns (~ret : Reference);
   ensures (~typeof(~heap, ~ret) == ~array.type(t));
   ensures ~allocated(~ret);
@@ -145,45 +149,45 @@ const unique $byteback.dummy.complete.IntegerSum : Type;
 
 procedure byteback.dummy.complete.IntegerSum.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.IntegerSum)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.IntegerSum);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.IntegerSum);
+  _this := ?this;
+  call java.lang.Object.$init$##(_this);
   return;
 }
 
-function byteback.dummy.complete.IntegerSum.positive_arguments_imply_positive_sum#int?#int#(~heap : Store, $as : Reference, $ret : int) returns (bool) { ~implies(byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap, $as), ~int.gte($ret, 0)) }
+function byteback.dummy.complete.IntegerSum.positive_arguments_imply_positive_sum#int?#int#(~heap : Store, _as : Reference, _ret : int) returns (bool) { ~implies(byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap, _as), ~int.gte(_ret, 0)) }
 
-function byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap : Store, $as : Reference) returns (bool) { (forall $$stack2 : int :: ~implies(~int.lt($$stack2, ~lengthof($as)), ~int.gt((~unbox(~heap.read(~heap, $as, ~element($$stack2))) : int), 0))) }
+function byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap : Store, _as : Reference) returns (bool) { (forall _$stack2 : int :: ~implies(~int.lt(_$stack2, ~lengthof(_as)), ~int.gt((~array.read(~heap, _as, _$stack2) : int), 0))) }
 
 procedure byteback.dummy.complete.IntegerSum.sum#int?#(?as : Reference where (~typeof(~heap, ?as) == ~array.type(~Primitive))) returns (~ret : int)
   ensures ~implies(byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap, ?as), ~int.gte(~ret, 0));
 {
-  var $sum : int;
-  var $i : int;
-  var $as : Reference where (~typeof(~heap, $as) == ~array.type(~Primitive));
-  $as := ?as;
-  $sum := 0;
-  $i := 0;
-  assert ~int.lte($i, ~lengthof($as));
-  assert ~int.gte($i, 0);
-  assert ~implies(byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap, $as), ~int.gte($sum, 0));
+  var _sum : int;
+  var _i : int;
+  var _as : Reference where (~typeof(~heap, _as) == ~array.type(~Primitive));
+  _as := ?as;
+  _sum := 0;
+  _i := 0;
+  assert ~int.lte(_i, ~lengthof(_as));
+  assert ~int.gte(_i, 0);
+  assert ~implies(byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap, _as), ~int.gte(_sum, 0));
 label2:
-  assume ~int.lte($i, ~lengthof($as));
-  assume ~int.gte($i, 0);
-  assume ~implies(byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap, $as), ~int.gte($sum, 0));
-  if (($i >= ~lengthof($as))) {
+  assume ~int.lte(_i, ~lengthof(_as));
+  assume ~int.gte(_i, 0);
+  assume ~implies(byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap, _as), ~int.gte(_sum, 0));
+  if ((_i >= ~lengthof(_as))) {
     goto label1;
   }
-  $sum := ($sum + (~unbox(~heap.read(~heap, $as, ~element($i))) : int));
-  $i := ($i + 1);
-  assert ~int.lte($i, ~lengthof($as));
-  assert ~int.gte($i, 0);
-  assert ~implies(byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap, $as), ~int.gte($sum, 0));
+  _sum := (_sum + (~array.read(~heap, _as, _i) : int));
+  _i := (_i + 1);
+  assert ~int.lte(_i, ~lengthof(_as));
+  assert ~int.gte(_i, 0);
+  assert ~implies(byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap, _as), ~int.gte(_sum, 0));
   goto label2;
 label1:
-  assume ~int.lte($i, ~lengthof($as));
-  assume ~int.gte($i, 0);
-  assume ~implies(byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap, $as), ~int.gte($sum, 0));
-  ~ret := $sum;
+  assume ~int.lte(_i, ~lengthof(_as));
+  assume ~int.gte(_i, 0);
+  assume ~implies(byteback.dummy.complete.IntegerSum.positive_arguments#int?#(~heap, _as), ~int.gte(_sum, 0));
+  ~ret := _sum;
   return;
 }

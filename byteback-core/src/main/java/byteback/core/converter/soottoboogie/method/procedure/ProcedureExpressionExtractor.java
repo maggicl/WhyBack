@@ -8,6 +8,7 @@ import byteback.core.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.core.representation.soot.type.SootTypeVisitor;
 import byteback.core.representation.soot.unit.SootMethods;
 import byteback.frontend.boogie.ast.AssertStatement;
+import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
@@ -26,6 +27,7 @@ import soot.UnknownType;
 import soot.Value;
 import soot.VoidType;
 import soot.grimp.NewInvokeExpr;
+import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
@@ -102,16 +104,6 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 	@Override
 	public void caseSpecialInvokeExpr(final SpecialInvokeExpr invoke) {
 		caseInstanceInvokeExpr(invoke);
-	}
-
-	@Override
-	public void caseNewInvokeExpr(final NewInvokeExpr newInvocation) {
-		final Procedure newProcedure = Prelude.v().getNewProcedure();
-		final TargetedCallStatement callStatement = newProcedure.makeTargetedCall();
-		final SootClass baseType = newInvocation.getBaseType().getSootClass();
-		final String typeName = ReferenceTypeConverter.typeName(baseType);
-		callStatement.addArgument(ValueReference.of(typeName));
-		addCall(callStatement);
 	}
 
 	@Override

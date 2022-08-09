@@ -74,6 +74,10 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
 
+function {:inline } ~array.read<b>(h : Store, a : Reference, i : int) returns (b) { (~unbox(~heap.read(h, a, ~element(i))) : b) }
+
+function {:inline } ~array.update<b>(h : Store, a : Reference, i : int, v : b) returns (Store) { ~heap.update(h, a, ~element(i), ~box(v)) }
+
 procedure ~array(t : Type, l : int) returns (~ret : Reference);
   ensures (~typeof(~heap, ~ret) == ~array.type(t));
   ensures ~allocated(~ret);
@@ -145,20 +149,22 @@ const unique $byteback.dummy.complete.Dice : Type;
 
 procedure byteback.dummy.complete.Dice.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Dice)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Dice);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.Dice);
+  _this := ?this;
+  call java.lang.Object.$init$##(_this);
   return;
 }
 
 procedure byteback.dummy.complete.Dice.main##() returns ()
 {
-  var $$stack3 : Reference where (~typeof(~heap, $$stack3) == $byteback.dummy.complete.Dice$FixedDie);
-  var $$stack4 : int;
-  call $$stack3 := ~new($byteback.dummy.complete.Dice$FixedDie);
-  call byteback.dummy.complete.Dice$FixedDie.$init$##($$stack3);
-  call $$stack4 := byteback.dummy.complete.Dice$FixedDie.roll#int#($$stack3, 6);
-  assert ~int.lte($$stack4, 6);
+  var ~sym1 : Reference;
+  var ~sym2 : int;
+  var _$new0 : Reference where (~typeof(~heap, _$new0) == $byteback.dummy.complete.Dice$FixedDie);
+  call ~sym1 := ~new($byteback.dummy.complete.Dice$FixedDie);
+  _$new0 := ~sym1;
+  call byteback.dummy.complete.Dice$FixedDie.$init$##(_$new0);
+  call ~sym2 := byteback.dummy.complete.Dice$FixedDie.roll#int#(_$new0, 6);
+  assert ~int.lte(~sym2, 6);
   return;
 }
 
@@ -172,19 +178,19 @@ const unique $byteback.dummy.complete.Dice$FixedDie : Type;
 
 procedure byteback.dummy.complete.Dice$FixedDie.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Dice$FixedDie)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Dice$FixedDie);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.Dice$FixedDie);
+  _this := ?this;
+  call java.lang.Object.$init$##(_this);
   return;
 }
 
 procedure byteback.dummy.complete.Dice$FixedDie.roll#int#(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.Dice$FixedDie), ?max : int) returns (~ret : int)
   ensures ~eq(?max, ~ret);
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.Dice$FixedDie);
-  var $max : int;
-  $max := ?max;
-  $this := ?this;
-  ~ret := $max;
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.Dice$FixedDie);
+  var _max : int;
+  _this := ?this;
+  _max := ?max;
+  ~ret := _max;
   return;
 }

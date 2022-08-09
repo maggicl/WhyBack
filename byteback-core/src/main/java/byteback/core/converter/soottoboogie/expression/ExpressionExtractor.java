@@ -20,7 +20,7 @@ import soot.jimple.*;
 
 public class ExpressionExtractor extends ExpressionVisitor {
 
-	public static final String LOCAL_PREFIX = "$";
+	public static final String LOCAL_PREFIX = "_";
 
 	public static String localName(final Local local) {
 		return LOCAL_PREFIX + local.getName();

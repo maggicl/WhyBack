@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1 | filecheck %s
  * RUN: diff %s.actual.bpl %s.expect.bpl
  */
 package byteback.dummy.complete;
@@ -49,7 +49,6 @@ public class IntegerInsertionSort {
 				invariant(sorted(a, j, i + 1));
 
 				final int y;
-
 				y = a[j];
 				a[j] = a[j - 1];
 				a[j - 1] = y;

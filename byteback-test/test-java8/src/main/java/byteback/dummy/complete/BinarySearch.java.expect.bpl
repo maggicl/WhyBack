@@ -74,6 +74,10 @@ function ~array.type_inverse(Type) returns (Type);
 
 axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
 
+function {:inline } ~array.read<b>(h : Store, a : Reference, i : int) returns (b) { (~unbox(~heap.read(h, a, ~element(i))) : b) }
+
+function {:inline } ~array.update<b>(h : Store, a : Reference, i : int, v : b) returns (Store) { ~heap.update(h, a, ~element(i), ~box(v)) }
+
 procedure ~array(t : Type, l : int) returns (~ret : Reference);
   ensures (~typeof(~heap, ~ret) == ~array.type(t));
   ensures ~allocated(~ret);
@@ -145,50 +149,50 @@ const unique $byteback.dummy.complete.BinarySearch : Type;
 
 procedure byteback.dummy.complete.BinarySearch.$init$##(?this : Reference where (~typeof(~heap, ?this) == $byteback.dummy.complete.BinarySearch)) returns ()
 {
-  var $this : Reference where (~typeof(~heap, $this) == $byteback.dummy.complete.BinarySearch);
-  $this := ?this;
-  call java.lang.Object.$init$##($this);
+  var _this : Reference where (~typeof(~heap, _this) == $byteback.dummy.complete.BinarySearch);
+  _this := ?this;
+  call java.lang.Object.$init$##(_this);
   return;
 }
 
 procedure byteback.dummy.complete.BinarySearch.search#int?#int#int#int#(?a : Reference where (~typeof(~heap, ?a) == ~array.type(~Primitive)), ?n : int, ?left : int, ?right : int) returns (~ret : int)
   requires ~neq(?a, ~null);
-  requires (forall $$stack6 : int :: (forall $$stack7 : int :: ~implies(((~int.lte(?left, $$stack6) && ~int.lt($$stack6, $$stack7)) && ~int.lte($$stack7, ?right)), ~int.lte((~unbox(~heap.read(~heap, ?a, ~element($$stack6))) : int), (~unbox(~heap.read(~heap, ?a, ~element($$stack7))) : int)))));
+  requires (forall _$stack6 : int :: (forall _$stack7 : int :: ~implies(((~int.lte(?left, _$stack6) && ~int.lt(_$stack6, _$stack7)) && ~int.lte(_$stack7, ?right)), ~int.lte((~array.read(~heap, ?a, _$stack6) : int), (~array.read(~heap, ?a, _$stack7) : int)))));
   requires ((~int.lte(0, ?left) && ~int.lte(?left, ?right)) && ~int.lte(?right, ~lengthof(?a)));
-  ensures ~implies(~int.lte(0, ~ret), ~eq((~unbox(~heap.read(~heap, ?a, ~element(~ret))) : int), ?n));
+  ensures ~implies(~int.lte(0, ~ret), ~eq((~array.read(~heap, ?a, ~ret) : int), ?n));
 {
   var ~sym1 : int;
   var ~sym2 : int;
-  var $p : int;
-  var $a : Reference where (~typeof(~heap, $a) == ~array.type(~Primitive));
-  var $n : int;
-  var $left : int;
-  var $right : int;
-  $right := ?right;
-  $left := ?left;
-  $n := ?n;
-  $a := ?a;
-  if (($left >= $right)) {
+  var _p : int;
+  var _a : Reference where (~typeof(~heap, _a) == ~array.type(~Primitive));
+  var _n : int;
+  var _left : int;
+  var _right : int;
+  _a := ?a;
+  _n := ?n;
+  _left := ?left;
+  _right := ?right;
+  if ((_left >= _right)) {
     goto label1;
   }
-  $p := ($left + (($right - $left) div 2));
-  assert (~int.lte($left, $p) && ~int.lte($p, $right));
-  if (((~unbox(~heap.read(~heap, $a, ~element($p))) : int) >= $n)) {
+  _p := (_left + ((_right - _left) div 2));
+  assert (~int.lte(_left, _p) && ~int.lte(_p, _right));
+  if (((~array.read(~heap, _a, _p) : int) >= _n)) {
     goto label2;
   }
-  call ~sym1 := byteback.dummy.complete.BinarySearch.search#int?#int#int#int#($a, $n, $left, $p);
+  call ~sym1 := byteback.dummy.complete.BinarySearch.search#int?#int#int#int#(_a, _n, _left, _p);
   ~ret := ~sym1;
   return;
 label2:
-  if (((~unbox(~heap.read(~heap, $a, ~element($p))) : int) <= $n)) {
+  if (((~array.read(~heap, _a, _p) : int) <= _n)) {
     goto label3;
   }
-  call ~sym2 := byteback.dummy.complete.BinarySearch.search#int?#int#int#int#($a, $n, $p, $right);
+  call ~sym2 := byteback.dummy.complete.BinarySearch.search#int?#int#int#int#(_a, _n, _p, _right);
   ~ret := ~sym2;
   return;
 label3:
-  assert ~eq((~unbox(~heap.read(~heap, $a, ~element($p))) : int), $n);
-  ~ret := $p;
+  assert ~eq((~array.read(~heap, _a, _p) : int), _n);
+  ~ret := _p;
   return;
 label1:
   ~ret := -1;

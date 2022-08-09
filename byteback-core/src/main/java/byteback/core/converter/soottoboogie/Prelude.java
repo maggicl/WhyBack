@@ -277,16 +277,6 @@ public class Prelude {
 	}
 
 	/**
-	 * Getter for the array-update function.
-	 *
-	 * @return The {@code ~insert} function.
-	 */
-	public Function getArrayUpdateFunction() {
-		return program().lookupFunction("~insert")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~insert function"));
-	}
-
-	/**
 	 * Getter for the int-caster.
 	 *
 	 * @return The {@code ~int} function.
@@ -311,14 +301,14 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~box"));
 	}
 
-	public Function getUnboxFunction() {
-		return program().lookupFunction("~unbox")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for ~unbox"));
+	public Function getArrayReadFunction() {
+		return program().lookupFunction("~array.read")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~array.read"));
 	}
 
-	public Function getElementFunction() {
-		return program().lookupFunction("~element")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for ~element"));
+	public Function getArrayUpdateFunction() {
+		return program().lookupFunction("~array.update")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~array.update"));
 	}
 
 	/**
@@ -391,15 +381,16 @@ public class Prelude {
 	 */
 	public Expression makeArrayAccessExpression(final TypeAccess typeAccess, final Expression base,
 			final Expression index) {
-		final var coercion = new CoercionOperation();
-		final FunctionReference elementReference = getElementFunction().makeFunctionReference();
-		final FunctionReference unboxReference = getUnboxFunction().makeFunctionReference();
-		elementReference.addArgument(index);
-		unboxReference.addArgument(makeHeapAccessExpression(base, elementReference));
-		coercion.setOperand(unboxReference);
-		coercion.setTarget(typeAccess);
+		final var operation = new CoercionOperation();
+		final ValueReference heapReference = getHeapVariable().makeValueReference();
+		final FunctionReference readReference = getArrayReadFunction().makeFunctionReference();
+		readReference.addArgument(heapReference);
+		readReference.addArgument(base);
+		readReference.addArgument(index);
+		operation.setOperand(readReference);
+		operation.setTarget(typeAccess);
 
-		return coercion;
+		return operation;
 	}
 
 	/**
@@ -440,12 +431,14 @@ public class Prelude {
 	 */
 	public Statement makeArrayUpdateStatement(final TypeAccess typeAccess, final Expression base,
 			final Expression index, final Expression value) {
-		final FunctionReference elementReference = getElementFunction().makeFunctionReference();
-		final FunctionReference boxReference = getBoxFunction().makeFunctionReference();
-		elementReference.addArgument(index);
-		boxReference.addArgument(value);
+		final ValueReference heapReference = getHeapVariable().makeValueReference();
+		final FunctionReference updateReference = getArrayUpdateFunction().makeFunctionReference();
+		updateReference.addArgument(heapReference);
+		updateReference.addArgument(base);
+		updateReference.addArgument(index);
+		updateReference.addArgument(value);
 
-		return makeHeapUpdateStatement(base, elementReference, boxReference);
+		return new AssignmentStatement(new Assignee(heapReference.getAccessor()), updateReference);
 	}
 
 	/**

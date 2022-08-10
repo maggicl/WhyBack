@@ -14,9 +14,13 @@ subprojects {
 				dependsOn project.shadowJar
 		}
 		def benchmark = tasks.register('benchmark', Exec) {
+				workingDir "../"
 				environment 'BYTEBACK_ROOT', core.installDist.destinationDir
-				environment 'TEST_JAR', project.shadowJar.archivePath
-				commandLine 'python benchmark.py'
+				environment 'JAR', project.shadowJar.archivePath
+				environment 'PROJECT', project.projectDir
+				ignoreExitValue true
+				commandLine 'python', 'benchmark.py'
+
 
 				dependsOn core.installDist
 				dependsOn project.shadowJar

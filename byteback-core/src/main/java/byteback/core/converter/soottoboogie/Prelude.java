@@ -336,6 +336,8 @@ public class Prelude {
 	 */
 	public Expression makeTypeCheckExpression(final Expression instance, final Expression type) {
 		final FunctionReference reference = getTypeCheckFunction().makeFunctionReference();
+		final ValueReference heapReference = getHeapVariable().makeValueReference();
+		reference.addArgument(heapReference);
 		reference.addArgument(instance);
 		reference.addArgument(type);
 

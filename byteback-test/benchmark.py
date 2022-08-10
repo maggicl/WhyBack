@@ -1,4 +1,5 @@
 import os
+import logging as lg
 import time as tm
 import pandas as pd
 import subprocess as sp
@@ -8,7 +9,7 @@ OUTPUT_DIR = "./output"
 BOOGIE_EXECUTABLE = "boogie"
 BYTEBACK_EXECUTABLE = os.path.join(os.getenv("BYTEBACK_ROOT"), "bin/byteback-core")
 JAR = os.getenv("JAR")
-
+PROJECT = os.getenv("PROJECT")
 
 def timeit(f):
     start = tm.time()
@@ -19,8 +20,6 @@ def timeit(f):
 
 
 def run_byteback(class_path, class_name, output_path):
-    print(JAR)
-    print(BYTEBACK_EXECUTABLE)
     return sp.run([BYTEBACK_EXECUTABLE, "-cp", class_path, "-c", class_name,
                    "-o", output_path])
 
@@ -29,14 +28,32 @@ def run_boogie(path):
     return sp.run([BOOGIE_EXECUTABLE, path])
 
 
-def benchmark(path, class_name, n=30):
+def verification_benchmark(path):
+    def f():
+        process = run_boogie(path)
+        if process.returncode != 0:
+            raise OSError("Boogie execution failed")
+
+    return timeit(f)
+
+
+def conversion_benchmark(class_path, class_name, output_path):
+    def f():
+        process = run_byteback(class_path, class_name, output_path)
+        if process.returncode != 0:
+            raise OSError("ByteBack execution failed")
+
+    return timeit(f)
+
+
+def benchmark(path, class_name, n=5):
     total_conversion_time = 0
     total_verification_time = 0
     output_path = os.path.join(OUTPUT_DIR, class_name + ".bpl")
 
     for _ in range(0, n):
-        total_conversion_time += timeit(lambda: run_byteback(JAR, class_name, output_path))
-        total_verification_time += timeit(lambda: run_boogie(output_path))
+        total_conversion_time += conversion_benchmark(JAR, class_name, output_path)
+        total_verification_time += verification_benchmark(output_path)
 
     input_size = locc.LOCCounter(path).getLOC()
     output_size = locc.LOCCounter(output_path).getLOC()
@@ -61,7 +78,7 @@ def test_components(root, name):
 
 
 def walk_tests():
-    for root, dirs, files in os.walk("."):
+    for root, dirs, files in os.walk(PROJECT):
         for name in files:
             if name.endswith(".java"):
                 yield test_components(root, name)
@@ -70,10 +87,14 @@ def walk_tests():
 def main():
     data = []
     for path, class_name in walk_tests():
-        data.append(benchmark(path, class_name))
+        try:
+            data.append(benchmark(path, class_name))
+        except OSError:
+            lg.warn(f"Skipping {class_name} due to error")
+            continue
 
     df = pd.DataFrame(data)
-    df.to_csv(os.path.join(OUTPUT_DIR, "results.csv"))
+    df.to_csv(os.path.join(OUTPUT_DIR, "results-{PROJECT}.csv"))
 
 
 main()

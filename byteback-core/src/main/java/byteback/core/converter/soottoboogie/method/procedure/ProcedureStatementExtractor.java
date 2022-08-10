@@ -210,7 +210,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 		try {
 		final var invoke = invokeStatement.getInvokeExpr();
-		makeExpressionExtractor(VoidType.v()).visit(invoke);
+		makeExpressionExtractor(invoke.getType()).visit(invoke);
 		} catch (EmptyStackException e) {
 			System.out.println("CAUGHT");
 		}

@@ -54,7 +54,11 @@ public class SootMethods {
 	}
 
 	public static boolean hasBody(final SootMethod method) {
-		return !method.isAbstract() && method.retrieveActiveBody() != null;
+		try {
+			return !method.isAbstract() && method.retrieveActiveBody() != null;
+		} catch (final RuntimeException exception) {
+			return false;
+		}
 	}
 
 }

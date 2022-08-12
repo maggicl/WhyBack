@@ -33,7 +33,6 @@ import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
-import soot.VoidType;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.GotoStmt;
@@ -208,12 +207,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 
 	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
-		try {
 		final var invoke = invokeStatement.getInvokeExpr();
 		makeExpressionExtractor(invoke.getType()).visit(invoke);
-		} catch (EmptyStackException e) {
-			System.out.println("CAUGHT");
-		}
 	}
 
 	@Override

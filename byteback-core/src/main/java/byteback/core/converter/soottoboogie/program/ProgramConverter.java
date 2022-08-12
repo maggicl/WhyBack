@@ -35,9 +35,14 @@ public class ProgramConverter {
 
 	public static void convertMethods(final Program program, final SootClass clazz) {
 		for (SootMethod method : clazz.getMethods()) {
+			if (method.getName().equals("<clinit>")) {
+				continue;
+			}
+
 			if (SootMethods.hasBody(method)) {
 				method.setActiveBody(new BodyAggregator().transform(method.retrieveActiveBody()));
 			}
+
 			try {
 				log.info("Converting method {}", method.getSignature());
 				if (SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {

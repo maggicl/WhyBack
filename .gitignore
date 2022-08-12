@@ -21,4 +21,5 @@ bin/
 .idea
 
 # Ignore testing files
-*.actual.bpl
+*.java.bpl
+Output/

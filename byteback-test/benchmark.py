@@ -5,7 +5,7 @@ import pandas as pd
 import subprocess as sp
 import python_loc_counter as locc
 
-OUTPUT_DIR = "./output"
+OUTPUT_DIR = "./Output"
 BOOGIE_EXECUTABLE = "boogie"
 BYTEBACK_EXECUTABLE = os.path.join(os.getenv("BYTEBACK_ROOT"), "bin/byteback-core")
 JAR = os.getenv("JAR")
@@ -62,8 +62,8 @@ def benchmark(path, class_name, n=5):
         "Experiment": class_name,
         "ConversionTime": total_conversion_time / n,
         "VerificationTime": total_verification_time / n,
-        "InputSize": input_size,
-        "OutputSize": output_size
+        "InputSize": input_size['source_loc'],
+        "OutputSize": output_size['source_loc']
     }
 
 
@@ -94,7 +94,7 @@ def main():
             continue
 
     df = pd.DataFrame(data)
-    df.to_csv(os.path.join(OUTPUT_DIR, "results-{PROJECT}.csv"))
+    df.to_csv(os.path.join(OUTPUT_DIR, "results.csv"))
 
 
 main()

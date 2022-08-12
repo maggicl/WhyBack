@@ -11,13 +11,13 @@ import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
-import byteback.frontend.boogie.ast.NumberLiteral;
 import byteback.frontend.boogie.ast.Procedure;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
 import java.util.Iterator;
 import soot.BooleanType;
+import soot.IntType;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
@@ -134,7 +134,8 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 		});
 
-		callStatement.addArgument(new NumberLiteral(arrayExpression.getSize().toString()));
+		final Expression size = makeExpressionVisitor(IntType.v()).visit(arrayExpression.getSize());
+		callStatement.addArgument(size);
 		addCall(callStatement);
 	}
 

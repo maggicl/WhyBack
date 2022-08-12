@@ -44,6 +44,7 @@ var ~heap: Store where ~heap.isgood(~heap) && ~heap.isanchor(~heap);
 function ~allocated(Reference) returns (bool);
 
 procedure ~new(t: Type) returns (~ret: Reference);
+	ensures ~ret != ~null;
 	ensures ~typeof(~heap, ~ret) == t;
 	ensures ~allocated(~ret);
 
@@ -111,6 +112,7 @@ function {:inline} ~array.update<b>(h: Store, a: Reference, i: int, v: b) return
 { ~heap.update(h, a, ~element(i), ~box(v)) }
 	
 procedure ~array(t: Type, l: int) returns (~ret: Reference);
+	ensures ~ret != ~null;
 	ensures ~typeof(~heap, ~ret) == ~array.type(t);
 	ensures ~allocated(~ret);
 	ensures ~lengthof(~ret) == l;

@@ -7,6 +7,8 @@ import byteback.core.representation.soot.type.*;
 import byteback.frontend.boogie.ast.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import soot.AnySubType;
 import soot.BooleanType;
 import soot.IntType;
 import soot.Local;
@@ -299,21 +301,10 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	@Override
 	public void caseInstanceOfExpr(final InstanceOfExpr instanceOf) {
 		final Value left = instanceOf.getOp();
-		instanceOf.getCheckType().apply(new SootTypeVisitor<>() {
+		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(instanceOf.getCheckType());
+		setExpression(
+				Prelude.v().makeTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference));
 
-			@Override
-			public void caseRefType(final RefType referenceType) {
-				final ValueReference typeReference = ValueReference.of(referenceType.getClassName());
-				setExpression(
-						Prelude.v().makeTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference));
-			}
-
-			@Override
-			public void caseDefault(final Type type) {
-				throw new ConversionException("Cannot convert `instanceof` expressions for type " + type);
-			}
-
-		});
 	}
 
 	@Override

@@ -3,4 +3,13 @@
 1.229503e+00 test-java17/src/main/java/byteback/test/record/Simple.java
 3.836155e-04 test-java17/src/main/java/byteback/test/typeinference/TypeInference.java
 1.252766e+00 test-java17/src/main/java/byteback/test/patternmatching/Simple.java
-1.707001e+00 test-java17/src/main/java/byteback/test/algorithm/Summary.java
+1.688639e+00 test-java17/src/main/java/byteback/test/algorithm/Summary.java
+4.999679e+00 test-java8/src/main/java/byteback/test/algorithm/BinarySearch.java
+5.133533e+00 test-java8/src/main/java/byteback/test/algorithm/DoubleInsertionSort.java
+5.206018e+00 test-java8/src/main/java/byteback/test/algorithm/DoubleSelectionSort.java
+5.180212e+00 test-java8/src/main/java/byteback/test/algorithm/GCD.java
+5.195731e+00 test-java8/src/main/java/byteback/test/algorithm/IntegerInsertionSort.java
+5.201769e+00 test-java8/src/main/java/byteback/test/algorithm/IntegerMax.java
+5.051556e+00 test-java8/src/main/java/byteback/test/algorithm/IntegerSelectionSort.java
+5.147707e+00 test-java8/src/main/java/byteback/test/algorithm/IntegerSum.java
+5.078413e+00 test-java8/src/main/java/byteback/test/algorithm/LinearSearch.java

@@ -23,7 +23,6 @@ import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
 
-import java.util.EmptyStackException;
 import java.util.Iterator;
 import java.util.function.Supplier;
 import soot.IntType;

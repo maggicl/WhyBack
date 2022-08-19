@@ -20,11 +20,18 @@ public class Summary {
 	}
 
 
+	@Predicate
+	public static boolean values_do_not_contain_minus1(int... values) {
+		return not(contains(values, -1, 0, values.length));
+	}
+
+
+	@Require("values_do_not_contain_minus1")
 	public static int summary(int... values) {
 		var result = 0;
 
 		for (var value : values) {
-			invariant(implies(contains(values, 1, 0, values.length), gte(result, 0)));
+			invariant(gte(result, 0));
 
 			result += switch (value) {
 				case 0:
@@ -52,14 +59,14 @@ public class Summary {
 		int[] a5 = { 0, -2, 3 };
 		int[] a6 = { -4, -2, -3 };
 		int[] a7 = { 7, 7, 7 };
-		//assertion(eq(summary(a0), 0));
-		//assertion(eq(summary(a1), 1));
-		//assertion(eq(summary(a2), 0));
-		//assertion(eq(summary(a3), 5));
-		//assertion(eq(summary(a4), 3));
-		//assertion(eq(summary(a5), 4));
-		//assertion(eq(summary(a6), 0));
-		//assertion(eq(summary(a7), 21));
+		assertion(eq(summary(a0), 0));
+		assertion(eq(summary(a1), 1));
+		assertion(eq(summary(a2), 0));
+		assertion(eq(summary(a3), 5));
+		assertion(eq(summary(a4), 3));
+		assertion(eq(summary(a5), 4));
+		assertion(eq(summary(a6), 0));
+		assertion(eq(summary(a7), 21));
 	}
 
 

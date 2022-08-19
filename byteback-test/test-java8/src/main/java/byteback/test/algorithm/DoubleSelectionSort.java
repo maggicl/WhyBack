@@ -1,6 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1 | filecheck %s
- * RUN: diff %s.actual.bpl %s.expect.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl 2>&1 | filecheck %s
  */
 package byteback.test.algorithm;
 
@@ -107,5 +106,5 @@ public class DoubleSelectionSort {
 }
 /**
  * CHECK: Conversion completed
- * RUN: %{verify} %s.actual.bpl
+ * RUN: %{verify} %t.bpl
  */

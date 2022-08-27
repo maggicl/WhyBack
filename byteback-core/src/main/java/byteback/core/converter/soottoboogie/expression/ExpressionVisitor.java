@@ -49,13 +49,13 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		this.expression = expression;
 	}
 
-	public void pushCastExpression(final Expression expression, final Type fromType) {
+	public void setCastExpression(final Expression expression, final Type fromType) {
 		final var caster = new CasterProvider(getType()).visit(fromType);
 		setExpression(caster.apply(expression));
 	}
 
-	public void pushCastExpression(final Expression expression, final Value value) {
-		pushCastExpression(expression, value.getType());
+	public void setCastExpression(final Expression expression, final Value value) {
+		setCastExpression(expression, value.getType());
 	}
 
 	public void pushBinaryExpression(final BinopExpr source, final BinaryExpression expression) {

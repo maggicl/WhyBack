@@ -21,12 +21,19 @@ public class Summary {
 
 
 	@Predicate
-	public static boolean values_do_not_contain_minus1(int... values) {
-		return not(contains(values, -1, 0, values.length));
+	public static boolean values_do_not_contain_1(int[] values) {
+		return not(contains(values, 1, 0, values.length));
 	}
 
 
-	@Require("values_do_not_contain_minus1")
+	@Predicate
+	public static boolean result_is_nonnegative(int[] values, int result) {
+		return gte(result, 0);
+	}
+
+
+	@Require("values_do_not_contain_1")
+	@Ensure("result_is_nonnegative")
 	public static int summary(int... values) {
 		var result = 0;
 
@@ -48,27 +55,6 @@ public class Summary {
 
 		return result;
 	}
-
-
-	public static void main() {
-		int[] a0 = {};
-		int[] a1 = { 0 };
-		int[] a2 = { 0, 1 };
-		int[] a3 = { 0, 1, 2, 3 };
-		int[] a4 = { 0, 1, -2, 3 };
-		int[] a5 = { 0, -2, 3 };
-		int[] a6 = { -4, -2, -3 };
-		int[] a7 = { 7, 7, 7 };
-		assertion(eq(summary(a0), 0));
-		assertion(eq(summary(a1), 1));
-		assertion(eq(summary(a2), 0));
-		assertion(eq(summary(a3), 5));
-		assertion(eq(summary(a4), 3));
-		assertion(eq(summary(a5), 4));
-		assertion(eq(summary(a6), 0));
-		assertion(eq(summary(a7), 21));
-	}
-
 
 }
 /**

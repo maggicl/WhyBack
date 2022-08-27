@@ -8,11 +8,9 @@ import byteback.frontend.boogie.ast.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import soot.AnySubType;
 import soot.BooleanType;
 import soot.IntType;
 import soot.Local;
-import soot.RefType;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -261,7 +259,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 	@Override
 	public void caseLocal(final Local local) {
-		pushCastExpression(ValueReference.of(localName(local)), local);
+		setCastExpression(ValueReference.of(localName(local)), local);
 	}
 
 	@Override
@@ -270,7 +268,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final Value base = instanceFieldRef.getBase();
 		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
 		final Expression heapAccess = Prelude.v().makeHeapAccessExpression(visit(base), reference);
-		pushCastExpression(heapAccess, field.getType());
+		setCastExpression(heapAccess, field.getType());
 	}
 
 	@Override
@@ -280,7 +278,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
 		final Expression heapAccess = Prelude.v()
 				.makeStaticAccessExpression(ValueReference.of(ReferenceTypeConverter.typeName(base)), reference);
-		pushCastExpression(heapAccess, field.getType());
+		setCastExpression(heapAccess, field.getType());
 	}
 
 	@Override
@@ -289,7 +287,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final Type type = arrayReference.getType();
 		final var index = arrayReference.getIndex();
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
-		pushCastExpression(Prelude.v().makeArrayAccessExpression(typeAccess, visit(base), visit(index)), type);
+		setCastExpression(Prelude.v().makeArrayAccessExpression(typeAccess, visit(base), visit(index)), type);
 	}
 
 	@Override

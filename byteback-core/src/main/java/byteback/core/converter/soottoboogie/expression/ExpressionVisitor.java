@@ -19,7 +19,6 @@ import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import soot.Scene;
 import soot.SootMethod;
 import soot.Type;
 import soot.Value;

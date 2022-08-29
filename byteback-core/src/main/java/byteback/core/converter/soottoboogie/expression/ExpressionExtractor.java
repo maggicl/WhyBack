@@ -99,12 +99,12 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
-				setExpression(new NegationOperation(expression));
+				setCastExpression(new NegationOperation(expression), operand);
 			}
 
 			@Override
 			public void caseDefault(final Type type) {
-				setExpression(new MinusOperation(expression));
+				setCastExpression(new MinusOperation(expression), operand);
 			}
 
 		});

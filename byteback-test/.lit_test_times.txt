@@ -2,7 +2,7 @@
 2.214503e+00 test-java17/src/main/java/byteback/test/controlflow/SwitchExpression.java
 1.229503e+00 test-java17/src/main/java/byteback/test/record/Simple.java
 3.836155e-04 test-java17/src/main/java/byteback/test/typeinference/TypeInference.java
-1.252766e+00 test-java17/src/main/java/byteback/test/patternmatching/Simple.java
+4.352103e+00 test-java17/src/main/java/byteback/test/patternmatching/Simple.java
 4.142227e+00 test-java17/src/main/java/byteback/test/algorithm/Summary.java
 3.998475e+00 test-java8/src/main/java/byteback/test/algorithm/BinarySearch.java
 5.133533e+00 test-java8/src/main/java/byteback/test/algorithm/DoubleInsertionSort.java
@@ -13,3 +13,4 @@
 5.051556e+00 test-java8/src/main/java/byteback/test/algorithm/IntegerSelectionSort.java
 5.147707e+00 test-java8/src/main/java/byteback/test/algorithm/IntegerSum.java
 5.078413e+00 test-java8/src/main/java/byteback/test/algorithm/LinearSearch.java
+4.624996e+00 test-java8/src/main/java/byteback/test/algorithm/SquareSortedArray.java

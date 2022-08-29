@@ -25,6 +25,8 @@ import byteback.frontend.boogie.builder.IfStatementBuilder;
 
 import java.util.Iterator;
 import java.util.function.Supplier;
+
+import soot.BooleanType;
 import soot.IntType;
 import soot.Local;
 import soot.SootField;
@@ -196,7 +198,7 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 	@Override
 	public void caseIfStmt(final IfStmt ifStatement) {
 		final var ifBuilder = new IfStatementBuilder();
-		final Type type = IntType.v();
+		final Type type = BooleanType.v();
 		final Value condition = ifStatement.getCondition();
 		final Label label = bodyExtractor.getLabelCollector().fetchLabel(ifStatement.getTarget());
 		ifBuilder.condition(new ProcedureExpressionExtractor(type, bodyExtractor).visit(condition))

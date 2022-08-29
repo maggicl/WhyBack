@@ -7,6 +7,7 @@ import byteback.core.converter.soottoboogie.type.CasterProvider;
 import byteback.core.representation.soot.annotation.SootAnnotations;
 import byteback.core.representation.soot.annotation.SootAnnotationElems.StringElemExtractor;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
+import byteback.core.representation.soot.type.SootType;
 import byteback.core.representation.soot.unit.SootMethods;
 import byteback.frontend.boogie.ast.BinaryExpression;
 import byteback.frontend.boogie.ast.Expression;
@@ -17,6 +18,8 @@ import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import soot.Scene;
 import soot.SootMethod;
 import soot.Type;
 import soot.Value;
@@ -58,20 +61,24 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		setCastExpression(expression, value.getType());
 	}
 
-	public void pushBinaryExpression(final BinopExpr source, final BinaryExpression expression) {
+	public void setBinaryExpression(final BinopExpr source, final BinaryExpression expression) {
 		final Value left = source.getOp1();
 		final Value right = source.getOp2();
-		expression.setLeftOperand(visit(left, getType()));
-		expression.setRightOperand(visit(right, getType()));
-		setExpression(expression);
+		final Type type = SootType.join(left.getType(), right.getType());
+
+		expression.setLeftOperand(visit(left, type));
+		expression.setRightOperand(visit(right, type));
+		setCastExpression(expression, getType());
 	}
 
-	public void pushSpecialBinaryExpression(final BinopExpr source, final FunctionReference reference) {
+	public void setSpecialBinaryExpression(final BinopExpr source, final FunctionReference reference) {
 		final Value left = source.getOp1();
 		final Value right = source.getOp2();
-		reference.addArgument(visit(left, getType()));
-		reference.addArgument(visit(right, getType()));
-		setExpression(reference);
+		final Type type = SootType.join(left.getType(), right.getType());
+
+		reference.addArgument(visit(left, type));
+		reference.addArgument(visit(right, type));
+		setCastExpression(reference, getType());
 	}
 
 	public List<Expression> convertArguments(final SootMethod method, final Iterable<Value> sources) {
@@ -109,7 +116,7 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		}
 
 		referenceBuilder.addArguments(convertArguments(method, arguments));
-		setExpression(referenceBuilder.build());
+		setCastExpression(referenceBuilder.build(), getType());
 	}
 
 	abstract public void caseInstanceInvokeExpr(final InstanceInvokeExpr invoke);

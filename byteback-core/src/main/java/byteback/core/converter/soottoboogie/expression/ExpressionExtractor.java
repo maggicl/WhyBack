@@ -51,17 +51,17 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	}
 
 	public void pushCmpExpression(final BinopExpr cmp) {
-		pushSpecialBinaryExpression(cmp, Prelude.v().getCmpFunction().makeFunctionReference());
+		setSpecialBinaryExpression(cmp, Prelude.v().getCmpFunction().makeFunctionReference());
 	}
 
 	@Override
 	public void caseAddExpr(final AddExpr addition) {
-		pushBinaryExpression(addition, new AdditionOperation());
+		setBinaryExpression(addition, new AdditionOperation());
 	}
 
 	@Override
 	public void caseSubExpr(final SubExpr subtraction) {
-		pushBinaryExpression(subtraction, new SubtractionOperation());
+		setBinaryExpression(subtraction, new SubtractionOperation());
 	}
 
 	@Override
@@ -70,12 +70,12 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseIntType(final IntType integerType) {
-				pushBinaryExpression(division, new IntegerDivisionOperation());
+				setBinaryExpression(division, new IntegerDivisionOperation());
 			}
 
 			@Override
 			public void caseDefault(final Type integerType) {
-				pushBinaryExpression(division, new RealDivisionOperation());
+				setBinaryExpression(division, new RealDivisionOperation());
 			}
 
 		});
@@ -83,12 +83,12 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 	@Override
 	public void caseMulExpr(final MulExpr multiplication) {
-		pushBinaryExpression(multiplication, new MultiplicationOperation());
+		setBinaryExpression(multiplication, new MultiplicationOperation());
 	}
 
 	@Override
 	public void caseRemExpr(final RemExpr modulo) {
-		pushBinaryExpression(modulo, new ModuloOperation());
+		setBinaryExpression(modulo, new ModuloOperation());
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
-				pushBinaryExpression(or, new OrOperation());
+				setBinaryExpression(or, new OrOperation());
 			}
 
 			@Override
@@ -133,7 +133,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
-				pushBinaryExpression(and, new AndOperation());
+				setBinaryExpression(and, new AndOperation());
 			}
 
 			@Override
@@ -150,7 +150,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
-				pushBinaryExpression(xor, new NotEqualsOperation());
+				setBinaryExpression(xor, new NotEqualsOperation());
 			}
 
 			@Override
@@ -178,32 +178,32 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 	@Override
 	public void caseEqExpr(final EqExpr equals) {
-		pushBinaryExpression(equals, new EqualsOperation());
+		setBinaryExpression(equals, new EqualsOperation());
 	}
 
 	@Override
 	public void caseNeExpr(final NeExpr notEquals) {
-		pushBinaryExpression(notEquals, new NotEqualsOperation());
+		setBinaryExpression(notEquals, new NotEqualsOperation());
 	}
 
 	@Override
 	public void caseGtExpr(final GtExpr greaterThan) {
-		pushBinaryExpression(greaterThan, new GreaterThanOperation());
+		setBinaryExpression(greaterThan, new GreaterThanOperation());
 	}
 
 	@Override
 	public void caseGeExpr(final GeExpr greaterEquals) {
-		pushBinaryExpression(greaterEquals, new GreaterThanEqualsOperation());
+		setBinaryExpression(greaterEquals, new GreaterThanEqualsOperation());
 	}
 
 	@Override
 	public void caseLtExpr(final LtExpr lessThan) {
-		pushBinaryExpression(lessThan, new LessThanOperation());
+		setBinaryExpression(lessThan, new LessThanOperation());
 	}
 
 	@Override
 	public void caseLeExpr(final LeExpr lessEquals) {
-		pushBinaryExpression(lessEquals, new LessThanEqualsOperation());
+		setBinaryExpression(lessEquals, new LessThanEqualsOperation());
 	}
 
 	@Override
@@ -300,9 +300,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	public void caseInstanceOfExpr(final InstanceOfExpr instanceOf) {
 		final Value left = instanceOf.getOp();
 		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(instanceOf.getCheckType());
-		setExpression(
-				Prelude.v().makeTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference));
-
+		setCastExpression(Prelude.v().makeTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference), instanceOf.getType());
 	}
 
 	@Override

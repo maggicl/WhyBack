@@ -1,3 +1,6 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl 2>&1 | filecheck %s
+ */
 package byteback.test.algorithm;
 
 import static byteback.annotations.Contract.*;
@@ -24,16 +27,23 @@ public class SquareSortedArray {
 		return sorted(b, 0, b.length);
 	}
 
-	@Require("array_is_sorted")
-	@Ensure("array_is_sorted")
-	public static int[] square_sorted_array(final int[] a) {
-		final int[] b = new int[a.length];
+	@Predicate
+	public static boolean array_is_not_empty(final int[] a) {
+		return gt(a.length, 0);
+	}
 
+	@Require("array_is_not_empty")
+	@Require("array_is_sorted")
+	public static int[] squareSortedArray(final int[] a) {
+		final int[] b = new int[a.length];
 		int i = 0;
 		int j = a.length - 1;
 		int c = a.length - 1;
 
 		while (i <= j) {
+			invariant(lte(j - i, a.length));
+			invariant(eq(a.length, b.length));
+
 			int iq = a[i] * a[i];
 			int jq = a[j] * a[j];
 
@@ -45,6 +55,7 @@ public class SquareSortedArray {
 				i += 1;
 			}
 
+
 			c -= 1;
 		}
 
@@ -52,3 +63,7 @@ public class SquareSortedArray {
 	}
 	
 }
+/**
+ * CHECK: Conversion completed
+ * RUN: %{verify} %t.bpl
+ */

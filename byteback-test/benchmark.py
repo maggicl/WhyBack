@@ -6,6 +6,7 @@ import pandas as pd
 import subprocess as sp
 import click as cl
 import python_loc_counter as locc
+import sys
 
 BYTEBACK_EXECUTABLE = os.path.join(os.getenv("BYTEBACK_ROOT"), "bin/byteback-core")
 BOOGIE_EXECUTABLE = "boogie"
@@ -25,6 +26,11 @@ def run_byteback(class_path, class_name, output_path):
 
 def run_boogie(path):
     return sp.run([BOOGIE_EXECUTABLE, path], stdout=sp.PIPE)
+
+
+def run_javap(class_path, class_name, output_path):
+    with open(output_path, "w") as f:
+        return sp.run(["javap", "-cp", class_path, "-c", class_name], stdout=f)
 
 
 def verification_benchmark(path):
@@ -48,24 +54,28 @@ def conversion_benchmark(class_path, class_name, output_path):
     return timeit(f)
 
 
-def benchmark(path, class_name, jar_path, temp_path, n=5):
+def benchmark(source_path, class_name, jar_path, temp_path, n=5):
     total_conversion_time = 0
     total_verification_time = 0
-    output_path = os.path.join(temp_path, class_name + ".bpl")
+    bytecode_path = os.path.join(temp_path, class_name + ".j")
+    boogie_path = os.path.join(temp_path, class_name + ".bpl")
+    run_javap(jar_path, class_name, bytecode_path)
 
     for _ in range(0, n):
-        total_conversion_time += conversion_benchmark(jar_path, class_name, output_path)
-        total_verification_time += verification_benchmark(output_path)
+        total_conversion_time += conversion_benchmark(jar_path, class_name, boogie_path)
+        total_verification_time += verification_benchmark(boogie_path)
 
-    input_size = locc.LOCCounter(path).getLOC()
-    output_size = locc.LOCCounter(output_path).getLOC()
+    source_size = locc.LOCCounter(source_path).getLOC()
+    bytecode_size = locc.LOCCounter(bytecode_path).getLOC()
+    boogie_size = locc.LOCCounter(boogie_path).getLOC()
 
     return {
         "Experiment": class_name,
         "ConversionTime": total_conversion_time / n,
         "VerificationTime": total_verification_time / n,
-        "InputSize": input_size['source_loc'],
-        "OutputSize": output_size['source_loc']
+        "SourceSize": source_size['source_loc'],
+        "BytecodeSize": bytecode_size['source_loc'],
+        "BoogieSize": boogie_size['source_loc']
     }
 
 

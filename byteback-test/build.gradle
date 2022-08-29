@@ -14,13 +14,19 @@ subprojects {
 				dependsOn project.shadowJar
 		}
 		def benchmark = tasks.register('benchmark', Exec) {
-				workingDir "../"
 				environment 'BYTEBACK_ROOT', core.installDist.destinationDir
-				environment 'JAR', project.shadowJar.archivePath
-				environment 'PROJECT', project.projectDir
-				ignoreExitValue true
-				commandLine 'python', 'benchmark.py'
+				def script = "../benchmark.py"
+				def jar = project.shadowJar.archivePath
+				def source = project.sourceSets.main.java.dirs[0]
+				def benchmark = "./benchmark"
+				def output = "$benchmark/results.csv"
+				def tmp = "$benchmark/tmp"
 
+				project.mkdir(benchmark)
+				project.mkdir(tmp)
+
+				commandLine 'python', script, '--jar', jar,
+						'--source', source, '--output', output, '--temp', tmp
 
 				dependsOn core.installDist
 				dependsOn project.shadowJar

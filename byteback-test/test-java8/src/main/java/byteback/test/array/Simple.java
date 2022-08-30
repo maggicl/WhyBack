@@ -1,3 +1,6 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl 2>&1
+ */
 package byteback.test.array;
 
 import static byteback.annotations.Contract.*;
@@ -35,3 +38,8 @@ public class Simple {
 	}
 
 }
+
+/**
+ * CHECK: Conversion completed
+ * RUN: %{verify} %t.bpl
+ */

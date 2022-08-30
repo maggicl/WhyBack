@@ -60,14 +60,22 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 		setCastExpression(expression, value.getType());
 	}
 
-	public void setBinaryExpression(final BinopExpr source, final BinaryExpression expression) {
+	public void setBinaryExpression(final BinopExpr source, final BinaryExpression expression, final Type type) {
 		final Value left = source.getOp1();
 		final Value right = source.getOp2();
-		final Type type = SootType.join(left.getType(), right.getType());
 
 		expression.setLeftOperand(visit(left, type));
 		expression.setRightOperand(visit(right, type));
-		setCastExpression(expression, getType());
+		setCastExpression(expression, source.getType());
+	}
+
+	public void setBinaryExpression(final BinopExpr source, final BinaryExpression expression) {
+		setBinaryExpression(source, expression, getType());
+	}
+
+	public void setBinaryCastExpression(final BinopExpr source, final BinaryExpression expression) {
+		final Type type = SootType.join(source.getOp1().getType(), source.getOp2().getType());
+		setBinaryExpression(source, expression, type);
 	}
 
 	public void setSpecialBinaryExpression(final BinopExpr source, final FunctionReference reference) {
@@ -77,7 +85,7 @@ public abstract class ExpressionVisitor extends SootExpressionVisitor<Expression
 
 		reference.addArgument(visit(left, type));
 		reference.addArgument(visit(right, type));
-		setCastExpression(reference, getType());
+		setCastExpression(reference, source.getType());
 	}
 
 	public List<Expression> convertArguments(final SootMethod method, final Iterable<Value> sources) {

@@ -25,7 +25,7 @@ def run_byteback(class_path, class_name, output_path):
 
 
 def run_boogie(path):
-    return sp.run([BOOGIE_EXECUTABLE, path], stdout=sp.PIPE)
+    return sp.run([BOOGIE_EXECUTABLE, "/infer:j", path], stdout=sp.PIPE)
 
 
 def run_javap(class_path, class_name, output_path):
@@ -108,7 +108,7 @@ def main(jar, source, output, temp):
     data = []
     for path, class_name in walk_tests(source_path):
         try:
-            data.append(benchmark(path, class_name, jar_path, temp_path, n=30))
+            data.append(benchmark(path, class_name, jar_path, temp_path, n=1))
         except OSError:
             lg.warning(f"Skipping {class_name} due to error")
             continue

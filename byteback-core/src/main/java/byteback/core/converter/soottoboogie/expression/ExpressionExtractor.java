@@ -178,32 +178,32 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 	@Override
 	public void caseEqExpr(final EqExpr equals) {
-		setBinaryExpression(equals, new EqualsOperation());
+		setBinaryCastExpression(equals, new EqualsOperation());
 	}
 
 	@Override
 	public void caseNeExpr(final NeExpr notEquals) {
-		setBinaryExpression(notEquals, new NotEqualsOperation());
+		setBinaryCastExpression(notEquals, new NotEqualsOperation());
 	}
 
 	@Override
 	public void caseGtExpr(final GtExpr greaterThan) {
-		setBinaryExpression(greaterThan, new GreaterThanOperation());
+		setBinaryCastExpression(greaterThan, new GreaterThanOperation());
 	}
 
 	@Override
 	public void caseGeExpr(final GeExpr greaterEquals) {
-		setBinaryExpression(greaterEquals, new GreaterThanEqualsOperation());
+		setBinaryCastExpression(greaterEquals, new GreaterThanEqualsOperation());
 	}
 
 	@Override
 	public void caseLtExpr(final LtExpr lessThan) {
-		setBinaryExpression(lessThan, new LessThanOperation());
+		setBinaryCastExpression(lessThan, new LessThanOperation());
 	}
 
 	@Override
 	public void caseLeExpr(final LeExpr lessEquals) {
-		setBinaryExpression(lessEquals, new LessThanEqualsOperation());
+		setBinaryCastExpression(lessEquals, new LessThanEqualsOperation());
 	}
 
 	@Override
@@ -293,7 +293,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	@Override
 	public void caseLengthExpr(final LengthExpr length) {
 		final Value operand = length.getOp();
-		setExpression(Prelude.v().getLengthAccessExpression(visit(operand)));
+		setExpression(Prelude.v().getLengthAccessExpression(visit(operand, operand.getType())));
 	}
 
 	@Override

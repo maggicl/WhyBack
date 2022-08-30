@@ -56,7 +56,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		final Type type = getType();
 		
 		if (type != VoidType.v() && type != UnknownType.v()) {
-			final ValueReference reference = bodyExtractor.generateReference(getType());
+			final ValueReference reference = bodyExtractor.generateReference(type);
 			targets.add(reference);
 			setExpression(reference);
 		}

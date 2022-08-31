@@ -30,7 +30,7 @@ class Counter() {
 
     while (i < 10) {
 			invariant(lte(0, i) & lte(i, 10));
-			invariant(eq(count, old_count + i));
+			invariant(equal(count, old_count + i));
 
       increment();
       i = i + 1;

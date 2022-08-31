@@ -11,17 +11,18 @@ import sys
 BYTEBACK_EXECUTABLE = os.path.join(os.getenv("BYTEBACK_ROOT"), "bin/byteback-core")
 BOOGIE_EXECUTABLE = "boogie"
 
+
 def timeit(f):
-    start = tm.time()
+    start = round(tm.time() * 1000)
     f()
-    end = tm.time()
+    end = round(tm.time() * 1000)
 
     return end - start
 
 
 def run_byteback(class_path, class_name, output_path):
     return sp.run([BYTEBACK_EXECUTABLE, "-cp", class_path, "-c", class_name,
-                   "-o", output_path], stdout=sp.PIPE)
+                   "-o", output_path], stdout=sp.PIPE, stderr=sp.PIPE)
 
 
 def run_boogie(path):
@@ -38,23 +39,32 @@ def verification_benchmark(path):
     def f():
         process = run_boogie(path)
         if not r.search(process.stdout.decode("utf-8")):
-            raise OSError("Boogie program could not be verified")
+            raise RuntimeError("Boogie program could not be verified")
         if process.returncode != 0:
-            raise OSError("Boogie execution failed")
+            raise RuntimeError("Boogie execution failed")
 
     return timeit(f)
 
 
 def conversion_benchmark(class_path, class_name, output_path):
-    def f():
-        process = run_byteback(class_path, class_name, output_path)
-        if process.returncode != 0:
-            raise OSError("ByteBack execution failed")
+    r = re.compile("Conversion completed in ([0-9])+ms, total time ([0-9])+ms")
+    d = re.compile("[0-9]+")
 
-    return timeit(f)
+    process = run_byteback(class_path, class_name, output_path)
+    output = r.search(process.stderr.decode("utf-8"));
+    if process.returncode != 0:
+        raise RuntimeError("ByteBack execution failed")
+    if not output:
+        raise RuntimeError("Could not match byteback's output")
+
+    numbers = re.findall(d, output.group(0));
+
+    return int(numbers[0]), int(numbers[1])
 
 
 def benchmark(source_path, class_name, jar_path, temp_path, n=5):
+    conversion_time = 0
+    conversion_overhead = 0
     total_conversion_time = 0
     total_verification_time = 0
     bytecode_path = os.path.join(temp_path, class_name + ".j")
@@ -62,7 +72,9 @@ def benchmark(source_path, class_name, jar_path, temp_path, n=5):
     run_javap(jar_path, class_name, bytecode_path)
 
     for _ in range(0, n):
-        total_conversion_time += conversion_benchmark(jar_path, class_name, boogie_path)
+        b, t = conversion_benchmark(jar_path, class_name, boogie_path)
+        total_conversion_time += t
+        conversion_overhead +=  b / t
         total_verification_time += verification_benchmark(boogie_path)
 
     source_size = locc.LOCCounter(source_path).getLOC()
@@ -72,6 +84,7 @@ def benchmark(source_path, class_name, jar_path, temp_path, n=5):
     return {
         "Experiment": class_name,
         "ConversionTime": total_conversion_time / n,
+        "ConversionOverhead": conversion_overhead / n,
         "VerificationTime": total_verification_time / n,
         "SourceSize": source_size['source_loc'],
         "BytecodeSize": bytecode_size['source_loc'],
@@ -82,16 +95,16 @@ def benchmark(source_path, class_name, jar_path, temp_path, n=5):
 def test_components(root, source_path, name):
     path = root + os.sep + name;
     relative_path = os.path.relpath(path, source_path)
-    path_components = relative_path.split(os.sep)
-    class_name = ".".join(path_components).removesuffix(".java")
+    path_components = os.path.splitext(relative_path)[0].split(os.sep)
+    class_name = ".".join(path_components)
 
     return path, class_name
 
 
-def walk_tests(source_path):
+def walk_tests(source_path, extension):
     for root, dirs, files in os.walk(source_path):
         for name in files:
-            if name.endswith(".java"):
+            if name.endswith(extension):
                 yield test_components(root, source_path, name)
 
 
@@ -100,16 +113,17 @@ def walk_tests(source_path):
 @cl.option("--source", required=True, help="File containing a list of the classes to be tested")
 @cl.option("--output", required=True, help="Path to the output .csv file")
 @cl.option("--temp", required=True, help="Temporary directory for boogie files")
-def main(jar, source, output, temp):
+@cl.option("--extension", required=True, help="Extension of the test files")
+def main(jar, source, output, temp, extension):
     jar_path = jar
     source_path = source
     output_path = output
     temp_path = temp
     data = []
-    for path, class_name in walk_tests(source_path):
+    for path, class_name in walk_tests(source_path, extension):
         try:
             data.append(benchmark(path, class_name, jar_path, temp_path, n=1))
-        except OSError:
+        except (OSError, RuntimeError):
             lg.warning(f"Skipping {class_name} due to error")
             continue
 

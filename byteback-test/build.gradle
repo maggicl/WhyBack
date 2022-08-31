@@ -1,34 +1,51 @@
 subprojects {
+
 		def core = project(':byteback-core')
-		def system = tasks.register('system', Exec) {
-				def target = project.findProperty("TARGET")
-				if (target == null) {
-						target = project.sourceSets.main.java.srcDirs[0]
+
+		def bytebackRoot = core.installDist.destinationDir
+
+		def system = tasks.register('system') {
+				def sourceDirs = project.sourceSets.main.allSource.srcDirs
+
+				sourceDirs.each { dir ->
+						def name = dir.getName()
+						if (name.equals("java") || name.equals("scala")) {
+								project.exec {
+										def verify = project.findProperty("VERIFY") != null
+										environment 'BYTEBACK_ROOT', bytebackRoot
+										environment 'TEST_JAR', project.shadowJar.archivePath
+										commandLine 'lit', '-a', dir
+								}
+						}
 				}
-				def verify = project.findProperty("VERIFY") != null
-				environment 'BYTEBACK_ROOT', core.installDist.destinationDir
-				environment 'TEST_JAR', project.shadowJar.archivePath
-				commandLine 'lit', '-a', target
 
 				dependsOn core.installDist
 				dependsOn project.shadowJar
 		}
-		def benchmark = tasks.register('benchmark', Exec) {
-				environment 'BYTEBACK_ROOT', core.installDist.destinationDir
+
+		def benchmark = tasks.register('benchmark') {
 				def script = "../benchmark.py"
 				def jar = project.shadowJar.archivePath
-				def source = project.sourceSets.main.java.dirs[0]
-				def benchmark = "./benchmark"
-				def output = "$benchmark/results.csv"
-				def tmp = "$benchmark/tmp"
+				def sourceDirs = project.sourceSets.main.allSource.srcDirs
 
-				project.mkdir(benchmark)
-				project.mkdir(tmp)
+				sourceDirs.each { dir ->
+						project.exec {
+								def source = dir.getName()
+								def benchmark = "./benchmark/$source"
+								def output = "$benchmark/results.csv"
+								def tmp = "$benchmark/tmp"
+								environment 'BYTEBACK_ROOT', bytebackRoot
+								project.mkdir(benchmark)
+								project.mkdir(tmp)
 
-				commandLine 'python', script, '--jar', jar,
-						'--source', source, '--output', output, '--temp', tmp
+								commandLine 'python', script, '--jar', jar,
+										'--source', dir, '--output', output, '--temp', tmp,
+										'--extension', source
+						}
+				}
 
 				dependsOn core.installDist
 				dependsOn project.shadowJar
 		}
+
 }

@@ -58,12 +58,15 @@ def main(csvs, output, prefix):
     print_mean(COL_CONVERSION_OVERHEAD)
     print_mean(COL_VERIFICATION_TIME)
     print_mean(COL_SOURCE_SIZE)
+    print_mean(COL_BYTECODE_SIZE)
     print_mean(COL_BOOGIE_SIZE)
 
     print_total(COL_CONVERSION_TIME)
     print_total(COL_CONVERSION_OVERHEAD)
     print_total(COL_VERIFICATION_TIME)
     print_total(COL_SOURCE_SIZE)
+    print_total(COL_BYTECODE_SIZE)
     print_total(COL_BOOGIE_SIZE)
+
 
 main()

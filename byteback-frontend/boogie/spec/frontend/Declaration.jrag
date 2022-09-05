@@ -1,7 +1,5 @@
 /**
  * Utility methods used by all the subtypes of Declaration.
- *
- * @author paganma
  */
 aspect Declaration {
 

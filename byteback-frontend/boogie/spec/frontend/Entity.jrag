@@ -10,8 +10,6 @@ import java.util.LinkedList;
  * @see Procedure
  * @see Implementation
  * @see TypeDefinition
- *
- * @author paganma
  */
 aspect Entity {
 

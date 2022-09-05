@@ -1,7 +1,5 @@
 /**
  * Utility methods to convert between Declarator and Accessor.
- *
- * @author paganma
  */
 aspect Declarator {
 

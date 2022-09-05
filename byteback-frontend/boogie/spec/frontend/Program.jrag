@@ -1,7 +1,5 @@
 /**
  * Methods related to {@link Program} nodes.
- *
- * @author paganma
  */
 aspect Program {
 

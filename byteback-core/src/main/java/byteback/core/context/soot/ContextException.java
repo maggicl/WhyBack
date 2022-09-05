@@ -3,8 +3,6 @@ package byteback.core.context.soot;
 /**
  * Represents an exception that may concern the services provided by a
  * {@link SootContext} class.
- *
- * @author paganma
  */
 public abstract class ContextException extends RuntimeException {
 

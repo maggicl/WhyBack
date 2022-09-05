@@ -13,8 +13,6 @@ import java.nio.file.Path;
 
 /**
  * Facade class interfacing to the prelude file.
- *
- * @author paganma
  */
 public class Prelude {
 

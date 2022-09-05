@@ -3,8 +3,6 @@ import java.util.Optional;
 /**
  * Methods and collections related to the {@link TypeDefinition}
  * entities.
- *
- * @author paganma
  */
 aspect Type {
 

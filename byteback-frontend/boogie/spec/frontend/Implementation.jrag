@@ -1,8 +1,6 @@
 /**
  * Methods and collections related to the {@link Implementation}
  * entities.
- *
- * @author paganma
  */
 aspect Implementation {
 

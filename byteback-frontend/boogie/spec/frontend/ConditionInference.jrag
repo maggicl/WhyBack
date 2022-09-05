@@ -5,8 +5,6 @@ import java.util.Set;
 /**
  * Functions used to automatically infer `modify` conditions from the
  * assignments of global variables in the program.
- * 
- * @author paganma
  */
 aspect ConditionInference {
 

@@ -2,8 +2,6 @@ package byteback.core.context.soot;
 
 /**
  * Represents a failure in loading a class into the {@link SootContext}.
- *
- * @author paganma
  */
 public class ClassLoadException extends ContextException {
 

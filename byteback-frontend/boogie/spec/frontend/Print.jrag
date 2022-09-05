@@ -2,8 +2,6 @@ import java.util.Iterator;
 
 /**
  * Methods used to pretty-print a Boogie AST.
- *
- * @author paganma
  */
 aspect Print {
 

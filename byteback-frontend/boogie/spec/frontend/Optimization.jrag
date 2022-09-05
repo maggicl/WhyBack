@@ -1,7 +1,5 @@
 /**
  * Generic AST optimization strategies.
- *
- * @author paganma
  */
 aspect Optimization {
 

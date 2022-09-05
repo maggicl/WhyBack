@@ -14,8 +14,6 @@ import soot.jimple.toolkits.infoflow.CachedEquivalentValue;
 
 /**
  * Extracts all the references upon which a given expression may depend.
- *
- * @author paganma
  */
 public class DependencyExtractor extends SootExpressionVisitor<Set<Value>> {
 

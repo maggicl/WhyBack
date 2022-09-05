@@ -1,8 +1,6 @@
 /**
  * Utility methods used to create terminal AST nodes in a more
  * idiomatic way.
- *
- * @author paganma
  */
 aspect Constructor {
 

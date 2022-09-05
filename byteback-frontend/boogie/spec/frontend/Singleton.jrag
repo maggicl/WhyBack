@@ -4,8 +4,6 @@
  * It should be noted that in 99% of the cases creating a singleton
  * instance of an AST node is an extremely bad idea, as any such
  * node can only have a single parent node within a subtree.
- *
- * @author paganma
  */
 aspect Singleton {
 

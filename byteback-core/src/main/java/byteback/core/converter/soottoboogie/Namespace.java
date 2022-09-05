@@ -5,8 +5,6 @@ import soot.SootClass;
 /**
  * Utility class containing the definitions of the special annotations necessary
  * for the conversion between Jimple and Boogie.
- *
- * @author paganma
  */
 public class Namespace {
 

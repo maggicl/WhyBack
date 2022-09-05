@@ -3,8 +3,6 @@ import java.util.LinkedList;
 /**
  * Methods and collections related to the {@link Variable}
  * entities.
- *
- * @author paganma
  */
 aspect Variable {
 

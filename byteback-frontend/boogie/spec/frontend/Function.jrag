@@ -3,8 +3,6 @@ import java.util.LinkedList;
 
 /**
  * Methods and collections related to {@link Function} entities.
- *
- * @author paganma
  */
 aspect Function {
 

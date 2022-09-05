@@ -1,7 +1,5 @@
 /**
  * Unified methods for {@link Signature} instances.
- *
- * @author paganma
  */
 aspect Signature {
 

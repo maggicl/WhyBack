@@ -6,8 +6,6 @@ import soot.Value;
 
 /**
  * Extractor class for a {@link Local} expression.
- *
- * @author paganma
  */
 public class LocalExtractor extends SootExpressionVisitor<Local> {
 

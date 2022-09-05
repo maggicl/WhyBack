@@ -1,7 +1,5 @@
 /**
  * Enhancements to the base ASTNode class.
- *
- * @author paganma
  */
 aspect ASTNode {
 

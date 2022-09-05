@@ -1,6 +1,8 @@
 package byteback.core.representation.soot.type;
 
 import byteback.core.representation.Visitor;
+import soot.DoubleType;
+import soot.PrimType;
 import soot.Type;
 import soot.TypeSwitch;
 
@@ -8,6 +10,15 @@ import soot.TypeSwitch;
  * Base class for a {@link SootType} visitor.
  */
 public abstract class SootTypeVisitor<R> extends TypeSwitch<R> implements Visitor<Type, R> {
+
+	public void caseRealType(final PrimType type) {
+		caseDefault(type);
+	}
+
+	@Override
+	public void caseDoubleType(final DoubleType type) {
+		caseRealType(type);
+	}
 
 	@Override
 	public void caseDefault(Type type) {

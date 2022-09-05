@@ -7,6 +7,7 @@ import byteback.frontend.boogie.ast.FunctionReference;
 import java.util.function.Function;
 import soot.BooleanType;
 import soot.IntType;
+import soot.PrimType;
 import soot.Type;
 
 public class CasterProvider extends SootTypeVisitor<Function<Expression, Expression>> {
@@ -16,7 +17,7 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 	private final Type toType;
 
 	public CasterProvider(final Type toType) {
-		this.toType = toType;
+		this.toType = Type.toMachineType(toType);
 	}
 
 	public void setCaster(final Function<Expression, Expression> caster) {
@@ -24,7 +25,9 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 	}
 
 	@Override
-	public Function<Expression, Expression> visit(final Type fromType) {
+	public Function<Expression, Expression> visit(Type fromType) {
+		fromType = Type.toMachineType(fromType);
+
 		if (fromType == toType) {
 			return Function.identity();
 		} else {
@@ -40,6 +43,50 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 			public void caseIntType(final IntType toType) {
 				setCaster((expression) -> {
 					final FunctionReference casting = Prelude.v().getIntCastingFunction().makeFunctionReference();
+					casting.addArgument(expression);
+
+					return casting;
+				});
+			}
+
+			@Override
+			public void caseDefault(final Type toType) {
+				throw new CastingModelException(fromType, toType);
+			}
+
+		});
+	}
+
+	@Override
+	public void caseIntType(final IntType fromType) {
+		toType.apply(new SootTypeVisitor<>() {
+
+			@Override
+			public void caseRealType(final PrimType type) {
+				setCaster((expression) -> {
+					final FunctionReference casting = Prelude.v().getIntToRealCastingFunction().makeFunctionReference();
+					casting.addArgument(expression);
+
+					return casting;
+				});
+			}
+
+			@Override
+			public void caseDefault(final Type toType) {
+				throw new CastingModelException(fromType, toType);
+			}
+
+		});
+	}
+
+	@Override
+	public void caseRealType(final PrimType fromType) {
+		toType.apply(new SootTypeVisitor<>() {
+
+			@Override
+			public void caseRealType(final PrimType type) {
+				setCaster((expression) -> {
+					final FunctionReference casting = Prelude.v().getIntToRealCastingFunction().makeFunctionReference();
 					casting.addArgument(expression);
 
 					return casting;

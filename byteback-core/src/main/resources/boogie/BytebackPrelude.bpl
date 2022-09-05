@@ -220,6 +220,12 @@ function ~int<a>(a) returns (int);
 axiom ~int(false) == 0;
 axiom ~int(true) == 1;
 
+function ~int_to_real(a: int) returns (real)
+{ real(a) }
+
+function ~real_to_int(a: real) returns (int)
+{ int(a) }
+
 // -------------------------------------------------------------------
 // Missing definitions
 // -------------------------------------------------------------------

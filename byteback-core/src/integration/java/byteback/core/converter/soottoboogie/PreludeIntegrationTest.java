@@ -1,6 +1,7 @@
 package byteback.core.converter.soottoboogie;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import byteback.frontend.boogie.ast.*;
 import org.junit.BeforeClass;
@@ -64,21 +65,21 @@ public class PreludeIntegrationTest {
 	}
 
 	@Test
-	public void GetBoxFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.v().getBoxFunction();
-		assertEquals("~box", function.getName());
-	}
-
-	@Test
-	public void GetUnboxFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
-		final Function function = Prelude.v().getUnboxFunction();
-		assertEquals("~unbox", function.getName());
-	}
-
-	@Test
 	public void GetIntCastingFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
 		final Function function = Prelude.v().getIntCastingFunction();
 		assertEquals("~int", function.getName());
+	}
+
+	@Test
+	public void GetIntToRealCastingFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
+		final Function function = Prelude.v().getIntToRealCastingFunction();
+		assertEquals("~int_to_real", function.getName());
+	}
+
+	@Test
+	public void GetRealToIntCastingFunction_GivenDefaultPrelude_ReturnsExpectedFunction() {
+		final Function function = Prelude.v().getRealToIntCastingFunction();
+		assertEquals("~real_to_int", function.getName());
 	}
 
 	@Test

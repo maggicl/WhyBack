@@ -286,6 +286,16 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~int casting function"));
 	}
 
+	public Function getIntToRealCastingFunction() {
+		return program().lookupFunction("~int_to_real")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~int casting function"));
+	}
+
+	public Function getRealToIntCastingFunction() {
+		return program().lookupFunction("~real_to_int")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~int casting function"));
+	}
+
 	/**
 	 * Getter for the CMP operator.
 	 *
@@ -294,11 +304,6 @@ public class Prelude {
 	public Function getCmpFunction() {
 		return program().lookupFunction("~cmp")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp"));
-	}
-
-	public Function getBoxFunction() {
-		return program().lookupFunction("~box")
-				.orElseThrow(() -> new IllegalStateException("Missing definition for ~box"));
 	}
 
 	public Function getArrayReadFunction() {

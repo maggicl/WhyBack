@@ -5,7 +5,6 @@ import time as tm
 import pandas as pd
 import subprocess as sp
 import click as cl
-import python_loc_counter as locc
 import sys
 
 BYTEBACK_EXECUTABLE = os.path.join(os.getenv("BYTEBACK_ROOT"), "bin/byteback-core")
@@ -32,6 +31,10 @@ def run_boogie(path):
 def run_javap(class_path, class_name, output_path):
     with open(output_path, "w") as f:
         return sp.run(["javap", "-cp", class_path, "-c", class_name], stdout=f)
+
+
+def count_lines(file_path):
+    return int(sp.check_output(f"cat {file_path} | grep -c '[^[:space:]]'", shell=True))
 
 
 def verification_benchmark(path):
@@ -77,18 +80,14 @@ def benchmark(source_path, class_name, jar_path, temp_path, n=5):
         conversion_overhead +=  b / t
         total_verification_time += verification_benchmark(boogie_path)
 
-    source_size = locc.LOCCounter(source_path).getLOC()
-    bytecode_size = locc.LOCCounter(bytecode_path).getLOC()
-    boogie_size = locc.LOCCounter(boogie_path).getLOC()
-
     return {
         "Experiment": class_name,
         "ConversionTime": total_conversion_time / n,
         "ConversionOverhead": conversion_overhead / n,
         "VerificationTime": total_verification_time / n,
-        "SourceSize": source_size['source_loc'],
-        "BytecodeSize": bytecode_size['source_loc'],
-        "BoogieSize": boogie_size['source_loc']
+        "SourceSize": count_lines(source_path),
+        "BytecodeSize": count_lines(bytecode_path),
+        "BoogieSize": count_lines(boogie_path)
     }
 
 

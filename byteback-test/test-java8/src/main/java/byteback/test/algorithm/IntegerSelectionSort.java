@@ -58,17 +58,10 @@ public class IntegerSelectionSort {
 
 	@Pure
 	public static boolean sorted(final int[] a, final int i, final int j) {
+		final int c = Binding.integer();
 		final int k = Binding.integer();
 
-		return forall(k, implies(lt(i, k) & lt(k, j), lte(a[k - 1], a[k])));
-	}
-
-	@Pure
-	public static boolean partitioned(final int[] a, final int c) {
-		final int k = Binding.integer();
-		final int l = Binding.integer();
-
-		return forall(k, forall(l, implies(lte(0, k) & lt(k, c) & lte(c, l) & lt(l, a.length), lte(a[k], a[l]))));
+		return forall(c, forall(k, implies(lt(0, c) &   & lt(k, j), lte(a[k - 1], a[k]))));
 	}
 
 	@Predicate
@@ -92,7 +85,6 @@ public class IntegerSelectionSort {
 	public static void sort(final int[] a) {
 		for (int c = 0; c < a.length; ++c) {
 			invariant(lte(0, c) & lte(c, a.length));
-			invariant(partitioned(a, c));
 			invariant(sorted(a, 0, c));
 
 			final int m = minimum(a, c);

@@ -29,6 +29,8 @@ def main(csvs, output, prefix):
         nf["Group"] = group
         df = df.append(nf)
 
+    df.to_csv("experiments.csv", index=False)
+
     def print_macro(key, value):
         print(f"{LATEX_MACRO}{{{key}}}{{{value}}}")
 

@@ -17,7 +17,7 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 	private final Type toType;
 
 	public CasterProvider(final Type toType) {
-		this.toType = Type.toMachineType(toType);
+		this.toType = toType;
 	}
 
 	public void setCaster(final Function<Expression, Expression> caster) {
@@ -25,9 +25,7 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 	}
 
 	@Override
-	public Function<Expression, Expression> visit(Type fromType) {
-		fromType = Type.toMachineType(fromType);
-
+	public Function<Expression, Expression> visit(final Type fromType) {
 		if (fromType == toType) {
 			return Function.identity();
 		} else {
@@ -73,7 +71,7 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 
 			@Override
 			public void caseDefault(final Type toType) {
-				throw new CastingModelException(fromType, toType);
+				CasterProvider.this.caseDefault(toType);
 			}
 
 		});
@@ -84,9 +82,9 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 		toType.apply(new SootTypeVisitor<>() {
 
 			@Override
-			public void caseRealType(final PrimType type) {
+			public void caseIntType(final IntType type) {
 				setCaster((expression) -> {
-					final FunctionReference casting = Prelude.v().getIntToRealCastingFunction().makeFunctionReference();
+					final FunctionReference casting = Prelude.v().getRealToIntCastingFunction().makeFunctionReference();
 					casting.addArgument(expression);
 
 					return casting;
@@ -95,7 +93,7 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 
 			@Override
 			public void caseDefault(final Type toType) {
-				throw new CastingModelException(fromType, toType);
+				CasterProvider.this.caseDefault(toType);
 			}
 
 		});

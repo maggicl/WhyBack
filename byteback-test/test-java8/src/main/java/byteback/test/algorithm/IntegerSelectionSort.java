@@ -61,7 +61,7 @@ public class IntegerSelectionSort {
 		final int c = Binding.integer();
 		final int k = Binding.integer();
 
-		return forall(c, forall(k, implies(lt(0, c) &   & lt(k, j), lte(a[k - 1], a[k]))));
+		return forall(c, forall(k, implies(lt(0, c) & lt(k, j), lte(a[k - 1], a[k]))));
 	}
 
 	@Predicate

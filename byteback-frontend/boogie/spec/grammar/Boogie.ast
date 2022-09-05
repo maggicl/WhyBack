@@ -181,6 +181,13 @@ FunctionReference : SymbolicReference ::= Argument:Expression*;
 // Old reference
 OldReference : Expression ::= Argument:Expression;
 
+// Casting references
+abstract ConversionReference : Expression ::= Argument:Expression;
+
+IntConversionReference : ConversionReference;
+
+RealConversionReference : ConversionReference;
+
 // Quantifier expression
 QuantifierExpression : UnaryExpression ::= Quantifier TypeParameter* Binding:SetBinding* Option*;
 

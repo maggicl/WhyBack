@@ -301,11 +301,13 @@ QuantifierExpression quantifier_definition
     {: return new QuantifierExpression(e, null, tdl, bl, ol); :}
     ;
 
-SymbolicReference symbolic_reference
+Expression symbolic_reference
     = value_reference.r
     {: return r; :}
     | function_reference.r
     {: return r; :}
+		| conversion_reference.r
+	  {: return r; :}
     ;
 
 ValueReference value_reference
@@ -317,6 +319,13 @@ FunctionReference function_reference
     = accessor.a LPAREN expression_comma_list.el? RPAREN
     {: return new FunctionReference(a, el); :}
     ;
+
+ConversionReference conversion_reference
+		= INT LPAREN expression.e RPAREN
+	  {: return new IntConversionReference(e); :}
+		| REAL LPAREN expression.e RPAREN
+	  {: return new RealConversionReference(e); :}
+		;
 
 OldReference old_reference
     = OLD LPAREN expression.e RPAREN

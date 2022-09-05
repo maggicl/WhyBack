@@ -287,7 +287,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final Type type = arrayReference.getType();
 		final var index = arrayReference.getIndex();
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
-		setCastExpression(Prelude.v().makeArrayAccessExpression(typeAccess, visit(base), visit(index)), type);
+		setCastExpression(Prelude.v().makeArrayAccessExpression(typeAccess, visit(base, base.getType()), visit(index, IntType.v())), type);
 	}
 
 	@Override

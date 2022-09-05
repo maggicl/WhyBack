@@ -480,6 +480,18 @@ aspect Print {
 		builder.append(")");
 	}
 
+	public void IntConversionReference.print(final StringBuilder builder) {
+		builder.append("int(");
+		getArgument().print(builder);
+		builder.append(")");
+	}
+
+	public void RealConversionReference.print(final StringBuilder builder) {
+		builder.append("real(");
+		getArgument().print(builder);
+		builder.append(")");
+	}
+
 	public void QuantifierExpression.print(final StringBuilder builder) {
 		builder.append("(");
 		getQuantifier().print(builder);

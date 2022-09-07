@@ -1,6 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1 | filecheck %s
- * RUN: diff %s.actual.bpl %s.expect.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
 package byteback.test.instance;
 
@@ -50,6 +49,6 @@ public class Dice {
 	}
 }
 /**
- * CHECK: Conversion completed
- * RUN: %{verify} %s.actual.bpl
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 4 verified, 0 errors
  */

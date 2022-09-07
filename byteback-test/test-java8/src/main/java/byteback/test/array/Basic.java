@@ -1,12 +1,12 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl 2>&1
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
 package byteback.test.array;
 
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
 
-public class Simple {
+public class Basic {
 
 	@Pure
 	@Predicate
@@ -38,8 +38,7 @@ public class Simple {
 	}
 
 }
-
 /**
- * CHECK: Conversion completed
- * RUN: %{verify} %t.bpl
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 5 verified, 0 errors
  */

@@ -1,8 +1,11 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ */
 package byteback.test.lambda;
 
 import java.util.function.Function;
 
-public class Simple {
+public class Basic {
 
 	public static Function<Integer, Integer> returnsLambda() {
 		return (x) -> x + 1;

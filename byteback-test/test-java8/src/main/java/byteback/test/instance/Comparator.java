@@ -1,6 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %s.actual.bpl 2>&1 | filecheck %s
- * RUN: diff %s.actual.bpl %s.expect.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
 package byteback.test.instance;
 
@@ -65,6 +64,6 @@ public interface Comparator {
 
 }
 /**
- * CHECK: Conversion complete
- * RUN: %{verify} %s.actual.bpl
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 7 verified, 0 errors
  */

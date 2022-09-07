@@ -1,13 +1,10 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl 2>&1
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
 package byteback.test.controlflow;
 
 public class Switch {
 
-	/**
-	 * CHECK: procedure {{.*}}.intSwitch#int#
-	 */
 	public static int intSwitch(final int a) {
 		int b;
 
@@ -26,6 +23,6 @@ public class Switch {
 
 }
 /**
- * {%verify} %t.bpl | filecheck %s
- * CHECK: Verified
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 2 verified, 0 errors
  */

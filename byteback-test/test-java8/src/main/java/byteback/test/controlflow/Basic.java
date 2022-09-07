@@ -1,7 +1,10 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ */
 package byteback.test.controlflow;
 
 @SuppressWarnings("unused")
-public class Simple {
+public class Basic {
 
 	public static void empty() {
 	}
@@ -87,3 +90,7 @@ public class Simple {
 	}
 
 }
+/**
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 16 verified, 0 errors
+ */

@@ -222,12 +222,12 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
-				setExpression(intConstant.value != 0 ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse());
+				setCastExpression(intConstant.value != 0 ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse(), type);
 			}
 
 			@Override
 			public void caseDefault(final Type type) {
-				setExpression(new NumberLiteral(intConstant.toString()));
+				setCastExpression(new NumberLiteral(intConstant.toString()), IntType.v());
 			}
 
 		});
@@ -237,19 +237,19 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	public void caseLongConstant(final LongConstant longConstant) {
 		final String literal = longConstant.toString();
 		final String strippedLiteral = literal.substring(0, literal.length() - 1);
-		setExpression(new NumberLiteral(strippedLiteral));
+		setCastExpression(new NumberLiteral(strippedLiteral), longConstant.getType());
 	}
 
 	@Override
 	public void caseDoubleConstant(final DoubleConstant doubleConstant) {
-		setExpression(new RealLiteral(doubleConstant.toString()));
+		setCastExpression(new RealLiteral(doubleConstant.toString()), doubleConstant.getType());
 	}
 
 	@Override
 	public void caseFloatConstant(final FloatConstant floatConstant) {
 		final String literal = floatConstant.toString();
 		final String strippedLiteral = literal.substring(0, literal.length() - 1);
-		setExpression(new RealLiteral(strippedLiteral));
+		setCastExpression(new RealLiteral(strippedLiteral), floatConstant.getType());
 	}
 
 	@Override

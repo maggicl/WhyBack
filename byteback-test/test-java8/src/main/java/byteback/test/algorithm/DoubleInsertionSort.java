@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl 2>&1 | filecheck %s
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
 package byteback.test.algorithm;
 
@@ -59,6 +59,6 @@ public class DoubleInsertionSort {
 
 }
 /**
- * CHECK: Conversion completed
- * RUN: %{verify} %t.bpl
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 2 verified, 0 errors
  */

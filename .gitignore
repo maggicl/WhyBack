@@ -9,6 +9,7 @@ compiled
 
 # Ignore benchmark files
 benchmark
+*.tex
 
 # Ignore Emacs files
 .projectile

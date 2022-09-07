@@ -1,9 +1,11 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ */
 package byteback.test.operation;
 
 import static byteback.annotations.Operator.implies;
 import static byteback.annotations.Operator.not;
 
-import byteback.annotations.Contract;
 import byteback.annotations.Contract.*;
 
 public class Boolean {
@@ -64,3 +66,7 @@ public class Boolean {
 	}
 
 }
+/**
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 4 verified, 0 errors
+ */

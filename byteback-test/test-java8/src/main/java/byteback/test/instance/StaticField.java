@@ -1,3 +1,6 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ */
 package byteback.test.instance;
 
 public class StaticField {
@@ -35,3 +38,7 @@ public class StaticField {
 	}
 
 }
+/**
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 3 verified, 0 errors
+ */

@@ -1,12 +1,12 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} | tee %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
 package byteback.test.typeinference;
 
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
 
-public class Simple {
+public class Basic {
 
 	public static void inferPrimitives() {
 		var a = 1;

@@ -1,3 +1,6 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ */
 package byteback.test.instance;
 
 public class StaticInitializer {
@@ -9,3 +12,7 @@ public class StaticInitializer {
 	}
 
 }
+/**
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 1 verified, 0 errors
+ */

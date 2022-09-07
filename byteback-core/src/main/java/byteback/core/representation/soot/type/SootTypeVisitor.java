@@ -2,6 +2,7 @@ package byteback.core.representation.soot.type;
 
 import byteback.core.representation.Visitor;
 import soot.DoubleType;
+import soot.FloatType;
 import soot.PrimType;
 import soot.Type;
 import soot.TypeSwitch;
@@ -17,6 +18,11 @@ public abstract class SootTypeVisitor<R> extends TypeSwitch<R> implements Visito
 
 	@Override
 	public void caseDoubleType(final DoubleType type) {
+		caseRealType(type);
+	}
+
+	@Override
+	public void caseFloatType(final FloatType type) {
 		caseRealType(type);
 	}
 

@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} | tee %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
 package byteback.test.algorithm;
 
@@ -11,7 +11,6 @@ import byteback.annotations.Binding;
 
 public class Summary {
 
-
 	@Pure
 	public static boolean contains(int[] as, int e, int from, int to) {
 		int i = Binding.integer();
@@ -19,18 +18,15 @@ public class Summary {
 		return exists(i, lte(from, i) & lt(i, to) & eq(as[i], e));
 	}
 
-
 	@Predicate
 	public static boolean values_do_not_contain_1(int[] values) {
 		return not(contains(values, 1, 0, values.length));
 	}
 
-
 	@Predicate
 	public static boolean result_is_nonnegative(int[] values, int result) {
 		return gte(result, 0);
 	}
-
 
 	@Require("values_do_not_contain_1")
 	@Ensure("result_is_nonnegative")
@@ -58,5 +54,6 @@ public class Summary {
 
 }
 /**
- * RUN: %{verify} %t.bpl
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 2 verified, 0 errors
  */

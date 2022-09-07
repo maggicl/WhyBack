@@ -55,6 +55,7 @@ def conversion_benchmark(class_path, class_name, output_path):
 
     process = run_byteback(class_path, class_name, output_path)
     output = r.search(process.stderr.decode("utf-8"));
+
     if process.returncode != 0:
         raise RuntimeError("ByteBack execution failed")
     if not output:
@@ -109,18 +110,23 @@ def walk_tests(source_path, extension):
 
 @cl.command()
 @cl.option("--jar", required=True, help="Path to .jar containing the tests")
-@cl.option("--source", required=True, help="File containing a list of the classes to be tested")
+@cl.option("--source", required=True, help="Path to hte source directory")
+@cl.option("--regex", required=False, help="Filter classes by name", default=".*")
 @cl.option("--output", required=True, help="Path to the output .csv file")
 @cl.option("--temp", required=True, help="Temporary directory for boogie files")
 @cl.option("--extension", required=True, help="Extension of the test files")
-def main(jar, source, output, temp, extension):
+def main(jar, source, regex, output, temp, extension):
     jar_path = jar
     source_path = source
     output_path = output
     temp_path = temp
     data = []
+    r = re.compile(regex)
     for path, class_name in walk_tests(source_path, extension):
+        if not r.match(class_name):
+            continue
         try:
+            lg.info(f"Benchmarking {class_name}")
             data.append(benchmark(path, class_name, jar_path, temp_path, n=1))
         except (OSError, RuntimeError):
             lg.warning(f"Skipping {class_name} due to error")

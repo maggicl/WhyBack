@@ -1,3 +1,6 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ */
 package byteback.test.operation;
 
 import byteback.annotations.Contract.*;
@@ -39,3 +42,7 @@ public class Real {
 	}
 
 }
+/**
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 2 verified, 0 errors
+ */

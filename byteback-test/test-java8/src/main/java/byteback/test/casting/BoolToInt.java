@@ -1,12 +1,18 @@
 /**
  * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
-package byteback.test.instance;
+package byteback.test.casting;
 
-public class Unit {
+public class BoolToInt {
 
-	public static <T> T identity(T argument) {
-		return argument;
+	public void implicit() {
+		boolean c = false;
+		int i = 0;
+		if (c) {
+			i = 1;
+		} else {
+			i = 2;
+		}
 	}
 
 }

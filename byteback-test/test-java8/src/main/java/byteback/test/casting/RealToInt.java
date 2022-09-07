@@ -1,12 +1,17 @@
 /**
  * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
-package byteback.test.instance;
+package byteback.test.casting;
 
-public class Unit {
+public class RealToInt {
 
-	public static <T> T identity(T argument) {
-		return argument;
+	public int explicit() {
+		float f = 3.14f;
+		double d = 3.14d;
+		int i = (int)f;
+		i = (int)d;
+
+		return i;
 	}
 
 }

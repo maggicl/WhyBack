@@ -1,3 +1,6 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ */
 package byteback.test.quantifier;
 
 import static byteback.annotations.Quantifier.exists;
@@ -7,7 +10,7 @@ import static byteback.annotations.Operator.*;
 import byteback.annotations.Binding;
 import byteback.annotations.Contract.Pure;
 
-public class Simple {
+public class Basic {
 
 	@Pure
 	public static boolean universalQuantifier() {
@@ -24,3 +27,7 @@ public class Simple {
 	}
 
 }
+/**
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 1 verified, 0 errors
+ */

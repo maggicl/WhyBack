@@ -16,7 +16,11 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 
 	private final Type toType;
 
-	public CasterProvider(final Type toType) {
+	public CasterProvider(Type toType) {
+		if (toType != BooleanType.v()) {
+			toType = Type.toMachineType(toType);
+		}
+
 		this.toType = toType;
 	}
 
@@ -25,7 +29,11 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 	}
 
 	@Override
-	public Function<Expression, Expression> visit(final Type fromType) {
+	public Function<Expression, Expression> visit(Type fromType) {
+		if (fromType != BooleanType.v()) {
+			fromType = Type.toMachineType(fromType);
+		}
+
 		if (fromType == toType) {
 			return Function.identity();
 		} else {
@@ -71,7 +79,7 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 
 			@Override
 			public void caseDefault(final Type toType) {
-				CasterProvider.this.caseDefault(toType);
+				CasterProvider.this.caseDefault(fromType);
 			}
 
 		});
@@ -93,7 +101,7 @@ public class CasterProvider extends SootTypeVisitor<Function<Expression, Express
 
 			@Override
 			public void caseDefault(final Type toType) {
-				CasterProvider.this.caseDefault(toType);
+				CasterProvider.this.caseDefault(fromType);
 			}
 
 		});

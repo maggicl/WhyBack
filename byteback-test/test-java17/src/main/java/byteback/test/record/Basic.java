@@ -1,9 +1,9 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} | tee %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
 package byteback.test.record;
 
-public class Simple {
+public class Basic {
 
 	public record Point(int x, int y) {
 

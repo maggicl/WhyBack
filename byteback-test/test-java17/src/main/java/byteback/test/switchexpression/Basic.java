@@ -1,12 +1,12 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} | tee %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
-package byteback.test.controlflow;
+package byteback.test.switchexpression;
 
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
 
-public class SwitchExpression {
+public class Basic {
 
 	public static int state = 1;
 
@@ -27,4 +27,5 @@ public class SwitchExpression {
 }
 /**
  * RUN: %{verify} %t.bpl
+ * CHECK: Boogie program verifier finished with 3 verified, 0 errors
  */

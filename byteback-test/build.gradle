@@ -6,17 +6,27 @@ subprojects { test ->
 
 		def system = tasks.register('system') {
 				def sourceDirs = project.sourceSets.main.allSource.srcDirs
+				def targetProperty = project.findProperty("TARGET")
+
+				def execute = { target ->
+						test.exec {
+								environment 'BYTEBACK_ROOT', bytebackRoot
+								environment 'TEST_JAR', project.shadowJar.archivePath
+								commandLine 'lit', target
+						}
+				}
 
 				doLast {
 						sourceDirs.each { dir ->
-								def name = dir.getName()
-								if (name.equals("java") || name.equals("scala")) {
-										project.exec {
-												def verify = project.findProperty("VERIFY") != null
-												environment 'BYTEBACK_ROOT', bytebackRoot
-												environment 'TEST_JAR', project.shadowJar.archivePath
-												commandLine 'lit', '-a', dir
+								def target = targetProperty
+
+								if (target == null) {
+										if (dir.getName().equals("java") || dir.getName().equals("scala")) {
+												execute(dir)
 										}
+								} else {
+										println target
+										execute(target)
 								}
 						}
 				}
@@ -53,3 +63,4 @@ subprojects { test ->
 		}
 
 }
+

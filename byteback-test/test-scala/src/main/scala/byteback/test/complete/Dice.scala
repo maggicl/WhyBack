@@ -1,3 +1,6 @@
+/**
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ */
 package byteback.test.complete;
 
 import byteback.annotations.Contract._;
@@ -43,3 +46,7 @@ class Dice {
   }
 
 }
+/**
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 12 verified, 0 errors
+ */

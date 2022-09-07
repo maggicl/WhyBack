@@ -6,6 +6,7 @@ import byteback.annotations.Operator._;
 import byteback.annotations.Operator.{eq => equal};
 
 class Counter() {
+
   var count: Int = 0;
 
   @Predicate

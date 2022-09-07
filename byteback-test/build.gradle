@@ -5,6 +5,7 @@ subprojects { test ->
 		def bytebackRoot = core.installDist.destinationDir
 
 		def system = tasks.register('system') {
+				println test
 				def sourceDirs = project.sourceSets.main.allSource.srcDirs
 				def targetProperty = project.findProperty("TARGET")
 
@@ -19,13 +20,12 @@ subprojects { test ->
 				doLast {
 						sourceDirs.each { dir ->
 								def target = targetProperty
-
 								if (target == null) {
-										if (dir.getName().equals("java") || dir.getName().equals("scala")) {
+										if ((dir.getName().equals("java") || dir.getName().equals("scala"))
+												&& dir.exists()) {
 												execute(dir)
 										}
 								} else {
-										println target
 										execute(target)
 								}
 						}

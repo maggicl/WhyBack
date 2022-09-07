@@ -26,6 +26,7 @@ import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.PostCondition;
 import byteback.frontend.boogie.ast.PreCondition;
+import byteback.frontend.boogie.ast.FrameCondition;
 import byteback.frontend.boogie.ast.ProcedureDeclaration;
 import byteback.frontend.boogie.ast.SymbolicReference;
 import byteback.frontend.boogie.ast.TypeAccess;
@@ -219,6 +220,10 @@ public class ProcedureConverter extends MethodConverter {
 		builder.body(body);
 	}
 
+	public static void buildFrameInvariant(final ProcedureDeclarationBuilder builder) {
+		builder.addSpecification(Prelude.v().makeHeapFrameCondition());
+	}
+
 	public ProcedureDeclaration convert(final SootMethod method) {
 		final var builder = new ProcedureDeclarationBuilder();
 
@@ -227,8 +232,12 @@ public class ProcedureConverter extends MethodConverter {
 			buildSignature(builder, method);
 			buildSpecification(builder, method);
 
-			if (SootMethods.hasBody(method) && !SootMethods.hasAnnotation(method, Namespace.LEMMA_ANNOTATION)) {
-				buildBody(builder, method);
+			if (SootMethods.hasBody(method)) {
+				if(!SootMethods.hasAnnotation(method, Namespace.LEMMA_ANNOTATION)) {
+					buildBody(builder, method);
+				}
+			} else {
+				buildFrameInvariant(builder);
 			}
 		} catch (final ConversionException exception) {
 			throw new ProcedureConversionException(method, exception);

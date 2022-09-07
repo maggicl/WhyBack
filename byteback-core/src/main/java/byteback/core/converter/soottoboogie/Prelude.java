@@ -373,6 +373,14 @@ public class Prelude {
 		return makeHeapAccessExpression(referenceReference, field);
 	}
 
+	public FrameCondition makeHeapFrameCondition() {
+		final ValueReference heapReference = getHeapVariable().makeValueReference();
+		final FrameCondition frameCondition = new FrameCondition();
+		frameCondition.addReference(heapReference);
+
+		return frameCondition;
+	}
+
 	/**
 	 * Builder for an array-access expression.
 	 *

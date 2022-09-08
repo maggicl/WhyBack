@@ -6,8 +6,8 @@ ByteBack is a tool for specifying bytecode programs and for converting them into
 ** Dependencies
 
 In order to verify programs using ByteBack the following dependencies need to be installed separately:
-+ [[https://github.com/Z3Prover/z3][~Z3~]] solver 4.10.2+
-+ [[https://github.com/boogie-org/boogie][~boogie~]] 2.15.0+
++ [[https://github.com/Z3Prover/z3][Z3]] solver 4.10.2+
++ [[https://github.com/boogie-org/boogie][boogie]] 2.15.0+
 
 ** Building
 
@@ -48,10 +48,10 @@ In order to convert the annotated code, ~byteback-annotations~ must be included 
 
 ** Running the Tests
 
-Most of the tests performed by ByteBack are system tests that use ~byteback-core~ on the classes located in the [[./byteback-test][~byteback-test~]] subprojects.
+Most of the tests performed by ByteBack are system tests that use ~byteback-core~ on the classes located in the [[./byteback-test][byteback-test]] subprojects.
 These tests requires the following additional pypi dependencies (also listed at [[byteback-test/requirements.txt]]):
-+ [[https://llvm.org/docs/CommandGuide/lit.html][~lit~]] 15.0.0
-+ [[https://llvm.org/docs/CommandGuide/FileCheck.html][~filecheck~]] 0.0.22
++ [[https://llvm.org/docs/CommandGuide/lit.html][lit]] 15.0.0
++ [[https://llvm.org/docs/CommandGuide/FileCheck.html][filecheck]] 0.0.22
 
 To run the system tests execute the ~system~ gradle task as follows:
 #+begin_src sh

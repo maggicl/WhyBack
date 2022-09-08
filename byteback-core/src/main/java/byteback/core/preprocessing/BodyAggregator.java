@@ -1,8 +1,11 @@
 package byteback.core.preprocessing;
 
+import byteback.core.converter.soottoboogie.Namespace;
 import byteback.core.converter.soottoboogie.method.procedure.DefinitionsCollector;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
+import byteback.core.representation.soot.unit.SootMethods;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -10,6 +13,7 @@ import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 import soot.Body;
 import soot.Local;
+import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
@@ -18,6 +22,7 @@ import soot.grimp.GrimpBody;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceFieldRef;
+import soot.jimple.InvokeExpr;
 import soot.jimple.StaticFieldRef;
 import soot.util.Chain;
 
@@ -42,6 +47,22 @@ public class BodyAggregator {
 				locals.remove(local);
 			}
 		}
+	}
+
+	public boolean hasSideEffects(final Value value) {
+		final AtomicBoolean hasSideEffects = new AtomicBoolean(false);
+
+		value.apply(new SootExpressionVisitor<>() {
+
+				@Override
+				public void caseInvokeExpr(final InvokeExpr invoke) {
+					final SootMethod method = invoke.getMethod();
+					hasSideEffects.set(!SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION));
+				}
+
+			});
+
+		return hasSideEffects.get();
 	}
 
 	public boolean hasLoop(final Local local, final Unit unit) {
@@ -119,13 +140,20 @@ public class BodyAggregator {
 					public void caseLocal(final Local local) {
 						final Set<Unit> definitions = defCollector.definitionsOf(local);
 						final Set<ValueBox> uses = defCollector.valueUsesOf(local);
-						if (definitions.size() == 1 && uses.size() == 1 && !hasLoop(local, unit)) {
-							definitions.iterator().next().apply(new SootStatementVisitor<>() {
+
+						if (definitions.size() == 1 && !hasLoop(local, unit)) {
+							final Unit definition = definitions.iterator().next();
+
+							definition.apply(new SootStatementVisitor<>() {
 
 								@Override
 								public void caseAssignStmt(final AssignStmt assignment) {
-									body.getUnits().remove(definitions.iterator().next());
-									box.setValue(assignment.getRightOp());
+									final Value substute = assignment.getRightOp();
+
+									if (uses.size() == 1 || !hasSideEffects(substute)) {
+										body.getUnits().remove(definition);
+										box.setValue(substute);
+									}
 								}
 
 							});

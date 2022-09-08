@@ -5,6 +5,7 @@ package byteback.test.generics;
 
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
+
 import byteback.annotations.Contract.Pure;
 
 public class List<T> {
@@ -53,6 +54,6 @@ public class List<T> {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 3 verified, 0 errors
+ * RUN: %{verify} %t.bpl | filecheck %s CHECK: Boogie program verifier finished
+ * with 3 verified, 0 errors
  */

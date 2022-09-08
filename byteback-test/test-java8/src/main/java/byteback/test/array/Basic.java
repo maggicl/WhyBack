@@ -20,8 +20,8 @@ public class Basic {
 	}
 
 	public static void literals() {
-		int[] a = { 1, 2, 3, 4 };
-		int[] b = { 5, 4, 3, 2 };
+		int[] a = {1, 2, 3, 4};
+		int[] b = {5, 4, 3, 2};
 	}
 
 	public static void constructors() {
@@ -39,6 +39,6 @@ public class Basic {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 5 verified, 0 errors
+ * RUN: %{verify} %t.bpl | filecheck %s CHECK: Boogie program verifier finished
+ * with 5 verified, 0 errors
  */

@@ -54,7 +54,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 	public void addCall(final TargetedCallStatement callStatement) {
 		final List<ValueReference> targets = new List<ValueReference>();
 		final Type type = getType();
-		
+
 		if (type != VoidType.v() && type != UnknownType.v()) {
 			final ValueReference reference = bodyExtractor.generateReference(type);
 			targets.add(reference);

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import soot.Body;
 import soot.Local;
 import soot.Unit;
@@ -46,18 +45,15 @@ public class DefinitionsCollector {
 	}
 
 	public Stream<UnitValueBoxPair> usesOf(final Local local) {
-		return definitions.get().getDefsOf(local).stream()
-			.flatMap((unit) -> uses.get().getUsesOf(unit).stream());
+		return definitions.get().getDefsOf(local).stream().flatMap((unit) -> uses.get().getUsesOf(unit).stream());
 	}
 
 	public Set<Unit> unitUsesOf(final Local local) {
-		return usesOf(local).map((pair) -> pair.getUnit())
-			.collect(Collectors.toSet());
+		return usesOf(local).map((pair) -> pair.getUnit()).collect(Collectors.toSet());
 	}
 
 	public Set<ValueBox> valueUsesOf(final Local local) {
-		return usesOf(local).map((pair) -> pair.getValueBox())
-			.collect(Collectors.toSet());
+		return usesOf(local).map((pair) -> pair.getValueBox()).collect(Collectors.toSet());
 	}
 
 }

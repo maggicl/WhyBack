@@ -7,7 +7,6 @@ import byteback.core.representation.soot.type.*;
 import byteback.frontend.boogie.ast.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
 import soot.BooleanType;
 import soot.IntType;
 import soot.Local;
@@ -222,7 +221,8 @@ public class ExpressionExtractor extends ExpressionVisitor {
 
 			@Override
 			public void caseBooleanType(final BooleanType type) {
-				setCastExpression(intConstant.value != 0 ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse(), type);
+				setCastExpression(intConstant.value != 0 ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse(),
+						type);
 			}
 
 			@Override
@@ -287,7 +287,8 @@ public class ExpressionExtractor extends ExpressionVisitor {
 		final Type type = arrayReference.getType();
 		final var index = arrayReference.getIndex();
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
-		setCastExpression(Prelude.v().makeArrayAccessExpression(typeAccess, visit(base, base.getType()), visit(index, IntType.v())), type);
+		setCastExpression(Prelude.v().makeArrayAccessExpression(typeAccess, visit(base, base.getType()),
+				visit(index, IntType.v())), type);
 	}
 
 	@Override
@@ -300,7 +301,8 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	public void caseInstanceOfExpr(final InstanceOfExpr instanceOf) {
 		final Value left = instanceOf.getOp();
 		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(instanceOf.getCheckType());
-		setCastExpression(Prelude.v().makeTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference), instanceOf.getType());
+		setCastExpression(Prelude.v().makeTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference),
+				instanceOf.getType());
 	}
 
 	@Override

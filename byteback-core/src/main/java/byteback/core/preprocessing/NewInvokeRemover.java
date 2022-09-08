@@ -1,8 +1,7 @@
 package byteback.core.preprocessing;
 
-import java.util.Iterator;
-
 import byteback.core.representation.soot.body.SootExpressionVisitor;
+import java.util.Iterator;
 import soot.Local;
 import soot.RefType;
 import soot.Unit;
@@ -37,8 +36,8 @@ public class NewInvokeRemover {
 						final Local local = localCreation.newLocal(type);
 						final NewExpr newExpr = Jimple.v().newNewExpr(type);
 						final AssignStmt assignStmt = Jimple.v().newAssignStmt(local, newExpr);
-						final SpecialInvokeExpr initExpr = Jimple.v()
-							.newSpecialInvokeExpr(local, newInvoke.getMethodRef(), newInvoke.getArgs());
+						final SpecialInvokeExpr initExpr = Jimple.v().newSpecialInvokeExpr(local,
+								newInvoke.getMethodRef(), newInvoke.getArgs());
 						final InvokeStmt initStmt = Jimple.v().newInvokeStmt(initExpr);
 						body.getLocals().add(local);
 						body.getUnits().insertBefore(assignStmt, unit);

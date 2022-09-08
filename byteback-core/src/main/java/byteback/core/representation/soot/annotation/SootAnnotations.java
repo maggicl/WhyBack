@@ -2,7 +2,6 @@ package byteback.core.representation.soot.annotation;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationElem;

@@ -36,6 +36,6 @@ public class Counter {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 5 verified, 0 errors
+ * RUN: %{verify} %t.bpl | filecheck %s CHECK: Boogie program verifier finished
+ * with 5 verified, 0 errors
  */

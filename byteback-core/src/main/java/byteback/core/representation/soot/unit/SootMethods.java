@@ -40,13 +40,11 @@ public class SootMethods {
 	}
 
 	public static Optional<AnnotationTag> getAnnotation(final SootMethod method, final String name) {
-		return getAnnotations(method)
-			.filter((tag) -> tag.getType().equals(name)).findFirst();
+		return getAnnotations(method).filter((tag) -> tag.getType().equals(name)).findFirst();
 	}
 
 	public Optional<AnnotationElem> getAnnotationValue(final SootMethod method, final String name) {
-		return getAnnotation(method, name)
-			.flatMap((annotation) -> SootAnnotations.getValue(annotation));
+		return getAnnotation(method, name).flatMap((annotation) -> SootAnnotations.getValue(annotation));
 	}
 
 	public static boolean hasAnnotation(final SootMethod method, final String name) {

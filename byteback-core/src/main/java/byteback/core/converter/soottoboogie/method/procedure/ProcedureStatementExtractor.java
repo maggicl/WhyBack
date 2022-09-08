@@ -22,10 +22,8 @@ import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
-
 import java.util.Iterator;
 import java.util.function.Supplier;
-
 import soot.BooleanType;
 import soot.IntType;
 import soot.Local;
@@ -112,7 +110,8 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 			@Override
 			public void caseStaticFieldRef(final StaticFieldRef staticFieldReference) {
 				final SootField field = staticFieldReference.getField();
-				final Expression assigned = new ProcedureExpressionExtractor(left.getType(), bodyExtractor).visit(right);
+				final Expression assigned = new ProcedureExpressionExtractor(left.getType(), bodyExtractor)
+						.visit(right);
 				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
 				final Expression boogieBase = ValueReference
 						.of(ReferenceTypeConverter.typeName(field.getDeclaringClass()));
@@ -127,12 +126,14 @@ public class ProcedureStatementExtractor extends SootStatementVisitor<Body> {
 				final Expression assigned = makeExpressionExtractor(left.getType()).visit(right);
 				final Expression indexReference = makeExpressionExtractor(IntType.v()).visit(index);
 				final Expression boogieBase = new ExpressionExtractor(UnknownType.v()).visit(base);
-				addStatement(Prelude.v().makeArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase, indexReference, assigned));
+				addStatement(Prelude.v().makeArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
+						indexReference, assigned));
 			}
 
 			@Override
 			public void caseDefault(final Value value) {
-				throw new StatementConversionException(assignment, "Unknown left hand side argument in assignment: " + assignment);
+				throw new StatementConversionException(assignment,
+						"Unknown left hand side argument in assignment: " + assignment);
 			}
 
 		});

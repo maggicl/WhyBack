@@ -26,7 +26,7 @@ public class BinarySearch {
 
 	@Predicate
 	public static boolean result_is_index(int a[], int n, int left, int right, int returns) {
-  	return implies(lte(0, returns), eq(a[returns], n));
+		return implies(lte(0, returns), eq(a[returns], n));
 	}
 
 	@Predicate
@@ -59,6 +59,6 @@ public class BinarySearch {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 2 verified, 0 errors
+ * RUN: %{verify} %t.bpl | filecheck %s CHECK: Boogie program verifier finished
+ * with 2 verified, 0 errors
  */

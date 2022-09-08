@@ -1,14 +1,13 @@
 package byteback.core.preprocessing;
 
+import byteback.core.converter.soottoboogie.method.procedure.DefinitionsCollector;
+import byteback.core.representation.soot.body.SootExpressionVisitor;
+import byteback.core.representation.soot.body.SootStatementVisitor;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import byteback.core.converter.soottoboogie.method.procedure.DefinitionsCollector;
-import byteback.core.representation.soot.body.SootExpressionVisitor;
-import byteback.core.representation.soot.body.SootStatementVisitor;
 import soot.Body;
 import soot.Local;
 import soot.Unit;

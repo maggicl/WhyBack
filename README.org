@@ -1,2 +1,5 @@
 #+TITLE: ByteBack
 #+STARTUP: noindent
+
+ByteBack is a tool for converting bytecode annotated with [[./byteback-annotations][BBLib]] into the Boogie intermediate verification language.
+

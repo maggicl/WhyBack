@@ -32,11 +32,11 @@ The ~byteback-core~ executable can be invoked with the following options:
 	byteback-core -cp {classpath...} -c {target class...} -o {output Boogie file...}
 #+end_src
 
-- ~-cp~ :: The ~-cp~ option declares a classpath to be analyzed by ByteBack. This option can be repeated to specify multiple classpaths.
+- classpath :: The ~-cp~ option declares a classpath to be analyzed by ByteBack. This option can be repeated to specify multiple classpaths.
 
-- ~-c~ :: The ~-c~ option declares the fully qualified name of the class from which the analysis will start (i.e. the classes from which ByteBack will start the conversion). This option can be repeated to declare multiple starting classes. By including a single class, ByteBack will also recursively perform the conversion of any eventual class referenced by that class, excluding standard library classes.
+- starting class :: The ~-c~ option declares the fully qualified name of the class from which the analysis will start (i.e. the classes from which ByteBack will start the conversion). This option can be repeated to declare multiple starting classes. By including a single class, ByteBack will also recursively perform the conversion of any eventual class referenced by that class, excluding standard library classes.
 
-- ~-o~ :: Finally, the ~-o~ option will correspond to the path to the output Boogie file. If this option is absent the Boogie program will be printed to stdout.
+- output file :: Finally, the ~-o~ option will correspond to the path to the output Boogie file. If this option is absent the Boogie program will be printed to stdout.
 
 After generating the output Boogie program it can be verified using the ~boogie~ verification tool.
 

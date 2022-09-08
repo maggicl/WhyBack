@@ -6,7 +6,6 @@ package byteback.test.algorithm;
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
 import static byteback.annotations.Quantifier.*;
-
 import byteback.annotations.Binding;
 
 public class SquareSortedArray {
@@ -56,14 +55,15 @@ public class SquareSortedArray {
 				i += 1;
 			}
 
+
 			c -= 1;
 		}
 
 		return b;
 	}
-
+	
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s CHECK: Boogie program verifier finished
- * with 2 verified, 0 errors
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 2 verified, 0 errors
  */

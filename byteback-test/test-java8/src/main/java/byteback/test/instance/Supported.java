@@ -13,6 +13,6 @@ public class Supported {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s CHECK: Boogie program verifier finished
- * with 3 verified, 0 errors
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 3 verified, 0 errors
  */

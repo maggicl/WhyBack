@@ -37,11 +37,11 @@ public class Summary {
 			invariant(gte(result, 0));
 
 			result += switch (value) {
-				case 0 :
+				case 0:
 					yield (1);
-				case 1 :
+				case 1:
 					yield (-1);
-				default :
+				default:
 					if (value > 0)
 						yield (value);
 					else
@@ -54,6 +54,6 @@ public class Summary {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s CHECK: Boogie program verifier finished
- * with 2 verified, 0 errors
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 2 verified, 0 errors
  */

@@ -3,12 +3,11 @@
  */
 package byteback.test.controlflow;
 
-import static byteback.annotations.Contract.*;
-import static byteback.annotations.Operator.*;
-import static byteback.annotations.Quantifier.*;
-
 import byteback.annotations.Binding;
 import byteback.annotations.Contract.Pure;
+import static byteback.annotations.Quantifier.*;
+import static byteback.annotations.Operator.*;
+import static byteback.annotations.Contract.*;
 
 public class EnhancedFor {
 
@@ -27,6 +26,6 @@ public class EnhancedFor {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s CHECK: Boogie program verifier finished
- * with 2 verified, 0 errors
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 2 verified, 0 errors
  */

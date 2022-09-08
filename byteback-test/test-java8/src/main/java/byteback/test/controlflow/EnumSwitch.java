@@ -13,12 +13,12 @@ public class EnumSwitch {
 		int b;
 
 		switch (a) {
-			case BANANA :
+			case BANANA:
 				b = 1;
 				break;
-			case APPLE :
+			case APPLE:
 				b = 2;
-			case ORANGE :
+			case ORANGE:
 				b = 3;
 				break;
 			default :

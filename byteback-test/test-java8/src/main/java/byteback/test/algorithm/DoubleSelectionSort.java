@@ -105,6 +105,6 @@ public class DoubleSelectionSort {
 
 }
 /**
- * RUN: %{verify} %t.bpl CHECK: Boogie program verifier finished with 2
- * verified, 0 errors
+ * RUN: %{verify} %t.bpl
+ * CHECK: Boogie program verifier finished with 2 verified, 0 errors
  */

@@ -3,9 +3,9 @@
  */
 package byteback.test.quantifier;
 
-import static byteback.annotations.Operator.*;
 import static byteback.annotations.Quantifier.exists;
 import static byteback.annotations.Quantifier.forall;
+import static byteback.annotations.Operator.*;
 
 import byteback.annotations.Binding;
 import byteback.annotations.Contract.Pure;
@@ -28,6 +28,6 @@ public class Basic {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s CHECK: Boogie program verifier finished
- * with 1 verified, 0 errors
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 1 verified, 0 errors
  */

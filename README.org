@@ -9,7 +9,7 @@ In order to verify programs using ByteBack the following dependencies need to be
 + [[https://github.com/Z3Prover/z3][Z3]] solver 4.10.2+
 + [[https://github.com/boogie-org/boogie][boogie]] 2.15.0+
 
-Z3 can be installed with pypi using the [[./requirements.txt]] file, while Boogie can be installed by using the [[https://dotnet.microsoft.com/en-us/download/dotnet/6.0][.NET SDK 6]] and issuing the following command:
+Z3 can be installed with pypi using the [[./requirements.txt]] file, while Boogie can be installed by using the [[https://dotnet.microsoft.com/en-us/download/dotnet/6.0][.NET SDK 6]], issuing the following command:
 #+begin_src sh
 	dotnet tool install -g boogie
 #+end_src
@@ -31,7 +31,6 @@ It is possible to call ~byteback-core~ by using the execution script, which will
 ** Using ByteBack core
 
 ~byteback-core~ is a converter for Java bytecode into the Boogie intermediate verification language.
-
 The ~byteback-core~ executable can be invoked with the following options:
 #+begin_src sh
 	byteback-core -cp {classpath...} -c {target class...} -o {output Boogie file...}

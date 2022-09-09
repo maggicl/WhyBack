@@ -9,6 +9,11 @@ In order to verify programs using ByteBack the following dependencies need to be
 + [[https://github.com/Z3Prover/z3][Z3]] solver 4.10.2+
 + [[https://github.com/boogie-org/boogie][boogie]] 2.15.0+
 
+Z3 can be installed with pypi using the [[./requirements.txt]] file, while Boogie can be installed by using the [[https://dotnet.microsoft.com/en-us/download/dotnet/6.0][.NET SDK 6]] and issuing the following command:
+#+begin_src sh
+	dotnet tool install -g boogie
+#+end_src
+
 ** Building
 
 To build the project use the following command:
@@ -62,3 +67,18 @@ It is also possible to specify a single test by using the ~TARGET~ property:
 #+begin_src sh
 	gradlew system -PTARGET={Path to the test file (.java or .scala)}
 #+end_src
+
+** Running the Experiments
+
+To run the experiments the following dependencies are required:
++ [[https://pandas.pydata.org/][pandas]] 1.4.3
++ [[https://click.palletsprojects.com/en/8.1.x/][click]] 8.1.3
+
+As for the tests dependencies, these dependencies can be found in [[./byteback-test/requirements.txt]]
+
+To run the experiments run the following gradle task:
+#+begin_src sh
+	gradle benchmark
+#+end_src
+
+This command will produce output in [[./byteback-test/test-java8]], [[./byteback-test/test-java17]], [[./byteback-test/test-scala]], under the subdirectory ~benchmark~. The results of the experiments can be found in the file ~results.csv~.

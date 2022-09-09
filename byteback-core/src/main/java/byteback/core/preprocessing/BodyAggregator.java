@@ -23,6 +23,9 @@ import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InvokeExpr;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewExpr;
+import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticFieldRef;
 import soot.util.Chain;
 
@@ -58,6 +61,21 @@ public class BodyAggregator {
 				public void caseInvokeExpr(final InvokeExpr invoke) {
 					final SootMethod method = invoke.getMethod();
 					hasSideEffects.set(!SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION));
+				}
+
+				@Override
+				public void caseSpecialInvokeExpr(final SpecialInvokeExpr invoke) {
+					hasSideEffects.set(true);
+				}
+
+				@Override
+				public void caseNewExpr(final NewExpr newExpr) {
+					hasSideEffects.set(true);
+				}
+
+				@Override
+				public void caseNewArrayExpr(final NewArrayExpr newExpr) {
+					hasSideEffects.set(true);
 				}
 
 			});
@@ -148,11 +166,11 @@ public class BodyAggregator {
 
 								@Override
 								public void caseAssignStmt(final AssignStmt assignment) {
-									final Value substute = assignment.getRightOp();
+									final Value substitute = assignment.getRightOp();
 
-									if (uses.size() == 1 || !hasSideEffects(substute)) {
+									if (uses.size() == 1 || !hasSideEffects(substitute)) {
 										body.getUnits().remove(definition);
-										box.setValue(substute);
+										box.setValue(substitute);
 									}
 								}
 

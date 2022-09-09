@@ -6,6 +6,7 @@ import soot.grimp.AbstractGrimpValueSwitch;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.InvokeExpr;
+import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.VirtualInvokeExpr;
 
@@ -32,6 +33,11 @@ public abstract class SootExpressionVisitor<R> extends AbstractGrimpValueSwitch<
 
 	@Override
 	public void caseDynamicInvokeExpr(final DynamicInvokeExpr invoke) {
+		caseInvokeExpr(invoke);
+	}
+
+	@Override
+	public void caseSpecialInvokeExpr(final SpecialInvokeExpr invoke) {
 		caseInvokeExpr(invoke);
 	}
 

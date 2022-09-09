@@ -40,7 +40,10 @@ The ~byteback-core~ executable can be invoked with the following options:
 
 - starting class :: The ~-c~ option declares the fully qualified name of the class from which the analysis will start (i.e. the classes from which ByteBack will start the conversion). This option can be repeated to declare multiple starting classes. By including a single class, ByteBack will also recursively perform the conversion of any eventual class referenced by that class, excluding standard library classes.
 
-- output file :: Finally, the ~-o~ option will correspond to the path to the output Boogie file. If this option is absent the Boogie program will be printed to stdout.
+- output file :: The ~-o~ option will correspond to the path to the output Boogie file. If this option is absent the Boogie program will be printed to stdout.
+
+- prelude :: The ~-p~ option allows the user to specify an alternative prelude to the default one located in
+[[./byteback-core/src/main/resources/boogie/BytebackPrelude.bpl]].
 
 After generating the output Boogie program it can be verified using the ~boogie~ verification tool.
 
@@ -77,7 +80,7 @@ As for the tests dependencies, these dependencies can be found in [[./byteback-t
 
 To run the experiments run the following gradle task:
 #+begin_src sh
-	gradle benchmark
+	./gradlew benchmark
 #+end_src
 
 This command will produce output in [[./byteback-test/test-java8]], [[./byteback-test/test-java17]], [[./byteback-test/test-scala]], under the subdirectory ~benchmark~. The results of the experiments can be found in the file ~results.csv~.

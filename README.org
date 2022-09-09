@@ -18,7 +18,7 @@ Z3 can be installed with pypi using the [[./requirements.txt]] file, while Boogi
 
 To build the project use the following command:
 #+begin_src sh
-	gradlew install
+	./gradlew install
 #+end_src
 
 This command will build the .jar archive of the core program ~byteback-core~ in
@@ -59,12 +59,12 @@ These tests requires the following additional pypi dependencies (also listed at 
 
 To run the system tests execute the ~system~ gradle task as follows:
 #+begin_src sh
-	gradlew system
+	./gradlew system
 #+end_src
 
 It is also possible to specify a single test by using the ~TARGET~ property:
 #+begin_src sh
-	gradlew system -PTARGET={Path to the test file (.java or .scala)}
+	./gradlew system -PTARGET={Path to the test file (.java or .scala)}
 #+end_src
 
 ** Running the Experiments

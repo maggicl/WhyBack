@@ -36,6 +36,10 @@ public class DefinitionsCollector {
 		return definitionsOf(local).size() == 1;
 	}
 
+	public boolean hasSingleUse(final Local local) {
+		return valueUsesOf(local).size() == 1;
+	}
+
 	public List<Unit> definitionsOfAt(final Local local, final Unit unit) {
 		return definitions.get().getDefsOfAt(local, unit);
 	}

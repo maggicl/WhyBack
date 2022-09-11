@@ -106,5 +106,5 @@ public class IntegerSelectionSort {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 2 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 3 verified, 0 errors
  */

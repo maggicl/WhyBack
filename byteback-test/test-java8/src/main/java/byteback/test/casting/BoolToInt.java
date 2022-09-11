@@ -5,14 +5,18 @@ package byteback.test.casting;
 
 public class BoolToInt {
 
-	public void implicit() {
-		boolean c = false;
+	boolean t;
+
+	public int implicit() {
 		int i = 0;
-		if (c) {
+
+		if (t) {
 			i = 1;
 		} else {
 			i = 2;
 		}
+
+		return i;
 	}
 
 }

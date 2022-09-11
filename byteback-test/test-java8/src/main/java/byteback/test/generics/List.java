@@ -45,8 +45,14 @@ public class List<T> {
 		return tail;
 	}
 
+	public static void main() {
+		final Object a = new Object();
+		final List<Object> l = new List<>(a, null);
+		assertion(eq(l.getElement(), a));
+	}
+
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 2 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 3 verified, 0 errors
  */

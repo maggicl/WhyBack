@@ -15,10 +15,17 @@ public class IntToReal {
 
 	public static double explicit() {
 		int a = 1;
-		float f = a;
-		double d = f;
+		double f;
 
-		return d;
+		f = a;
+
+		if (a == 1) {
+			f = a;
+			double d = f;
+			f = f + d;
+		}
+
+		return f;
 	}
 
 }

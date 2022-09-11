@@ -6,11 +6,11 @@ import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.representation.soot.unit.SootMethods;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
-import java.util.Stack;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
+
 import soot.Body;
 import soot.Local;
 import soot.SootMethod;
@@ -19,13 +19,13 @@ import soot.Value;
 import soot.ValueBox;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
+import soot.grimp.NewInvokeExpr;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
-import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticFieldRef;
 import soot.util.Chain;
 
@@ -53,19 +53,20 @@ public class BodyAggregator {
 	}
 
 	public boolean hasSideEffects(final Value value) {
-		final AtomicBoolean hasSideEffects = new AtomicBoolean(false);
 
-		value.apply(new SootExpressionVisitor<>() {
+		final List<Value> uses = Stream.concat(value.getUseBoxes().stream()
+				.map((useBox) -> useBox.getValue()), Stream.of(value))
+				.toList();
+
+		for (final Value use : uses) {
+			final AtomicBoolean hasSideEffects = new AtomicBoolean(false);
+
+			use.apply(new SootExpressionVisitor<>() {
 
 				@Override
 				public void caseInvokeExpr(final InvokeExpr invoke) {
 					final SootMethod method = invoke.getMethod();
 					hasSideEffects.set(!SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION));
-				}
-
-				@Override
-				public void caseSpecialInvokeExpr(final SpecialInvokeExpr invoke) {
-					hasSideEffects.set(true);
 				}
 
 				@Override
@@ -78,63 +79,56 @@ public class BodyAggregator {
 					hasSideEffects.set(true);
 				}
 
+				@Override
+				public void caseNewInvokeExpr(final NewInvokeExpr invoke) {
+					hasSideEffects.set(true);
+				}
+
 			});
 
-		return hasSideEffects.get();
+			if (hasSideEffects.get()) {
+				return true;
+			}
+
+		}
+
+		return false;
 	}
 
-	public boolean hasLoop(final Local local, final Unit unit) {
-		final Stack<Local> next = new Stack<>();
-		final HashSet<Local> visited = new HashSet<>();
+	public boolean assignsReference(final Local local) {
+		for (final Unit use : defCollector.unitUsesOf(local)) {
+			final AtomicBoolean impureAssignment = new AtomicBoolean(false);
 
-		next.push(local);
+			use.apply(new SootStatementVisitor<>() {
 
-		while (!next.isEmpty()) {
-			final Local current = next.pop();
-			final Set<Unit> uses = defCollector.unitUsesOf(current);
-			visited.add(current);
+				@Override
+				public void caseAssignStmt(final AssignStmt assignment) {
+					final Value left = assignment.getLeftOp();
 
-			for (Unit use : uses) {
-				final AtomicBoolean looping = new AtomicBoolean(false);
+					left.apply(new SootExpressionVisitor<>() {
 
-				use.apply(new SootStatementVisitor<>() {
+						@Override
+						public void caseArrayRef(final ArrayRef reference) {
+							impureAssignment.set(true);
+						}
 
-					@Override
-					public void caseAssignStmt(final AssignStmt assignment) {
-						assignment.getLeftOp().apply(new SootExpressionVisitor<>() {
+						@Override
+						public void caseInstanceFieldRef(final InstanceFieldRef reference) {
+							impureAssignment.set(true);
+						}
 
-							@Override
-							public void caseLocal(final Local value) {
-								if (!visited.contains(local)) {
-									next.push(local);
-								} else if (local == value) {
-									looping.set(true);
-								}
-							}
+						@Override
+						public void caseStaticFieldRef(final StaticFieldRef reference) {
+							impureAssignment.set(true);
+						}
 
-							@Override
-							public void caseArrayRef(final ArrayRef reference) {
-								looping.set(true);
-							}
-
-							@Override
-							public void caseStaticFieldRef(final StaticFieldRef reference) {
-								looping.set(true);
-							}
-
-							@Override
-							public void caseInstanceFieldRef(final InstanceFieldRef reference) {
-								looping.set(true);
-							}
-
-						});
-					}
-
-				});
-
-				if (looping.get()) {
-					return true;
+					});
 				}
+
+			});
+
+			if (impureAssignment.get()) {
+				return true;
 			}
 		}
 
@@ -149,29 +143,38 @@ public class BodyAggregator {
 		while (iterator.hasNext()) {
 			final Unit unit = iterator.next();
 
-			for (final ValueBox box : unit.getUseBoxes()) {
-				final Value value = box.getValue();
+			for (ValueBox useBox : unit.getUseBoxes()) {
+				final Value use = useBox.getValue();
 
-				value.apply(new SootExpressionVisitor<>() {
+				use.apply(new SootExpressionVisitor<>() {
 
 					@Override
 					public void caseLocal(final Local local) {
-						final Set<Unit> definitions = defCollector.definitionsOf(local);
-						final Set<ValueBox> uses = defCollector.valueUsesOf(local);
+						final List<Unit> defs = defCollector.definitionsOfAt(local, unit);
 
-						if (definitions.size() == 1 && !hasLoop(local, unit)) {
-							final Unit definition = definitions.iterator().next();
+						if (defs.size() == 1) {
+							final Unit def = defs.iterator().next();
 
-							definition.apply(new SootStatementVisitor<>() {
+							def.apply(new SootStatementVisitor<>() {
 
 								@Override
 								public void caseAssignStmt(final AssignStmt assignment) {
+									final Local assigned = local;
 									final Value substitute = assignment.getRightOp();
 
-									if (uses.size() == 1 || !hasSideEffects(substitute)) {
-										body.getUnits().remove(definition);
-										box.setValue(substitute);
+									if (!hasSideEffects(substitute)
+											&& (defCollector.hasSingleUse(assigned) || !assignsReference(assigned) )) {
+
+										body.getUnits().remove(def);
+										useBox.setValue(substitute);
 									}
+
+								}
+
+								@Override
+								public void caseDefault(final Unit statement) {
+									throw new RuntimeException("Invalid assignment statement for local "
+											+ local + " " + statement);
 								}
 
 							});

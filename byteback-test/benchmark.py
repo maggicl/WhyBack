@@ -24,8 +24,12 @@ def run_byteback(class_path, class_name, output_path):
                    "-o", output_path], stdout=sp.PIPE, stderr=sp.PIPE)
 
 
-def run_boogie(path):
-    return sp.run([BOOGIE_EXECUTABLE, "/infer:j", path], stdout=sp.PIPE)
+def run_boogie(path, infer):
+    command = [BOOGIE_EXECUTABLE]
+    if infer: command.append("/infer:j")
+    command.append(path)
+    
+    return sp.run(command, stdout=sp.PIPE)
 
 
 def run_javap(class_path, class_name, output_path):
@@ -37,10 +41,10 @@ def count_lines(file_path):
     return int(sp.check_output(f"cat {file_path} | grep -c '[^[:space:]]'", shell=True))
 
 
-def verification_benchmark(path):
+def verification_benchmark(path, infer):
     r = re.compile("Boogie program verifier finished with [0-9]+ verified, 0 errors")
     def f():
-        process = run_boogie(path)
+        process = run_boogie(path, infer)
         if not r.search(process.stdout.decode("utf-8")):
             raise RuntimeError("Boogie program could not be verified")
         if process.returncode != 0:
@@ -66,7 +70,8 @@ def conversion_benchmark(class_path, class_name, output_path):
     return int(numbers[0]), int(numbers[1])
 
 
-def benchmark(source_path, class_name, jar_path, temp_path, n=5):
+def benchmark(source_path, class_name, jar_path, temp_path, infer_regex=".*", n=5):
+    r = re.compile(infer_regex)
     conversion_time = 0
     conversion_overhead = 0
     total_conversion_time = 0
@@ -79,7 +84,7 @@ def benchmark(source_path, class_name, jar_path, temp_path, n=5):
         b, t = conversion_benchmark(jar_path, class_name, boogie_path)
         total_conversion_time += t
         conversion_overhead +=  b / t
-        total_verification_time += verification_benchmark(boogie_path)
+        total_verification_time += verification_benchmark(boogie_path, r.match(source_path))
 
     return {
         "Experiment": class_name,
@@ -111,24 +116,25 @@ def walk_tests(source_path, extension):
 @cl.command()
 @cl.option("--jar", required=True, help="Path to .jar containing the tests")
 @cl.option("--source", required=True, help="Path to hte source directory")
-@cl.option("--regex", required=False, help="Filter classes by name", default=".*")
+@cl.option("--class-filter", required=False, help="Filter classes by name", default=".*")
 @cl.option("--output", required=True, help="Path to the output .csv file")
 @cl.option("--temp", required=True, help="Temporary directory for boogie files")
 @cl.option("--repetitions", required=True, type=cl.INT, help="Repetitions for each test")
+@cl.option("--infer-filter", required=False, help="Classes that need the /infer:j Boogie option", default=".*")
 @cl.option("--extension", required=True, help="Extension of the test files")
-def main(jar, source, regex, output, temp, repetitions, extension):
+def main(jar, source, class_filter, output, temp, repetitions, infer_filter, extension):
     jar_path = jar
     source_path = source
     output_path = output
     temp_path = temp
     data = []
-    r = re.compile(regex)
+    r = re.compile(class_filter)
     for path, class_name in walk_tests(source_path, extension):
         if not r.match(class_name):
             continue
         try:
             lg.info(f"Benchmarking {class_name}")
-            data.append(benchmark(path, class_name, jar_path, temp_path, n=repetitions))
+            data.append(benchmark(path, class_name, jar_path, temp_path, infer_filter, repetitions))
         except (OSError, RuntimeError):
             lg.warning(f"Skipping {class_name} due to error")
             continue

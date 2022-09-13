@@ -29,7 +29,7 @@ public class DoubleMax {
 	}
 
 	@Predicate
-	public static boolean result_is_max(double a[], int t) {
+	public static boolean result_is_max(double a[], double t) {
 		return max_in_range(a, t, 0, a.length);
 	}
 
@@ -54,5 +54,5 @@ public class DoubleMax {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 1 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 2 verified, 0 errors
  */

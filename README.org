@@ -72,7 +72,7 @@ It is also possible to specify a single test by using the ~TARGET~ property:
 
 ** Running the Experiments
 
-Experiments are performed using the Python 3 script [[./byteback-test/benchmark.py]]
+Experiments are performed using the Python 3 script [[./byteback-test/benchmark.py]].
 To run the experiments the following Python dependencies are required:
 + [[https://pandas.pydata.org/][pandas]] 1.4.3
 + [[https://click.palletsprojects.com/en/8.1.x/][click]] 8.1.3

@@ -51,7 +51,7 @@ subprojects { test ->
 
 										commandLine 'python', script, '--jar', jar,
 												'--source', dir, '--output', output, '--temp', tmp,
-												'--extension', source, '--repetitions', 1,
+												'--extension', source, '--repetitions', 5,
 												'--infer-filter', '.*java17.*Summary.java|.*java8.*EnhancedFor.java'
 								}
 						}

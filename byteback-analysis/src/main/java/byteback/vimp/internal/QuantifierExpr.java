@@ -37,7 +37,7 @@ public abstract class QuantifierExpr implements LogicExpr {
 		this.freeLocals = freeLocals;
 	}
 
-	public Chain<Local> cloneFreeLocals() {
+	protected Chain<Local> cloneFreeLocals() {
 		final Chain<Local> freeLocals =  new HashChain<>();
 
 		for (Local local : getFreeLocals()) {
@@ -47,7 +47,7 @@ public abstract class QuantifierExpr implements LogicExpr {
 		return freeLocals;
 	}
 
-	public abstract String getSymbol();
+	protected abstract String getSymbol();
 
 	@Override
 	public void toString(final UnitPrinter up) {

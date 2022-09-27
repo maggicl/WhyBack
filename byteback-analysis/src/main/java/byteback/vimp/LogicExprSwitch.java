@@ -1,11 +1,11 @@
 package byteback.vimp;
 
-import byteback.vimp.internal.ExistentialQuantifierExpr;
+import byteback.vimp.internal.LogicExistsExpr;
 import byteback.vimp.internal.LogicAndExpr;
 import byteback.vimp.internal.LogicIffExpr;
 import byteback.vimp.internal.LogicImpliesExpr;
 import byteback.vimp.internal.LogicOrExpr;
-import byteback.vimp.internal.UniversalQuantifierExpr;
+import byteback.vimp.internal.LogicForallExpr;
 import soot.Value;
 import soot.util.Switch;
 
@@ -27,14 +27,14 @@ public interface LogicExprSwitch extends Switch {
 		defaultCase(v);
 	}
 
-	default void caseUniversalQuantifier(final UniversalQuantifierExpr v) {
+	default void caseLogicForallExpr(final LogicForallExpr v) {
 		defaultCase(v);
 	}
 
-	default void caseExistentialQuantifier(final ExistentialQuantifierExpr v) {
+	default void caseLogicExistsExpr(final LogicExistsExpr v) {
 		defaultCase(v);
 	}
 
 	void defaultCase(final Value v);
-	
+
 }

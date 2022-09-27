@@ -12,7 +12,7 @@ public class LogicAndExpr extends AbstractLogicBinopExpr implements LogicExpr {
 	}
 
 	public String getSymbol() {
-		return "∧";
+		return " ∧ ";
 	}
 
 	public LogicAndExpr clone() {

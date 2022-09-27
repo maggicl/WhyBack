@@ -1,6 +1,6 @@
 package byteback.vimp.internal;
 
-import byteback.LogicType;
+import byteback.vimp.LogicType;
 import soot.jimple.Expr;
 
 public interface LogicExpr extends Expr {

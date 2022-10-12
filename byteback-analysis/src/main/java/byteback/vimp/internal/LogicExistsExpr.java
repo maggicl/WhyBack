@@ -1,6 +1,6 @@
 package byteback.vimp.internal;
 
-import byteback.vimp.LogicExprSwitch;
+import byteback.vimp.LogicExprVisitor;
 import byteback.vimp.Vimp;
 import soot.Local;
 import soot.Value;
@@ -9,8 +9,8 @@ import soot.util.Switch;
 
 public class LogicExistsExpr extends QuantifierExpr {
 
-	public LogicExistsExpr(final Value value, final Chain<Local> freeLocals) {
-		super(value, freeLocals);
+	public LogicExistsExpr(final Chain<Local> freeLocals, final Value value) {
+		super(freeLocals, value);
 	}
 
 	@Override
@@ -20,12 +20,12 @@ public class LogicExistsExpr extends QuantifierExpr {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprSwitch) sw).caseLogicExistsExpr(this);
+		((LogicExprVisitor) sw).caseLogicExistsExpr(this);
 	}
 
 	@Override
 	public LogicExistsExpr clone() {
-		return new LogicExistsExpr(Vimp.cloneIfNecessary(getValue()), cloneFreeLocals());
+		return new LogicExistsExpr(cloneFreeLocals(), Vimp.cloneIfNecessary(getValue()));
 	}
 
 }

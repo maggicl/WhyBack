@@ -12,13 +12,13 @@ import soot.util.HashChain;
 
 public abstract class QuantifierExpr implements LogicExpr {
 
-	private Chain<Local> freeLocals;
+	private Chain<Local> locals;
 
 	private Value value;
 
-	public QuantifierExpr(final Value value, final Chain<Local> freeLocals) {
-		this.freeLocals = freeLocals;
+	public QuantifierExpr(final Chain<Local> locals, final Value value) {
 		this.value = value;
+		setFreeLocals(locals);
 	}
 
 	public Value getValue() {
@@ -30,39 +30,45 @@ public abstract class QuantifierExpr implements LogicExpr {
 	}
 
 	public Chain<Local> getFreeLocals() {
-		return freeLocals;
+		return locals;
 	}
 
-	public void setFreeLocals(final Chain<Local> freeLocals) {
-		this.freeLocals = freeLocals;
+	public final void setFreeLocals(final Chain<Local> freeLocals) {
+		if (freeLocals.isEmpty()) {
+			throw new IllegalArgumentException("a Quantifier must have at least one free local");
+		}
+
+		this.locals = freeLocals;
 	}
 
 	protected Chain<Local> cloneFreeLocals() {
-		final Chain<Local> freeLocals =  new HashChain<>();
+		final Chain<Local> locals =  new HashChain<>();
 
 		for (Local local : getFreeLocals()) {
-			freeLocals.add((Local) local.clone());
+			locals.add((Local) local.clone());
 		}
 
-		return freeLocals;
+		return locals;
 	}
 
 	protected abstract String getSymbol();
 
 	@Override
 	public void toString(final UnitPrinter up) {
-		final Iterator<Local> freeIt = freeLocals.iterator();
+		final Iterator<Local> freeIt = locals.iterator();
 		up.literal("(");
 		up.literal(getSymbol());
+		up.literal(" ");
 
 		while (freeIt.hasNext()) {
 			final Local local = freeIt.next();
 			up.type(local.getType());
+			up.literal(" ");
 			local.toString(up);
 
 			if (freeIt.hasNext()) {
 				up.literal(", ");
-			}
+			} 
 		}
 
 		up.literal(" :: ");
@@ -88,7 +94,7 @@ public abstract class QuantifierExpr implements LogicExpr {
 	public int equivHashCode() {
 		int hashCode = 17 ^ getSymbol().hashCode();
 
-		for (Local local : freeLocals) {
+		for (Local local : locals) {
 			hashCode += local.equivHashCode();
 		}
 

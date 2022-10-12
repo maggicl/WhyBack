@@ -1,6 +1,6 @@
 package byteback.vimp.internal;
 
-import byteback.vimp.LogicExprSwitch;
+import byteback.vimp.LogicExprVisitor;
 import byteback.vimp.Vimp;
 import soot.Value;
 import soot.util.Switch;
@@ -21,7 +21,7 @@ public class LogicOrExpr extends AbstractLogicBinopExpr implements LogicExpr {
 
   @Override
   public void apply(final Switch sw) {
-    ((LogicExprSwitch) sw).caseLogicOrExpr(this);
+    ((LogicExprVisitor) sw).caseLogicOrExpr(this);
   }
 
 }

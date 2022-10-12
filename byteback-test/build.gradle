@@ -1,8 +1,8 @@
 subprojects { test ->
 
-		def core = project(':byteback-core')
+		def cli = project(':byteback-cli')
 
-		def bytebackRoot = core.installDist.destinationDir
+		def bytebackRoot = cli.installDist.destinationDir
 
 		def system = tasks.register('system') {
 				def sourceDirs = project.sourceSets.main.allSource.srcDirs
@@ -29,7 +29,7 @@ subprojects { test ->
 						}
 				}
 
-				dependsOn core.installDist
+				dependsOn cli.installDist
 				dependsOn test.shadowJar
 		}
 
@@ -57,7 +57,7 @@ subprojects { test ->
 						}
 				}
 
-				dependsOn core.installDist
+				dependsOn cli.installDist
 				dependsOn test.shadowJar
 		}
 

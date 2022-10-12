@@ -55,9 +55,7 @@ public class Main {
 				configuration.getJCommander().usage();
 			} else {
 				initialize(configuration);
-
 				final long conversionStart = System.currentTimeMillis();
-
 				log.info("Converting classes");
 				convert(configuration);
 				final long endTime = System.currentTimeMillis();

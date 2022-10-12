@@ -1,11 +1,11 @@
 plugins {
+    id 'java'
 		id 'byteback.java-common-conventions'
 		id 'byteback.java-integration-conventions'
-		id 'application'
 }
 
 dependencies {
-		implementation project(':byteback-core')
+		implementation project(':byteback-cli')
 		implementation project(':byteback-annotations')
 		implementation project(':byteback-frontend:boogie')
 		implementation 'org.soot-oss:soot:4.3.0'

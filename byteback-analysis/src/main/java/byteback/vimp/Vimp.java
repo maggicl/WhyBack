@@ -1,13 +1,18 @@
 package byteback.vimp;
 
 import byteback.core.util.Lazy;
+import byteback.vimp.internal.AssertionStmt;
+import byteback.vimp.internal.AssumptionStmt;
+import byteback.vimp.internal.InvariantStmt;
 import byteback.vimp.internal.LogicAndExpr;
 import byteback.vimp.internal.LogicExistsExpr;
 import byteback.vimp.internal.LogicForallExpr;
 import byteback.vimp.internal.LogicIffExpr;
 import byteback.vimp.internal.LogicImpliesExpr;
 import byteback.vimp.internal.LogicOrExpr;
+import soot.Body;
 import soot.Local;
+import soot.SootMethod;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.internal.ExprBox;
@@ -33,6 +38,22 @@ public class Vimp {
       return (Value) v.clone();
     }
   }
+
+	public Body newBody(final SootMethod method) {
+		return new VimpBody(method);
+	}
+
+	public AssertionStmt newAssertionStmt(final Value c) {
+		return new AssertionStmt(c);
+	}
+
+	public AssumptionStmt newAssumptionStmt(final Value c) {
+		return new AssumptionStmt(c);
+	}
+
+	public InvariantStmt newInvariantStmt(final Value c) {
+		return new InvariantStmt(c);
+	}
 
 	public LogicAndExpr newLogicAndExpr(final Value a, final Value b)  {
 		return new LogicAndExpr(a, b);

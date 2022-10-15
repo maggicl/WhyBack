@@ -1,6 +1,7 @@
 package byteback.vimp.internal;
 
 import byteback.vimp.LogicExprSwitch;
+import soot.UnitPrinter;
 import soot.jimple.Constant;
 import soot.util.Switch;
 
@@ -18,6 +19,15 @@ public class LogicConstant extends Constant implements LogicExpr {
 
 	public static LogicConstant v(boolean value) {
 		return value ? trueConstant : falseConstant;
+	}
+
+	@Override
+	public void toString(final UnitPrinter up) {
+		if (value) {
+			up.literal("true");
+		} else {
+			up.literal("false");
+		}
 	}
 
 	@Override

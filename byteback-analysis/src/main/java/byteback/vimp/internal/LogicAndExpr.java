@@ -3,9 +3,10 @@ package byteback.vimp.internal;
 import byteback.vimp.LogicExprVisitor;
 import byteback.vimp.Vimp;
 import soot.Value;
+import soot.jimple.AndExpr;
 import soot.util.Switch;
 
-public class LogicAndExpr extends AbstractLogicBinopExpr implements LogicExpr {
+public class LogicAndExpr extends AbstractLogicBinopExpr implements LogicExpr, AndExpr {
 
 	public LogicAndExpr(final Value op1, final Value op2) {
 		super(op1, op2);

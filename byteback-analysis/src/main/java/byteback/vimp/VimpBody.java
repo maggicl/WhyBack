@@ -1,24 +1,17 @@
 package byteback.vimp;
 
-import java.util.Iterator;
-
 import byteback.core.converter.soottoboogie.method.procedure.DefinitionsCollector;
-import byteback.vimp.internal.AssertionStmt;
 import soot.Body;
-import soot.SootClass;
 import soot.SootMethod;
-import soot.Unit;
-import soot.Value;
-import soot.jimple.AbstractStmtSwitch;
-import soot.jimple.InvokeExpr;
-import soot.jimple.InvokeStmt;
 import soot.jimple.JimpleBody;
 import soot.jimple.StmtBody;
 
 public class VimpBody extends StmtBody {
 
+	public final DefinitionsCollector defCollector;
+
 	VimpBody(final SootMethod method) {
-		super(method);
+		this(method.getActiveBody());
 	}
 
 	@Override
@@ -29,38 +22,19 @@ public class VimpBody extends StmtBody {
 		return b;
 	}
 
-	VimpBody(final JimpleBody body) {
+	VimpBody(final Body body) {
 		super(body.getMethod());
-		construct(body);
+
+		if (body instanceof JimpleBody jimpleBody) {
+			defCollector = new DefinitionsCollector();
+			defCollector.collect(method.getActiveBody());
+			construct(jimpleBody);
+		} else {
+			throw new IllegalArgumentException("Can construct VimpBody only from Jimple");
+		}
 	}
 
 	private final void construct(final JimpleBody body) {
-		final Body newBody = (Body) body.clone();
-		final Iterator<Unit> iterator = body.getUnits().snapshotIterator();
-		final DefinitionsCollector defCollector = new DefinitionsCollector();
-		defCollector.collect(body);
-
-		while (iterator.hasNext()) {
-			final Unit unit = iterator.next();
-
-			unit.apply(new AbstractStmtSwitch<>() {
-
-					@Override
-					public void caseInvokeStmt(final InvokeStmt stmt) {
-						final InvokeExpr expr = stmt.getInvokeExpr();
-						final SootMethod method = expr.getMethod();
-						final SootClass clazz = method.getDeclaringClass();
-
-						if (Namespace.isContractClass(clazz)) {
-							final String name = method.getName();
-
-							if (name.equals(Namespace.ASSERTION_NAME)) {
-								final AssertionStmt assertionStmt = Vimp.v().
-							}
-						}
-					}
-			});
-		}
 	}
 
 }

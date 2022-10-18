@@ -9,6 +9,7 @@ import byteback.vimp.internal.LogicExistsExpr;
 import byteback.vimp.internal.LogicForallExpr;
 import byteback.vimp.internal.LogicIffExpr;
 import byteback.vimp.internal.LogicImpliesExpr;
+import byteback.vimp.internal.LogicNotExpr;
 import byteback.vimp.internal.LogicOrExpr;
 import soot.Body;
 import soot.Local;
@@ -59,12 +60,28 @@ public class Vimp {
 		return new LogicAndExpr(a, b);
 	}
 
+	public LogicAndExpr newLogicAndExpr(final ValueBox abox, final ValueBox bbox)  {
+		return new LogicAndExpr(abox, bbox);
+	}
+
 	public LogicOrExpr newLogicOrExpr(final Value a, final Value b)  {
 		return new LogicOrExpr(a, b);
 	}
 
+	public LogicOrExpr newLogicOrExpr(final ValueBox abox, final ValueBox bbox)  {
+		return new LogicOrExpr(abox, bbox);
+	}
+
 	public LogicIffExpr newLogicIffExpr(final Value a, final Value b)  {
 		return new LogicIffExpr(a, b);
+	}
+
+	public LogicNotExpr newLogicNotExpr(final Value v) {
+		return new LogicNotExpr(v);
+	}
+
+	public LogicNotExpr newLogicNotExpr(final ValueBox vbox) {
+		return new LogicNotExpr(vbox);
 	}
 
 	public LogicImpliesExpr newLogicImpliesExpr(final Value a, final Value b)  {

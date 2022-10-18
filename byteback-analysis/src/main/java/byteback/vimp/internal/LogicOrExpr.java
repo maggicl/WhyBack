@@ -3,6 +3,7 @@ package byteback.vimp.internal;
 import byteback.vimp.LogicExprVisitor;
 import byteback.vimp.Vimp;
 import soot.Value;
+import soot.ValueBox;
 import soot.jimple.OrExpr;
 import soot.util.Switch;
 
@@ -10,6 +11,10 @@ public class LogicOrExpr extends AbstractLogicBinopExpr implements LogicExpr, Or
 
 	public LogicOrExpr(final Value op1, final Value op2) {
 		super(op1, op2);
+	}
+
+	public LogicOrExpr(final ValueBox op1box, final ValueBox op2box) {
+		super(op1box, op2box);
 	}
 
 	public String getSymbol() {

@@ -3,6 +3,7 @@ package byteback.vimp.internal;
 import byteback.vimp.LogicExprVisitor;
 import byteback.vimp.Vimp;
 import soot.Value;
+import soot.ValueBox;
 import soot.jimple.AndExpr;
 import soot.util.Switch;
 
@@ -12,10 +13,16 @@ public class LogicAndExpr extends AbstractLogicBinopExpr implements LogicExpr, A
 		super(op1, op2);
 	}
 
+	public LogicAndExpr(final ValueBox op1box, final ValueBox op2box) {
+		super(op1box, op2box);
+	}
+
+	@Override
 	public String getSymbol() {
 		return " ∧ ";
 	}
 
+	@Override
 	public LogicAndExpr clone() {
 		return new LogicAndExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
 	}

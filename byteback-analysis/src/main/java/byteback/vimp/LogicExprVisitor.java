@@ -5,6 +5,7 @@ import byteback.vimp.internal.LogicAndExpr;
 import byteback.vimp.internal.LogicConstant;
 import byteback.vimp.internal.LogicIffExpr;
 import byteback.vimp.internal.LogicImpliesExpr;
+import byteback.vimp.internal.LogicNotExpr;
 import byteback.vimp.internal.LogicOrExpr;
 import byteback.vimp.internal.LogicForallExpr;
 import soot.Value;
@@ -36,6 +37,10 @@ public interface LogicExprVisitor {
 	}
 
 	default void caseLogicConstant(final LogicConstant v) {
+		defaultCase(v);
+	}
+
+	default void caseLogicNot(final LogicNotExpr v) {
 		defaultCase(v);
 	}
 

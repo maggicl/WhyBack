@@ -23,7 +23,7 @@ public class LogicNotExpr extends AbstractLogicUnopExpr implements LogicExpr, Ne
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprSwitch) sw).caseLogicNot(this);
+		((LogicExprSwitch) sw).caseLogicNotExpr(this);
 	}
 
 	@Override

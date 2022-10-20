@@ -31,20 +31,20 @@ public class BoxTransformer extends BodyTransformer {
 		new SootStatementVisitor<>() {
 
 			@Override
-			public void caseGotoStmt(final GotoStmt unit) {
-				final GotoStmt replaced = (GotoStmt) map.get(unit);
+			public void caseGotoStmt(final GotoStmt u) {
+				final GotoStmt replaced = (GotoStmt) map.get(u);
 				replaced.setTarget(map.get(replaced.getTarget()));
 			}
 
 			@Override
-			public void caseIfStmt(final IfStmt unit) {
-				final IfStmt replaced = (IfStmt) map.get(unit);
+			public void caseIfStmt(final IfStmt u) {
+				final IfStmt replaced = (IfStmt) map.get(u);
 				replaced.setTarget(map.get(replaced.getTarget()));
 			}
 
 			@Override
-			public void caseLookupSwitchStmt(final LookupSwitchStmt s) {
-				final LookupSwitchStmt replaced = (LookupSwitchStmt) map.get(s);
+			public void caseLookupSwitchStmt(final LookupSwitchStmt u) {
+				final LookupSwitchStmt replaced = (LookupSwitchStmt) map.get(u);
 				replaced.setDefaultTarget(map.get(replaced.getDefaultTarget()));
 				final Unit[] newTargList = new Unit[replaced.getTargetCount()];
 

@@ -14,8 +14,8 @@ public class LogicNotExprTest {
 		final LogicExpr a = mock(LogicExpr.class);
 		final var v = new LogicNotExpr(a);
 		final LogicExprSwitch sw = mock(LogicExprSwitch.class);
-		a.apply(sw);
-		verify(sw).caseLogicNot(v);
+		v.apply(sw);
+		verify(sw).caseLogicNotExpr(v);
 	}
 
 }

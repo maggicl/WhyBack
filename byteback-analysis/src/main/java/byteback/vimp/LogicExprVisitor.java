@@ -36,11 +36,11 @@ public interface LogicExprVisitor {
 		defaultCase(v);
 	}
 
-	default void caseLogicConstant(final LogicConstant v) {
+	default void caseLogicNotExpr(final LogicNotExpr v) {
 		defaultCase(v);
 	}
 
-	default void caseLogicNot(final LogicNotExpr v) {
+	default void caseLogicConstant(final LogicConstant v) {
 		defaultCase(v);
 	}
 

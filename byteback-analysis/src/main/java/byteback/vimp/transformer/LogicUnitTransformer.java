@@ -4,6 +4,7 @@ import java.util.Map;
 
 import byteback.core.converter.soottoboogie.Namespace;
 import byteback.core.representation.soot.body.SootStatementVisitor;
+import byteback.core.util.Lazy;
 import byteback.vimp.Vimp;
 import byteback.vimp.internal.LogicStmt;
 import soot.Body;
@@ -17,10 +18,19 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.JimpleBody;
 
-public class LogicUnitTransformer extends BodyTransformer {
+public class LogicUnitTransformer extends BodyTransformer implements StatementTransformer {
+
+	private static final Lazy<LogicUnitTransformer> instance = Lazy.from(() -> new LogicUnitTransformer());
+
+	public static LogicUnitTransformer v() {
+		return instance.get();
+	}
+
+	private LogicUnitTransformer() {
+	}
 
 	@Override
-	protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
+	protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
 		if (body instanceof JimpleBody jimpleBody) {
 			internalTransform(jimpleBody);
 		} else {
@@ -28,43 +38,47 @@ public class LogicUnitTransformer extends BodyTransformer {
 		}
 	}
 
-	private void internalTransform(final JimpleBody body) {
-		for (final UnitBox ubox : body.getAllUnitBoxes()) {
-			final Unit unit = ubox.getUnit();
+	public void transformUnit(final UnitBox ubox) {
+		final Unit unit = ubox.getUnit();
 
-			unit.apply(new SootStatementVisitor<>() {
+		unit.apply(new SootStatementVisitor<>() {
 
-					@Override
-					public void caseInvokeStmt(final InvokeStmt unit) {
-						final InvokeExpr value = unit.getInvokeExpr();
-						final SootMethod method = value.getMethod();
-						final SootClass clazz = method.getDeclaringClass();
+			@Override
+			public void caseInvokeStmt(final InvokeStmt u) {
+				final InvokeExpr value = u.getInvokeExpr();
+				final SootMethod method = value.getMethod();
+				final SootClass clazz = method.getDeclaringClass();
 
-						if (Namespace.isContractClass(clazz)) {
-							assert value.getArgCount() == 1;
+				if (Namespace.isContractClass(clazz)) {
+					assert value.getArgCount() == 1;
 
-							final Value argument = value.getArg(0);
-							final LogicStmt substitute;
+					final Value argument = value.getArg(0);
+					final LogicStmt newUnit;
 
-							switch (method.getName()) {
-							case Namespace.ASSERTION_NAME:
-								substitute = Vimp.v().newAssertionStmt(argument);
-								break;
-							case Namespace.ASSUMPTION_NAME:
-								substitute = Vimp.v().newAssumptionStmt(argument);
-								break;
-							case Namespace.INVARIANT_NAME:
-								substitute = Vimp.v().newInvariantStmt(argument);
-								break;
-							default:
-								throw new IllegalStateException("Unknown logic statement " + method.getName());
-							}
-
-							ubox.setUnit(substitute);
-						}
+					switch (method.getName()) {
+						case Namespace.ASSERTION_NAME:
+							newUnit = Vimp.v().newAssertionStmt(argument);
+							break;
+						case Namespace.ASSUMPTION_NAME:
+							newUnit = Vimp.v().newAssumptionStmt(argument);
+							break;
+						case Namespace.INVARIANT_NAME:
+							newUnit = Vimp.v().newInvariantStmt(argument);
+							break;
+						default:
+							throw new IllegalStateException("Unknown logic statement " + method.getName());
 					}
 
-			});
+					putStatement(ubox, newUnit);
+				}
+			}
+
+		});
+	}
+
+	private void internalTransform(final JimpleBody body) {
+		for (final UnitBox ubox : body.getAllUnitBoxes()) {
+			transformUnit(ubox);
 		}
 	}
 

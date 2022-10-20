@@ -17,11 +17,13 @@ import soot.jimple.Jimple;
 
 public class LogicValueTransformerIntegrationTest {
 
+	private static final LogicValueTransformer transformer = LogicValueTransformer.v();
+
 	@Test
 	public void TransformValue_GivenFalseIntConstantBox_YieldsFalse() {
 		final IntConstant intConstant = IntConstant.v(0);
 		final ValueBox vbox = Jimple.v().newImmediateBox(intConstant);
-		LogicValueTransformer.v().transformValue(vbox);
+		transformer.transformValue(vbox);
 		assertEquals(LogicConstant.v(false), vbox.getValue());
 	}
 
@@ -29,7 +31,7 @@ public class LogicValueTransformerIntegrationTest {
 	public void TransformValue_GivenTrueIntConstantBox_YieldsFalse() {
 		final IntConstant intConstant = IntConstant.v(1);
 		final ValueBox vbox = Jimple.v().newImmediateBox(intConstant);
-		LogicValueTransformer.v().transformValue(vbox);
+		transformer.transformValue(vbox);
 		assertEquals(LogicConstant.v(true), vbox.getValue());
 	}
 
@@ -38,7 +40,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value booleanAnd = Jimple.v().newAndExpr(LogicConstant.v(true), LogicConstant.v(false));
 		final Value logicAnd = Vimp.v().newLogicAndExpr(LogicConstant.v(true), LogicConstant.v(false));
 		final ValueBox vbox = Jimple.v().newRValueBox(booleanAnd);
-		LogicValueTransformer.v().transformValue(vbox);
+		transformer.transformValue(vbox);
 		assertTrue(logicAnd.equivTo(vbox.getValue()));
 	}
 
@@ -47,7 +49,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value intAnd = Jimple.v().newAndExpr(IntConstant.v(0), IntConstant.v(1));
 		final Value logicAnd = Vimp.v().newLogicAndExpr(IntConstant.v(0), IntConstant.v(1));
 		final ValueBox vbox = Jimple.v().newRValueBox(intAnd);
-		LogicValueTransformer.v().transformValue(vbox);
+		transformer.transformValue(vbox);
 		assertTrue(logicAnd.equivTo(vbox.getValue()));
 	}
 
@@ -56,7 +58,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value booleanOr = Jimple.v().newOrExpr(LogicConstant.v(true), LogicConstant.v(false));
 		final Value logicOr = Vimp.v().newLogicOrExpr(LogicConstant.v(true), LogicConstant.v(false));
 		final ValueBox vbox = Jimple.v().newRValueBox(booleanOr);
-		LogicValueTransformer.v().transformValue(vbox);
+		transformer.transformValue(vbox);
 		assertTrue(logicOr.equivTo(vbox.getValue()));
 	}
 
@@ -65,7 +67,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value intAnd = Jimple.v().newOrExpr(IntConstant.v(0), IntConstant.v(1));
 		final Value logicOr = Vimp.v().newLogicOrExpr(IntConstant.v(0), IntConstant.v(1));
 		final ValueBox vbox = Jimple.v().newRValueBox(intAnd);
-		LogicValueTransformer.v().transformValue(vbox);
+		transformer.transformValue(vbox);
 		assertTrue(logicOr.equivTo(vbox.getValue()));
 	}
 
@@ -74,7 +76,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value intNeg = Jimple.v().newNegExpr(IntConstant.v(1));
 		final Value logicNot = Vimp.v().newLogicNotExpr(IntConstant.v(1));
 		final ValueBox vbox = Jimple.v().newRValueBox(intNeg);
-		LogicValueTransformer.v().transformValue(vbox);
+		transformer.transformValue(vbox);
 		assertTrue(logicNot.equivTo(vbox.getValue()));
 	}
 
@@ -83,7 +85,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value booleanNeg = Jimple.v().newNegExpr(LogicConstant.v(true));
 		final Value logicNot = Vimp.v().newLogicNotExpr(LogicConstant.v(true));
 		final ValueBox vbox = Jimple.v().newRValueBox(booleanNeg);
-		LogicValueTransformer.v().transformValue(vbox);
+		transformer.transformValue(vbox);
 		assertTrue(logicNot.equivTo(vbox.getValue()));
 	}
 
@@ -92,7 +94,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Local local = Jimple.v().newLocal("l", BooleanType.v());
 		final AssignStmt transformed = Jimple.v().newAssignStmt(local, IntConstant.v(1));
 		final AssignStmt expected = Jimple.v().newAssignStmt(local, LogicConstant.v(true));
-		LogicValueTransformer.v().transformUnit(transformed);
+		transformer.transformUnit(transformed);
 		assertTrue(expected.getRightOp().equivTo(transformed.getRightOp()));
 	}
 	

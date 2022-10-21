@@ -1,7 +1,7 @@
 package byteback.vimp.transformer;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static byteback.vimp.transformer.ValueTransformerFixture.assertEquiv;
 
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value logicAnd = Vimp.v().newLogicAndExpr(LogicConstant.v(true), LogicConstant.v(false));
 		final ValueBox vbox = Jimple.v().newRValueBox(booleanAnd);
 		transformer.transformValue(vbox);
-		assertTrue(logicAnd.equivTo(vbox.getValue()));
+		assertEquiv(logicAnd, vbox.getValue());
 	}
 
 	@Test
@@ -50,7 +50,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value logicAnd = Vimp.v().newLogicAndExpr(IntConstant.v(0), IntConstant.v(1));
 		final ValueBox vbox = Jimple.v().newRValueBox(intAnd);
 		transformer.transformValue(vbox);
-		assertTrue(logicAnd.equivTo(vbox.getValue()));
+		assertEquiv(logicAnd, vbox.getValue());
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value logicOr = Vimp.v().newLogicOrExpr(LogicConstant.v(true), LogicConstant.v(false));
 		final ValueBox vbox = Jimple.v().newRValueBox(booleanOr);
 		transformer.transformValue(vbox);
-		assertTrue(logicOr.equivTo(vbox.getValue()));
+		assertEquiv(logicOr, vbox.getValue());
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value logicOr = Vimp.v().newLogicOrExpr(IntConstant.v(0), IntConstant.v(1));
 		final ValueBox vbox = Jimple.v().newRValueBox(intAnd);
 		transformer.transformValue(vbox);
-		assertTrue(logicOr.equivTo(vbox.getValue()));
+		assertEquiv(logicOr, vbox.getValue());
 	}
 
 	@Test
@@ -77,7 +77,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value logicNot = Vimp.v().newLogicNotExpr(IntConstant.v(1));
 		final ValueBox vbox = Jimple.v().newRValueBox(intNeg);
 		transformer.transformValue(vbox);
-		assertTrue(logicNot.equivTo(vbox.getValue()));
+		assertEquiv(logicNot, vbox.getValue());
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class LogicValueTransformerIntegrationTest {
 		final Value logicNot = Vimp.v().newLogicNotExpr(LogicConstant.v(true));
 		final ValueBox vbox = Jimple.v().newRValueBox(booleanNeg);
 		transformer.transformValue(vbox);
-		assertTrue(logicNot.equivTo(vbox.getValue()));
+		assertEquiv(logicNot, vbox.getValue());
 	}
 
 	@Test
@@ -95,7 +95,7 @@ public class LogicValueTransformerIntegrationTest {
 		final AssignStmt transformed = Jimple.v().newAssignStmt(local, IntConstant.v(1));
 		final AssignStmt expected = Jimple.v().newAssignStmt(local, LogicConstant.v(true));
 		transformer.transformUnit(transformed);
-		assertTrue(expected.getRightOp().equivTo(transformed.getRightOp()));
+		assertEquiv(expected.getRightOp(), transformed.getRightOp());
 	}
 	
 }

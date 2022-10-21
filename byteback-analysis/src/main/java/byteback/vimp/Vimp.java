@@ -19,6 +19,7 @@ import soot.ValueBox;
 import soot.grimp.internal.ExprBox;
 import soot.jimple.Constant;
 import soot.util.Chain;
+import soot.util.HashChain;
 
 public class Vimp {
 
@@ -92,7 +93,21 @@ public class Vimp {
 		return new LogicForallExpr(ls, v);
 	}
 
+	public LogicForallExpr newLogicForallExpr(final Local l, final Value v)  {
+		final HashChain<Local> ls = new HashChain<>();
+		ls.add(l);
+
+		return new LogicForallExpr(ls, v);
+	}
+
 	public LogicExistsExpr newLogicExistsExpr(final Chain<Local> ls, final Value v)  {
+		return new LogicExistsExpr(ls, v);
+	}
+
+	public LogicExistsExpr newLogicExistsExpr(final Local l, final Value v)  {
+		final HashChain<Local> ls = new HashChain<>();
+		ls.add(l);
+
 		return new LogicExistsExpr(ls, v);
 	}
 	

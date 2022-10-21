@@ -3,30 +3,24 @@ package byteback.vimp.transformer;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
-import byteback.core.converter.soottoboogie.Namespace;
 import byteback.core.converter.soottoboogie.method.procedure.DefinitionsCollector;
 import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
-import byteback.core.representation.soot.unit.SootMethods;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
-import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.NewInvokeExpr;
-import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
-import soot.jimple.InstanceFieldRef;
 import soot.jimple.InvokeExpr;
 import soot.jimple.JimpleBody;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
-import soot.jimple.StaticFieldRef;
+import soot.jimple.Ref;
 
 public class AggregationTransformer extends BodyTransformer {
 
@@ -52,37 +46,10 @@ public class AggregationTransformer extends BodyTransformer {
 				.toList();
 
 		for (final Value use : uses) {
-			final AtomicBoolean hasSideEffects = new AtomicBoolean(false);
-
-			use.apply(new SootExpressionVisitor<>() {
-
-				@Override
-				public void caseInvokeExpr(final InvokeExpr invoke) {
-					final SootMethod method = invoke.getMethod();
-					hasSideEffects.set(!SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION));
-				}
-
-				@Override
-				public void caseNewExpr(final NewExpr newExpr) {
-					hasSideEffects.set(true);
-				}
-
-				@Override
-				public void caseNewArrayExpr(final NewArrayExpr newExpr) {
-					hasSideEffects.set(true);
-				}
-
-				@Override
-				public void caseNewInvokeExpr(final NewInvokeExpr invoke) {
-					hasSideEffects.set(true);
-				}
-
-			});
-
-			if (hasSideEffects.get()) {
+			if (use instanceof InvokeExpr || use instanceof NewExpr
+					|| use instanceof NewArrayExpr || use instanceof NewInvokeExpr) {
 				return true;
 			}
-
 		}
 
 		return false;
@@ -90,38 +57,12 @@ public class AggregationTransformer extends BodyTransformer {
 
 	public boolean assignsReference(final Local local) {
 		for (final Unit use : defCollector.unitUsesOf(local)) {
-			final AtomicBoolean impureAssignment = new AtomicBoolean(false);
+			if (use instanceof AssignStmt assignStmt) {
+				final Value left = assignStmt.getLeftOp();
 
-			use.apply(new SootStatementVisitor<>() {
-
-				@Override
-				public void caseAssignStmt(final AssignStmt assignment) {
-					final Value left = assignment.getLeftOp();
-
-					left.apply(new SootExpressionVisitor<>() {
-
-						@Override
-						public void caseArrayRef(final ArrayRef reference) {
-							impureAssignment.set(true);
-						}
-
-						@Override
-						public void caseInstanceFieldRef(final InstanceFieldRef reference) {
-							impureAssignment.set(true);
-						}
-
-						@Override
-						public void caseStaticFieldRef(final StaticFieldRef reference) {
-							impureAssignment.set(true);
-						}
-
-					});
+				if (left instanceof Ref) {
+					return true;
 				}
-
-			});
-
-			if (impureAssignment.get()) {
-				return true;
 			}
 		}
 
@@ -155,8 +96,7 @@ public class AggregationTransformer extends BodyTransformer {
 									final Value substitute = assignment.getRightOp();
 
 									if (!hasSideEffects(substitute)
-											&& (defCollector.hasSingleUse(assigned) || !assignsReference(assigned) )) {
-
+											&& (defCollector.hasSingleUse(assigned) || !assignsReference(assigned))) {
 										body.getUnits().remove(def);
 										ubox.setValue(substitute);
 									}

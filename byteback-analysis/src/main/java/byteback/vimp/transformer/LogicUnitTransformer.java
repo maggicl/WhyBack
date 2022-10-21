@@ -2,6 +2,8 @@ package byteback.vimp.transformer;
 
 import java.util.Map;
 
+import static byteback.vimp.transformer.UnitTransformer.putStatement;
+
 import byteback.core.converter.soottoboogie.Namespace;
 import byteback.core.representation.soot.body.SootStatementVisitor;
 import byteback.core.util.Lazy;
@@ -18,7 +20,7 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.JimpleBody;
 
-public class LogicUnitTransformer extends BodyTransformer implements StatementTransformer {
+public class LogicUnitTransformer extends BodyTransformer implements UnitTransformer {
 
 	private static final Lazy<LogicUnitTransformer> instance = Lazy.from(() -> new LogicUnitTransformer());
 
@@ -74,12 +76,6 @@ public class LogicUnitTransformer extends BodyTransformer implements StatementTr
 			}
 
 		});
-	}
-
-	private void internalTransform(final JimpleBody body) {
-		for (final UnitBox ubox : body.getAllUnitBoxes()) {
-			transformUnit(ubox);
-		}
 	}
 
 }

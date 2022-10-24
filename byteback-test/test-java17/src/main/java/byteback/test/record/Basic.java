@@ -20,6 +20,3 @@ public class Basic {
 	};
 
 }
-/**
- * RUN: %{verify} %t.bpl
- */

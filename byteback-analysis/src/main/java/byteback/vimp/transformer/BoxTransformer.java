@@ -6,6 +6,7 @@ import static byteback.vimp.transformer.UnitTransformer.putStatement;
 
 import byteback.core.representation.soot.body.SootExpressionVisitor;
 import byteback.core.representation.soot.body.SootStatementVisitor;
+import byteback.core.util.Lazy;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
@@ -17,6 +18,12 @@ import soot.jimple.AssignStmt;
 import soot.jimple.InvokeExpr;
 
 public class BoxTransformer extends BodyTransformer implements UnitValueTransformer {
+
+	private static final Lazy<BoxTransformer> instance = Lazy.from(() -> new BoxTransformer());
+
+	public static BoxTransformer v() {
+		return instance.get();
+	}
 
 	@Override
 	protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {

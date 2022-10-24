@@ -32,7 +32,7 @@ public class LogicUnitTransformer extends BodyTransformer implements UnitTransfo
 	}
 
 	@Override
-	protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+	public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
 		if (body instanceof JimpleBody jimpleBody) {
 			internalTransform(jimpleBody);
 		} else {

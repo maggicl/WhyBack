@@ -5,9 +5,9 @@ plugins {
 }
 
 dependencies {
-		implementation project(':byteback-cli')
 		implementation project(':byteback-annotations')
 		implementation project(':byteback-frontend:boogie')
+		implementation project(':byteback-util')
 		implementation 'org.soot-oss:soot:4.3.0'
 		implementation 'org.slf4j:slf4j-simple:1.6.1'
 		implementation 'com.beust:jcommander:1.+'

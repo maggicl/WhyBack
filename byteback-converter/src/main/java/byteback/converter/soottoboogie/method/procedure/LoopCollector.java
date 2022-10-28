@@ -2,7 +2,7 @@ package byteback.converter.soottoboogie.method.procedure;
 
 import byteback.analysis.JimpleStmtSwitch;
 import byteback.analysis.util.SootBodies;
-import byteback.converter.soottoboogie.statement.StatementConversionException;
+import byteback.converter.soottoboogie.method.StatementConversionException;
 import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;

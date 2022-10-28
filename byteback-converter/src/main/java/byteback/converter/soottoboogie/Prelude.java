@@ -451,14 +451,4 @@ public class Prelude {
 		return fieldTypeAccess;
 	}
 
-	/**
-	 * Injects the declarations of the loaded prelude in-place.
-	 *
-	 * @param program
-	 *            The program to be injected
-	 */
-	public void inject(final Program program) {
-		program().inject(program);
-	}
-
 }

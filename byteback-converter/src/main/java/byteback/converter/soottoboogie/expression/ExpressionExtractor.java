@@ -20,7 +20,7 @@ import soot.Type;
 import soot.Value;
 import soot.jimple.*;
 
-public class ExpressionExtractor extends ExpressionVisitor {
+public class ExpressionExtractor extends BaseExpressionExtractor {
 
 	public static final String LOCAL_PREFIX = "_";
 
@@ -33,7 +33,7 @@ public class ExpressionExtractor extends ExpressionVisitor {
 	}
 
 	@Override
-	public ExpressionVisitor makeExpressionVisitor(final Type type) {
+	public BaseExpressionExtractor makeExpressionExtractor(final Type type) {
 		return new ExpressionExtractor(type);
 	}
 

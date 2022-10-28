@@ -1,17 +1,24 @@
 package byteback.analysis.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import byteback.analysis.SwappableUnitBox;
 import soot.Body;
 import soot.Local;
+import soot.Unit;
+import soot.UnitBox;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.ExceptionalBlockGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
+import soot.util.Chain;
+import soot.util.HashChain;
 
 public class SootBodies {
 
@@ -23,8 +30,10 @@ public class SootBodies {
 	}
 
 	public static Collection<Local> getParameterLocals(final Body body) {
-		return Stream.concat(getThisLocal(body).stream(), body.getParameterLocals().stream())
-				.collect(Collectors.toList());
+		final List<Local> locals = new ArrayList<>(body.getParameterLocals());
+		getThisLocal(body).ifPresent((thisLocal) -> locals.add(0, thisLocal));
+
+		return locals;
 	}
 
 	public static Optional<Local> getThisLocal(final Body body) {
@@ -48,6 +57,16 @@ public class SootBodies {
 
 	public static UnitGraph getUnitGraph(final Body body) {
 		return new ExceptionalUnitGraph(body);
+	}
+
+	public static Chain<UnitBox> getUnitBoxes(final Body body) {
+		final var unitBoxes = new HashChain<UnitBox>();
+
+		for (final Unit unit : body.getUnits()) {
+			unitBoxes.add(new SwappableUnitBox(unit, body));
+		}
+
+		return unitBoxes;
 	}
 
 }

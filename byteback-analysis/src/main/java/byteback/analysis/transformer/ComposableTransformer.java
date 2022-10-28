@@ -43,13 +43,13 @@ public class ComposableTransformer extends BodyTransformer implements UnitValueT
 	}
 
 	public void transformUnit(final UnitBox unitBox) {
-		for (final UnitTransformer transformer : unitTransformers) {
+		for (UnitTransformer transformer : unitTransformers) {
 			transformer.transformUnit(unitBox);
 		}
 	}
 
 	public void transformValue(final ValueBox valueBox) {
-		for (final ValueTransformer transformer : valueTransformers) {
+		for (ValueTransformer transformer : valueTransformers) {
 			transformer.transformValue(valueBox);
 		}
 	}

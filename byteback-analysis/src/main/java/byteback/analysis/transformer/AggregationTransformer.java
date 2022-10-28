@@ -1,22 +1,17 @@
 package byteback.analysis.transformer;
 
-import static byteback.analysis.transformer.UnitTransformer.putStatement;
-
 import byteback.analysis.JimpleStmtSwitch;
-import byteback.analysis.JimpleValueSwitch;
 import byteback.util.Lazy;
 import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
 import soot.UnitBox;
-import soot.Value;
-import soot.ValueBox;
 import soot.grimp.Grimp;
 import soot.jimple.AssignStmt;
-import soot.jimple.InvokeExpr;
+import soot.jimple.IfStmt;
 
-public class AggregationTransformer extends BodyTransformer implements UnitValueTransformer {
+public class AggregationTransformer extends BodyTransformer implements UnitTransformer {
 
 	private static final Lazy<AggregationTransformer> instance = Lazy.from(AggregationTransformer::new);
 
@@ -25,7 +20,7 @@ public class AggregationTransformer extends BodyTransformer implements UnitValue
 	}
 
 	@Override
-	protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
+	protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
 		transformBody(body);
 	}
 
@@ -37,21 +32,12 @@ public class AggregationTransformer extends BodyTransformer implements UnitValue
 
 			@Override
 			public void caseAssignStmt(final AssignStmt unit) {
-				putStatement(unitBox, Grimp.v().newAssignStmt(unit));
+				unitBox.setUnit(Grimp.v().newAssignStmt(unit));
 			}
 
-		});
-	}
-
-	@Override
-	public void transformValue(final ValueBox valueBox) {
-		final Value value = valueBox.getValue();
-
-		value.apply(new JimpleValueSwitch<>() {
-
 			@Override
-			public void caseInvokeExpr(final InvokeExpr value) {
-				valueBox.setValue(Grimp.v().newExpr(value));
+			public void caseIfStmt(final IfStmt unit) {
+				unitBox.setUnit(Grimp.v().newIfStmt(unit));
 			}
 
 		});

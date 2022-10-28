@@ -20,7 +20,7 @@ import soot.jimple.JimpleBody;
 import soot.jimple.NegExpr;
 import soot.jimple.OrExpr;
 
-public class LogicValueTransformer extends BodyTransformer implements ValueTransformer {
+public class LogicValueTransformer extends BodyTransformer implements UnitTransformer {
 
 	private static final Lazy<LogicValueTransformer> instance = Lazy.from(LogicValueTransformer::new);
 
@@ -40,27 +40,27 @@ public class LogicValueTransformer extends BodyTransformer implements ValueTrans
 		}
 	}
 
-	public void transformValue(final ValueBox vbox) {
-		vbox.getValue().apply(new JimpleValueSwitch<>() {
+	public void transformValue(final ValueBox valueBox) {
+		valueBox.getValue().apply(new JimpleValueSwitch<>() {
 
 			@Override
 			public void caseIntConstant(final IntConstant constant) {
-				vbox.setValue(LogicConstant.v(constant.value > 0));
+				valueBox.setValue(LogicConstant.v(constant.value > 0));
 			}
 
 			@Override
 			public void caseAndExpr(final AndExpr value) {
-				vbox.setValue(Vimp.v().newLogicAndExpr(value.getOp1Box(), value.getOp2Box()));
+				valueBox.setValue(Vimp.v().newLogicAndExpr(value.getOp1Box(), value.getOp2Box()));
 			}
 
 			@Override
 			public void caseOrExpr(final OrExpr value) {
-				vbox.setValue(Vimp.v().newLogicOrExpr(value.getOp1Box(), value.getOp2Box()));
+				valueBox.setValue(Vimp.v().newLogicOrExpr(value.getOp1Box(), value.getOp2Box()));
 			}
 
 			@Override
 			public void caseNegExpr(final NegExpr value) {
-				vbox.setValue(Vimp.v().newLogicNotExpr(value.getOpBox()));
+				valueBox.setValue(Vimp.v().newLogicNotExpr(value.getOpBox()));
 			}
 
 		});
@@ -74,16 +74,17 @@ public class LogicValueTransformer extends BodyTransformer implements ValueTrans
 				final Type type = unit.getLeftOp().getType();
 
 				if (type == BooleanType.v()) {
-					final ValueBox vbox = unit.getRightOpBox();
-					transformValue(vbox);
+					final ValueBox valueBox = unit.getRightOpBox();
+					transformValue(valueBox);
 				}
 			}
 
 		});
 	}
 
-	public void transformUnit(final UnitBox ubox) {
-		transformUnit(ubox.getUnit());
+	@Override
+	public void transformUnit(final UnitBox unitBox) {
+		transformUnit(unitBox.getUnit());
 	}
 
 }

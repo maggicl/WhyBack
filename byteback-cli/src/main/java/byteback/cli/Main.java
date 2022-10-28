@@ -42,9 +42,9 @@ public class Main {
 		}
 
 		// Write to output
-		final var task = new ConversionTask(scene, prelude.program());
-		task.run();
-		output.print(task.getProgram().print());
+		final var task = new ConversionTask(scene, prelude);
+		
+		output.print(task.run().print());
 
 		output.close();
 	}

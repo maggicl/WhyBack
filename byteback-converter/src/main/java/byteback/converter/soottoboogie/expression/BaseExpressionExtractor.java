@@ -25,24 +25,24 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.VirtualInvokeExpr;
 
-public abstract class ExpressionVisitor extends JimpleValueSwitch<Expression> {
+public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expression> {
 
 	protected Expression expression;
 
 	protected final Type type;
 
-	public ExpressionVisitor(final Type type) {
+	public BaseExpressionExtractor(final Type type) {
 		this.type = type;
 	}
 
-	public abstract ExpressionVisitor makeExpressionVisitor(final Type type);
+	public abstract BaseExpressionExtractor makeExpressionExtractor(final Type type);
 
 	public Type getType() {
 		return type;
 	}
 
 	public Expression visit(final Value value, final Type type) {
-		return makeExpressionVisitor(type).visit(value);
+		return makeExpressionExtractor(type).visit(value);
 	}
 
 	public void setExpression(final Expression expression) {
@@ -108,7 +108,8 @@ public abstract class ExpressionVisitor extends JimpleValueSwitch<Expression> {
 	public void pushFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
 		final var referenceBuilder = new FunctionReferenceBuilder();
 		final String name = SootMethods.getAnnotation(method, Namespace.PRELUDE_ANNOTATION)
-				.flatMap(SootAnnotations::getValue).map((element) -> new StringElemExtractor().visit(element))
+				.flatMap(SootAnnotations::getValue)
+				.map((element) -> new StringElemExtractor().visit(element))
 				.orElseGet(() -> MethodConverter.methodName(method));
 		referenceBuilder.name(name);
 

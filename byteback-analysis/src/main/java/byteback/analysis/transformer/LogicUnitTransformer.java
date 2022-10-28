@@ -1,7 +1,5 @@
 package byteback.analysis.transformer;
 
-import static byteback.analysis.transformer.UnitTransformer.putStatement;
-
 import byteback.analysis.JimpleStmtSwitch;
 import byteback.analysis.Namespace;
 import byteback.analysis.Vimp;
@@ -39,14 +37,15 @@ public class LogicUnitTransformer extends BodyTransformer implements UnitTransfo
 		}
 	}
 
-	public void transformUnit(final UnitBox ubox) {
-		final Unit unit = ubox.getUnit();
+	@Override
+	public void transformUnit(final UnitBox unitBox) {
+		final Unit unit = unitBox.getUnit();
 
 		unit.apply(new JimpleStmtSwitch<>() {
 
 			@Override
-			public void caseInvokeStmt(final InvokeStmt u) {
-				final InvokeExpr value = u.getInvokeExpr();
+			public void caseInvokeStmt(final InvokeStmt invokeUnit) {
+				final InvokeExpr value = invokeUnit.getInvokeExpr();
 				final SootMethod method = value.getMethod();
 				final SootClass clazz = method.getDeclaringClass();
 
@@ -61,7 +60,7 @@ public class LogicUnitTransformer extends BodyTransformer implements UnitTransfo
 						default -> throw new IllegalStateException("Unknown logic statement " + method.getName());
 					};
 
-					putStatement(ubox, newUnit);
+					unitBox.setUnit(newUnit);
 				}
 			}
 

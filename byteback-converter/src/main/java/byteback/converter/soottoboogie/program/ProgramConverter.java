@@ -1,6 +1,9 @@
 package byteback.converter.soottoboogie.program;
 
 import byteback.analysis.Namespace;
+import byteback.analysis.transformer.AggregationTransformer;
+import byteback.analysis.transformer.LogicUnitTransformer;
+import byteback.analysis.transformer.LogicValueTransformer;
 import byteback.analysis.util.SootMethods;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
@@ -14,6 +17,8 @@ import byteback.util.Lazy;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import soot.Body;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -43,6 +48,13 @@ public class ProgramConverter {
 				continue;
 			}
 
+			final Body body = method.retrieveActiveBody();
+			AggregationTransformer.v().transformBody(body);
+			LogicUnitTransformer.v().transformBody(body);
+			LogicValueTransformer.v().transformBody(body);
+
+			System.out.println(body);
+
 			try {
 				log.info("Converting method {}", method.getSignature());
 
@@ -63,25 +75,11 @@ public class ProgramConverter {
 
 	public Program convert(final SootClass clazz) {
 		log.info("Converting class {}", clazz.getName());
+
 		final var program = new Program();
 		program.addDeclaration(ReferenceTypeConverter.instance().convert(clazz));
 		convertFields(program, clazz);
 		convertMethods(program, clazz);
-
-		return program;
-	}
-
-	public Program convert(final Stream<SootClass> classes) {
-		final Program program = Prelude.v().program();
-		classes.forEach((clazz) -> {
-			try {
-				convert(clazz).inject(program);
-			} catch (final ConversionException exception) {
-				log.error("Conversion exception: ");
-				exception.printStackTrace();
-				log.warn("Skipping class " + clazz.getName());
-			}
-		});
 
 		return program;
 	}

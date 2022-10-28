@@ -28,7 +28,7 @@ public class FunctionExpressionExtractor extends ExpressionExtractor {
 	}
 
 	@Override
-	public FunctionExpressionExtractor makeExpressionVisitor(final Type type) {
+	public FunctionExpressionExtractor makeExpressionExtractor(final Type type) {
 		return new FunctionExpressionExtractor(type);
 	}
 

@@ -1,37 +1,36 @@
 package byteback.cli;
 
+import byteback.analysis.Namespace;
 import byteback.analysis.util.SootClasses;
+import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.program.ProgramConverter;
 import byteback.frontend.boogie.ast.Program;
 import soot.Scene;
 import soot.SootClass;
 
-public class ConversionTask implements Runnable {
+public class ConversionTask {
 
 	private final Scene scene;
 
-	private Program prelude;
+	private Prelude prelude;
 
-	public ConversionTask(final Scene scene, final Program program) {
+	public ConversionTask(final Scene scene, final Prelude prelude) {
 		this.scene = scene;
-		this.prelude = program;
+		this.prelude = prelude;
 	}
 
-	public void run() {
+	public Program run() {
 		final Program program = new Program();
 
 		for (final SootClass clazz : scene.getClasses()) {
 			if (clazz.resolvingLevel() >= SootClass.SIGNATURES
-					&& !SootClasses.isBasicClass(clazz)) {
-				program.inject(ProgramConverter.v().convert(clazz));
+					&& !SootClasses.isBasicClass(clazz)
+					&& !Namespace.isAnnotationClass(clazz)) {
+				ProgramConverter.v().convert(clazz).inject(program);
 			}
 		}
 
-		prelude.inject(program);
-	}
-
-	public Program getProgram() {
-		return prelude;
+		return prelude.program().merge(program);
 	}
 
 }

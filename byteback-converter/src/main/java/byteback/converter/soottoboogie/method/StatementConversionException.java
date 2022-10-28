@@ -1,4 +1,4 @@
-package byteback.converter.soottoboogie.statement;
+package byteback.converter.soottoboogie.method;
 
 import byteback.converter.soottoboogie.ConversionException;
 import soot.Unit;

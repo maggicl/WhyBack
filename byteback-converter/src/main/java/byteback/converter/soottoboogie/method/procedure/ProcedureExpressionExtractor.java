@@ -6,7 +6,7 @@ import byteback.analysis.util.SootMethods;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.ExpressionExtractor;
-import byteback.converter.soottoboogie.expression.ExpressionVisitor;
+import byteback.converter.soottoboogie.expression.BaseExpressionExtractor;
 import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.frontend.boogie.ast.AssertStatement;
@@ -41,7 +41,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 	}
 
 	@Override
-	public ExpressionVisitor makeExpressionVisitor(final Type type) {
+	public BaseExpressionExtractor makeExpressionExtractor(final Type type) {
 		return new ProcedureExpressionExtractor(type, bodyExtractor);
 	}
 
@@ -74,14 +74,11 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		final Expression condition = visit(argument, BooleanType.v());
 		assert !iterator.hasNext() : "Wrong number of arguments to contract method";
 
-		if (name.equals(Namespace.ASSERTION_NAME)) {
-			bodyExtractor.addStatement(new AssertStatement(condition));
-		} else if (name.equals(Namespace.ASSUMPTION_NAME)) {
-			bodyExtractor.addStatement(new AssumeStatement(condition));
-		} else if (name.equals(Namespace.INVARIANT_NAME)) {
-			bodyExtractor.addInvariant(condition);
-		} else {
-			throw new ConversionException("Unknown special method: " + method.getName());
+		switch (name) {
+			case Namespace.ASSERTION_NAME -> bodyExtractor.addStatement(new AssertStatement(condition));
+			case Namespace.ASSUMPTION_NAME -> bodyExtractor.addStatement(new AssumeStatement(condition));
+			case Namespace.INVARIANT_NAME -> bodyExtractor.addInvariant(condition);
+			default -> throw new ConversionException("Unknown special method: " + method.getName());
 		}
 	}
 
@@ -136,7 +133,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 		});
 
-		final Expression size = makeExpressionVisitor(IntType.v()).visit(arrayExpression.getSize());
+		final Expression size = this.makeExpressionExtractor(IntType.v()).visit(arrayExpression.getSize());
 		callStatement.addArgument(size);
 		addCall(callStatement);
 	}

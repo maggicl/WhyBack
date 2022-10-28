@@ -1,22 +1,21 @@
 package byteback.analysis.transformer;
 
+import byteback.analysis.util.SootBodies;
 import soot.Body;
 import soot.Unit;
 import soot.UnitBox;
 
 public interface UnitTransformer {
 
-	public static void putStatement(final UnitBox ubox, final Unit newUnit) {
-		final Unit oldUnit = ubox.getUnit();
-		ubox.setUnit(newUnit);
-		oldUnit.redirectJumpsToThisTo(newUnit);
+	public static void putStatement(final UnitBox unitBox, final Unit newUnit) {
+		unitBox.setUnit(newUnit);
 	}
 
-	void transformUnit(UnitBox ubox);
+	void transformUnit(UnitBox unitBox);
 
 	default void transformBody(final Body body) {
-		for (final UnitBox ubox : body.getAllUnitBoxes()) {
-			transformUnit(ubox);
+		for (UnitBox unitBox : SootBodies.getUnitBoxes(body)) {
+			transformUnit(unitBox);
 		}
 	}
 

@@ -7,7 +7,7 @@ import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.converter.soottoboogie.field.FieldConverter;
-import byteback.converter.soottoboogie.statement.StatementConversionException;
+import byteback.converter.soottoboogie.method.StatementConversionException;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.frontend.boogie.ast.Assignee;

@@ -3,7 +3,7 @@ package byteback.converter.soottoboogie.method.function;
 import byteback.analysis.JimpleStmtSwitch;
 import byteback.converter.soottoboogie.LocalExtractor;
 import byteback.converter.soottoboogie.expression.ExpressionExtractor;
-import byteback.converter.soottoboogie.statement.StatementConversionException;
+import byteback.converter.soottoboogie.method.StatementConversionException;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.ValueReference;
 import soot.Local;

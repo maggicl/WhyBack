@@ -1,6 +1,3 @@
-/**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
- */
 package byteback.test.record;
 
 public class Basic {

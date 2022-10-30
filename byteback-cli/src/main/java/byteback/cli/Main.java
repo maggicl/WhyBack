@@ -41,7 +41,6 @@ public class Main {
 			output = System.out;
 		}
 
-		// Write to output
 		final var task = new ConversionTask(scene, prelude);
 		
 		output.print(task.run().print());
@@ -59,6 +58,10 @@ public class Main {
 		}
 
 		options.setPhaseOption("jb", "use-original-names:true");
+		options.setPhaseOption("gb.a1", "enabled:false");
+		options.setPhaseOption("gb.cf", "enabled:false");
+		options.setPhaseOption("gb.a2", "enabled:false");
+		options.setPhaseOption("gb.ule", "enabled:false");
 		scene.loadBasicClasses();
 
 		for (String startingClass : startingClasses) {

@@ -2,6 +2,7 @@ package byteback.converter.soottoboogie.program;
 
 import byteback.analysis.Namespace;
 import byteback.analysis.transformer.AggregationTransformer;
+import byteback.analysis.transformer.FoldingTransformer;
 import byteback.analysis.transformer.LogicUnitTransformer;
 import byteback.analysis.transformer.LogicValueTransformer;
 import byteback.analysis.util.SootMethods;
@@ -14,7 +15,6 @@ import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.frontend.boogie.ast.Program;
 import byteback.util.Lazy;
 
-import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +22,8 @@ import soot.Body;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
+import soot.grimp.Grimp;
+import soot.grimp.GrimpBody;
 
 public class ProgramConverter {
 
@@ -48,28 +50,30 @@ public class ProgramConverter {
 				continue;
 			}
 
-			final Body body = method.retrieveActiveBody();
-			AggregationTransformer.v().transformBody(body);
+			System.out.println(method);
+
+			final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
 			LogicUnitTransformer.v().transformBody(body);
 			LogicValueTransformer.v().transformBody(body);
+			new FoldingTransformer().transformBody(body);
 
 			System.out.println(body);
 
-			try {
-				log.info("Converting method {}", method.getSignature());
+			// try {
+			// 	log.info("Converting method {}", method.getSignature());
 
-				if (SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {
-					program.addDeclaration(FunctionConverter.v().convert(method));
-				} else if (!SootMethods.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION)) {
-					program.addDeclaration(ProcedureConverter.v().convert(method));
-				}
+			// 	if (SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {
+			// 		program.addDeclaration(FunctionConverter.v().convert(method));
+			// 	} else if (!SootMethods.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION)) {
+			// 		program.addDeclaration(ProcedureConverter.v().convert(method));
+			// 	}
 
-				log.info("Method {} converted", method.getSignature());
-			} catch (final ConversionException exception) {
-				log.error("Conversion exception:");
-				exception.printStackTrace();
-				log.warn("Skipping method {}", method.getName());
-			}
+			// 	log.info("Method {} converted", method.getSignature());
+			// } catch (final ConversionException exception) {
+			// 	log.error("Conversion exception:");
+			// 	exception.printStackTrace();
+			// 	log.warn("Skipping method {}", method.getName());
+			// }
 		}
 	}
 

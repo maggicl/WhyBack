@@ -1,16 +1,9 @@
 package byteback.converter.soottoboogie.program;
 
-import byteback.analysis.Namespace;
-import byteback.analysis.transformer.AggregationTransformer;
 import byteback.analysis.transformer.FoldingTransformer;
 import byteback.analysis.transformer.LogicUnitTransformer;
 import byteback.analysis.transformer.LogicValueTransformer;
-import byteback.analysis.util.SootMethods;
-import byteback.converter.soottoboogie.ConversionException;
-import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.field.FieldConverter;
-import byteback.converter.soottoboogie.method.function.FunctionConverter;
-import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.frontend.boogie.ast.Program;
 import byteback.util.Lazy;
@@ -23,7 +16,7 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.grimp.Grimp;
-import soot.grimp.GrimpBody;
+import soot.toolkits.scalar.UnusedLocalEliminator;
 
 public class ProgramConverter {
 
@@ -50,12 +43,11 @@ public class ProgramConverter {
 				continue;
 			}
 
-			System.out.println(method);
-
 			final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
-			LogicUnitTransformer.v().transformBody(body);
-			LogicValueTransformer.v().transformBody(body);
-			new FoldingTransformer().transformBody(body);
+			LogicUnitTransformer.v().transform(body);
+			LogicValueTransformer.v().transform(body);
+			new FoldingTransformer().transform(body);
+			UnusedLocalEliminator.v().transform(body);
 
 			System.out.println(body);
 

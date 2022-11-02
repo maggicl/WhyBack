@@ -1,10 +1,21 @@
 package byteback.analysis;
 
-public interface Visitor<T, R> {
+import soot.util.Switch;
+import soot.util.Switchable;
 
-	void caseDefault(T t);
+public interface Visitor<T extends Switchable, R> extends Switch {
+
 	default R result() {
 		return null;
+	}
+
+	default void caseDefault(final T o) {
+	}
+
+	default R visit(final T o) {
+		o.apply(this);
+
+		return result();
 	}
 
 }

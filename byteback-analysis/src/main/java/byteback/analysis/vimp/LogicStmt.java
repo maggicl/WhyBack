@@ -1,18 +1,23 @@
 package byteback.analysis.vimp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.Value;
+import soot.ValueBox;
+import soot.grimp.internal.GRValueBox;
 import soot.jimple.internal.AbstractStmt;
 
 public abstract class LogicStmt extends AbstractStmt {
 
-	private final Value condition;
+	private final ValueBox conditionBox;
 
 	public LogicStmt(final Value condition) {
-		this.condition = condition;
+		this.conditionBox = new GRValueBox(condition);
 	}
 
 	public Value getCondition() {
-		return condition;
+		return conditionBox.getValue();
 	}
 
 	@Override
@@ -23,6 +28,16 @@ public abstract class LogicStmt extends AbstractStmt {
 	@Override
 	public boolean fallsThrough() {
 		return false;
+	}
+
+	@Override
+	public List<ValueBox> getUseBoxes() {
+		final ArrayList<ValueBox> useBoxes = new ArrayList<>();
+
+		useBoxes.add(conditionBox);
+		useBoxes.addAll(conditionBox.getValue().getUseBoxes());
+
+		return useBoxes;
 	}
 
 }

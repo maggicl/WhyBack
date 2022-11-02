@@ -38,13 +38,8 @@ public abstract class JimpleValueSwitch<R> extends AbstractJimpleValueSwitch<R>
 	}
 
 	@Override
-	public void caseDefault(final Value value) {
-	}
-
-	public R visit(final Value value) {
-		value.apply(this);
-
-		return result();
+	public void defaultCase(final Object value) {
+		caseDefault((Value) value);
 	}
 
 }

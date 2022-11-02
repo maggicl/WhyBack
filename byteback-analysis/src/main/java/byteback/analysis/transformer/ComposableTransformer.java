@@ -6,22 +6,21 @@ import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.UnitBox;
-import soot.ValueBox;
 
-public class ComposableTransformer extends BodyTransformer implements UnitValueTransformer {
-
-	final List<ValueTransformer> valueTransformers;
+public class ComposableTransformer extends BodyTransformer implements UnitTransformer {
 
 	final List<UnitTransformer> unitTransformers;
 
 	public ComposableTransformer() {
-		this(new ArrayList<>(), new ArrayList<>());
+		this(new ArrayList<>());
 	}
 
-	public ComposableTransformer(final List<ValueTransformer> valueTransformers,
-			final List<UnitTransformer> unitTransformers) {
-		this.valueTransformers = valueTransformers;
+	public ComposableTransformer(final List<UnitTransformer> unitTransformers) {
 		this.unitTransformers = unitTransformers;
+	}
+
+	public void addTransformer(final UnitTransformer transformer) {
+		unitTransformers.add(transformer);
 	}
 
 	@Override
@@ -29,28 +28,10 @@ public class ComposableTransformer extends BodyTransformer implements UnitValueT
 		transformBody(body);
 	}
 
-	public void addTransformer(final ValueTransformer transformer) {
-		valueTransformers.add(transformer);
-	}
-
-	public void addTransformer(final UnitTransformer transformer) {
-		unitTransformers.add(transformer);
-	}
-
-	public void addTransformer(final UnitValueTransformer transformer) {
-		unitTransformers.add((UnitTransformer) transformer);
-		valueTransformers.add((ValueTransformer) transformer);
-	}
-
+	@Override
 	public void transformUnit(final UnitBox unitBox) {
 		for (UnitTransformer transformer : unitTransformers) {
 			transformer.transformUnit(unitBox);
-		}
-	}
-
-	public void transformValue(final ValueBox valueBox) {
-		for (ValueTransformer transformer : valueTransformers) {
-			transformer.transformValue(valueBox);
 		}
 	}
 

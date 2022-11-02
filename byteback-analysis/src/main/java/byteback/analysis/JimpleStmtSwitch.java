@@ -12,7 +12,8 @@ public abstract class JimpleStmtSwitch<R> extends AbstractStmtSwitch<R> implemen
 	}
 
 	@Override
-	public void caseDefault(final Unit unit) {
+	public void defaultCase(final Unit unit) {
+		caseDefault(unit);
 	}
 
 	public R visit(final Unit unit) {

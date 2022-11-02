@@ -21,71 +21,71 @@ public class LogicValueTransformerIntegrationTest {
 	@Test
 	public void TransformValue_GivenFalseIntConstantBox_YieldsFalse() {
 		final IntConstant intConstant = IntConstant.v(0);
-		final ValueBox vbox = Jimple.v().newImmediateBox(intConstant);
-		transformer.transformValue(vbox);
-		assertEquals(LogicConstant.v(false), vbox.getValue());
+		final ValueBox valueBox = Jimple.v().newImmediateBox(intConstant);
+		transformer.transformValue(valueBox);
+		assertEquals(LogicConstant.v(false), valueBox.getValue());
 	}
 
 	@Test
 	public void TransformValue_GivenTrueIntConstantBox_YieldsFalse() {
 		final IntConstant intConstant = IntConstant.v(1);
-		final ValueBox vbox = Jimple.v().newImmediateBox(intConstant);
-		transformer.transformValue(vbox);
-		assertEquals(LogicConstant.v(true), vbox.getValue());
+		final ValueBox valueBox = Jimple.v().newImmediateBox(intConstant);
+		transformer.transformValue(valueBox);
+		assertEquals(LogicConstant.v(true), valueBox.getValue());
 	}
 
 	@Test
 	public void TransformValue_GivenBooleanAndBox_YieldsLogicAnd() {
 		final Value booleanAnd = Jimple.v().newAndExpr(LogicConstant.v(true), LogicConstant.v(false));
 		final Value logicAnd = Vimp.v().newLogicAndExpr(LogicConstant.v(true), LogicConstant.v(false));
-		final ValueBox vbox = Jimple.v().newRValueBox(booleanAnd);
-		transformer.transformValue(vbox);
-		assertEquiv(logicAnd, vbox.getValue());
+		final ValueBox valueBox = Jimple.v().newRValueBox(booleanAnd);
+		transformer.transformValue(valueBox);
+		assertEquiv(logicAnd, valueBox.getValue());
 	}
 
 	@Test
 	public void TransformValue_GivenIntegerAndBox_YieldsLogicAnd() {
 		final Value intAnd = Jimple.v().newAndExpr(IntConstant.v(0), IntConstant.v(1));
 		final Value logicAnd = Vimp.v().newLogicAndExpr(IntConstant.v(0), IntConstant.v(1));
-		final ValueBox vbox = Jimple.v().newRValueBox(intAnd);
-		transformer.transformValue(vbox);
-		assertEquiv(logicAnd, vbox.getValue());
+		final ValueBox valueBox = Jimple.v().newRValueBox(intAnd);
+		transformer.transformValue(valueBox);
+		assertEquiv(logicAnd, valueBox.getValue());
 	}
 
 	@Test
 	public void TransformValue_GivenBooleanOrBox_YieldsLogicOr() {
 		final Value booleanOr = Jimple.v().newOrExpr(LogicConstant.v(true), LogicConstant.v(false));
 		final Value logicOr = Vimp.v().newLogicOrExpr(LogicConstant.v(true), LogicConstant.v(false));
-		final ValueBox vbox = Jimple.v().newRValueBox(booleanOr);
-		transformer.transformValue(vbox);
-		assertEquiv(logicOr, vbox.getValue());
+		final ValueBox valueBox = Jimple.v().newRValueBox(booleanOr);
+		transformer.transformValue(valueBox);
+		assertEquiv(logicOr, valueBox.getValue());
 	}
 
 	@Test
 	public void TransformValue_GivenIntegerOrBox_YieldsLogicOr() {
 		final Value intAnd = Jimple.v().newOrExpr(IntConstant.v(0), IntConstant.v(1));
 		final Value logicOr = Vimp.v().newLogicOrExpr(IntConstant.v(0), IntConstant.v(1));
-		final ValueBox vbox = Jimple.v().newRValueBox(intAnd);
-		transformer.transformValue(vbox);
-		assertEquiv(logicOr, vbox.getValue());
+		final ValueBox valueBox = Jimple.v().newRValueBox(intAnd);
+		transformer.transformValue(valueBox);
+		assertEquiv(logicOr, valueBox.getValue());
 	}
 
 	@Test
 	public void TransformValue_GivenIntegerNegBox_YieldsLogicNot() {
 		final Value intNeg = Jimple.v().newNegExpr(IntConstant.v(1));
 		final Value logicNot = Vimp.v().newLogicNotExpr(IntConstant.v(1));
-		final ValueBox vbox = Jimple.v().newRValueBox(intNeg);
-		transformer.transformValue(vbox);
-		assertEquiv(logicNot, vbox.getValue());
+		final ValueBox valueBox = Jimple.v().newRValueBox(intNeg);
+		transformer.transformValue(valueBox);
+		assertEquiv(logicNot, valueBox.getValue());
 	}
 
 	@Test
 	public void TransformValue_GivenBooleanNegBox_YieldsLogicNot() {
 		final Value booleanNeg = Jimple.v().newNegExpr(LogicConstant.v(true));
 		final Value logicNot = Vimp.v().newLogicNotExpr(LogicConstant.v(true));
-		final ValueBox vbox = Jimple.v().newRValueBox(booleanNeg);
-		transformer.transformValue(vbox);
-		assertEquiv(logicNot, vbox.getValue());
+		final ValueBox valueBox = Jimple.v().newRValueBox(booleanNeg);
+		transformer.transformValue(valueBox);
+		assertEquiv(logicNot, valueBox.getValue());
 	}
 
 	@Test

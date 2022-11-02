@@ -7,7 +7,7 @@ import soot.ValueBox;
 import soot.jimple.OrExpr;
 import soot.util.Switch;
 
-public class LogicOrExpr extends AbstractLogicBinopExpr implements LogicExpr, OrExpr {
+public class LogicOrExpr extends AbstractLogicBinopExpr implements OrExpr {
 
 	public LogicOrExpr(final Value op1, final Value op2) {
 		super(op1, op2);
@@ -28,6 +28,11 @@ public class LogicOrExpr extends AbstractLogicBinopExpr implements LogicExpr, Or
 	@Override
 	public void apply(final Switch sw) {
 		((LogicExprVisitor) sw).caseLogicOrExpr(this);
+	}
+
+	@Override
+	public int getPrecedence() {
+		return 500;
 	}
 
 }

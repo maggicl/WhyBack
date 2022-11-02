@@ -1,25 +1,25 @@
 package byteback.analysis.vimp;
 
-import byteback.analysis.LogicExprVisitor;
 import byteback.analysis.Vimp;
 import soot.Value;
 import soot.ValueBox;
-import soot.jimple.AndExpr;
+import soot.jimple.ExprSwitch;
+import soot.jimple.LeExpr;
 import soot.util.Switch;
 
-public class LogicAndExpr extends AbstractLogicBinopExpr implements AndExpr {
+public class LogicLeExpr extends AbstractLogicBinopExpr implements LeExpr {
 
-	public LogicAndExpr(final Value op1, final Value op2) {
+	public LogicLeExpr(final Value op1, final Value op2) {
 		super(op1, op2);
 	}
 
-	public LogicAndExpr(final ValueBox op1box, final ValueBox op2box) {
+	public LogicLeExpr(final ValueBox op1box, final ValueBox op2box) {
 		super(op1box, op2box);
 	}
 
 	@Override
 	public String getSymbol() {
-		return " ∧ ";
+		return " <= ";
 	}
 
 	@Override
@@ -29,12 +29,12 @@ public class LogicAndExpr extends AbstractLogicBinopExpr implements AndExpr {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprVisitor) sw).caseLogicAndExpr(this);
+		((ExprSwitch) sw).caseLeExpr(this);
 	}
 
 	@Override
 	public int getPrecedence() {
-		return 500;
+		return 600;
 	}
 
 }

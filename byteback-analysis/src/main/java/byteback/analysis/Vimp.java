@@ -4,10 +4,16 @@ import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.AssumptionStmt;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.analysis.vimp.LogicAndExpr;
+import byteback.analysis.vimp.LogicEqExpr;
 import byteback.analysis.vimp.LogicExistsExpr;
 import byteback.analysis.vimp.LogicForallExpr;
+import byteback.analysis.vimp.LogicGeExpr;
+import byteback.analysis.vimp.LogicGtExpr;
 import byteback.analysis.vimp.LogicIffExpr;
 import byteback.analysis.vimp.LogicImpliesExpr;
+import byteback.analysis.vimp.LogicLeExpr;
+import byteback.analysis.vimp.LogicLtExpr;
+import byteback.analysis.vimp.LogicNeExpr;
 import byteback.analysis.vimp.LogicNotExpr;
 import byteback.analysis.vimp.LogicOrExpr;
 import byteback.util.Lazy;
@@ -18,6 +24,12 @@ import soot.Value;
 import soot.ValueBox;
 import soot.grimp.internal.ExprBox;
 import soot.jimple.Constant;
+import soot.jimple.EqExpr;
+import soot.jimple.GeExpr;
+import soot.jimple.GtExpr;
+import soot.jimple.LeExpr;
+import soot.jimple.LtExpr;
+import soot.jimple.NeExpr;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -109,6 +121,46 @@ public class Vimp {
 		ls.add(l);
 
 		return new LogicExistsExpr(ls, v);
+	}
+
+	public GtExpr newGtExpr(final Value a, final Value b) {
+		return new LogicGtExpr(a, b);
+	}
+
+	public GtExpr newGtExpr(final ValueBox abox, final ValueBox bbox) {
+		return new LogicGtExpr(abox, bbox);
+	}
+
+	public GeExpr newGeExpr(final Value a, final Value b) {
+		return new LogicGeExpr(a, b);
+	}
+
+	public GeExpr newGeExpr(final ValueBox abox, final ValueBox bbox) {
+		return new LogicGeExpr(abox, bbox);
+	}
+
+	public LtExpr newLtExpr(final Value a, final Value b) {
+		return new LogicLtExpr(a, b);
+	}
+
+	public LtExpr newLtExpr(final ValueBox abox, final ValueBox bbox) {
+		return new LogicLtExpr(abox, bbox);
+	}
+
+	public LeExpr newLeExpr(final Value a, final Value b) {
+		return new LogicLeExpr(a, b);
+	}
+
+	public LeExpr newLeExpr(final ValueBox abox, final ValueBox bbox) {
+		return new LogicLeExpr(abox, bbox);
+	}
+
+	public EqExpr newEqExpr(final ValueBox abox, final ValueBox bbox) {
+		return new LogicEqExpr(abox, bbox);
+	}
+
+	public NeExpr newNeExpr(final ValueBox abox, final ValueBox bbox) {
+		return new LogicNeExpr(abox, bbox);
 	}
 
 }

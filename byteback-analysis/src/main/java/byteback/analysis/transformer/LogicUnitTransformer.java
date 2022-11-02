@@ -13,9 +13,9 @@ import soot.SootMethod;
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
+import soot.grimp.GrimpBody;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
-import soot.jimple.JimpleBody;
 
 public class LogicUnitTransformer extends BodyTransformer implements UnitTransformer {
 
@@ -30,10 +30,10 @@ public class LogicUnitTransformer extends BodyTransformer implements UnitTransfo
 
 	@Override
 	public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-		if (body instanceof JimpleBody jimpleBody) {
-			transformBody(jimpleBody);
+		if (body instanceof GrimpBody) {
+			transformBody(body);
 		} else {
-			throw new IllegalArgumentException("Can only transform Jimple");
+			throw new IllegalArgumentException("Can only transform Grimp");
 		}
 	}
 
@@ -47,9 +47,9 @@ public class LogicUnitTransformer extends BodyTransformer implements UnitTransfo
 			public void caseInvokeStmt(final InvokeStmt invokeUnit) {
 				final InvokeExpr value = invokeUnit.getInvokeExpr();
 				final SootMethod method = value.getMethod();
-				final SootClass clazz = method.getDeclaringClass();
+				final SootClass declaringClass = method.getDeclaringClass();
 
-				if (Namespace.isContractClass(clazz)) {
+				if (Namespace.isContractClass(declaringClass)) {
 					assert value.getArgCount() == 1;
 
 					final Value argument = value.getArg(0);

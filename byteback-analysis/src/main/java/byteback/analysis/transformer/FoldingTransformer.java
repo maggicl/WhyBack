@@ -2,7 +2,10 @@ package byteback.analysis.transformer;
 
 import byteback.analysis.JimpleStmtSwitch;
 import byteback.analysis.JimpleValueSwitch;
+import byteback.analysis.Namespace;
 import byteback.analysis.UseDefineChain;
+import byteback.analysis.util.SootMethods;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +15,9 @@ import soot.Local;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
+import soot.grimp.GrimpBody;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeExpr;
-import soot.jimple.JimpleBody;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.Ref;
@@ -29,15 +32,20 @@ public class FoldingTransformer extends BodyTransformer {
 
 	@Override
 	protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
-		if (body instanceof JimpleBody jimpleBody) {
-			transform(jimpleBody);
+		if (body instanceof GrimpBody) {
+			transformBody(body);
 		} else {
 			throw new IllegalArgumentException("Can transform only Jimple");
 		}
 	}
 
+	public static boolean isPure(final InvokeExpr invokeValue) {
+		return SootMethods.hasAnnotation(invokeValue.getMethod(), Namespace.PURE_ANNOTATION);
+	}
+
 	public static boolean hasSideEffects(final Value value) {
-		return value instanceof InvokeExpr || value instanceof NewExpr || value instanceof NewArrayExpr;
+		return (value instanceof InvokeExpr invokeValue && !isPure(invokeValue))
+			|| value instanceof NewExpr || value instanceof NewArrayExpr;
 	}
 
 	public boolean isAssignedToReference(final Local local) {

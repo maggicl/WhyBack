@@ -34,10 +34,4 @@ public abstract class TypeSwitch<R> extends soot.TypeSwitch<R> implements Visito
 		caseDefault(type);
 	}
 
-	public R visit(Type type) {
-		type.apply(this);
-
-		return result();
-	}
-
 }

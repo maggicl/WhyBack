@@ -39,8 +39,8 @@ public class QuantifierValueTransformer extends BodyTransformer implements Value
 	}
 
 	@Override
-	public void transformValue(final ValueBox vbox) {
-		final Value value = vbox.getValue();
+	public void transformValue(final ValueBox valueBox) {
+		final Value value = valueBox.getValue();
 
 		value.apply(new JimpleValueSwitch<>() {
 
@@ -68,7 +68,7 @@ public class QuantifierValueTransformer extends BodyTransformer implements Value
 						default -> throw new IllegalStateException("Unknown quantifier method " + method.getName());
 					};
 
-					vbox.setValue(substitute);
+					valueBox.setValue(substitute);
 				}
 
 			}

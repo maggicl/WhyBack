@@ -12,6 +12,7 @@ public class InvariantStmt extends LogicStmt {
 		super(condition);
 	}
 
+	@Override
 	public void toString(final UnitPrinter up) {
 		up.literal("invariant ");
 		getCondition().toString(up);

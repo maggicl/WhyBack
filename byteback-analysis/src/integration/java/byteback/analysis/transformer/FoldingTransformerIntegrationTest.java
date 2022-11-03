@@ -22,32 +22,32 @@ public class FoldingTransformerIntegrationTest {
 	// return body;
 	// }
 
-	public FoldingTransformer getTransformer() {
-		return new FoldingTransformer();
+	public ExpressionFolder getTransformer() {
+		return new ExpressionFolder();
 	}
 
 	@Test
 	public void HasSideEffects_OnInvokeExpr_ReturnsTrue() {
 		final InvokeExpr invokeValue = mock(InvokeExpr.class);
-		assertTrue(FoldingTransformer.hasSideEffects(invokeValue));
+		assertTrue(ExpressionFolder.hasSideEffects(invokeValue));
 	}
 
 	@Test
 	public void HasSideEffects_OnNewExpr_ReturnsTrue() {
 		final NewExpr newValue = mock(NewExpr.class);
-		assertTrue(FoldingTransformer.hasSideEffects(newValue));
+		assertTrue(ExpressionFolder.hasSideEffects(newValue));
 	}
 
 	@Test
 	public void HasSideEffects_OnNewArrayExpr_ReturnsTrue() {
 		final NewArrayExpr newArrayValue = mock(NewArrayExpr.class);
-		assertTrue(FoldingTransformer.hasSideEffects(newArrayValue));
+		assertTrue(ExpressionFolder.hasSideEffects(newArrayValue));
 	}
 
 	@Test
 	public void HasSideEffects_OnGeneralValue_ReturnsFalse() {
 		final Value value = mock(Value.class);
-		assertFalse(FoldingTransformer.hasSideEffects(value));
+		assertFalse(ExpressionFolder.hasSideEffects(value));
 	}
 
 }

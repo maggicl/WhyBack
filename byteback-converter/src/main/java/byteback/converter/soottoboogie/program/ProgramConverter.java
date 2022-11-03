@@ -1,6 +1,7 @@
 package byteback.converter.soottoboogie.program;
 
-import byteback.analysis.transformer.FoldingTransformer;
+import byteback.analysis.transformer.ExpressionFolder;
+import byteback.analysis.transformer.InvariantExpander;
 import byteback.analysis.transformer.LogicUnitTransformer;
 import byteback.analysis.transformer.LogicValueTransformer;
 import byteback.converter.soottoboogie.field.FieldConverter;
@@ -46,8 +47,9 @@ public class ProgramConverter {
 			final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
 			LogicUnitTransformer.v().transform(body);
 			LogicValueTransformer.v().transform(body);
-			new FoldingTransformer().transform(body);
+			new ExpressionFolder().transform(body);
 			UnusedLocalEliminator.v().transform(body);
+			InvariantExpander.v().transform(body);
 
 			System.out.println(body);
 

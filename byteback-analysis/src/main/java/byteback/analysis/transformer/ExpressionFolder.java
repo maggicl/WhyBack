@@ -22,20 +22,20 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.Ref;
 
-public class FoldingTransformer extends BodyTransformer {
+public class ExpressionFolder extends BodyTransformer {
 
 	final UseDefineChain useDefineChain;
 
-	public FoldingTransformer() {
+	public ExpressionFolder() {
 		this.useDefineChain = new UseDefineChain();
 	}
 
 	@Override
-	protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
+	protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
 		if (body instanceof GrimpBody) {
 			transformBody(body);
 		} else {
-			throw new IllegalArgumentException("Can transform only Jimple");
+			throw new IllegalArgumentException("Can only transform Grimp");
 		}
 	}
 

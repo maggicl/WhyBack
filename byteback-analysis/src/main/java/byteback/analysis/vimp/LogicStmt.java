@@ -3,6 +3,8 @@ package byteback.analysis.vimp;
 import java.util.ArrayList;
 import java.util.List;
 
+import soot.NormalUnitPrinter;
+import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.internal.GRValueBox;
@@ -27,7 +29,7 @@ public abstract class LogicStmt extends AbstractStmt {
 
 	@Override
 	public boolean fallsThrough() {
-		return false;
+		return true;
 	}
 
 	@Override

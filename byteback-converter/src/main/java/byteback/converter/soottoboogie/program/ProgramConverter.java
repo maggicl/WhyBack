@@ -46,7 +46,7 @@ public class ProgramConverter {
 
 			final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
 			LogicUnitTransformer.v().transform(body);
-			LogicValueTransformer.v().transform(body);
+			new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
 			new ExpressionFolder().transform(body);
 			UnusedLocalEliminator.v().transform(body);
 			InvariantExpander.v().transform(body);

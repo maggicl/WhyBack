@@ -4,7 +4,6 @@ import byteback.analysis.JimpleStmtSwitch;
 import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Vimp;
 import byteback.analysis.vimp.LogicConstant;
-import byteback.util.Lazy;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -37,17 +36,18 @@ import soot.jimple.LtExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.NegExpr;
 import soot.jimple.OrExpr;
+import soot.jimple.ReturnStmt;
 import soot.jimple.UnopExpr;
 
 public class LogicValueTransformer extends BodyTransformer implements UnitTransformer {
 
-	private interface BinaryConstructor extends BiFunction<ValueBox, ValueBox, Value> {}
-
-	private interface UnaryConstructor extends Function<ValueBox, Value> {}
-
-	private static final Lazy<LogicValueTransformer> instance = Lazy.from(LogicValueTransformer::new);
-
 	public static class LogicValueSwitch extends JimpleValueSwitch<Value> {
+
+		private interface BinaryConstructor extends BiFunction<ValueBox, ValueBox, Value> {
+		}
+
+		private interface UnaryConstructor extends Function<ValueBox, Value> {
+		}
 
 		public final Type expectedType;
 
@@ -74,10 +74,10 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 			new LogicValueSwitch(expectedType, leftBox).visit(leftBox.getValue());
 			new LogicValueSwitch(expectedType, rightBox).visit(rightBox.getValue());
 		}
-		
+
 		@Override
 		public void caseLocal(final Local local) {
-			final Type actualType; 
+			final Type actualType;
 
 			if (local.getType() != BooleanType.v()) {
 				actualType = Type.toMachineType(local.getType());
@@ -98,7 +98,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 				public void caseBooleanType(final BooleanType type) {
 					setValue(LogicConstant.v(constant.value > 0));
 				}
-					
+
 			});
 		}
 
@@ -204,9 +204,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 
 				@Override
 				public void caseBooleanType(final BooleanType $) {
-					System.out.println("=====================");
 					setBinaryValue(Vimp.v()::newNeExpr, IntType.v(), value);
-					System.out.println("?????????????????????");
 				}
 
 			});
@@ -217,7 +215,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 			for (int i = 0; i < value.getArgCount(); ++i) {
 				final ValueBox argumentBox = value.getArgBox(i);
 				new LogicValueSwitch(value.getMethod().getParameterType(i), argumentBox)
-					.visit(argumentBox.getValue());
+						.visit(argumentBox.getValue());
 			}
 		}
 
@@ -247,11 +245,10 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 
 	}
 
-	public static LogicValueTransformer v() {
-		return instance.get();
-	}
+	public final Type returnType;
 
-	private LogicValueTransformer() {
+	public LogicValueTransformer(final Type returnType) {
+		this.returnType = returnType;
 	}
 
 	@Override
@@ -281,6 +278,12 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 			public void caseIfStmt(final IfStmt unit) {
 				final ValueBox conditionBox = unit.getConditionBox();
 				new LogicValueSwitch(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
+			}
+
+			@Override
+			public void caseReturnStmt(final ReturnStmt unit) {
+				final ValueBox returnBox = unit.getOpBox();
+				new LogicValueSwitch(returnType, returnBox).visit(returnBox.getValue());
 			}
 
 		});

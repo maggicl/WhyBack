@@ -40,7 +40,8 @@ public class ExpressionFolder extends BodyTransformer {
 	}
 
 	public static boolean isPure(final InvokeExpr invokeValue) {
-		return SootMethods.hasAnnotation(invokeValue.getMethod(), Namespace.PURE_ANNOTATION);
+		return SootMethods.hasAnnotation(invokeValue.getMethod(), Namespace.PURE_ANNOTATION)
+			|| Namespace.isQuantifierClass(invokeValue.getMethod().getDeclaringClass());
 	}
 
 	public static boolean hasSideEffects(final Value value) {

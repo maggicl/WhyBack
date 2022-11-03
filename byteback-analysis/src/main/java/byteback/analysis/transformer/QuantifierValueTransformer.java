@@ -13,8 +13,8 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Value;
 import soot.ValueBox;
+import soot.grimp.GrimpBody;
 import soot.jimple.InvokeExpr;
-import soot.jimple.JimpleBody;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -31,10 +31,10 @@ public class QuantifierValueTransformer extends BodyTransformer implements Value
 
 	@Override
 	protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-		if (body instanceof JimpleBody jimpleBody) {
-			transformBody(jimpleBody);
+		if (body instanceof GrimpBody) {
+			transformBody(body);
 		} else {
-			throw new IllegalArgumentException("Can only transform Jimple");
+			throw new IllegalArgumentException("Can only transform Grimp");
 		}
 	}
 

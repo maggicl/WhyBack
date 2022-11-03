@@ -16,7 +16,7 @@ import soot.jimple.Jimple;
 
 public class LogicValueTransformerIntegrationTest {
 
-	private static final LogicValueTransformer transformer = LogicValueTransformer.v();
+	private static final LogicValueTransformer transformer = new LogicValueTransformer(null);
 
 	@Test
 	public void TransformValue_GivenFalseIntConstantBox_YieldsFalse() {

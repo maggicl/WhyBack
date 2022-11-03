@@ -4,6 +4,7 @@ import byteback.analysis.transformer.ExpressionFolder;
 import byteback.analysis.transformer.InvariantExpander;
 import byteback.analysis.transformer.LogicUnitTransformer;
 import byteback.analysis.transformer.LogicValueTransformer;
+import byteback.analysis.transformer.QuantifierValueTransformer;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.frontend.boogie.ast.Program;
@@ -49,7 +50,9 @@ public class ProgramConverter {
 			new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
 			new ExpressionFolder().transform(body);
 			UnusedLocalEliminator.v().transform(body);
+			QuantifierValueTransformer.v().transform(body);
 			InvariantExpander.v().transform(body);
+
 
 			System.out.println(body);
 

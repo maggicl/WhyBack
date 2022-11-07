@@ -16,6 +16,7 @@ public class LogicExistsExprTest {
 		@SuppressWarnings("unchecked")
 		final Chain<Local> b = mock(Chain.class);
 		final var v = new LogicExistsExpr(b, a);
+		@SuppressWarnings("rawtypes")
 		final LogicExprSwitch sw = mock(LogicExprSwitch.class);
 		v.apply(sw);
 		verify(sw).caseLogicExistsExpr(v);

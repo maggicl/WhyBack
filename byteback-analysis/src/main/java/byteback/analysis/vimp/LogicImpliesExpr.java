@@ -21,7 +21,7 @@ public class LogicImpliesExpr extends AbstractLogicBinopExpr {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprVisitor) sw).caseLogicImpliesExpr(this);
+		((LogicExprVisitor<?>) sw).caseLogicImpliesExpr(this);
 	}
 
 	@Override

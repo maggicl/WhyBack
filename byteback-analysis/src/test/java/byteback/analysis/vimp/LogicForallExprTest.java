@@ -16,6 +16,7 @@ public class LogicForallExprTest {
 		@SuppressWarnings("unchecked")
 		final Chain<Local> b = mock(Chain.class);
 		final var v = new LogicForallExpr(b, a);
+		@SuppressWarnings("rawtypes")
 		final LogicExprSwitch sw = mock(LogicExprSwitch.class);
 		v.apply(sw);
 		verify(sw).caseLogicForallExpr(v);

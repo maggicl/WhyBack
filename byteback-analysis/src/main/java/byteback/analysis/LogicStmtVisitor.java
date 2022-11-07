@@ -5,21 +5,21 @@ import byteback.analysis.vimp.AssumptionStmt;
 import byteback.analysis.vimp.InvariantStmt;
 import soot.Unit;
 
-public interface LogicStmtVisitor {
+public interface LogicStmtVisitor<T> extends Visitor<Unit, T> {
 
 	default void caseAssertionStmt(final AssertionStmt s) {
-		defaultCase(s);
+		caseDefault(s);
 	}
 
 	default void caseAssumptionStmt(final AssumptionStmt s) {
-		defaultCase(s);
+		caseDefault(s);
 	}
 
 	default void caseInvariantStmt(final InvariantStmt s) {
-		defaultCase(s);
+		caseDefault(s);
 	}
 
-	default void defaultCase(final Unit s) {
+	default void caseDefault(final Unit s) {
 	}
 
 }

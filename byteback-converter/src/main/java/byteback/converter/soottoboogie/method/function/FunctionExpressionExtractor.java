@@ -14,22 +14,16 @@ import byteback.frontend.boogie.ast.UniversalQuantifier;
 import byteback.frontend.boogie.builder.QuantifierExpressionBuilder;
 import byteback.frontend.boogie.builder.SetBindingBuilder;
 import java.util.Iterator;
-import soot.BooleanType;
 import soot.Local;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.Type;
 import soot.Value;
 
 public class FunctionExpressionExtractor extends ExpressionExtractor {
 
-	public FunctionExpressionExtractor(final Type type) {
-		super(type);
-	}
-
 	@Override
-	public FunctionExpressionExtractor makeExpressionExtractor(final Type type) {
-		return new FunctionExpressionExtractor(type);
+	public FunctionExpressionExtractor makeExpressionExtractor() {
+		return new FunctionExpressionExtractor();
 	}
 
 	public void pushQuantifier(final Quantifier quantifier, final Iterable<Value> arguments) {
@@ -41,7 +35,7 @@ public class FunctionExpressionExtractor extends ExpressionExtractor {
 		bindingBuilder.name(ExpressionExtractor.localName(variableLocal));
 		quantifierBuilder.quantifier(quantifier);
 		quantifierBuilder.addBinding(bindingBuilder.build());
-		quantifierBuilder.operand(visit(argumentsIterator.next(), BooleanType.v()));
+		quantifierBuilder.operand(visit(argumentsIterator.next()));
 		setExpression(quantifierBuilder.build());
 		assert !argumentsIterator.hasNext() : "Wrong number of arguments to quantifier";
 	}
@@ -70,17 +64,15 @@ public class FunctionExpressionExtractor extends ExpressionExtractor {
 
 	public void pushOld(final SootMethod method, final Iterable<Value> arguments) {
 		final Iterator<Value> argumentsIterator = arguments.iterator();
-		final soot.Type argumentType = method.getParameterTypes().get(0);
-		setExpression(new OldReference(visit(argumentsIterator.next(), argumentType)));
+		setExpression(new OldReference(visit(argumentsIterator.next())));
 		assert !argumentsIterator.hasNext() : "Wrong number of arguments to `old` reference";
 	}
 
 	public void pushConditional(final SootMethod method, final Iterable<Value> arguments) {
 		final Iterator<Value> argumentsIterator = arguments.iterator();
-		final soot.Type argumentType = method.getParameterTypes().get(1);
-		final Expression condition = visit(argumentsIterator.next(), BooleanType.v());
-		final Expression thenExpression = visit(argumentsIterator.next(), argumentType);
-		final Expression elseExpression = visit(argumentsIterator.next(), argumentType);
+		final Expression condition = visit(argumentsIterator.next());
+		final Expression thenExpression = visit(argumentsIterator.next());
+		final Expression elseExpression = visit(argumentsIterator.next());
 		setExpression(new ConditionalOperation(condition, thenExpression, elseExpression));
 		assert !argumentsIterator.hasNext() : "Wrong number of arguments to conditional expression";
 	}

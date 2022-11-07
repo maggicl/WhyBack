@@ -13,6 +13,7 @@ public class LogicOrExprTest {
 		final LogicExpr a = mock(LogicExpr.class);
 		final LogicExpr b = mock(LogicExpr.class);
 		final var v = new LogicOrExpr(a, b);
+		@SuppressWarnings("rawtypes")
 		final LogicExprSwitch sw = mock(LogicExprSwitch.class);
 		v.apply(sw);
 		verify(sw).caseLogicOrExpr(v);

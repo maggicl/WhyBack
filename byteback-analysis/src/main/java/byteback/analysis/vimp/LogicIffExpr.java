@@ -21,7 +21,7 @@ public class LogicIffExpr extends AbstractLogicBinopExpr {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprVisitor) sw).caseLogicIffExpr(this);
+		((LogicExprVisitor<?>) sw).caseLogicIffExpr(this);
 	}
 
 	@Override

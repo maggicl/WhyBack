@@ -5,15 +5,15 @@ import soot.Unit;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.IdentityStmt;
 
-public abstract class JimpleStmtSwitch<R> extends AbstractStmtSwitch<R> implements LogicStmtSwitch, Visitor<Unit, R> {
+public abstract class JimpleStmtSwitch<R> extends AbstractStmtSwitch<R> implements LogicStmtSwitch<R> {
 
 	@Override
 	public void caseIdentityStmt(final IdentityStmt identity) {
 	}
 
 	@Override
-	public void defaultCase(final Unit unit) {
-		caseDefault(unit);
+	public void defaultCase(final Object o) {
+		caseDefault((Unit) o);
 	}
 
 	public R visit(final Unit unit) {
@@ -23,7 +23,6 @@ public abstract class JimpleStmtSwitch<R> extends AbstractStmtSwitch<R> implemen
 	}
 
 	public R visit(final Body body) {
-
 		for (Unit unit : body.getUnits()) {
 			unit.apply(this);
 		}

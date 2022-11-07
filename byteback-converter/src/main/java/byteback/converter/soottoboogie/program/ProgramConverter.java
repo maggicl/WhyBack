@@ -6,6 +6,7 @@ import byteback.analysis.transformer.LogicUnitTransformer;
 import byteback.analysis.transformer.LogicValueTransformer;
 import byteback.analysis.transformer.QuantifierValueTransformer;
 import byteback.converter.soottoboogie.field.FieldConverter;
+import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.frontend.boogie.ast.Program;
 import byteback.util.Lazy;
@@ -52,9 +53,16 @@ public class ProgramConverter {
 			UnusedLocalEliminator.v().transform(body);
 			QuantifierValueTransformer.v().transform(body);
 			InvariantExpander.v().transform(body);
+			method.setActiveBody(body);
 
-
-			System.out.println(body);
+			try {
+				System.out.println("====================");
+				System.out.println("METHOD: " + method.getName());
+				System.out.println(ProcedureConverter.v().convert(method).print());
+				System.out.println("====================");
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
 
 			// try {
 			// 	log.info("Converting method {}", method.getSignature());

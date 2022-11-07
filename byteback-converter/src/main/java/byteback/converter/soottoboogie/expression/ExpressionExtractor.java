@@ -1,8 +1,11 @@
 package byteback.converter.soottoboogie.expression;
 
 import byteback.analysis.TypeSwitch;
+import byteback.analysis.vimp.LogicConstant;
+import byteback.analysis.vimp.LogicForallExpr;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.field.FieldConverter;
+import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.converter.soottoboogie.type.CasterProvider;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
@@ -28,290 +31,287 @@ public class ExpressionExtractor extends BaseExpressionExtractor {
 		return LOCAL_PREFIX + local.getName();
 	}
 
-	public ExpressionExtractor(final Type type) {
-		super(type);
+	@Override
+	public BaseExpressionExtractor makeExpressionExtractor() {
+		return new ExpressionExtractor();
 	}
 
 	@Override
-	public BaseExpressionExtractor makeExpressionExtractor(final Type type) {
-		return new ExpressionExtractor(type);
-	}
-
-	@Override
-	public void caseStaticInvokeExpr(final StaticInvokeExpr invoke) {
-		final SootMethod method = invoke.getMethod();
-		final Iterable<Value> arguments = invoke.getArgs();
+	public void caseStaticInvokeExpr(final StaticInvokeExpr v) {
+		final SootMethod method = v.getMethod();
+		final Iterable<Value> arguments = v.getArgs();
 		pushFunctionReference(method, arguments);
 	}
 
 	@Override
-	public void caseInstanceInvokeExpr(final InstanceInvokeExpr invoke) {
-		final SootMethod method = invoke.getMethod();
-		final Value base = invoke.getBase();
-		final Iterable<Value> arguments = Stream.concat(Stream.of(base), invoke.getArgs().stream())::iterator;
+	public void caseInstanceInvokeExpr(final InstanceInvokeExpr v) {
+		final SootMethod method = v.getMethod();
+		final Value base = v.getBase();
+		final Iterable<Value> arguments = Stream.concat(Stream.of(base), v.getArgs().stream())::iterator;
 		pushFunctionReference(method, arguments);
 	}
 
-	public void pushCmpExpression(final BinopExpr cmp) {
-		setSpecialBinaryExpression(cmp, Prelude.v().getCmpFunction().makeFunctionReference());
+	public void pushCmpExpression(final BinopExpr v) {
+		setSpecialBinaryExpression(v, Prelude.v().getCmpFunction().makeFunctionReference());
 	}
 
 	@Override
-	public void caseAddExpr(final AddExpr addition) {
-		setBinaryExpression(addition, new AdditionOperation());
+	public void caseAddExpr(final AddExpr v) {
+		setBinaryExpression(v, new AdditionOperation());
 	}
 
 	@Override
-	public void caseSubExpr(final SubExpr subtraction) {
-		setBinaryExpression(subtraction, new SubtractionOperation());
+	public void caseSubExpr(final SubExpr v) {
+		setBinaryExpression(v, new SubtractionOperation());
 	}
 
 	@Override
-	public void caseDivExpr(final DivExpr division) {
-		Type.toMachineType(getType()).apply(new TypeSwitch<>() {
+	public void caseDivExpr(final DivExpr v) {
+		Type.toMachineType(v.getType()).apply(new TypeSwitch<>() {
 
 			@Override
-			public void caseIntType(final IntType integerType) {
-				setBinaryExpression(division, new IntegerDivisionOperation());
+			public void caseIntType(final IntType $) {
+				setBinaryExpression(v, new IntegerDivisionOperation());
 			}
 
 			@Override
-			public void caseDefault(final Type integerType) {
-				setBinaryExpression(division, new RealDivisionOperation());
+			public void caseDefault(final Type $) {
+				setBinaryExpression(v, new RealDivisionOperation());
 			}
 
 		});
 	}
 
 	@Override
-	public void caseMulExpr(final MulExpr multiplication) {
-		setBinaryExpression(multiplication, new MultiplicationOperation());
+	public void caseMulExpr(final MulExpr v) {
+		setBinaryExpression(v, new MultiplicationOperation());
 	}
 
 	@Override
-	public void caseRemExpr(final RemExpr modulo) {
-		setBinaryExpression(modulo, new ModuloOperation());
+	public void caseRemExpr(final RemExpr v) {
+		setBinaryExpression(v, new ModuloOperation());
 	}
 
 	@Override
-	public void caseNegExpr(final NegExpr negation) {
-		final Value operand = negation.getOp();
+	public void caseNegExpr(final NegExpr v) {
+		final Value operand = v.getOp();
 		final Expression expression = visit(operand);
-		getType().apply(new TypeSwitch<>() {
+		v.getType().apply(new TypeSwitch<>() {
 
 			@Override
-			public void caseBooleanType(final BooleanType type) {
-				setCastExpression(new NegationOperation(expression), operand);
+			public void caseBooleanType(final BooleanType $) {
+				setExpression(new NegationOperation(expression));
 			}
 
 			@Override
-			public void caseDefault(final Type type) {
-				setCastExpression(new MinusOperation(expression), operand);
-			}
-
-		});
-	}
-
-	@Override
-	public void caseOrExpr(final OrExpr or) {
-		getType().apply(new TypeSwitch<>() {
-
-			@Override
-			public void caseBooleanType(final BooleanType type) {
-				setBinaryExpression(or, new OrOperation());
-			}
-
-			@Override
-			public void caseDefault(final Type type) {
-				throw new ExpressionConversionException(or, "Bitwise OR is currently not supported for type " + type);
+			public void caseDefault(final Type $) {
+				setExpression(new MinusOperation(expression));
 			}
 
 		});
 	}
 
 	@Override
-	public void caseAndExpr(final AndExpr and) {
-		getType().apply(new TypeSwitch<>() {
+	public void caseOrExpr(final OrExpr v) {
+		v.getType().apply(new TypeSwitch<>() {
 
 			@Override
-			public void caseBooleanType(final BooleanType type) {
-				setBinaryExpression(and, new AndOperation());
+			public void caseBooleanType(final BooleanType $) {
+				setBinaryExpression(v, new OrOperation());
 			}
 
 			@Override
 			public void caseDefault(final Type type) {
-				throw new ExpressionConversionException(and, "Bitwise AND is currently not supported for type " + type);
+				throw new ExpressionConversionException(v, "Bitwise OR is currently not supported for type " + type);
 			}
 
 		});
 	}
 
 	@Override
-	public void caseXorExpr(final XorExpr xor) {
-		getType().apply(new TypeSwitch<>() {
+	public void caseAndExpr(final AndExpr v) {
+		v.getType().apply(new TypeSwitch<>() {
 
-			@Override
-			public void caseBooleanType(final BooleanType type) {
-				setBinaryExpression(xor, new NotEqualsOperation());
-			}
+				@Override
+				public void caseBooleanType(final BooleanType $) {
+					setBinaryExpression(v, new AndOperation());
+				}
 
-			@Override
-			public void caseDefault(final Type type) {
-				throw new ExpressionConversionException(xor, "Bitwise XOR is currently not supported for type " + type);
-			}
+				@Override
+				public void caseIntType(final IntType $) {
+					throw new ExpressionConversionException(v, "Bitwise AND is currently not supported");
+				}
 
 		});
 	}
 
 	@Override
-	public void caseCmplExpr(final CmplExpr cmpl) {
-		pushCmpExpression(cmpl);
+	public void caseXorExpr(final XorExpr v) {
+		v.getType().apply(new TypeSwitch<>() {
+
+				@Override
+				public void caseBooleanType(final BooleanType $) {
+					setBinaryExpression(v, new NotEqualsOperation());
+				}
+
+				@Override
+				public void caseIntType(final IntType $) {
+					throw new ExpressionConversionException(v, "Bitwise XOR is currently not supported");
+				}
+
+		});
 	}
 
 	@Override
-	public void caseCmpgExpr(final CmpgExpr cmpg) {
-		pushCmpExpression(cmpg);
+	public void caseCmplExpr(final CmplExpr v) {
+		pushCmpExpression(v);
 	}
 
 	@Override
-	public void caseCmpExpr(final CmpExpr cmp) {
-		pushCmpExpression(cmp);
+	public void caseCmpgExpr(final CmpgExpr v) {
+		pushCmpExpression(v);
 	}
 
 	@Override
-	public void caseEqExpr(final EqExpr equals) {
-		setBinaryCastExpression(equals, new EqualsOperation());
+	public void caseCmpExpr(final CmpExpr v) {
+		pushCmpExpression(v);
 	}
 
 	@Override
-	public void caseNeExpr(final NeExpr notEquals) {
-		setBinaryCastExpression(notEquals, new NotEqualsOperation());
+	public void caseEqExpr(final EqExpr v) {
+		setBinaryExpression(v, new EqualsOperation());
 	}
 
 	@Override
-	public void caseGtExpr(final GtExpr greaterThan) {
-		setBinaryCastExpression(greaterThan, new GreaterThanOperation());
+	public void caseNeExpr(final NeExpr v) {
+		setBinaryExpression(v, new NotEqualsOperation());
 	}
 
 	@Override
-	public void caseGeExpr(final GeExpr greaterEquals) {
-		setBinaryCastExpression(greaterEquals, new GreaterThanEqualsOperation());
+	public void caseGtExpr(final GtExpr v) {
+		setBinaryExpression(v, new GreaterThanOperation());
 	}
 
 	@Override
-	public void caseLtExpr(final LtExpr lessThan) {
-		setBinaryCastExpression(lessThan, new LessThanOperation());
+	public void caseGeExpr(final GeExpr v) {
+		setBinaryExpression(v, new GreaterThanEqualsOperation());
 	}
 
 	@Override
-	public void caseLeExpr(final LeExpr lessEquals) {
-		setBinaryCastExpression(lessEquals, new LessThanEqualsOperation());
+	public void caseLtExpr(final LtExpr v) {
+		setBinaryExpression(v, new LessThanOperation());
 	}
 
 	@Override
-	public void caseCastExpr(final CastExpr casting) {
-		final Value operand = casting.getOp();
-		final Type toType = casting.getCastType();
-		final Type fromType = casting.getType();
+	public void caseLeExpr(final LeExpr v) {
+		setBinaryExpression(v, new LessThanEqualsOperation());
+	}
+
+	@Override
+	public void caseCastExpr(final CastExpr v) {
+		final Value operand = v.getOp();
+		final Type toType = v.getCastType();
+		final Type fromType = v.getType();
 		final Function<Expression, Expression> caster = new CasterProvider(toType).visit(fromType);
 
-		setExpression(caster.apply(visit(operand, fromType)));
+		setExpression(caster.apply(visit(operand)));
 	}
 
 	@Override
-	public void caseIntConstant(final IntConstant intConstant) {
-		getType().apply(new TypeSwitch<>() {
-
-			@Override
-			public void caseBooleanType(final BooleanType type) {
-				setCastExpression(intConstant.value != 0 ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse(),
-						type);
-			}
-
-			@Override
-			public void caseDefault(final Type type) {
-				setCastExpression(new NumberLiteral(intConstant.toString()), IntType.v());
-			}
-
-		});
+	public void caseLogicConstant(final LogicConstant v) {
+		setExpression(v.getValue() ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse());
 	}
 
 	@Override
-	public void caseLongConstant(final LongConstant longConstant) {
-		final String literal = longConstant.toString();
+	public void caseIntConstant(final IntConstant v) {
+		setExpression(new NumberLiteral(v.toString()));
+	}
+
+	@Override
+	public void caseLongConstant(final LongConstant v) {
+		final String literal = v.toString();
 		final String strippedLiteral = literal.substring(0, literal.length() - 1);
-		setCastExpression(new NumberLiteral(strippedLiteral), longConstant.getType());
+		setExpression(new NumberLiteral(strippedLiteral));
 	}
 
 	@Override
-	public void caseDoubleConstant(final DoubleConstant doubleConstant) {
-		setCastExpression(new RealLiteral(doubleConstant.toString()), doubleConstant.getType());
+	public void caseDoubleConstant(final DoubleConstant v) {
+		setExpression(new RealLiteral(v.toString()));
 	}
 
 	@Override
-	public void caseFloatConstant(final FloatConstant floatConstant) {
-		final String literal = floatConstant.toString();
+	public void caseFloatConstant(final FloatConstant v) {
+		final String literal = v.toString();
 		final String strippedLiteral = literal.substring(0, literal.length() - 1);
-		setCastExpression(new RealLiteral(strippedLiteral), floatConstant.getType());
+		setExpression(new RealLiteral(strippedLiteral));
 	}
 
 	@Override
-	public void caseNullConstant(final NullConstant nullConstant) {
+	public void caseNullConstant(final NullConstant v) {
 		setExpression(Prelude.v().getNullConstant().makeValueReference());
 	}
 
 	@Override
-	public void caseLocal(final Local local) {
-		setCastExpression(ValueReference.of(localName(local)), local);
+	public void caseLocal(final Local v) {
+		setExpression(ValueReference.of(localName(v)));
 	}
 
 	@Override
-	public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldRef) {
-		final SootField field = instanceFieldRef.getField();
-		final Value base = instanceFieldRef.getBase();
+	public void caseInstanceFieldRef(final InstanceFieldRef v) {
+		final SootField field = v.getField();
+		final Value base = v.getBase();
 		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
 		final Expression heapAccess = Prelude.v().makeHeapAccessExpression(visit(base), reference);
-		setCastExpression(heapAccess, field.getType());
+		setExpression(heapAccess);
 	}
 
 	@Override
-	public void caseStaticFieldRef(final StaticFieldRef staticFieldReference) {
-		final SootField field = staticFieldReference.getField();
+	public void caseStaticFieldRef(final StaticFieldRef v) {
+		final SootField field = v.getField();
 		final SootClass base = field.getDeclaringClass();
 		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
 		final Expression heapAccess = Prelude.v()
 				.makeStaticAccessExpression(ValueReference.of(ReferenceTypeConverter.typeName(base)), reference);
-		setCastExpression(heapAccess, field.getType());
+		setExpression(heapAccess);
 	}
 
 	@Override
-	public void caseArrayRef(final ArrayRef arrayReference) {
-		final Value base = arrayReference.getBase();
-		final Type type = arrayReference.getType();
-		final var index = arrayReference.getIndex();
+	public void caseArrayRef(final ArrayRef v) {
+		final Value base = v.getBase();
+		final Type type = v.getType();
+		final var index = v.getIndex();
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
-		setCastExpression(Prelude.v().makeArrayAccessExpression(typeAccess, visit(base, base.getType()),
-				visit(index, IntType.v())), type);
+		setExpression(Prelude.v().makeArrayAccessExpression(typeAccess, visit(base), visit(index)));
 	}
 
 	@Override
-	public void caseLengthExpr(final LengthExpr length) {
-		final Value operand = length.getOp();
-		setExpression(Prelude.v().getLengthAccessExpression(visit(operand, operand.getType())));
+	public void caseLengthExpr(final LengthExpr v) {
+		final Value operand = v.getOp();
+		setExpression(Prelude.v().getLengthAccessExpression(visit(operand)));
 	}
 
 	@Override
-	public void caseInstanceOfExpr(final InstanceOfExpr instanceOf) {
-		final Value left = instanceOf.getOp();
-		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(instanceOf.getCheckType());
-		setCastExpression(Prelude.v().makeTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference),
-				instanceOf.getType());
+	public void caseInstanceOfExpr(final InstanceOfExpr v) {
+		final Value left = v.getOp();
+		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(v.getCheckType());
+		setExpression(Prelude.v().makeTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference));
 	}
 
 	@Override
-	public void caseDefault(final Value value) {
-		throw new ExpressionConversionException(value,
-				"Unable to convert expression of type " + value.getClass().getName());
+	public void caseLogicForallExpr(final LogicForallExpr v) {
+		final var quantifierExpression = new QuantifierExpression();
+
+		for (Local local : v.getFreeLocals()) {
+			quantifierExpression.addBinding(ProcedureConverter.makeBinding(local));
+		}
+
+		quantifierExpression.setOperand(visit(v.getValue()));
+	}
+
+	@Override
+	public void caseDefault(final Value v) {
+		throw new ExpressionConversionException(v,
+				"Unable to convert expression of type " + v.getClass().getName());
 	}
 
 }

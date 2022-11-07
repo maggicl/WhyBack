@@ -18,8 +18,6 @@ import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
 import java.util.Iterator;
-import soot.BooleanType;
-import soot.IntType;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
@@ -35,14 +33,13 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 	final ProcedureBodyExtractor bodyExtractor;
 
-	public ProcedureExpressionExtractor(final Type type, final ProcedureBodyExtractor bodyExtractor) {
-		super(type);
+	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor) {
 		this.bodyExtractor = bodyExtractor;
 	}
 
 	@Override
-	public BaseExpressionExtractor makeExpressionExtractor(final Type type) {
-		return new ProcedureExpressionExtractor(type, bodyExtractor);
+	public BaseExpressionExtractor makeExpressionExtractor() {
+		return new ProcedureExpressionExtractor(bodyExtractor);
 	}
 
 	public TargetedCallStatement makeCall(final SootMethod method, final Iterable<Value> arguments) {
@@ -53,9 +50,8 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		return callBuilder.build();
 	}
 
-	public void addCall(final TargetedCallStatement callStatement) {
+	public void addCall(final TargetedCallStatement callStatement, final Type type) {
 		final List<ValueReference> targets = new List<ValueReference>();
-		final Type type = getType();
 
 		if (type != VoidType.v() && type != UnknownType.v()) {
 			final ValueReference reference = bodyExtractor.generateReference(type);
@@ -71,13 +67,13 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		final String name = method.getName();
 		final Iterator<Value> iterator = arguments.iterator();
 		final Value argument = iterator.next();
-		final Expression condition = visit(argument, BooleanType.v());
+		final Expression condition = visit(argument);
 		assert !iterator.hasNext() : "Wrong number of arguments to contract method";
 
 		switch (name) {
 			case Namespace.ASSERTION_NAME -> bodyExtractor.addStatement(new AssertStatement(condition));
 			case Namespace.ASSUMPTION_NAME -> bodyExtractor.addStatement(new AssumeStatement(condition));
-			case Namespace.INVARIANT_NAME -> bodyExtractor.addInvariant(condition);
+			case Namespace.INVARIANT_NAME -> throw new RuntimeException("Invariants should have already been expanded");
 			default -> throw new ConversionException("Unknown special method: " + method.getName());
 		}
 	}
@@ -93,7 +89,7 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 			addContractStatement(method, arguments);
 		} else {
 			final TargetedCallStatement callStatement = makeCall(method, arguments);
-			addCall(callStatement);
+			addCall(callStatement, method.getReturnType());
 		}
 	}
 
@@ -106,10 +102,10 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 	public void caseNewExpr(final NewExpr newExpression) {
 		final Procedure newProcedure = Prelude.v().getNewProcedure();
 		final TargetedCallStatement callStatement = newProcedure.makeTargetedCall();
-		final SootClass baseType = newExpression.getBaseType().getSootClass();
-		final String typeName = ReferenceTypeConverter.typeName(baseType);
+		final SootClass baseClass = newExpression.getBaseType().getSootClass();
+		final String typeName = ReferenceTypeConverter.typeName(baseClass);
 		callStatement.addArgument(ValueReference.of(typeName));
-		addCall(callStatement);
+		addCall(callStatement, newExpression.getType());
 	}
 
 	@Override
@@ -133,9 +129,9 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 
 		});
 
-		final Expression size = this.makeExpressionExtractor(IntType.v()).visit(arrayExpression.getSize());
+		final Expression size = this.makeExpressionExtractor().visit(arrayExpression.getSize());
 		callStatement.addArgument(size);
-		addCall(callStatement);
+		addCall(callStatement, arrayExpression.getType());
 	}
 
 }

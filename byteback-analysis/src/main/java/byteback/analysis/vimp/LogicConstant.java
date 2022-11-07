@@ -32,7 +32,7 @@ public class LogicConstant extends Constant implements LogicExpr {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprSwitch) sw).caseLogicConstant(this);
+		((LogicExprSwitch<?>) sw).caseLogicConstant(this);
 	}
 
 	public boolean getValue() {

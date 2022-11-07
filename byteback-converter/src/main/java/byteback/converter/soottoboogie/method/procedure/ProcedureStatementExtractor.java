@@ -24,13 +24,10 @@ import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
 import java.util.Iterator;
 import java.util.function.Supplier;
-import soot.BooleanType;
-import soot.IntType;
 import soot.Local;
 import soot.SootField;
 import soot.Type;
 import soot.Unit;
-import soot.UnknownType;
 import soot.Value;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -56,8 +53,8 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 		this.bodyExtractor = bodyExtractor;
 	}
 
-	public ProcedureExpressionExtractor makeExpressionExtractor(final Type type) {
-		return new ProcedureExpressionExtractor(type, bodyExtractor);
+	public ProcedureExpressionExtractor makeExpressionExtractor() {
+		return new ProcedureExpressionExtractor(bodyExtractor);
 	}
 
 	public ReferenceSupplier getReferenceSupplier(final Type type) {
@@ -65,11 +62,14 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	}
 
 	public void addStatement(final Statement statement) {
+		assert statement != null;
+
 		bodyExtractor.addStatement(statement);
 	}
 
 	public void addSingleAssignment(final Assignee assignee, final Expression expression) {
-		addStatement(new AssignmentStatement(assignee, expression));
+		final var assignStatement = new AssignmentStatement(assignee, expression);
+		addStatement(assignStatement);
 	}
 
 	public Body visit(final Unit unit) {
@@ -92,7 +92,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 			@Override
 			public void caseLocal(final Local local) {
 				final ValueReference reference = ValueReference.of(ExpressionExtractor.localName(local));
-				final Expression assigned = makeExpressionExtractor(left.getType()).visit(right);
+				final Expression assigned = makeExpressionExtractor().visit(right);
 
 				addSingleAssignment(Assignee.of(reference), assigned);
 			}
@@ -101,17 +101,16 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 			public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldReference) {
 				final SootField field = instanceFieldReference.getField();
 				final Value base = instanceFieldReference.getBase();
-				final Expression assigned = makeExpressionExtractor(left.getType()).visit(right);
+				final Expression assigned = makeExpressionExtractor().visit(right);
 				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
-				final Expression boogieBase = new ExpressionExtractor(UnknownType.v()).visit(base);
+				final Expression boogieBase = new ExpressionExtractor().visit(base);
 				addStatement(Prelude.v().makeHeapUpdateStatement(boogieBase, fieldReference, assigned));
 			}
 
 			@Override
 			public void caseStaticFieldRef(final StaticFieldRef staticFieldReference) {
 				final SootField field = staticFieldReference.getField();
-				final Expression assigned = new ProcedureExpressionExtractor(left.getType(), bodyExtractor)
-						.visit(right);
+				final Expression assigned = new ProcedureExpressionExtractor(bodyExtractor).visit(right);
 				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
 				final Expression boogieBase = ValueReference
 						.of(ReferenceTypeConverter.typeName(field.getDeclaringClass()));
@@ -123,9 +122,9 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 				final Value base = arrayReference.getBase();
 				final Value index = arrayReference.getIndex();
 				final Type type = arrayReference.getType();
-				final Expression assigned = makeExpressionExtractor(left.getType()).visit(right);
-				final Expression indexReference = makeExpressionExtractor(IntType.v()).visit(index);
-				final Expression boogieBase = new ExpressionExtractor(UnknownType.v()).visit(base);
+				final Expression assigned = makeExpressionExtractor().visit(right);
+				final Expression indexReference = makeExpressionExtractor().visit(index);
+				final Expression boogieBase = new ExpressionExtractor().visit(base);
 				addStatement(Prelude.v().makeArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
 						indexReference, assigned));
 			}
@@ -149,7 +148,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 		final Value operand = returnStatement.getOp();
 		final ValueReference valueReference = Convention.makeReturnReference();
 		final var assignee = Assignee.of(valueReference);
-		final Expression expression = makeExpressionExtractor(bodyExtractor.getReturnType()).visit(operand);
+		final Expression expression = makeExpressionExtractor().visit(operand);
 		addSingleAssignment(assignee, expression);
 		addStatement(new ReturnStatement());
 	}
@@ -158,14 +157,13 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	public void caseLookupSwitchStmt(final LookupSwitchStmt switchStatement) {
 		final Iterator<Unit> targets = switchStatement.getTargets().iterator();
 		final Iterator<IntConstant> values = switchStatement.getLookupValues().iterator();
-		final Expression key = new ProcedureExpressionExtractor(IntType.v(), bodyExtractor)
-				.visit(switchStatement.getKey());
+		final Expression key = new ProcedureExpressionExtractor(bodyExtractor).visit(switchStatement.getKey());
 
 		while (targets.hasNext() && values.hasNext()) {
 			final Unit target = targets.next();
 			final Value value = values.next();
 			final var ifBuilder = new IfStatementBuilder();
-			final Expression index = new ProcedureExpressionExtractor(IntType.v(), bodyExtractor).visit(value);
+			final Expression index = new ProcedureExpressionExtractor(bodyExtractor).visit(value);
 			final Label label = bodyExtractor.getLabelCollector().fetchLabel(target);
 
 			ifBuilder.condition(new EqualsOperation(index, key)).thenStatement(new GotoStatement(label));
@@ -175,8 +173,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 
 	@Override
 	public void caseTableSwitchStmt(final TableSwitchStmt switchStatement) {
-		final Expression key = new ProcedureExpressionExtractor(IntType.v(), bodyExtractor)
-				.visit(switchStatement.getKey());
+		final Expression key = new ProcedureExpressionExtractor(bodyExtractor).visit(switchStatement.getKey());
 
 		for (int i = switchStatement.getLowIndex(); i < switchStatement.getHighIndex(); ++i) {
 			final Unit target = switchStatement.getTarget(i);
@@ -199,18 +196,17 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	@Override
 	public void caseIfStmt(final IfStmt ifStatement) {
 		final var ifBuilder = new IfStatementBuilder();
-		final Type type = BooleanType.v();
 		final Value condition = ifStatement.getCondition();
 		final Label label = bodyExtractor.getLabelCollector().fetchLabel(ifStatement.getTarget());
-		ifBuilder.condition(new ProcedureExpressionExtractor(type, bodyExtractor).visit(condition))
-				.thenStatement(new GotoStatement(label));
+		ifBuilder.condition(new ProcedureExpressionExtractor(bodyExtractor).visit(condition))
+			.thenStatement(new GotoStatement(label));
 		addStatement(ifBuilder.build());
 	}
 
 	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 		final var invoke = invokeStatement.getInvokeExpr();
-		makeExpressionExtractor(invoke.getType()).visit(invoke);
+		makeExpressionExtractor().visit(invoke);
 	}
 
 	@Override

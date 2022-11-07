@@ -1,7 +1,6 @@
 package byteback.converter.soottoboogie.method.procedure;
 
 import byteback.analysis.Namespace;
-import byteback.analysis.TypeSwitch;
 import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootBodies;
@@ -105,21 +104,11 @@ public class ProcedureConverter extends MethodConverter {
 			signatureBuilder.addInputBinding(makeBinding(local, parameterName));
 		}
 
-		method.getReturnType().apply(new TypeSwitch<>() {
-
-			@Override
-			public void caseVoidType(final VoidType type) {
-				// Do not add output parameter
-			}
-
-			@Override
-			public void caseDefault(final Type type) {
-				final TypeAccess typeAccess = new TypeAccessExtractor().visit(method.getReturnType());
-				final BoundedBinding binding = Convention.makeReturnBinding(typeAccess);
-				signatureBuilder.addOutputBinding(binding);
-			}
-
-		});
+		if (method.getReturnType() != VoidType.v()) {
+			final TypeAccess typeAccess = new TypeAccessExtractor().visit(method.getReturnType());
+			final BoundedBinding binding = Convention.makeReturnBinding(typeAccess);
+			signatureBuilder.addOutputBinding(binding);
+		}
 
 		builder.signature(signatureBuilder.build());
 	}
@@ -156,25 +145,18 @@ public class ProcedureConverter extends MethodConverter {
 				final Supplier<Condition> conditionSupplier;
 
 				switch (sub.getType()) {
-					case Namespace.REQUIRE_ANNOTATION :
+					case Namespace.REQUIRE_ANNOTATION:
 						conditionSupplier = PreCondition::new;
 						break;
-					case Namespace.ENSURE_ANNOTATION :
+					case Namespace.ENSURE_ANNOTATION:
 						conditionSupplier = PostCondition::new;
-						new TypeSwitch<>() {
 
-							@Override
-							public void caseVoidType(final VoidType type) {
-							}
+						if (method.getReturnType() != VoidType.v()) {
+								parameters.add(method.getReturnType());
+						}
 
-							@Override
-							public void caseDefault(final Type type) {
-								parameters.add(type);
-							}
-
-						}.visit(method.getReturnType());
 						break;
-					default :
+					default:
 						return;
 				}
 
@@ -198,7 +180,7 @@ public class ProcedureConverter extends MethodConverter {
 	}
 
 	public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {
-		final var bodyExtractor = new ProcedureBodyExtractor(method.getReturnType());
+		final var bodyExtractor = new ProcedureBodyExtractor();
 		final Body body = bodyExtractor.visit(method.retrieveActiveBody());
 
 		for (Local local : SootBodies.getLocals(method.retrieveActiveBody())) {

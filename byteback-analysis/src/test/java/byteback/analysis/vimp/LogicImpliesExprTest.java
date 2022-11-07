@@ -13,6 +13,7 @@ public class LogicImpliesExprTest {
 		final LogicExpr a = mock(LogicExpr.class);
 		final LogicExpr b = mock(LogicExpr.class);
 		final var v = new LogicImpliesExpr(a, b);
+		@SuppressWarnings("rawtypes")
 		final LogicExprSwitch sw = mock(LogicExprSwitch.class);
 		v.apply(sw);
 		verify(sw).caseLogicImpliesExpr(v);

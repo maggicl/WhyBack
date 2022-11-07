@@ -5,10 +5,8 @@ import byteback.analysis.Namespace;
 import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootMethods;
-import byteback.analysis.util.SootTypes;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.method.MethodConverter;
-import byteback.converter.soottoboogie.type.CasterProvider;
 import byteback.frontend.boogie.ast.BinaryExpression;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionReference;
@@ -29,61 +27,26 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 
 	protected Expression expression;
 
-	protected final Type type;
-
-	public BaseExpressionExtractor(final Type type) {
-		this.type = type;
-	}
-
-	public abstract BaseExpressionExtractor makeExpressionExtractor(final Type type);
-
-	public Type getType() {
-		return type;
-	}
-
-	public Expression visit(final Value value, final Type type) {
-		return makeExpressionExtractor(type).visit(value);
-	}
+	public abstract BaseExpressionExtractor makeExpressionExtractor();
 
 	public void setExpression(final Expression expression) {
 		this.expression = expression;
 	}
 
-	public void setCastExpression(final Expression expression, final Type fromType) {
-		final var caster = new CasterProvider(getType()).visit(fromType);
-		setExpression(caster.apply(expression));
-	}
-
-	public void setCastExpression(final Expression expression, final Value value) {
-		setCastExpression(expression, value.getType());
-	}
-
-	public void setBinaryExpression(final BinopExpr source, final BinaryExpression expression, final Type type) {
+	public void setBinaryExpression(final BinopExpr source, final BinaryExpression expression) {
 		final Value left = source.getOp1();
 		final Value right = source.getOp2();
-
-		expression.setLeftOperand(visit(left, type));
-		expression.setRightOperand(visit(right, type));
-		setCastExpression(expression, source.getType());
-	}
-
-	public void setBinaryExpression(final BinopExpr source, final BinaryExpression expression) {
-		setBinaryExpression(source, expression, getType());
-	}
-
-	public void setBinaryCastExpression(final BinopExpr source, final BinaryExpression expression) {
-		final Type type = SootTypes.join(source.getOp1().getType(), source.getOp2().getType());
-		setBinaryExpression(source, expression, type);
+		expression.setLeftOperand(visit(left));
+		expression.setRightOperand(visit(right));
+		setExpression(expression);
 	}
 
 	public void setSpecialBinaryExpression(final BinopExpr source, final FunctionReference reference) {
 		final Value left = source.getOp1();
 		final Value right = source.getOp2();
-		final Type type = SootTypes.join(left.getType(), right.getType());
-
-		reference.addArgument(visit(left, type));
-		reference.addArgument(visit(right, type));
-		setCastExpression(reference, source.getType());
+		reference.addArgument(visit(left));
+		reference.addArgument(visit(right));
+		setExpression(reference);
 	}
 
 	public List<Expression> convertArguments(final SootMethod method, final Iterable<Value> sources) {
@@ -99,7 +62,7 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 		final Iterator<Type> typeIterator = types.iterator();
 
 		while (typeIterator.hasNext() && sourceIterator.hasNext()) {
-			arguments.add(visit(sourceIterator.next(), typeIterator.next()));
+			arguments.add(visit(sourceIterator.next()));
 		}
 
 		return arguments;
@@ -119,7 +82,7 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 		}
 
 		referenceBuilder.addArguments(convertArguments(method, arguments));
-		setCastExpression(referenceBuilder.build(), getType());
+		setExpression(referenceBuilder.build());
 	}
 
 	abstract public void caseInstanceInvokeExpr(final InstanceInvokeExpr invoke);

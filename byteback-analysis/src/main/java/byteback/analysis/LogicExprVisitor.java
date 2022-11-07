@@ -10,41 +10,41 @@ import byteback.analysis.vimp.LogicNotExpr;
 import byteback.analysis.vimp.LogicOrExpr;
 import soot.Value;
 
-public interface LogicExprVisitor {
+public interface LogicExprVisitor<T> extends Visitor<Value, T> {
 
 	default void caseLogicAndExpr(final LogicAndExpr v) {
-		defaultCase(v);
+		caseDefault(v);
 	}
 
 	default void caseLogicOrExpr(final LogicOrExpr v) {
-		defaultCase(v);
+		caseDefault(v);
 	}
 
 	default void caseLogicImpliesExpr(final LogicImpliesExpr v) {
-		defaultCase(v);
+		caseDefault(v);
 	}
 
 	default void caseLogicIffExpr(final LogicIffExpr v) {
-		defaultCase(v);
+		caseDefault(v);
 	}
 
 	default void caseLogicForallExpr(final LogicForallExpr v) {
-		defaultCase(v);
+		caseDefault(v);
 	}
 
 	default void caseLogicExistsExpr(final LogicExistsExpr v) {
-		defaultCase(v);
+		caseDefault(v);
 	}
 
 	default void caseLogicNotExpr(final LogicNotExpr v) {
-		defaultCase(v);
+		caseDefault(v);
 	}
 
 	default void caseLogicConstant(final LogicConstant v) {
-		defaultCase(v);
+		caseDefault(v);
 	}
 
-	default void defaultCase(final Value v) {
+	default void caseDefault(final Value v) {
 	}
 
 }

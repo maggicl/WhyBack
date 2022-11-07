@@ -19,7 +19,7 @@ public class AssertionStmt extends LogicStmt {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicStmtSwitch) sw).caseAssertionStmt(this);
+		((LogicStmtSwitch<?>) sw).caseAssertionStmt(this);
 	}
 
 	@Override

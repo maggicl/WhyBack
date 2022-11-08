@@ -1,7 +1,9 @@
 package byteback.converter.soottoboogie.expression;
 
+import byteback.analysis.QuantifierExpr;
 import byteback.analysis.TypeSwitch;
 import byteback.analysis.vimp.LogicConstant;
+import byteback.analysis.vimp.LogicExistsExpr;
 import byteback.analysis.vimp.LogicForallExpr;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.field.FieldConverter;
@@ -297,8 +299,7 @@ public class ExpressionExtractor extends BaseExpressionExtractor {
 		setExpression(Prelude.v().makeTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference));
 	}
 
-	@Override
-	public void caseLogicForallExpr(final LogicForallExpr v) {
+	public QuantifierExpression makeQuantifierExpression(final QuantifierExpr v) {
 		final var quantifierExpression = new QuantifierExpression();
 
 		for (Local local : v.getFreeLocals()) {
@@ -306,6 +307,22 @@ public class ExpressionExtractor extends BaseExpressionExtractor {
 		}
 
 		quantifierExpression.setOperand(visit(v.getValue()));
+
+		return quantifierExpression;
+	}
+
+	@Override
+	public void caseLogicForallExpr(final LogicForallExpr v) {
+		final var quantifierExpression = makeQuantifierExpression(v);
+		quantifierExpression.setQuantifier(new UniversalQuantifier());
+		setExpression(quantifierExpression);
+	}
+
+	@Override
+	public void caseLogicExistsExpr(final LogicExistsExpr v) {
+		final var quantifierExpression = makeQuantifierExpression(v);
+		quantifierExpression.setQuantifier(new ExistentialQuantifier());
+		setExpression(quantifierExpression);
 	}
 
 	@Override

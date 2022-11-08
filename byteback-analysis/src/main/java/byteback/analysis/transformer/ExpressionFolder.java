@@ -51,7 +51,7 @@ public class ExpressionFolder extends BodyTransformer {
 
 	public boolean isAssignedToReference(final Local local) {
 		for (final Unit use : useDefineChain.unitUsesOf(local)) {
-			if (use instanceof AssignStmt assignUnit) {
+			if (use instanceof final AssignStmt assignUnit) {
 				final Value left = assignUnit.getLeftOp();
 
 				if (left instanceof Ref) {
@@ -88,8 +88,7 @@ public class ExpressionFolder extends BodyTransformer {
 								public void caseAssignStmt(final AssignStmt assignment) {
 									final Value substituteValue = assignment.getRightOp();
 
-									if (!hasSideEffects(substituteValue)
-											&& (useDefineChain.hasSingleUse(local) || !isAssignedToReference(local))) {
+									if (!hasSideEffects(substituteValue) && useDefineChain.hasSingleUse(local)) {
 										body.getUnits().remove(definitionUnit);
 										useBox.setValue(substituteValue);
 									}

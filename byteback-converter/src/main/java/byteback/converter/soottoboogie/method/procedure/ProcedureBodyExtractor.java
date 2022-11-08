@@ -4,6 +4,8 @@ import byteback.analysis.JimpleStmtSwitch;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.frontend.boogie.ast.Body;
+import byteback.frontend.boogie.ast.Label;
+import byteback.frontend.boogie.ast.LabelStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
@@ -67,12 +69,16 @@ public class ProcedureBodyExtractor extends JimpleStmtSwitch<Body> {
 
 	public ValueReference generateReference(final Type type) {
 		final TypeAccess access = new TypeAccessExtractor().visit(type);
-
 		return variableProvider.get(access);
 	}
 
 	@Override
 	public void caseDefault(final Unit unit) {
+		if (labelCollector.hasLabel(unit)) {
+			final Label label = labelCollector.fetchLabel(unit);
+			addStatement(new LabelStatement(label));
+		}
+
 		final var extractor = new ProcedureStatementExtractor(this);
 		extractor.visit(unit);
 	}

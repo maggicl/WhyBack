@@ -52,6 +52,7 @@ public class InvariantExpander extends BodyTransformer {
 					units.insertAfter(Vimp.v().newAssumptionStmt(condition), loop.getHead());
 					units.insertBefore(Vimp.v().newAssertionStmt(condition), loop.getBackJumpStmt());
 					units.insertAfter(Vimp.v().newAssumptionStmt(condition), loop.getBackJumpStmt());
+					units.remove(invariantStmt);
 				}
 			}
 		}

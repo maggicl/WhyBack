@@ -3,21 +3,17 @@ package byteback.converter.soottoboogie.method.procedure;
 import byteback.analysis.Namespace;
 import byteback.analysis.TypeSwitch;
 import byteback.analysis.util.SootMethods;
-import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.converter.soottoboogie.expression.BaseExpressionExtractor;
 import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
-import byteback.frontend.boogie.ast.AssertStatement;
-import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.Procedure;
 import byteback.frontend.boogie.ast.TargetedCallStatement;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.TargetedCallStatementBuilder;
-import java.util.Iterator;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
@@ -63,30 +59,12 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		bodyExtractor.addStatement(callStatement);
 	}
 
-	public void addContractStatement(final SootMethod method, final Iterable<Value> arguments) {
-		final String name = method.getName();
-		final Iterator<Value> iterator = arguments.iterator();
-		final Value argument = iterator.next();
-		final Expression condition = visit(argument);
-		assert !iterator.hasNext() : "Wrong number of arguments to contract method";
-
-		switch (name) {
-			case Namespace.ASSERTION_NAME -> bodyExtractor.addStatement(new AssertStatement(condition));
-			case Namespace.ASSUMPTION_NAME -> bodyExtractor.addStatement(new AssumeStatement(condition));
-			case Namespace.INVARIANT_NAME -> throw new RuntimeException("Invariants should have already been expanded");
-			default -> throw new ConversionException("Unknown special method: " + method.getName());
-		}
-	}
-
 	@Override
 	public void pushFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
-		final SootClass clazz = method.getDeclaringClass();
 		final boolean isPure = SootMethods.getAnnotation(method, Namespace.PURE_ANNOTATION).isPresent();
 
 		if (isPure) {
 			super.pushFunctionReference(method, arguments);
-		} else if (Namespace.isContractClass(clazz)) {
-			addContractStatement(method, arguments);
 		} else {
 			final TargetedCallStatement callStatement = makeCall(method, arguments);
 			addCall(callStatement, method.getReturnType());

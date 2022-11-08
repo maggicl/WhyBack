@@ -2,6 +2,8 @@ package byteback.converter.soottoboogie.method.procedure;
 
 import byteback.analysis.JimpleStmtSwitch;
 import byteback.analysis.JimpleValueSwitch;
+import byteback.analysis.vimp.AssertionStmt;
+import byteback.analysis.vimp.AssumptionStmt;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
@@ -10,8 +12,10 @@ import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.StatementConversionException;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
+import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.Assignee;
 import byteback.frontend.boogie.ast.AssignmentStatement;
+import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.EqualsOperation;
 import byteback.frontend.boogie.ast.Expression;
@@ -207,6 +211,18 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 		final var invoke = invokeStatement.getInvokeExpr();
 		makeExpressionExtractor().visit(invoke);
+	}
+
+	@Override
+	public void caseAssertionStmt(final AssertionStmt assertionStmt) {
+		final Expression condition = makeExpressionExtractor().visit(assertionStmt.getCondition());
+		addStatement(new AssertStatement(condition));
+	}
+
+	@Override
+	public void caseAssumptionStmt(final AssumptionStmt assumptionStmt) {
+		final Expression condition = makeExpressionExtractor().visit(assumptionStmt.getCondition());
+		addStatement(new AssumeStatement(condition));
 	}
 
 	@Override

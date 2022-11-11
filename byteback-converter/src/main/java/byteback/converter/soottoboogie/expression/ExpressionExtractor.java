@@ -213,7 +213,7 @@ public class ExpressionExtractor extends BaseExpressionExtractor {
 	public void caseCastExpr(final CastExpr v) {
 		final Value operand = v.getOp();
 		final Type toType = v.getCastType();
-		final Type fromType = v.getType();
+		final Type fromType = operand.getType();
 		final Function<Expression, Expression> caster = new CasterProvider(toType).visit(fromType);
 
 		setExpression(caster.apply(visit(operand)));

@@ -1,8 +1,10 @@
 package byteback.analysis.transformer;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import byteback.analysis.Vimp;
 import byteback.analysis.vimp.InvariantStmt;
@@ -38,22 +40,51 @@ public class InvariantExpander extends BodyTransformer {
 	}
 
 	public void transformBody(final Body body) {
-		final LoopFinder loopFinder = new LoopFinder();
-		final Set<Loop> loops = loopFinder.getLoops(body);
 		final Chain<Unit> units = body.getUnits();
+		final Iterator<Unit> unitIterator = units.snapshotIterator();
+		final LoopFinder loopFinder = new LoopFinder();
+		final HashMap<Unit, Loop> startToLoop = new HashMap<>();
+		final HashMap<Unit, Loop> endToLoop = new HashMap<>();
+		final Set<Loop> loops = loopFinder.getLoops(body);
+		final Stack<Loop> activeLoops = new Stack<>();
 
-		for (Loop loop : loops) {
-			final List<Stmt> statements = loop.getLoopStatements();
+		for (final Loop loop : loops) {
+			startToLoop.put(loop.getHead(), loop);
+			endToLoop.put(loop.getBackJumpStmt(), loop);
+		}
 
-			for (final Stmt stmt : statements) {
-				if (stmt instanceof InvariantStmt invariantStmt) {
-					final Value condition = invariantStmt.getCondition();
-					units.insertBefore(Vimp.v().newAssertionStmt(condition), loop.getHead());
-					units.insertAfter(Vimp.v().newAssumptionStmt(condition), loop.getHead());
-					units.insertBefore(Vimp.v().newAssertionStmt(condition), loop.getBackJumpStmt());
-					units.insertAfter(Vimp.v().newAssumptionStmt(condition), loop.getBackJumpStmt());
-					units.remove(invariantStmt);
+		while (unitIterator.hasNext()) {
+			final Unit unit = unitIterator.next();
+			final Loop startedLoop = startToLoop.get(unit);
+			final Loop endedLoop = endToLoop.get(unit);
+
+			if (startedLoop != null) {
+				activeLoops.push(startToLoop.get(unit));
+			}
+
+			if (endedLoop != null) {
+				assert activeLoops.peek() == endedLoop;
+				activeLoops.pop();
+			}
+
+			if (unit instanceof InvariantStmt invariantUnit) {
+				if (activeLoops.isEmpty()) {
+					throw new RuntimeException("Invariant " + invariantUnit + "cannot be expanded");
 				}
+
+				final Loop loop = activeLoops.peek();
+				final Value condition = invariantUnit.getCondition();
+				units.insertBefore(Vimp.v().newAssertionStmt(condition), loop.getHead());
+				units.insertAfter(Vimp.v().newAssumptionStmt(condition), loop.getHead());
+				units.insertBefore(Vimp.v().newAssertionStmt(condition), loop.getBackJumpStmt());
+
+				for (final Unit exit : loop.getLoopExits()) {
+					for (final Unit exitTarget : loop.targetsOfLoopExit((Stmt) exit)) {
+						units.insertBefore(Vimp.v().newAssumptionStmt(condition), exitTarget);
+					}
+				}
+
+				units.remove(invariantUnit);
 			}
 		}
 	}

@@ -50,14 +50,16 @@ public class ProgramConverter {
 				continue;
 			}
 
-			final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
-			LogicUnitTransformer.v().transform(body);
-			new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
-			new ExpressionFolder().transform(body);
-			UnusedLocalEliminator.v().transform(body);
-			QuantifierValueTransformer.v().transform(body);
-			InvariantExpander.v().transform(body);
-			method.setActiveBody(body);
+			if (SootMethods.hasBody(method)) {
+				final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
+				LogicUnitTransformer.v().transform(body);
+				new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
+				new ExpressionFolder().transform(body);
+				UnusedLocalEliminator.v().transform(body);
+				QuantifierValueTransformer.v().transform(body);
+				InvariantExpander.v().transform(body);
+				method.setActiveBody(body);
+			}
 
 			try {
 				log.info("Converting method {}", method.getSignature());

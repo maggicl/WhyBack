@@ -3,6 +3,7 @@ package byteback.analysis.transformer;
 import byteback.analysis.JimpleStmtSwitch;
 import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Vimp;
+import byteback.analysis.util.SootTypes;
 import byteback.analysis.vimp.LogicConstant;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -11,8 +12,6 @@ import java.util.function.Function;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
-import soot.IntType;
-import soot.Local;
 import soot.Type;
 import soot.TypeSwitch;
 import soot.Unit;
@@ -24,6 +23,9 @@ import soot.grimp.GrimpBody;
 import soot.jimple.AndExpr;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
+import soot.jimple.CmpExpr;
+import soot.jimple.CmpgExpr;
+import soot.jimple.CmplExpr;
 import soot.jimple.EqExpr;
 import soot.jimple.GeExpr;
 import soot.jimple.GtExpr;
@@ -59,7 +61,11 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 		}
 
 		public void setValue(final Value value) {
-			resultBox.setValue(value);
+			if (expectedType != value.getType()) {
+				resultBox.setValue(Grimp.v().newCastExpr(value, expectedType));
+			} else {
+				resultBox.setValue(value);
+			}
 		}
 
 		public void setUnaryValue(final UnaryConstructor constructor, final Type expectedType, final UnopExpr value) {
@@ -70,24 +76,14 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 		public void setBinaryValue(final BinaryConstructor constructor, final Type expectedType, final BinopExpr value) {
 			final ValueBox leftBox = value.getOp1Box();
 			final ValueBox rightBox = value.getOp2Box();
-			setValue(constructor.apply(value.getOp1Box(), value.getOp2Box()));
+			setValue(constructor.apply(leftBox, rightBox));
+
 			new LogicValueSwitch(expectedType, leftBox).visit(leftBox.getValue());
 			new LogicValueSwitch(expectedType, rightBox).visit(rightBox.getValue());
 		}
 
-		@Override
-		public void caseLocal(final Local local) {
-			final Type actualType;
-
-			if (local.getType() != BooleanType.v()) {
-				actualType = Type.toMachineType(local.getType());
-			} else {
-				actualType = local.getType();
-			}
-
-			if (expectedType != actualType) {
-				setValue(Grimp.v().newCastExpr(local, expectedType));
-			}
+		public void setBinaryValue(final BinaryConstructor constructor, final BinopExpr value) {
+			setBinaryValue(constructor, SootTypes.join(value.getOp1().getType(), value.getOp2().getType()), value);
 		}
 
 		@Override
@@ -144,7 +140,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 
 				@Override
 				public void caseBooleanType(final BooleanType $) {
-					setBinaryValue(Vimp.v()::newGtExpr, IntType.v(), value);
+					setBinaryValue(Vimp.v()::newGtExpr, value);
 				}
 
 			});
@@ -156,7 +152,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 
 				@Override
 				public void caseBooleanType(final BooleanType $) {
-					setBinaryValue(Vimp.v()::newGeExpr, IntType.v(), value);
+					setBinaryValue(Vimp.v()::newGeExpr, value);
 				}
 
 			});
@@ -168,7 +164,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 
 				@Override
 				public void caseBooleanType(final BooleanType $) {
-					setBinaryValue(Vimp.v()::newLtExpr, IntType.v(), value);
+					setBinaryValue(Vimp.v()::newLtExpr, value);
 				}
 
 			});
@@ -180,7 +176,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 
 				@Override
 				public void caseBooleanType(final BooleanType $) {
-					setBinaryValue(Vimp.v()::newLeExpr, IntType.v(), value);
+					setBinaryValue(Vimp.v()::newLeExpr, value);
 				}
 
 			});
@@ -192,7 +188,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 
 				@Override
 				public void caseBooleanType(final BooleanType $) {
-					setBinaryValue(Vimp.v()::newEqExpr, IntType.v(), value);
+					setBinaryValue(Vimp.v()::newEqExpr, value);
 				}
 
 			});
@@ -204,7 +200,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 
 				@Override
 				public void caseBooleanType(final BooleanType $) {
-					setBinaryValue(Vimp.v()::newNeExpr, IntType.v(), value);
+					setBinaryValue(Vimp.v()::newNeExpr, value);
 				}
 
 			});
@@ -220,11 +216,25 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 		}
 
 		@Override
+		public void caseCmpExpr(final CmpExpr $) {
+		}
+
+		@Override
+		public void caseCmplExpr(final CmplExpr $) {
+		}
+
+		@Override
+		public void caseCmpgExpr(final CmpgExpr $) {
+		}
+
+		@Override
 		public void caseLengthExpr(final LengthExpr $) {
 		}
 
 		@Override
 		public void caseDefault(final Value defaultValue) {
+			setValue(defaultValue);
+
 			if (defaultValue instanceof BinopExpr value) {
 				final ValueBox leftBox = value.getOp1Box();
 				final ValueBox rightBox = value.getOp2Box();

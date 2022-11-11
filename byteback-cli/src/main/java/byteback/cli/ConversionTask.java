@@ -20,7 +20,7 @@ public class ConversionTask {
 	}
 
 	public Program run() {
-		final Program program = new Program();
+		Program program = new Program();
 
 		for (final SootClass clazz : scene.getClasses()) {
 			if (clazz.resolvingLevel() >= SootClass.SIGNATURES
@@ -30,7 +30,10 @@ public class ConversionTask {
 			}
 		}
 
-		return prelude.program().merge(program);
+		program = prelude.program().merge(program);
+		program.inferModifies();
+
+		return program;
 	}
 
 }

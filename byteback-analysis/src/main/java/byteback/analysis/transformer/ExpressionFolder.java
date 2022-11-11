@@ -1,14 +1,13 @@
 package byteback.analysis.transformer;
 
-import byteback.analysis.JimpleStmtSwitch;
-import byteback.analysis.JimpleValueSwitch;
-import byteback.analysis.Namespace;
+import byteback.analysis.SubstitutionTracker;
 import byteback.analysis.UseDefineChain;
-import byteback.analysis.util.SootMethods;
+import byteback.analysis.util.SootBodies;
+import byteback.util.Cons;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -16,11 +15,12 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.GrimpBody;
-import soot.jimple.AssignStmt;
-import soot.jimple.InvokeExpr;
-import soot.jimple.NewArrayExpr;
-import soot.jimple.NewExpr;
-import soot.jimple.Ref;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.scalar.SimpleLocalDefs;
+import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.UnitValueBoxPair;
+import soot.util.HashChain;
 
 public class ExpressionFolder extends BodyTransformer {
 
@@ -39,67 +39,52 @@ public class ExpressionFolder extends BodyTransformer {
 		}
 	}
 
-	public static boolean isPure(final InvokeExpr invokeValue) {
-		return SootMethods.hasAnnotation(invokeValue.getMethod(), Namespace.PURE_ANNOTATION)
-			|| Namespace.isQuantifierClass(invokeValue.getMethod().getDeclaringClass());
-	}
-
-	public static boolean hasSideEffects(final Value value) {
-		return (value instanceof InvokeExpr invokeValue && !isPure(invokeValue))
-			|| value instanceof NewExpr || value instanceof NewArrayExpr;
-	}
-
-	public boolean isAssignedToReference(final Local local) {
-		for (final Unit use : useDefineChain.unitUsesOf(local)) {
-			if (use instanceof final AssignStmt assignUnit) {
-				final Value left = assignUnit.getLeftOp();
-
-				if (left instanceof Ref) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
 	public void transformBody(final Body body) {
-		final Iterator<Unit> iterator = body.getUnits().snapshotIterator();
-		useDefineChain.collect(body);
+		final BlockGraph graph = SootBodies.getBlockGraph(body);
+		final SimpleLocalDefs localDefs = new SimpleLocalDefs(SootBodies.getUnitGraph(body));
+		final SimpleLocalUses localUses = new SimpleLocalUses(body, localDefs);
 
-		while (iterator.hasNext()) {
-			final Unit unit = iterator.next();
+		for (final Block block : graph) {
+			final var substitutionTracker = new SubstitutionTracker();
+			final var unitsSnapshot = new HashChain<Unit>();
 
-			for (ValueBox useBox : unit.getUseBoxes()) {
-				final Value useValue = useBox.getValue();
+			for (final Unit unit : block) {
+				unitsSnapshot.add(unit);
+			}
 
-				useValue.apply(new JimpleValueSwitch<>() {
+			for (final Unit unit : unitsSnapshot) {
+				substitutionTracker.track(unit);
 
-					@Override
-					public void caseLocal(final Local local) {
-						final List<Unit> definitions = useDefineChain.definitionsOfAt(local, unit);
+				FOLD_NEXT:
+				for (final ValueBox valueBox : unit.getUseBoxes()) {
+					final Value value = valueBox.getValue();
 
-						if (definitions.size() == 1) {
-							final Unit definitionUnit = definitions.iterator().next();
+					if (value instanceof final Local local) {
+						final Cons<Unit, Value> substitutionPair = substitutionTracker.substitute(local);
 
-							definitionUnit.apply(new JimpleStmtSwitch<>() {
+						if (substitutionPair != null && !substitutionPair.car.equals(unit)) {
+							final Unit definition = substitutionPair.car;
+							final Value substitution = substitutionPair.cdr;
 
-								@Override
-								public void caseAssignStmt(final AssignStmt assignment) {
-									final Value substituteValue = assignment.getRightOp();
+							if (localDefs.getDefsOfAt(local, unit).size() > 1) {
+								continue FOLD_NEXT;
+							} else {
+								final List<UnitValueBoxPair> usePairs = localUses.getUsesOf(definition);
 
-									if (!hasSideEffects(substituteValue) && useDefineChain.hasSingleUse(local)) {
-										body.getUnits().remove(definitionUnit);
-										useBox.setValue(substituteValue);
+								for (final UnitValueBoxPair usePair : usePairs) {
+									final Unit useUnit = usePair.getUnit();
+
+									if (!unitsSnapshot.contains(useUnit)) {
+										continue FOLD_NEXT;
 									}
-
 								}
+							}
 
-							});
+							valueBox.setValue(substitution);
+							block.remove(definition);
 						}
 					}
-
-				});
+				}
 			}
 		}
 	}

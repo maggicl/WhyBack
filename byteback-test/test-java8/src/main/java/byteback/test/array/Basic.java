@@ -19,6 +19,7 @@ public class Basic {
 		as[as.length - 1] = 1;
 	}
 
+	@SuppressWarnings("unused")
 	public static void literals() {
 		int[] a = { 1, 2, 3, 4 };
 		int[] b = { 5, 4, 3, 2 };
@@ -33,6 +34,7 @@ public class Basic {
 		assertion(eq(objectArray.length, 10));
 	}
 
+	@SuppressWarnings("unused")
 	public static void lengthReference(int[] a) {
 		int length = a.length;
 	}

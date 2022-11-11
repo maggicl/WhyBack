@@ -7,8 +7,6 @@ import soot.jimple.StmtBody;
 
 public class VimpBody extends StmtBody {
 
-	public final UseDefineChain useDefineChain;
-
 	VimpBody(final SootMethod method) {
 		this(method.getActiveBody());
 	}
@@ -23,14 +21,6 @@ public class VimpBody extends StmtBody {
 
 	VimpBody(final Body body) {
 		super(body.getMethod());
-
-		if (body instanceof JimpleBody jimpleBody) {
-			useDefineChain = new UseDefineChain();
-			useDefineChain.collect(method.getActiveBody());
-			construct(jimpleBody);
-		} else {
-			throw new IllegalArgumentException("Can construct VimpBody only from Jimple");
-		}
 	}
 
 	public final void construct(final JimpleBody body) {

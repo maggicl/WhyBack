@@ -23,8 +23,8 @@ public class LogicLeExpr extends AbstractLogicBinopExpr implements LeExpr {
 	}
 
 	@Override
-	public LogicAndExpr clone() {
-		return new LogicAndExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+	public LogicLeExpr clone() {
+		return new LogicLeExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
 	}
 
 	@Override

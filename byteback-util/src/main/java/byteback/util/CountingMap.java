@@ -12,7 +12,7 @@ public class CountingMap<K, V> extends HashMap<K, V> {
 	}
 
 	@Override
-	public V put(K key, V value) {
+	public V put(final K key, final V value) {
 		accessCount.put(key, accessCount.getOrDefault(key, 0) + 1);
 
 		return super.put(key, value);

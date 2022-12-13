@@ -1,7 +1,10 @@
 package byteback.analysis;
 
+import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
+
 import byteback.analysis.vimp.LogicAndExpr;
 import byteback.analysis.vimp.LogicOrExpr;
+import byteback.analysis.vimp.LogicXorExpr;
 import soot.Value;
 import soot.jimple.*;
 
@@ -15,6 +18,11 @@ public abstract class JimpleValueSwitch<R> extends AbstractJimpleValueSwitch<R> 
 	@Override
 	public void caseLogicOrExpr(final LogicOrExpr v) {
 		caseOrExpr(v);
+	}
+
+	@Override
+	public void caseLogicXorExpr(final LogicXorExpr v) {
+		caseXorExpr(v);
 	}
 
 	@Override

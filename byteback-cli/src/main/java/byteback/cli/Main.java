@@ -42,9 +42,7 @@ public class Main {
 		}
 
 		final var task = new ConversionTask(scene, prelude);
-		
 		output.print(task.run().print());
-
 		output.close();
 	}
 
@@ -53,15 +51,16 @@ public class Main {
 		final List<String> startingClasses = configuration.getStartingClasses();
 		final Path preludePath = configuration.getPreludePath();
 
-		for (Path classPath : classPaths) {
-			scene.setSootClassPath(scene.getSootClassPath() + File.pathSeparator + classPath);
-		}
-
 		options.setPhaseOption("jb", "use-original-names:true");
 		options.setPhaseOption("gb.a1", "enabled:false");
 		options.setPhaseOption("gb.cf", "enabled:false");
 		options.setPhaseOption("gb.a2", "enabled:false");
 		options.setPhaseOption("gb.ule", "enabled:false");
+
+		for (final Path classPath : classPaths) {
+			scene.setSootClassPath(scene.getSootClassPath() + File.pathSeparator + classPath);
+		}
+
 		scene.loadBasicClasses();
 
 		for (String startingClass : startingClasses) {

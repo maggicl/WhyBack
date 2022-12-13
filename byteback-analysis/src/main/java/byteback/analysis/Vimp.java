@@ -16,6 +16,7 @@ import byteback.analysis.vimp.LogicLtExpr;
 import byteback.analysis.vimp.LogicNeExpr;
 import byteback.analysis.vimp.LogicNotExpr;
 import byteback.analysis.vimp.LogicOrExpr;
+import byteback.analysis.vimp.LogicXorExpr;
 import byteback.util.Lazy;
 import soot.Body;
 import soot.Local;
@@ -83,6 +84,10 @@ public class Vimp {
 
 	public LogicOrExpr newLogicOrExpr(final ValueBox abox, final ValueBox bbox) {
 		return new LogicOrExpr(abox, bbox);
+	}
+
+	public LogicXorExpr newLogicXorExpr(final ValueBox abox, final ValueBox bbox) {
+		return new LogicXorExpr(abox, bbox);
 	}
 
 	public LogicIffExpr newLogicIffExpr(final Value a, final Value b) {

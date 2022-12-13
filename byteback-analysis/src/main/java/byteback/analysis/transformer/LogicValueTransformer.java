@@ -38,6 +38,7 @@ import soot.jimple.LtExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.NegExpr;
 import soot.jimple.OrExpr;
+import soot.jimple.XorExpr;
 import soot.jimple.ReturnStmt;
 import soot.jimple.UnopExpr;
 
@@ -117,6 +118,18 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 				@Override
 				public void caseBooleanType(final BooleanType type) {
 					setBinaryValue(Vimp.v()::newLogicOrExpr, type, value);
+				}
+
+			});
+		}
+
+		@Override
+		public void caseXorExpr(final XorExpr value) {
+			expectedType.apply(new TypeSwitch<>() {
+
+				@Override
+				public void caseBooleanType(final BooleanType type) {
+					setBinaryValue(Vimp.v()::newLogicXorExpr, type, value);
 				}
 
 			});

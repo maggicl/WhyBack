@@ -8,6 +8,7 @@ import byteback.analysis.vimp.LogicIffExpr;
 import byteback.analysis.vimp.LogicImpliesExpr;
 import byteback.analysis.vimp.LogicNotExpr;
 import byteback.analysis.vimp.LogicOrExpr;
+import byteback.analysis.vimp.LogicXorExpr;
 import soot.Value;
 
 public interface LogicExprVisitor<T> extends Visitor<Value, T> {
@@ -17,6 +18,10 @@ public interface LogicExprVisitor<T> extends Visitor<Value, T> {
 	}
 
 	default void caseLogicOrExpr(final LogicOrExpr v) {
+		caseDefault(v);
+	}
+
+	default void caseLogicXorExpr(final LogicXorExpr v) {
 		caseDefault(v);
 	}
 

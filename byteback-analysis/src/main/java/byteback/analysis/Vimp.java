@@ -1,7 +1,10 @@
 package byteback.analysis;
 
+import java.util.Map;
+
 import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.AssumptionStmt;
+import byteback.analysis.vimp.GuardExpr;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.analysis.vimp.LogicAndExpr;
 import byteback.analysis.vimp.LogicEqExpr;
@@ -11,6 +14,7 @@ import byteback.analysis.vimp.LogicGeExpr;
 import byteback.analysis.vimp.LogicGtExpr;
 import byteback.analysis.vimp.LogicIffExpr;
 import byteback.analysis.vimp.LogicImpliesExpr;
+import byteback.analysis.vimp.LogicInstanceOfExpr;
 import byteback.analysis.vimp.LogicLeExpr;
 import byteback.analysis.vimp.LogicLtExpr;
 import byteback.analysis.vimp.LogicNeExpr;
@@ -20,7 +24,10 @@ import byteback.analysis.vimp.LogicXorExpr;
 import byteback.util.Lazy;
 import soot.Body;
 import soot.Local;
+import soot.RefType;
 import soot.SootMethod;
+import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.internal.ExprBox;
@@ -28,6 +35,7 @@ import soot.jimple.Constant;
 import soot.jimple.EqExpr;
 import soot.jimple.GeExpr;
 import soot.jimple.GtExpr;
+import soot.jimple.InstanceOfExpr;
 import soot.jimple.LeExpr;
 import soot.jimple.LtExpr;
 import soot.jimple.NeExpr;
@@ -166,6 +174,10 @@ public class Vimp {
 
 	public NeExpr newNeExpr(final ValueBox abox, final ValueBox bbox) {
 		return new LogicNeExpr(abox, bbox);
+	}
+
+	public InstanceOfExpr newInstanceOfExpr(final Value value, final Type type) {
+		return new LogicInstanceOfExpr(value, type);
 	}
 
 }

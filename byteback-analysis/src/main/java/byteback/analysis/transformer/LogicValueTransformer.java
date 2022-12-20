@@ -30,6 +30,7 @@ import soot.jimple.EqExpr;
 import soot.jimple.GeExpr;
 import soot.jimple.GtExpr;
 import soot.jimple.IfStmt;
+import soot.jimple.InstanceOfExpr;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.LeExpr;
@@ -220,6 +221,18 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 		}
 
 		@Override
+		public void caseInstanceOfExpr(final InstanceOfExpr value) {
+			expectedType.apply(new TypeSwitch<>() {
+
+				@Override
+				public void caseBooleanType(final BooleanType $) {
+					setValue(Vimp.v().newInstanceOfExpr(value.getOp(), value.getCheckType()));
+				}
+
+			});
+		}
+
+		@Override
 		public void caseInvokeExpr(final InvokeExpr value) {
 			for (int i = 0; i < value.getArgCount(); ++i) {
 				final ValueBox argumentBox = value.getArgBox(i);
@@ -251,8 +264,10 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 			if (defaultValue instanceof BinopExpr value) {
 				final ValueBox leftBox = value.getOp1Box();
 				final ValueBox rightBox = value.getOp2Box();
-				new LogicValueSwitch(expectedType, leftBox).visit(leftBox.getValue());
-				new LogicValueSwitch(expectedType, rightBox).visit(rightBox.getValue());
+				new LogicValueSwitch(expectedType, leftBox)
+					.visit(leftBox.getValue());
+				new LogicValueSwitch(expectedType, rightBox)
+					.visit(rightBox.getValue());
 			}
 
 			if (defaultValue instanceof UnopExpr value) {

@@ -1,7 +1,5 @@
 package byteback.analysis;
 
-import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
-
 import byteback.analysis.vimp.LogicAndExpr;
 import byteback.analysis.vimp.LogicOrExpr;
 import byteback.analysis.vimp.LogicXorExpr;

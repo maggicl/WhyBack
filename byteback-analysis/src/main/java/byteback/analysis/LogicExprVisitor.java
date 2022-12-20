@@ -1,6 +1,5 @@
 package byteback.analysis;
 
-import byteback.analysis.vimp.GuardExpr;
 import byteback.analysis.vimp.LogicAndExpr;
 import byteback.analysis.vimp.LogicConstant;
 import byteback.analysis.vimp.LogicExistsExpr;
@@ -47,10 +46,6 @@ public interface LogicExprVisitor<T> extends Visitor<Value, T> {
 	}
 
 	default void caseLogicConstant(final LogicConstant v) {
-		caseDefault(v);
-	}
-
-	default void caseGuardExpr(final GuardExpr v) {
 		caseDefault(v);
 	}
 

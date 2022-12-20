@@ -53,6 +53,7 @@ public class InvariantExpander extends BodyTransformer {
 			endToLoop.put(loop.getBackJumpStmt(), loop);
 		}
 
+
 		while (unitIterator.hasNext()) {
 			final Unit unit = unitIterator.next();
 			final Loop startedLoop = startToLoop.get(unit);

@@ -1,10 +1,7 @@
 package byteback.analysis;
 
-import java.util.Map;
-
 import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.AssumptionStmt;
-import byteback.analysis.vimp.GuardExpr;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.analysis.vimp.LogicAndExpr;
 import byteback.analysis.vimp.LogicEqExpr;
@@ -24,10 +21,8 @@ import byteback.analysis.vimp.LogicXorExpr;
 import byteback.util.Lazy;
 import soot.Body;
 import soot.Local;
-import soot.RefType;
 import soot.SootMethod;
 import soot.Type;
-import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.internal.ExprBox;

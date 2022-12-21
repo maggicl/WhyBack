@@ -1,6 +1,7 @@
 package byteback.converter.soottoboogie.program;
 
 import byteback.analysis.Namespace;
+import byteback.analysis.transformer.ExceptionInvariantTransformer;
 import byteback.analysis.transformer.ExpressionFolder;
 import byteback.analysis.transformer.InvariantExpander;
 import byteback.analysis.transformer.LogicUnitTransformer;
@@ -57,6 +58,7 @@ public class ProgramConverter {
 				new ExpressionFolder().transform(body);
 				UnusedLocalEliminator.v().transform(body);
 				QuantifierValueTransformer.v().transform(body);
+				ExceptionInvariantTransformer.v().transform(body);
 				InvariantExpander.v().transform(body);
 				method.setActiveBody(body);
 			}

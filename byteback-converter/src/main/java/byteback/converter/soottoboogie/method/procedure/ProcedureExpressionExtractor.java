@@ -3,6 +3,7 @@ package byteback.converter.soottoboogie.method.procedure;
 import byteback.analysis.Namespace;
 import byteback.analysis.TypeSwitch;
 import byteback.analysis.util.SootMethods;
+import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.converter.soottoboogie.expression.BaseExpressionExtractor;
@@ -21,6 +22,7 @@ import soot.Type;
 import soot.UnknownType;
 import soot.Value;
 import soot.VoidType;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
@@ -54,6 +56,8 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 			targets.add(reference);
 			setExpression(reference);
 		}
+
+		targets.add(Convention.makeExceptionReference());
 
 		callStatement.setTargetList(targets);
 		bodyExtractor.addStatement(callStatement);
@@ -110,6 +114,11 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		final Expression size = this.makeExpressionExtractor().visit(arrayExpression.getSize());
 		callStatement.addArgument(size);
 		addCall(callStatement, arrayExpression.getType());
+	}
+
+	@Override
+	public void caseCaughtExceptionRef(final CaughtExceptionRef caughtExceptionRef) {
+		setExpression(Convention.makeExceptionReference());
 	}
 
 }

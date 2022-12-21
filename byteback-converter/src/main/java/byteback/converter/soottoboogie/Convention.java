@@ -16,6 +16,14 @@ public class Convention {
 		return ValueReference.of("~ret");
 	}
 
+	public static BoundedBinding makeExceptionBinding(final TypeAccess typeAccess) {
+		return new BoundedBindingBuilder().addName("~exc").typeAccess(typeAccess).build();
+	}
+
+	public static ValueReference makeExceptionReference() {
+		return ValueReference.of("~exc");
+	}
+
 	public static Label makeLabelStatement(final int index) {
 		return new Label("label" + index);
 	}

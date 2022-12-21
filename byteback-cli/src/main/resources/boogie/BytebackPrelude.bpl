@@ -43,10 +43,11 @@ var ~heap: Store where ~heap.isgood(~heap) && ~heap.isanchor(~heap);
 
 function ~allocated(Reference) returns (bool);
 
-procedure ~new(t: Type) returns (~ret: Reference);
+procedure ~new(t: Type) returns (~ret: Reference, ~exc: Reference);
 	ensures ~ret != ~null;
 	ensures ~typeof(~heap, ~ret) == t;
 	ensures ~allocated(~ret);
+	ensures ~exc == ~null;
 
 // -------------------------------------------------------------------
 // Type model
@@ -111,11 +112,12 @@ function {:inline} ~array.read<b>(h: Store, a: Reference, i: int) returns (b)
 function {:inline} ~array.update<b>(h: Store, a: Reference, i: int, v: b) returns (Store)
 { ~heap.update(h, a, ~element(i), ~box(v)) }
 	
-procedure ~array(t: Type, l: int) returns (~ret: Reference);
+procedure ~array(t: Type, l: int) returns (~ret: Reference, ~exc: Reference);
 	ensures ~ret != ~null;
 	ensures ~typeof(~heap, ~ret) == ~array.type(t);
 	ensures ~allocated(~ret);
 	ensures ~lengthof(~ret) == l;
+	ensures ~exc == ~null;
 
 
 // -------------------------------------------------------------------
@@ -231,7 +233,8 @@ function ~real_to_int(a: real) returns (int)
 // -------------------------------------------------------------------
 const $java.lang.Object: Type;
 	
-procedure java.lang.Object.$init$##(this: Reference) returns ();
+procedure java.lang.Object.$init$##(this: Reference) returns (~exc: Reference);
+	ensures ~exc == ~null;
 
 procedure java.lang.Object.clone##(this: Reference) returns (~ret: Reference);
 	requires this != ~null;

@@ -45,6 +45,7 @@ import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.TableSwitchStmt;
+import soot.jimple.ThrowStmt;
 
 public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 
@@ -228,6 +229,16 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	@Override
 	public void caseDefault(final Unit unit) {
 		throw new StatementConversionException(unit, "Cannot extract statements of type " + unit.getClass().getName());
+	}
+
+	@Override
+	public void caseThrowStmt(final ThrowStmt throwStatement) {
+		final Value operand = throwStatement.getOp();
+		final ValueReference valueReference = Convention.makeExceptionReference();
+		final var assignee = Assignee.of(valueReference);
+		final Expression expression = makeExpressionExtractor().visit(operand);
+		addSingleAssignment(assignee, expression);
+		addStatement(new ReturnStatement());
 	}
 
 	@Override

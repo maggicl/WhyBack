@@ -2,6 +2,7 @@ package byteback.analysis;
 
 import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.AssumptionStmt;
+import byteback.analysis.vimp.ConcreteCaughtExceptionRef;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.analysis.vimp.LogicAndExpr;
 import byteback.analysis.vimp.LogicEqExpr;
@@ -26,6 +27,7 @@ import soot.Type;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.internal.ExprBox;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.Constant;
 import soot.jimple.EqExpr;
 import soot.jimple.GeExpr;
@@ -34,6 +36,7 @@ import soot.jimple.InstanceOfExpr;
 import soot.jimple.LeExpr;
 import soot.jimple.LtExpr;
 import soot.jimple.NeExpr;
+import soot.jimple.internal.JCaughtExceptionRef;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -167,12 +170,20 @@ public class Vimp {
 		return new LogicEqExpr(abox, bbox);
 	}
 
+	public EqExpr newEqExpr(final Value a, final Value b) {
+		return new LogicEqExpr(a, b);
+	}
+
 	public NeExpr newNeExpr(final ValueBox abox, final ValueBox bbox) {
 		return new LogicNeExpr(abox, bbox);
 	}
 
 	public InstanceOfExpr newInstanceOfExpr(final Value value, final Type type) {
 		return new LogicInstanceOfExpr(value, type);
+	}
+
+	public CaughtExceptionRef newCaughtExceptionRef() {
+		return new ConcreteCaughtExceptionRef();
 	}
 
 }

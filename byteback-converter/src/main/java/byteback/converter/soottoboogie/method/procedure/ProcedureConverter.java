@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.function.Supplier;
 import soot.BooleanType;
 import soot.Local;
+import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
@@ -96,6 +97,18 @@ public class ProcedureConverter extends MethodConverter {
 		}
 	}
 
+	public static void buildReturnParameter(final ProcedureSignatureBuilder builder, final SootMethod method) {
+		final TypeAccess typeAccess = new TypeAccessExtractor().visit(method.getReturnType());
+		final BoundedBinding binding = Convention.makeReturnBinding(typeAccess);
+		builder.addOutputBinding(binding);
+	}
+
+	public static void buildExceptionParameter(final ProcedureSignatureBuilder builder, final SootMethod method) {
+		final TypeAccess typeAccess = new TypeAccessExtractor().visit(RefType.v());
+		final BoundedBinding binding = Convention.makeExceptionBinding(typeAccess);
+		builder.addOutputBinding(binding);
+	}
+
 	public static void buildSignature(final ProcedureDeclarationBuilder builder, final SootMethod method) {
 		final var signatureBuilder = new ProcedureSignatureBuilder();
 
@@ -105,10 +118,10 @@ public class ProcedureConverter extends MethodConverter {
 		}
 
 		if (method.getReturnType() != VoidType.v()) {
-			final TypeAccess typeAccess = new TypeAccessExtractor().visit(method.getReturnType());
-			final BoundedBinding binding = Convention.makeReturnBinding(typeAccess);
-			signatureBuilder.addOutputBinding(binding);
+			buildReturnParameter(signatureBuilder, method);
 		}
+
+		buildExceptionParameter(signatureBuilder, method);
 
 		builder.signature(signatureBuilder.build());
 	}
@@ -177,6 +190,12 @@ public class ProcedureConverter extends MethodConverter {
 				builder.addSpecification(condition);
 			});
 		});
+
+		final PostCondition exceptionalCondition = new PostCondition();
+		final EqualsOperation expression = new EqualsOperation(Convention.makeExceptionReference(),
+																													 Prelude.v().getNullConstant().makeValueReference());
+		exceptionalCondition.setExpression(expression);
+		builder.addSpecification(exceptionalCondition);
 	}
 
 	public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {
@@ -199,6 +218,9 @@ public class ProcedureConverter extends MethodConverter {
 			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
 			assignments.addStatement(assignment);
 		}
+
+		assignments.addStatement(new AssignmentStatement(Assignee.of(Convention.makeExceptionReference()),
+																										 Prelude.v().getNullConstant().makeValueReference()));
 
 		builder.body(body);
 	}

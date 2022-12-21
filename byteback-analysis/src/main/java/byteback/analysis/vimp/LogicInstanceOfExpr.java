@@ -26,4 +26,5 @@ public class LogicInstanceOfExpr extends AbstractInstanceOfExpr {
 	public Type getType() {
 		return BooleanType.v();
 	}
+
 }

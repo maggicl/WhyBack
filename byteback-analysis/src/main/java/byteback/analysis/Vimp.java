@@ -10,6 +10,7 @@ import byteback.analysis.vimp.LogicExistsExpr;
 import byteback.analysis.vimp.LogicForallExpr;
 import byteback.analysis.vimp.LogicGeExpr;
 import byteback.analysis.vimp.LogicGtExpr;
+import byteback.analysis.vimp.LogicIfStmt;
 import byteback.analysis.vimp.LogicIffExpr;
 import byteback.analysis.vimp.LogicImpliesExpr;
 import byteback.analysis.vimp.LogicInstanceOfExpr;
@@ -24,19 +25,23 @@ import soot.Body;
 import soot.Local;
 import soot.SootMethod;
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
+import soot.grimp.Grimp;
 import soot.grimp.internal.ExprBox;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.Constant;
 import soot.jimple.EqExpr;
 import soot.jimple.GeExpr;
 import soot.jimple.GtExpr;
+import soot.jimple.IfStmt;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.LeExpr;
 import soot.jimple.LtExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.internal.JCaughtExceptionRef;
+import soot.jimple.internal.JIfStmt;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -176,6 +181,10 @@ public class Vimp {
 
 	public NeExpr newNeExpr(final ValueBox abox, final ValueBox bbox) {
 		return new LogicNeExpr(abox, bbox);
+	}
+
+	public IfStmt newIfStmt(final Value value, final Unit target) {
+		return new LogicIfStmt(value, target);
 	}
 
 	public InstanceOfExpr newInstanceOfExpr(final Value value, final Type type) {

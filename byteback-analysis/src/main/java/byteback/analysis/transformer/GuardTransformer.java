@@ -15,7 +15,6 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.InstanceOfExpr;
-import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.IfStmt;
@@ -74,11 +73,11 @@ public class GuardTransformer extends BodyTransformer {
 
 				for (final Trap trap : activeTraps) {
 					if (value instanceof InvokeExpr invoke
-							&& Namespace.isPureMethod(invoke.getMethod())) {
-						final CaughtExceptionRef eref = Grimp.v().newCaughtExceptionRef();
+							&& !Namespace.isPureMethod(invoke.getMethod())) {
+						final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
 						final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref, trap.getException().getType());
-						final IfStmt guard = Grimp.v().newIfStmt(condition, trap.getHandlerUnit());
-						units.insertAfter(guard, unit);
+						final IfStmt guardUnit = Vimp.v().newIfStmt(condition, trap.getHandlerUnit());
+						units.insertAfter(guardUnit, unit);
 					}
 				}
 			}

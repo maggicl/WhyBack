@@ -10,15 +10,20 @@ import byteback.analysis.Vimp;
 import byteback.util.Lazy;
 import soot.Body;
 import soot.BodyTransformer;
+import soot.RefType;
+import soot.Scene;
 import soot.Trap;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.InstanceOfExpr;
+import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.jimple.CaughtExceptionRef;
+import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.InvokeExpr;
+import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
 public class GuardTransformer extends BodyTransformer {
@@ -68,16 +73,30 @@ public class GuardTransformer extends BodyTransformer {
 				activeTraps.pop();
 			}
 
-			for (final ValueBox vbox : unit.getUseBoxes()) {
-				final Value value = vbox.getValue();
+			if (unit instanceof ThrowStmt throwUnit) {
+				if (throwUnit.getOp().getType() instanceof RefType throwType) {
+					for (final Trap activeTrap : activeTraps) {
+						final RefType trapType = activeTrap.getException().getType();
 
-				for (final Trap trap : activeTraps) {
-					if (value instanceof InvokeExpr invoke
-							&& !Namespace.isPureMethod(invoke.getMethod())) {
-						final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
-						final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref, trap.getException().getType());
-						final IfStmt guardUnit = Vimp.v().newIfStmt(condition, trap.getHandlerUnit());
-						units.insertAfter(guardUnit, unit);
+						if (Scene.v().getFastHierarchy().isSubclass(throwType.getSootClass(), trapType.getSootClass())) {
+							final GotoStmt guardUnit = Grimp.v().newGotoStmt(activeTrap.getHandlerUnit());
+							units.insertAfter(guardUnit, unit);
+							units.remove(unit);
+						}
+					}
+				}
+			} else {
+				for (final ValueBox vbox : unit.getUseBoxes()) {
+					final Value value = vbox.getValue();
+
+					for (final Trap trap : activeTraps) {
+						if (value instanceof InvokeExpr invoke
+								&& !Namespace.isPureMethod(invoke.getMethod())) {
+							final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
+							final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref, trap.getException().getType());
+							final IfStmt guardUnit = Vimp.v().newIfStmt(condition, trap.getHandlerUnit());
+							units.insertAfter(guardUnit, unit);
+						}
 					}
 				}
 			}

@@ -28,7 +28,6 @@ import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.grimp.Grimp;
 import soot.grimp.internal.ExprBox;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.Constant;
@@ -40,8 +39,6 @@ import soot.jimple.InstanceOfExpr;
 import soot.jimple.LeExpr;
 import soot.jimple.LtExpr;
 import soot.jimple.NeExpr;
-import soot.jimple.internal.JCaughtExceptionRef;
-import soot.jimple.internal.JIfStmt;
 import soot.util.Chain;
 import soot.util.HashChain;
 

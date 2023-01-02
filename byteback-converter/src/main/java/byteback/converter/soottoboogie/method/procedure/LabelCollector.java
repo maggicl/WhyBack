@@ -70,10 +70,6 @@ public class LabelCollector extends JimpleStmtSwitch<Map<Unit, Label>> {
 	}
 
 	@Override
-	public void caseDefault(final Unit unit) {
-	}
-
-	@Override
 	public Map<Unit, Label> result() {
 		return labels;
 	}

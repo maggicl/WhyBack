@@ -123,6 +123,8 @@ procedure ~array(t: Type, l: int) returns (~ret: Reference, ~exc: Reference);
 // -------------------------------------------------------------------
 // Binary operators
 // -------------------------------------------------------------------
+
+// Used to model cmpl, cmpg, cmp
 function ~cmp<t>(a: t, b: t) returns (int);
 
 axiom (forall i: real, j: real :: i < j <==> ~cmp(i, j) == -1);
@@ -132,6 +134,9 @@ axiom (forall i: real, j: real :: i == j <==> ~cmp(i, j) == 0);
 axiom (forall i: int, j: int :: i < j <==> ~cmp(i, j) == -1);
 axiom (forall i: int, j: int :: i > j <==> ~cmp(i, j) == 1);
 axiom (forall i: int, j: int :: i == j <==> ~cmp(i, j) == 0);
+
+function ~shl(a: int, p: int) returns (int);
+function ~shr(a: int, p: int) returns (int);
 
 // -------------------------------------------------------------------
 // Prelude definitions
@@ -231,9 +236,10 @@ function ~real_to_int(a: real) returns (int)
 // -------------------------------------------------------------------
 // Missing definitions
 // -------------------------------------------------------------------
-const $java.lang.Object: Type;
-	
 procedure java.lang.Object.$init$##(this: Reference) returns (~exc: Reference);
+	ensures ~exc == ~null;
+
+procedure java.lang.Exception.$init$##(this: Reference) returns (~exc: Reference);
 	ensures ~exc == ~null;
 
 procedure java.lang.Object.clone##(this: Reference) returns (~ret: Reference);
@@ -244,4 +250,6 @@ procedure java.lang.Object.clone##(this: Reference) returns (~ret: Reference);
 		~heap.read(h, this, f) != ~heap.read(h, ~ret, f) && ~unbox(~heap.read(h, this, f)) : a == ~unbox(~heap.read(h, ~ret, f)) : a);
 	ensures ~lengthof(this) == ~lengthof(~ret);
 
-const unique java.lang.Object: Type;
+const unique $java.lang.Exception: Type;
+
+const unique $java.lang.Object: Type;

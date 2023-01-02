@@ -2,6 +2,7 @@ package byteback.converter.soottoboogie.method.procedure;
 
 import byteback.analysis.JimpleStmtSwitch;
 import byteback.analysis.JimpleValueSwitch;
+import byteback.analysis.Vimp;
 import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.AssumptionStmt;
 import byteback.converter.soottoboogie.Convention;
@@ -33,9 +34,12 @@ import soot.SootField;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.grimp.Grimp;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.GotoStmt;
+import soot.jimple.IdentityStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
@@ -84,6 +88,13 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 			return result();
 		} catch (final ConversionException exception) {
 			throw new StatementConversionException(unit, exception);
+		}
+	}
+
+	@Override
+	public void caseIdentityStmt(final IdentityStmt identity) {
+		if (identity.getRightOp() instanceof CaughtExceptionRef) {
+			visit(Grimp.v().newAssignStmt(identity.getLeftOp(), Vimp.v().newCaughtExceptionRef()));
 		}
 	}
 

@@ -17,10 +17,15 @@ public class FunctionBodyExtractor extends JimpleStmtSwitch<Expression> {
 	private Expression result;
 
 	@Override
+	public void caseIdentityStmt(final IdentityStmt identity) {
+	}
+
+	@Override
 	public void caseAssignStmt(final AssignStmt assignment) {
 		final Value left = assignment.getLeftOp();
 		final Value right = assignment.getRightOp();
 		final Local local = new LocalExtractor().visit(left);
+
 		new FunctionExpressionExtractor() {
 
 			@Override

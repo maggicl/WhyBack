@@ -25,7 +25,6 @@ public class TransformerFixture {
 		}
 
 		when(invokeValue.getMethod()).thenReturn(method);
-
 		return invokeValue;
 	}
 

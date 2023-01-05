@@ -20,9 +20,12 @@ import soot.jimple.InstanceOfExpr;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.jimple.CaughtExceptionRef;
+import soot.jimple.EqExpr;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.InvokeExpr;
+import soot.jimple.NeExpr;
+import soot.jimple.NullConstant;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
@@ -54,6 +57,8 @@ public class GuardTransformer extends BodyTransformer {
 		final HashMap<Unit, Trap> endToTrap = new HashMap<>();
 		final Stack<Trap> activeTraps = new Stack<>();
 
+		
+
 		for (final Trap trap : traps) {
 			startToTrap.put(trap.getBeginUnit(), trap);
 			endToTrap.put(trap.getEndUnit(), trap);
@@ -75,6 +80,8 @@ public class GuardTransformer extends BodyTransformer {
 
 			if (unit instanceof ThrowStmt throwUnit) {
 				if (throwUnit.getOp().getType() instanceof RefType throwType) {
+					boolean caught = false;
+
 					for (final Trap activeTrap : activeTraps) {
 						final RefType trapType = activeTrap.getException().getType();
 
@@ -82,16 +89,23 @@ public class GuardTransformer extends BodyTransformer {
 							final GotoStmt guardUnit = Grimp.v().newGotoStmt(activeTrap.getHandlerUnit());
 							units.insertAfter(guardUnit, unit);
 							units.remove(unit);
+							caught = true;
+							break;
 						}
+					}
+
+					if (!caught) {
+						units.insertAfter(Grimp.v().newReturnVoidStmt(), unit);
 					}
 				}
 			} else {
 				for (final ValueBox vbox : unit.getUseBoxes()) {
 					final Value value = vbox.getValue();
 
-					for (final Trap trap : activeTraps) {
-						if (value instanceof InvokeExpr invoke
-								&& !Namespace.isPureMethod(invoke.getMethod())) {
+					if (value instanceof InvokeExpr invoke
+							&& !Namespace.isPureMethod(invoke.getMethod())) {
+
+						for (final Trap trap : activeTraps) {
 							final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
 							final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref, trap.getException().getType());
 							final IfStmt guardUnit = Vimp.v().newIfStmt(condition, trap.getHandlerUnit());

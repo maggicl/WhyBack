@@ -51,8 +51,8 @@ public class LogicUnitTransformer extends BodyTransformer implements UnitTransfo
 
 				if (Namespace.isContractClass(declaringClass)) {
 					assert value.getArgCount() == 1;
-
 					final Value argument = value.getArg(0);
+
 					final LogicStmt newUnit = switch (method.getName()) {
 						case Namespace.ASSERTION_NAME -> Vimp.v().newAssertionStmt(argument);
 						case Namespace.ASSUMPTION_NAME -> Vimp.v().newAssumptionStmt(argument);

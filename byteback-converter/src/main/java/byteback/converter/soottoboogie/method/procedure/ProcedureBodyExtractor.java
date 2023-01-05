@@ -55,6 +55,10 @@ public class ProcedureBodyExtractor extends JimpleStmtSwitch<Body> {
 		body.addStatement(statement);
 	}
 
+	public void addLocalDeclaration(final VariableDeclaration declaration) {
+		body.addLocalDeclaration(declaration);
+	}
+
 	public Body getBody() {
 		return body;
 	}
@@ -69,6 +73,7 @@ public class ProcedureBodyExtractor extends JimpleStmtSwitch<Body> {
 
 	public ValueReference generateReference(final Type type) {
 		final TypeAccess access = new TypeAccessExtractor().visit(type);
+		
 		return variableProvider.get(access);
 	}
 

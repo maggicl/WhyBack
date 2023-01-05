@@ -180,6 +180,10 @@ public class Vimp {
 		return new LogicNeExpr(abox, bbox);
 	}
 
+	public NeExpr newNeExpr(final Value a, final Value b) {
+		return new LogicNeExpr(a, b);
+	}
+
 	public IfStmt newIfStmt(final Value value, final Unit target) {
 		return new LogicIfStmt(value, target);
 	}

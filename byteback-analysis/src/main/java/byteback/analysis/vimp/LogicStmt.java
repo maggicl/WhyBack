@@ -16,6 +16,10 @@ public abstract class LogicStmt extends AbstractStmt {
 		this.conditionBox = new GRValueBox(condition);
 	}
 
+	public ValueBox getConditionBox() {
+		return conditionBox;
+	}
+
 	public Value getCondition() {
 		return conditionBox.getValue();
 	}

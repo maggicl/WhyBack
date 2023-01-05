@@ -4,6 +4,9 @@ import byteback.analysis.JimpleStmtSwitch;
 import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Vimp;
 import byteback.analysis.util.SootTypes;
+import byteback.analysis.vimp.AssertionStmt;
+import byteback.analysis.vimp.AssumptionStmt;
+import byteback.analysis.vimp.InvariantStmt;
 import byteback.analysis.vimp.LogicConstant;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -322,6 +325,24 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 			public void caseReturnStmt(final ReturnStmt unit) {
 				final ValueBox returnBox = unit.getOpBox();
 				new LogicValueSwitch(returnType, returnBox).visit(returnBox.getValue());
+			}
+
+			@Override
+			public void caseAssertionStmt(final AssertionStmt unit) {
+				final ValueBox conditionBox = unit.getConditionBox();
+				new LogicValueSwitch(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
+			}
+
+			@Override
+			public void caseInvariantStmt(final InvariantStmt unit) {
+				final ValueBox conditionBox = unit.getConditionBox();
+				new LogicValueSwitch(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
+			}
+
+			@Override
+			public void caseAssumptionStmt(final AssumptionStmt unit) {
+				final ValueBox conditionBox = unit.getConditionBox();
+				new LogicValueSwitch(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
 			}
 
 		});

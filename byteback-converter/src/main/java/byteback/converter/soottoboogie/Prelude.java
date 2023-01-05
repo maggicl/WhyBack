@@ -202,6 +202,11 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~typeof function"));
 	}
 
+	public Function getInstanceOfFunction() {
+		return program().lookupFunction("~instanceof")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~instanceof function"));
+	}
+
 	public Function getArrayTypeFunction() {
 		return program().lookupFunction("~array.type")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~heap.type function"));

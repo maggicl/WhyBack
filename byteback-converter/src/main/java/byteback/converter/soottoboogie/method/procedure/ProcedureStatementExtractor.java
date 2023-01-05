@@ -18,6 +18,7 @@ import byteback.frontend.boogie.ast.Assignee;
 import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
 import byteback.frontend.boogie.ast.Body;
+import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.EqualsOperation;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.GotoStatement;
@@ -27,6 +28,8 @@ import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
+import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
+
 import java.util.Iterator;
 import java.util.function.Supplier;
 import soot.Local;
@@ -45,10 +48,12 @@ import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeStmt;
 import soot.jimple.LookupSwitchStmt;
+import soot.jimple.ParameterRef;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.TableSwitchStmt;
+import soot.jimple.ThisRef;
 import soot.jimple.ThrowStmt;
 
 public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
@@ -93,8 +98,23 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 
 	@Override
 	public void caseIdentityStmt(final IdentityStmt identity) {
-		if (identity.getRightOp() instanceof CaughtExceptionRef) {
-			visit(Grimp.v().newAssignStmt(identity.getLeftOp(), Vimp.v().newCaughtExceptionRef()));
+		final Value assignee = identity.getLeftOp();
+		final Value assigned = identity.getRightOp();
+
+		if (assignee instanceof Local local) {
+			if (assigned instanceof CaughtExceptionRef) {
+				visit(Grimp.v().newAssignStmt(local, Vimp.v().newCaughtExceptionRef()));
+			}
+
+			if (assigned instanceof ParameterRef || assigned instanceof ThisRef) {
+				final var variableBuilder = new VariableDeclarationBuilder();
+				final BoundedBinding variableBinding = ProcedureConverter.makeBinding(local);
+				bodyExtractor.addLocalDeclaration(variableBuilder.addBinding(variableBinding).build());
+
+				final var assignment = new AssignmentStatement(Assignee.of(ValueReference.of(ExpressionExtractor.localName(local))),
+					ValueReference.of(ProcedureConverter.parameterName(local)));
+				addStatement(assignment);
+			}
 		}
 	}
 

@@ -67,11 +67,12 @@ public class ProcedureConverter extends MethodConverter {
 		bindingBuilder.addName(name).typeAccess(typeAccess);
 
 		if (typeReference != null) {
-			final FunctionReference typeOfReference = Prelude.v().getTypeOfFunction().makeFunctionReference();
+			final FunctionReference instanceOfReference = Prelude.v().getInstanceOfFunction().makeFunctionReference();
 			final ValueReference heapReference = Prelude.v().getHeapVariable().makeValueReference();
-			typeOfReference.addArgument(heapReference);
-			typeOfReference.addArgument(ValueReference.of(name));
-			bindingBuilder.whereClause(new EqualsOperation(typeOfReference, typeReference));
+			instanceOfReference.addArgument(heapReference);
+			instanceOfReference.addArgument(ValueReference.of(name));
+			instanceOfReference.addArgument(typeReference);
+			bindingBuilder.whereClause(instanceOfReference);
 		}
 
 		return bindingBuilder.build();
@@ -198,29 +199,22 @@ public class ProcedureConverter extends MethodConverter {
 		builder.addSpecification(exceptionalCondition);
 	}
 
+	public static void insertExceptionInitialization(final ProcedureBodyExtractor bodyExtractor) {
+		final Assignee assignee = Assignee.of(Convention.makeExceptionReference());
+		final ValueReference assigned = Prelude.v().getNullConstant().makeValueReference();
+		final var assignment = new AssignmentStatement(assignee, assigned);
+		bodyExtractor.addStatement(assignment);
+	}
+
 	public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {
 		final var bodyExtractor = new ProcedureBodyExtractor();
+		insertExceptionInitialization(bodyExtractor);
 		final Body body = bodyExtractor.visit(method.retrieveActiveBody());
 
 		for (Local local : SootBodies.getLocals(method.retrieveActiveBody())) {
 			final var variableBuilder = new VariableDeclarationBuilder();
 			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
 		}
-
-		final var assignments = new ExtensionPoint();
-		body.getStatementList().insertChild(assignments, 0);
-
-		for (Local local : SootBodies.getParameterLocals(method.retrieveActiveBody())) {
-			final var variableBuilder = new VariableDeclarationBuilder();
-			final var assignment = new AssignmentStatement(
-					Assignee.of(ValueReference.of(ExpressionExtractor.localName(local))),
-					ValueReference.of(parameterName(local)));
-			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
-			assignments.addStatement(assignment);
-		}
-
-		assignments.addStatement(new AssignmentStatement(Assignee.of(Convention.makeExceptionReference()),
-																										 Prelude.v().getNullConstant().makeValueReference()));
 
 		builder.body(body);
 	}

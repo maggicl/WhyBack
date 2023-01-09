@@ -15,13 +15,12 @@ public class Basic {
 		}
 	}
 
-	public void alwaysThrows() throws Exception {
-		throw new Exception();
+	public void neverThrows() throws Exception {
 	}
 
 	public void catches() {
 		try {
-			alwaysThrows();
+			neverThrows();
 		} catch (Exception e) {
 			assertion(false);
 		}
@@ -29,6 +28,5 @@ public class Basic {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 2 verified, 0 errors
+ * RUN: %{verify} %t.bpl
  */

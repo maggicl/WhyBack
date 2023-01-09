@@ -56,18 +56,13 @@ public class ProgramConverter {
 				final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
 				LogicUnitTransformer.v().transform(body);
 				new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
-
-				System.out.println(body);
-
 				new ExpressionFolder().transform(body);
 				UnusedLocalEliminator.v().transform(body);
 				QuantifierValueTransformer.v().transform(body);
 				ExceptionInvariantTransformer.v().transform(body);
 				InvariantExpander.v().transform(body);
-				GuardTransformer.v().transform(body);
 				method.setActiveBody(body);
 			}
-
 
 			try {
 				log.info("Converting method {}", method.getSignature());
@@ -75,6 +70,10 @@ public class ProgramConverter {
 				if (SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {
 					program.addDeclaration(FunctionConverter.v().convert(method));
 				} else if (!SootMethods.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION)) {
+					if (SootMethods.hasBody(method)) {
+						GuardTransformer.v().transform(method.retrieveActiveBody());
+					}
+
 					program.addDeclaration(ProcedureConverter.v().convert(method));
 				}
 

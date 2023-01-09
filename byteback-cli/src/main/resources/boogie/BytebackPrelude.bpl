@@ -68,7 +68,7 @@ function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 	~typeof(h, r) == t
 }
 
-axiom (forall h: Store, t: Type :: ~typeof(h, ~null) <: t);
+axiom (forall h: Store, t: Type :: !~instanceof(h, ~null, t));
 
 function ~type.reference(Type) returns (Reference);
 
@@ -98,7 +98,8 @@ function ~lengthof(r: Reference) returns (int);
 axiom (forall r: Reference :: ~lengthof(r) >= 0);
 
 axiom (forall h1: Store, h2: Store, r: Reference , i: int ::
-	~heap.succ(h1, h2) && 0 <= i && i < ~lengthof(r) ==> ~heap.read(h1, r, ~element(i)) == ~heap.read(h2, r, ~element(i)));
+	~heap.succ(h1, h2) && 0 <= i && i < ~lengthof(r)
+	==> ~heap.read(h1, r, ~element(i)) == ~heap.read(h2, r, ~element(i)));
 
 function ~array.type(Type) returns (Type);
 
@@ -135,7 +136,9 @@ axiom (forall i: int, j: int :: i < j <==> ~cmp(i, j) == -1);
 axiom (forall i: int, j: int :: i > j <==> ~cmp(i, j) == 1);
 axiom (forall i: int, j: int :: i == j <==> ~cmp(i, j) == 0);
 
+// Models for ISHL, ISHR	
 function ~shl(a: int, p: int) returns (int);
+
 function ~shr(a: int, p: int) returns (int);
 
 // -------------------------------------------------------------------

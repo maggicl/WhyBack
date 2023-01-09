@@ -20,12 +20,9 @@ import soot.jimple.InstanceOfExpr;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.jimple.CaughtExceptionRef;
-import soot.jimple.EqExpr;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.InvokeExpr;
-import soot.jimple.NeExpr;
-import soot.jimple.NullConstant;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
@@ -51,13 +48,13 @@ public class GuardTransformer extends BodyTransformer {
 
 	public void transformBody(final Body body) {
 		final Chain<Unit> units = body.getUnits();
-		final Iterator<Unit> unitIterator = units.snapshotIterator();
 		final Chain<Trap> traps = body.getTraps();
 		final HashMap<Unit, Trap> startToTrap = new HashMap<>();
 		final HashMap<Unit, Trap> endToTrap = new HashMap<>();
 		final Stack<Trap> activeTraps = new Stack<>();
-
-		
+		final Unit terminalUnit = Grimp.v().newReturnVoidStmt();
+		units.addLast(terminalUnit);
+		final Iterator<Unit> unitIterator = units.snapshotIterator();
 
 		for (final Trap trap : traps) {
 			startToTrap.put(trap.getBeginUnit(), trap);
@@ -80,7 +77,6 @@ public class GuardTransformer extends BodyTransformer {
 
 			if (unit instanceof ThrowStmt throwUnit) {
 				if (throwUnit.getOp().getType() instanceof RefType throwType) {
-					boolean caught = false;
 
 					for (final Trap activeTrap : activeTraps) {
 						final RefType trapType = activeTrap.getException().getType();
@@ -89,13 +85,8 @@ public class GuardTransformer extends BodyTransformer {
 							final GotoStmt guardUnit = Grimp.v().newGotoStmt(activeTrap.getHandlerUnit());
 							units.insertAfter(guardUnit, unit);
 							units.remove(unit);
-							caught = true;
 							break;
 						}
-					}
-
-					if (!caught) {
-						units.insertAfter(Grimp.v().newReturnVoidStmt(), unit);
 					}
 				}
 			} else {

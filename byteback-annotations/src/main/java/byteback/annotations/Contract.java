@@ -68,6 +68,21 @@ public interface Contract {
 		public Ensure[] value();
 	}
 
+	@Repeatable(Raises.class)
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	public @interface Raise {
+		public Class<?> exception();
+
+		public String value();
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	public @interface Raises {
+		public Raise[] value();
+	}
+
 	/**
 	 * Declares a condition method.
 	 * <p>

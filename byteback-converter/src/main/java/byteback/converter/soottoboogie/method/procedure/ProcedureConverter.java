@@ -20,7 +20,6 @@ import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Condition;
 import byteback.frontend.boogie.ast.EqualsOperation;
 import byteback.frontend.boogie.ast.Expression;
-import byteback.frontend.boogie.ast.ExtensionPoint;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.PostCondition;
@@ -168,6 +167,10 @@ public class ProcedureConverter extends MethodConverter {
 						if (method.getReturnType() != VoidType.v()) {
 								parameters.add(method.getReturnType());
 						}
+
+						break;
+					case Namespace.RAISE_ANNOTATION:
+						conditionSupplier = PostCondition::new;
 
 						break;
 					default:

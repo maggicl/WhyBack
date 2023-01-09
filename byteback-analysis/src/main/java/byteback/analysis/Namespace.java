@@ -40,6 +40,10 @@ public class Namespace {
 
 	public static final String ENSURES_ANNOTATION = "Lbyteback/annotations/Contract$Ensures;";
 
+	public static final String RAISE_ANNOTATION = "Lbyteback/annotations/Contract$Raise;";
+
+	public static final String RAISES_ANNOTATION = "Lbyteback/annotations/Contract$Raises;";
+
 	public static final String PRIMITIVE_ANNOTATION = "Lbyteback/annotations/Contract$Primitive;";
 
 	public static final String OLD_NAME = "old";

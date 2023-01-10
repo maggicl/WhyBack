@@ -78,10 +78,6 @@ public class ProgramConverter {
 					program.addDeclaration(ProcedureConverter.v().convert(method));
 				}
 
-				if (method.hasActiveBody()) {
-					System.out.println(method.retrieveActiveBody());
-				}
-
 				log.info("Method {} converted", method.getSignature());
 			} catch (final ConversionException exception) {
 				log.error("Conversion exception:");

@@ -10,6 +10,7 @@ import byteback.annotations.Operator.{eq => equal};
 
 class DefaultComparator {
 
+  @Predicate
   def compare_default(a: Int, b: Int, returns: Boolean): Boolean = {
     return returns;
   }
@@ -23,6 +24,7 @@ class DefaultComparator {
 
 class LessThanComparator extends DefaultComparator {
 
+  @Predicate
   def compare_less_than(a: Int, b: Int, returns: Boolean): Boolean = {
     return implies(returns, lt(a, b));
   }
@@ -37,6 +39,7 @@ class LessThanComparator extends DefaultComparator {
 
 class GreaterThanComparator extends DefaultComparator {
 
+  @Predicate
   def compare_greater_than(a: Int, b: Int, returns: Boolean): Boolean = {
     return implies(returns, gt(a, b));
   }
@@ -64,5 +67,5 @@ class Comparator {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 11 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 8 verified, 0 errors
  */

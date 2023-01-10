@@ -13,10 +13,8 @@ import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
-import java.util.ArrayList;
 import java.util.Iterator;
 import soot.SootMethod;
-import soot.Type;
 import soot.Value;
 import soot.jimple.BinopExpr;
 import soot.jimple.InstanceInvokeExpr;
@@ -50,25 +48,17 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 	}
 
 	public List<Expression> convertArguments(final SootMethod method, final Iterable<Value> sources) {
-
-		final java.util.List<Type> types = new ArrayList<>(method.getParameterTypes());
 		final List<Expression> arguments = new List<>();
-
-		if (!method.isStatic()) {
-			types.add(0, method.getDeclaringClass().getType());
-		}
-
 		final Iterator<Value> sourceIterator = sources.iterator();
-		final Iterator<Type> typeIterator = types.iterator();
 
-		while (typeIterator.hasNext() && sourceIterator.hasNext()) {
+		while (sourceIterator.hasNext()) {
 			arguments.add(visit(sourceIterator.next()));
 		}
 
 		return arguments;
 	}
 
-	public void pushFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
+	public void setFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
 		final var referenceBuilder = new FunctionReferenceBuilder();
 		final String name = SootMethods.getAnnotation(method, Namespace.PRELUDE_ANNOTATION)
 				.flatMap(SootAnnotations::getValue)

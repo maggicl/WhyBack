@@ -2,12 +2,12 @@ package byteback.converter.soottoboogie.method.procedure;
 
 import byteback.analysis.Namespace;
 import byteback.analysis.TypeSwitch;
-import byteback.analysis.util.SootMethods;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.converter.soottoboogie.expression.BaseExpressionExtractor;
 import byteback.converter.soottoboogie.method.MethodConverter;
+import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
@@ -58,17 +58,19 @@ public class ProcedureExpressionExtractor extends ExpressionExtractor {
 		}
 
 		targets.add(Convention.makeExceptionReference());
-
 		callStatement.setTargetList(targets);
 		bodyExtractor.addStatement(callStatement);
 	}
 
 	@Override
-	public void pushFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
-		final boolean isPure = SootMethods.getAnnotation(method, Namespace.PURE_ANNOTATION).isPresent();
-
-		if (isPure) {
-			super.pushFunctionReference(method, arguments);
+	public void setFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
+		if (Namespace.isPureMethod(method)) {
+			super.setFunctionReference(method, arguments);
+		} else if (Namespace.isPredicateMethod(method)) {
+			final List<Expression> expressions = new List<>();
+			expressions.add(Prelude.v().getHeapVariable().makeValueReference());
+			expressions.addAll(convertArguments(method, arguments));
+			super.setExpression(FunctionManager.v().convert(method).getFunction().inline(expressions));
 		} else {
 			final TargetedCallStatement callStatement = makeCall(method, arguments);
 			addCall(callStatement, method.getReturnType());

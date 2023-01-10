@@ -10,10 +10,12 @@ import byteback.annotations.Operator.{eq => equal};
 
 trait Die {
 
+  @Predicate
   def outcome_is_positive(max: Int, outcome: Int): Boolean = {
     return lte(1, outcome);
   }
 
+  @Predicate
   def outcome_is_leq_than_max(max: Int, outcome: Int): Boolean = {
     return lte(outcome, max);
   }
@@ -26,6 +28,7 @@ trait Die {
 
 class FixedDie extends Die {
 
+  @Predicate
   def result_is_max(max: Int, returns: Int): Boolean = {
     return equal(max, returns);
   }

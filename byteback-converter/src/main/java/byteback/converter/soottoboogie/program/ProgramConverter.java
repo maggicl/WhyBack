@@ -12,6 +12,7 @@ import byteback.analysis.util.SootMethods;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.function.FunctionConverter;
+import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.frontend.boogie.ast.Program;
@@ -68,13 +69,17 @@ public class ProgramConverter {
 				log.info("Converting method {}", method.getSignature());
 
 				if (SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {
-					program.addDeclaration(FunctionConverter.v().convert(method));
+					program.addDeclaration(FunctionManager.v().convert(method));
 				} else if (!SootMethods.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION)) {
 					if (SootMethods.hasBody(method)) {
 						GuardTransformer.v().transform(method.retrieveActiveBody());
 					}
 
 					program.addDeclaration(ProcedureConverter.v().convert(method));
+				}
+
+				if (method.hasActiveBody()) {
+					System.out.println(method.retrieveActiveBody());
 				}
 
 				log.info("Method {} converted", method.getSignature());
@@ -88,7 +93,6 @@ public class ProgramConverter {
 
 	public Program convert(final SootClass clazz) {
 		log.info("Converting class {}", clazz.getName());
-
 		final var program = new Program();
 		program.addDeclaration(ReferenceTypeConverter.instance().convert(clazz));
 		convertFields(program, clazz);

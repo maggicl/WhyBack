@@ -42,7 +42,7 @@ public class ExpressionExtractor extends BaseExpressionExtractor {
 	public void caseStaticInvokeExpr(final StaticInvokeExpr v) {
 		final SootMethod method = v.getMethod();
 		final Iterable<Value> arguments = v.getArgs();
-		pushFunctionReference(method, arguments);
+		setFunctionReference(method, arguments);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class ExpressionExtractor extends BaseExpressionExtractor {
 		final SootMethod method = v.getMethod();
 		final Value base = v.getBase();
 		final Iterable<Value> arguments = Stream.concat(Stream.of(base), v.getArgs().stream())::iterator;
-		pushFunctionReference(method, arguments);
+		setFunctionReference(method, arguments);
 	}
 
 	public void pushCmpExpression(final BinopExpr v) {

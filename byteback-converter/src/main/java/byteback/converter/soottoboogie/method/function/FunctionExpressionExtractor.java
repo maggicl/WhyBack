@@ -94,7 +94,7 @@ public class FunctionExpressionExtractor extends ExpressionExtractor {
 	}
 
 	@Override
-	public void pushFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
+	public void setFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
 		final SootClass clazz = method.getDeclaringClass();
 		if (Namespace.isBindingClass(clazz)) {
 			pushBinding(method, arguments);
@@ -103,7 +103,7 @@ public class FunctionExpressionExtractor extends ExpressionExtractor {
 		} else if (Namespace.isSpecialClass(clazz)) {
 			pushSpecial(method, arguments);
 		} else {
-			super.pushFunctionReference(method, arguments);
+			super.setFunctionReference(method, arguments);
 		}
 	}
 

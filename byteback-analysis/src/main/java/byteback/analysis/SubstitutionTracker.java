@@ -3,7 +3,6 @@ package byteback.analysis;
 import java.util.HashMap;
 import java.util.Set;
 
-import byteback.analysis.util.SootMethods;
 import byteback.util.Cons;
 import byteback.util.MultiMap;
 import soot.Local;
@@ -34,7 +33,8 @@ public class SubstitutionTracker {
 		final SootMethod method = invokeValue.getMethod();
 		final SootClass clazz = method.getDeclaringClass();
 
-		return SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION)
+		return Namespace.isPureMethod(method)
+			|| Namespace.isPredicateMethod(method)
 			|| Namespace.isSpecialClass(clazz)
 			|| Namespace.isQuantifierClass(clazz);
 	}

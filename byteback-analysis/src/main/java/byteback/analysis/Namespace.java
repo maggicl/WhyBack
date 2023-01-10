@@ -116,8 +116,11 @@ public class Namespace {
 	}
 
 	public static boolean isPureMethod(final SootMethod method) {
-		return SootMethods.hasAnnotation(method, PURE_ANNOTATION)
-				|| SootMethods.hasAnnotation(method, PREDICATE_ANNOTATION);
+		return SootMethods.hasAnnotation(method, PURE_ANNOTATION);
+	}
+
+	public static boolean isPredicateMethod(final SootMethod method) {
+		return SootMethods.hasAnnotation(method, PREDICATE_ANNOTATION);
 	}
 
 }

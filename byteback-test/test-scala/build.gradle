@@ -13,7 +13,5 @@ dependencies {
 }
 
 tasks.withType(ScalaCompile) {
-    scalaCompileOptions.with {
-				additionalParameters ['-Xno-forwarders']
-    }
+    options.compilerArgs += "-Xexperimental"
 }

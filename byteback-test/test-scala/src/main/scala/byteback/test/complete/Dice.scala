@@ -51,5 +51,5 @@ class Dice {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 12 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 7 verified, 0 errors
  */

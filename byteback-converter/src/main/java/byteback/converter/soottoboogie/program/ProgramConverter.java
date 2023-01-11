@@ -11,7 +11,6 @@ import byteback.analysis.transformer.QuantifierValueTransformer;
 import byteback.analysis.util.SootMethods;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.field.FieldConverter;
-import byteback.converter.soottoboogie.method.function.FunctionConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
@@ -47,7 +46,7 @@ public class ProgramConverter {
 		}
 	}
 
-	public static void convertMethods(final Program program, final SootClass clazz) {
+	public static void transformMethods(final SootClass clazz) {
 		for (SootMethod method : clazz.getMethods()) {
 			if (method.getName().equals("<clinit>")) {
 				continue;
@@ -64,7 +63,13 @@ public class ProgramConverter {
 				InvariantExpander.v().transform(body);
 				method.setActiveBody(body);
 			}
+		}
+	}
 
+	public static void convertMethods(final Program program, final SootClass clazz) {
+		transformMethods(clazz);
+
+		for (SootMethod method : clazz.getMethods()) {
 			try {
 				log.info("Converting method {}", method.getSignature());
 
@@ -76,6 +81,10 @@ public class ProgramConverter {
 					}
 
 					program.addDeclaration(ProcedureConverter.v().convert(method));
+				}
+
+				if (method.hasActiveBody()) {
+					System.out.println(method.getActiveBody());
 				}
 
 				log.info("Method {} converted", method.getSignature());

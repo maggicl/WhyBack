@@ -1,6 +1,8 @@
 package byteback.analysis.util;
 
 import byteback.analysis.AnnotationElemSwitch;
+import soot.SootClass;
+import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationStringElem;
 
@@ -24,6 +26,31 @@ public class SootAnnotationElems {
 		public String result() {
 			if (value == null) {
 				throw new IllegalStateException("Cannot retrieve String value");
+			} else {
+				return value;
+			}
+		}
+
+	}
+
+	public static class ClassElemExtractor extends AnnotationElemSwitch<String> {
+
+		public String value;
+
+		@Override
+		public void caseAnnotationClassElem(final AnnotationClassElem element) {
+			this.value = element.getDesc();
+		}
+
+		@Override
+		public void caseDefault(final AnnotationElem element) {
+			throw new IllegalArgumentException("Expected annotation element of type class, got " + element);
+		}
+
+		@Override
+		public String result() {
+			if (value == null) {
+				throw new IllegalStateException("Cannot retrieve Class value");
 			} else {
 				return value;
 			}

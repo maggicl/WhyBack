@@ -18,12 +18,35 @@ public class Basic {
 	public void neverThrows() throws Exception {
 	}
 
-	public void catches() {
+	public void neverCatches() {
 		try {
 			neverThrows();
 		} catch (Exception e) {
 			assertion(false);
 		}
+	}
+
+	@Predicate
+	public boolean always_throws() {
+		return true;
+	}
+
+	@Raise(exception=Exception.class, value="always_throws")
+	public void alwaysThrows() throws Exception {
+		throw new Exception();
+	}
+
+	public void alwaysCatches() {
+		try {
+			alwaysThrows();
+			assertion(false);
+		} catch (Exception e) {
+		}
+	}
+
+	@Raise(exception=Exception.class, value="always_throws")
+	public void callsAlwaysThrows() throws Exception {
+		alwaysThrows();
 	}
 
 }

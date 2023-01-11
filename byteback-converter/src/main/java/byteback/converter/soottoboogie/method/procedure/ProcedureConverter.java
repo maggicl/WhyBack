@@ -2,6 +2,7 @@ package byteback.converter.soottoboogie.method.procedure;
 
 import byteback.analysis.Namespace;
 import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
+import byteback.analysis.util.SootAnnotationElems.ClassElemExtractor;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootMethods;
@@ -11,6 +12,7 @@ import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.ExpressionExtractor;
 import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
+import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.converter.soottoboogie.type.TypeReferenceExtractor;
 import byteback.frontend.boogie.ast.Assignee;
@@ -21,6 +23,7 @@ import byteback.frontend.boogie.ast.Condition;
 import byteback.frontend.boogie.ast.EqualsOperation;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionReference;
+import byteback.frontend.boogie.ast.ImplicationOperation;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.PostCondition;
 import byteback.frontend.boogie.ast.PreCondition;
@@ -35,10 +38,12 @@ import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import byteback.util.Lazy;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 import soot.BooleanType;
 import soot.Local;
 import soot.RefType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
@@ -122,7 +127,6 @@ public class ProcedureConverter extends MethodConverter {
 		}
 
 		buildExceptionParameter(signatureBuilder, method);
-
 		builder.signature(signatureBuilder.build());
 	}
 
@@ -151,18 +155,19 @@ public class ProcedureConverter extends MethodConverter {
 	}
 
 	public static void buildSpecification(final ProcedureDeclarationBuilder builder, final SootMethod method) {
+		var checksExceptions = new AtomicBoolean(false);
 
 		SootMethods.getAnnotations(method).forEach((tag) -> {
 			SootAnnotations.getAnnotations(tag).forEach((sub) -> {
 				final ArrayList<Type> parameters = new ArrayList<>(method.getParameterTypes());
-				final Supplier<Condition> conditionSupplier;
+				final Function<Expression, Condition> conditionConstructor;
 
 				switch (sub.getType()) {
 					case Namespace.REQUIRE_ANNOTATION:
-						conditionSupplier = PreCondition::new;
+						conditionConstructor = (expression) -> new PreCondition(false, expression);
 						break;
 					case Namespace.ENSURE_ANNOTATION:
-						conditionSupplier = PostCondition::new;
+						conditionConstructor = (expression) -> new PostCondition(false, expression);
 
 						if (method.getReturnType() != VoidType.v()) {
 								parameters.add(method.getReturnType());
@@ -170,8 +175,17 @@ public class ProcedureConverter extends MethodConverter {
 
 						break;
 					case Namespace.RAISE_ANNOTATION:
-						conditionSupplier = PostCondition::new;
-
+						final AnnotationElem exceptionElem = SootAnnotations.getElem(sub, "exception").orElseThrow();
+						final String value = new ClassElemExtractor().visit(exceptionElem);
+						final RefType exceptionType = Scene.v().loadClass(Namespace.stripDescriptor(value), 0).getType();
+						final SymbolicReference typeReference = new TypeReferenceExtractor().visit(exceptionType);
+						final FunctionReference instanceOfReference = Prelude.v().getInstanceOfFunction().makeFunctionReference();
+						final ValueReference heapReference = Prelude.v().getHeapVariable().makeValueReference();
+						instanceOfReference.addArgument(heapReference);
+						instanceOfReference.addArgument(Convention.makeExceptionReference());
+						instanceOfReference.addArgument(typeReference);
+						conditionConstructor = (expression) -> new PostCondition(false, new ImplicationOperation(expression, instanceOfReference));
+						checksExceptions.set(true);
 						break;
 					default:
 						return;
@@ -188,18 +202,18 @@ public class ProcedureConverter extends MethodConverter {
 				}
 
 				final Expression expression = makeCondition(method, source);
-				final Condition condition = conditionSupplier.get();
-				condition.setFree(false);
-				condition.setExpression(expression);
+				final Condition condition = conditionConstructor.apply(expression);
 				builder.addSpecification(condition);
 			});
 		});
 
-		final PostCondition exceptionalCondition = new PostCondition();
-		final EqualsOperation expression = new EqualsOperation(Convention.makeExceptionReference(),
-																													 Prelude.v().getNullConstant().makeValueReference());
-		exceptionalCondition.setExpression(expression);
-		builder.addSpecification(exceptionalCondition);
+		if (!checksExceptions.get()) {
+			final PostCondition exceptionalCondition = new PostCondition();
+			final EqualsOperation expression = new EqualsOperation(Convention.makeExceptionReference(),
+					Prelude.v().getNullConstant().makeValueReference());
+			exceptionalCondition.setExpression(expression);
+			builder.addSpecification(exceptionalCondition);
+		}
 	}
 
 	public static void insertExceptionInitialization(final ProcedureBodyExtractor bodyExtractor) {

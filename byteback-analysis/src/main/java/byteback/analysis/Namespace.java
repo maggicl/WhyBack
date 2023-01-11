@@ -60,6 +60,10 @@ public class Namespace {
 
 	public static final String EXISTENTIAL_QUANTIFIER_NAME = "exists";
 
+	public static String stripDescriptor(final String descriptor) {
+    return descriptor.substring(1, descriptor.length() - 1).replace("/", ".");
+	}
+
 	/**
 	 * Checks if a class is the {@link byteback.annotations.Contract} class.
 	 *

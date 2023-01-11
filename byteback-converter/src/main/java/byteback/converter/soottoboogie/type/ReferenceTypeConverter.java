@@ -14,7 +14,7 @@ public class ReferenceTypeConverter {
 		return "$" + clazz.getName();
 	}
 
-	public static ReferenceTypeConverter instance() {
+	public static ReferenceTypeConverter v() {
 		return instance;
 	}
 

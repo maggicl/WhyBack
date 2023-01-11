@@ -19,10 +19,12 @@ import soot.ValueBox;
 import soot.jimple.InstanceOfExpr;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
+import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.InvokeExpr;
+import soot.jimple.NullConstant;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
@@ -59,6 +61,8 @@ public class GuardTransformer extends BodyTransformer {
 		for (final Trap trap : traps) {
 			startToTrap.put(trap.getBeginUnit(), trap);
 			endToTrap.put(trap.getEndUnit(), trap);
+			final AssignStmt assignment = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), NullConstant.v());
+			units.insertAfter(assignment, trap.getHandlerUnit());
 		}
 
 		while (unitIterator.hasNext()) {
@@ -95,7 +99,6 @@ public class GuardTransformer extends BodyTransformer {
 
 					if (value instanceof InvokeExpr invoke
 							&& !Namespace.isPureMethod(invoke.getMethod())) {
-
 						for (final Trap trap : activeTraps) {
 							final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
 							final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref, trap.getException().getType());

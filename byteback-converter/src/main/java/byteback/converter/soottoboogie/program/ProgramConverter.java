@@ -48,10 +48,6 @@ public class ProgramConverter {
 
 	public static void transformMethods(final SootClass clazz) {
 		for (SootMethod method : clazz.getMethods()) {
-			if (method.getName().equals("<clinit>")) {
-				continue;
-			}
-
 			if (SootMethods.hasBody(method)) {
 				final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
 				LogicUnitTransformer.v().transform(body);
@@ -83,10 +79,6 @@ public class ProgramConverter {
 					program.addDeclaration(ProcedureConverter.v().convert(method));
 				}
 
-				if (method.hasActiveBody()) {
-					System.out.println(method.getActiveBody());
-				}
-
 				log.info("Method {} converted", method.getSignature());
 			} catch (final ConversionException exception) {
 				log.error("Conversion exception:");
@@ -99,7 +91,7 @@ public class ProgramConverter {
 	public Program convert(final SootClass clazz) {
 		log.info("Converting class {}", clazz.getName());
 		final var program = new Program();
-		program.addDeclaration(ReferenceTypeConverter.instance().convert(clazz));
+		program.addDeclaration(ReferenceTypeConverter.v().convert(clazz));
 		convertFields(program, clazz);
 		convertMethods(program, clazz);
 

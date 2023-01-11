@@ -73,7 +73,6 @@ public interface Contract {
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Raise {
 		public Class<?> exception();
-
 		public String value();
 	}
 

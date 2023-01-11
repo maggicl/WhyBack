@@ -166,6 +166,13 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 			}
 
 			@Override
+			public void caseCaughtExceptionRef(final CaughtExceptionRef exceptionReference) {
+				final ValueReference reference = Convention.makeExceptionReference();
+				final Expression assigned = Prelude.v().getNullConstant().makeValueReference();
+				addSingleAssignment(Assignee.of(reference), assigned);
+			}
+
+			@Override
 			public void caseDefault(final Value value) {
 				throw new StatementConversionException(assignment,
 						"Unknown left hand side argument in assignment: " + assignment);
@@ -235,7 +242,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 		final Value condition = ifStatement.getCondition();
 		final Label label = bodyExtractor.getLabelCollector().fetchLabel(ifStatement.getTarget());
 		ifBuilder.condition(new ProcedureExpressionExtractor(bodyExtractor).visit(condition))
-			.thenStatement(new GotoStatement(label));
+				.thenStatement(new GotoStatement(label));
 		addStatement(ifBuilder.build());
 	}
 

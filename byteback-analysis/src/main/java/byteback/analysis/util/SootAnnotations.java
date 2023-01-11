@@ -13,7 +13,11 @@ public class SootAnnotations {
 	private static String VALUE_IDENTIFIER = "value";
 
 	public static Optional<AnnotationElem> getValue(final AnnotationTag tag) {
-		return tag.getElems().stream().filter((elem) -> elem.getName().equals(VALUE_IDENTIFIER)).findFirst();
+		return getElem(tag, VALUE_IDENTIFIER);
+	}
+
+	public static Optional<AnnotationElem> getElem(final AnnotationTag tag, final String identifier) {
+		return tag.getElems().stream().filter((elem) -> elem.getName().equals(identifier)).findFirst();
 	}
 
 	private static void getAnnotations(final Stream.Builder<AnnotationTag> builder, final AnnotationElem element) {

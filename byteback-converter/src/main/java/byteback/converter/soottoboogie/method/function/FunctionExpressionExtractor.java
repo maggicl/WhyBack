@@ -3,7 +3,7 @@ package byteback.converter.soottoboogie.method.function;
 import byteback.analysis.Namespace;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.LocalExtractor;
-import byteback.converter.soottoboogie.expression.ExpressionExtractor;
+import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.frontend.boogie.ast.ConditionalOperation;
 import byteback.frontend.boogie.ast.ExistentialQuantifier;
@@ -19,7 +19,7 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Value;
 
-public class FunctionExpressionExtractor extends ExpressionExtractor {
+public class FunctionExpressionExtractor extends PureExpressionExtractor {
 
 	@Override
 	public FunctionExpressionExtractor makeExpressionExtractor() {
@@ -32,7 +32,7 @@ public class FunctionExpressionExtractor extends ExpressionExtractor {
 		final Iterator<Value> argumentsIterator = arguments.iterator();
 		final Local variableLocal = new LocalExtractor().visit(argumentsIterator.next());
 		bindingBuilder.typeAccess(new TypeAccessExtractor().visit(variableLocal.getType()));
-		bindingBuilder.name(ExpressionExtractor.localName(variableLocal));
+		bindingBuilder.name(PureExpressionExtractor.localName(variableLocal));
 		quantifierBuilder.quantifier(quantifier);
 		quantifierBuilder.addBinding(bindingBuilder.build());
 		quantifierBuilder.operand(visit(argumentsIterator.next()));

@@ -20,7 +20,9 @@ public class InvariantStmt extends LogicStmt {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicStmtSwitch<?>) sw).caseInvariantStmt(this);
+		if (sw instanceof LogicStmtSwitch) {
+			((LogicStmtSwitch<?>) sw).caseInvariantStmt(this);
+		}
 	}
 
 	@Override

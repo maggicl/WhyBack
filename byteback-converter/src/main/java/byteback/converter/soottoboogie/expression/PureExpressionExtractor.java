@@ -25,7 +25,7 @@ import soot.Type;
 import soot.Value;
 import soot.jimple.*;
 
-public class ExpressionExtractor extends BaseExpressionExtractor {
+public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	public static final String LOCAL_PREFIX = "_";
 
@@ -35,7 +35,7 @@ public class ExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public BaseExpressionExtractor makeExpressionExtractor() {
-		return new ExpressionExtractor();
+		return new PureExpressionExtractor();
 	}
 
 	@Override
@@ -210,6 +210,16 @@ public class ExpressionExtractor extends BaseExpressionExtractor {
 	}
 
 	@Override
+	public void caseShlExpr(final ShlExpr v) {
+		setSpecialBinaryExpression(v, Prelude.v().getShlFunction().makeFunctionReference());
+	}
+
+	@Override
+	public void caseShrExpr(final ShrExpr v) {
+		setSpecialBinaryExpression(v, Prelude.v().getShrFunction().makeFunctionReference());
+	}
+
+	@Override
 	public void caseCastExpr(final CastExpr v) {
 		final Value operand = v.getOp();
 		final Type toType = v.getCastType();
@@ -220,13 +230,13 @@ public class ExpressionExtractor extends BaseExpressionExtractor {
 	}
 
 	@Override
-	public void caseLogicConstant(final LogicConstant v) {
-		setExpression(v.getValue() ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse());
+	public void caseIntConstant(final IntConstant v) {
+		setExpression(new NumberLiteral(v.toString()));
 	}
 
 	@Override
-	public void caseIntConstant(final IntConstant v) {
-		setExpression(new NumberLiteral(v.toString()));
+	public void caseLogicConstant(final LogicConstant v) {
+		setExpression(v.getValue() ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse());
 	}
 
 	@Override
@@ -296,7 +306,7 @@ public class ExpressionExtractor extends BaseExpressionExtractor {
 	public void caseInstanceOfExpr(final InstanceOfExpr v) {
 		final Value left = v.getOp();
 		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(v.getCheckType());
-		setExpression(Prelude.v().makeTypeCheckExpression(ExpressionExtractor.this.visit(left), typeReference));
+		setExpression(Prelude.v().makeTypeCheckExpression(PureExpressionExtractor.this.visit(left), typeReference));
 	}
 
 	public QuantifierExpression makeQuantifierExpression(final QuantifierExpr v) {

@@ -2,7 +2,7 @@ package byteback.converter.soottoboogie.method.function;
 
 import byteback.analysis.JimpleStmtSwitch;
 import byteback.converter.soottoboogie.LocalExtractor;
-import byteback.converter.soottoboogie.expression.ExpressionExtractor;
+import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.method.StatementConversionException;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.ValueReference;
@@ -30,7 +30,7 @@ public class FunctionBodyExtractor extends JimpleStmtSwitch<Expression> {
 
 			@Override
 			public void pushBinding(final SootMethod method, final Iterable<Value> argumentsIterable) {
-				setExpression(ValueReference.of(ExpressionExtractor.localName(local)));
+				setExpression(ValueReference.of(PureExpressionExtractor.localName(local)));
 			}
 
 			@Override

@@ -4,7 +4,7 @@ import byteback.analysis.Namespace;
 import byteback.analysis.TypeSwitch;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.Prelude;
-import byteback.converter.soottoboogie.expression.ExpressionExtractor;
+import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.expression.BaseExpressionExtractor;
 import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
@@ -27,7 +27,7 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
 
-public class ProcedureExpressionExtractor extends ExpressionExtractor {
+public class ProcedureExpressionExtractor extends PureExpressionExtractor {
 
 	final ProcedureBodyExtractor bodyExtractor;
 

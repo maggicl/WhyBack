@@ -292,6 +292,16 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~cmp"));
 	}
 
+	public Function getShlFunction() {
+		return program().lookupFunction("~shl")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~shl"));
+	}
+
+	public Function getShrFunction() {
+		return program().lookupFunction("~shr")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~shr"));
+	}
+
 	public Function getArrayReadFunction() {
 		return program().lookupFunction("~array.read")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~array.read"));

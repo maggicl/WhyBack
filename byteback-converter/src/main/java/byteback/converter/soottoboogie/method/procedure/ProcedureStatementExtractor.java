@@ -8,7 +8,7 @@ import byteback.analysis.vimp.AssumptionStmt;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
-import byteback.converter.soottoboogie.expression.ExpressionExtractor;
+import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.StatementConversionException;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
@@ -111,7 +111,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 				final BoundedBinding variableBinding = ProcedureConverter.makeBinding(local);
 				bodyExtractor.addLocalDeclaration(variableBuilder.addBinding(variableBinding).build());
 
-				final var assignment = new AssignmentStatement(Assignee.of(ValueReference.of(ExpressionExtractor.localName(local))),
+				final var assignment = new AssignmentStatement(Assignee.of(ValueReference.of(PureExpressionExtractor.localName(local))),
 					ValueReference.of(ProcedureConverter.parameterName(local)));
 				addStatement(assignment);
 			}
@@ -127,7 +127,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 
 			@Override
 			public void caseLocal(final Local local) {
-				final ValueReference reference = ValueReference.of(ExpressionExtractor.localName(local));
+				final ValueReference reference = ValueReference.of(PureExpressionExtractor.localName(local));
 				final Expression assigned = makeExpressionExtractor().visit(right);
 
 				addSingleAssignment(Assignee.of(reference), assigned);
@@ -139,7 +139,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 				final Value base = instanceFieldReference.getBase();
 				final Expression assigned = makeExpressionExtractor().visit(right);
 				final Expression fieldReference = ValueReference.of(FieldConverter.fieldName(field));
-				final Expression boogieBase = new ExpressionExtractor().visit(base);
+				final Expression boogieBase = new PureExpressionExtractor().visit(base);
 				addStatement(Prelude.v().makeHeapUpdateStatement(boogieBase, fieldReference, assigned));
 			}
 
@@ -160,7 +160,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 				final Type type = arrayReference.getType();
 				final Expression assigned = makeExpressionExtractor().visit(right);
 				final Expression indexReference = makeExpressionExtractor().visit(index);
-				final Expression boogieBase = new ExpressionExtractor().visit(base);
+				final Expression boogieBase = new PureExpressionExtractor().visit(base);
 				addStatement(Prelude.v().makeArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
 						indexReference, assigned));
 			}

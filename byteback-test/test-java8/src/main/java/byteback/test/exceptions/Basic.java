@@ -49,6 +49,19 @@ public class Basic {
 		alwaysThrows();
 	}
 
+	public void finallyIsExecuted() throws Exception {
+		boolean f = false;
+
+		try {
+			alwaysThrows();
+			alwaysThrows();
+		} catch (Exception e) {
+			f = true;
+		} finally {
+			assertion(f);
+		}
+	}
+
 }
 /**
  * RUN: %{verify} %t.bpl

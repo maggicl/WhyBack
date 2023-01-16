@@ -33,7 +33,7 @@ axiom (forall h1: Store, h2: Store ::
 	~heap.succ(h1, h2) &&
 	(forall <a> r: Reference, f: Field a ::
 		{ ~heap.read(h2, r, f) }
-		~heap.read(h1, r, f) == ~heap.read(h2, r, f)));
+		~heap.read(h1, r, f) == ~heap.read(h2, r, f)))	;
 
 function ~heap.isgood(h: Store) returns (bool);
 
@@ -65,7 +65,7 @@ function ~typeof(h: Store, r: Reference) returns (Type)
 
 function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 {
-	~typeof(h, r) == t
+	~typeof(h, r) <: t
 }
 
 axiom (forall h: Store, t: Type :: !~instanceof(h, ~null, t));
@@ -253,6 +253,11 @@ procedure java.lang.Object.clone##(this: Reference) returns (~ret: Reference);
 		~heap.read(h, this, f) != ~heap.read(h, ~ret, f) && ~unbox(~heap.read(h, this, f)) : a == ~unbox(~heap.read(h, ~ret, f)) : a);
 	ensures ~lengthof(this) == ~lengthof(~ret);
 
+const unique $java.lang.Object: Type;
+
+const unique $java.lang.Throwable: Type;
+
 const unique $java.lang.Exception: Type;
 
-const unique $java.lang.Object: Type;
+axiom $java.lang.Exception <: $java.lang.Throwable;
+

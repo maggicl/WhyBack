@@ -4,7 +4,7 @@ import byteback.analysis.TypeSwitch;
 import byteback.analysis.util.SootBodies;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
-import byteback.converter.soottoboogie.expression.ExpressionExtractor;
+import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
@@ -31,7 +31,7 @@ public class FunctionConverter extends MethodConverter {
 		final Type type = local.getType();
 		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
 		final OptionalBindingBuilder bindingBuilder = new OptionalBindingBuilder();
-		bindingBuilder.name(ExpressionExtractor.localName(local)).typeAccess(typeAccess);
+		bindingBuilder.name(PureExpressionExtractor.localName(local)).typeAccess(typeAccess);
 
 		return bindingBuilder.build();
 	}

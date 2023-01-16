@@ -9,10 +9,9 @@ import byteback.analysis.util.SootMethods;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
-import byteback.converter.soottoboogie.expression.ExpressionExtractor;
+import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
-import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.converter.soottoboogie.type.TypeReferenceExtractor;
 import byteback.frontend.boogie.ast.Assignee;
@@ -89,7 +88,7 @@ public class ProcedureConverter extends MethodConverter {
 	}
 
 	public static BoundedBinding makeBinding(final Local local) {
-		final String name = ExpressionExtractor.localName(local);
+		final String name = PureExpressionExtractor.localName(local);
 
 		return makeBinding(local, name);
 	}

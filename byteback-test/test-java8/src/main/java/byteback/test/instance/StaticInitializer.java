@@ -14,5 +14,5 @@ public class StaticInitializer {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 1 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 2 verified, 0 errors
  */

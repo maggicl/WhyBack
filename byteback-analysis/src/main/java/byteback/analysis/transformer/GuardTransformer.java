@@ -58,6 +58,8 @@ public class GuardTransformer extends BodyTransformer {
 		units.addLast(terminalUnit);
 		final Iterator<Unit> unitIterator = units.snapshotIterator();
 
+		System.out.println(body);
+
 		for (final Trap trap : traps) {
 			startToTrap.put(trap.getBeginUnit(), trap);
 			endToTrap.put(trap.getEndUnit(), trap);

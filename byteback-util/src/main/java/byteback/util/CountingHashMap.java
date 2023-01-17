@@ -3,11 +3,11 @@ package byteback.util;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CountingMap<K, V> extends HashMap<K, V> {
+public class CountingHashMap<K, V> extends HashMap<K, V> {
 
 	private final Map<K, Integer> accessCount;
 
-	public CountingMap() {
+	public CountingHashMap() {
 		this.accessCount = new HashMap<>();
 	}
 

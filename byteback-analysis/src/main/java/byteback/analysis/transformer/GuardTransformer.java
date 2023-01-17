@@ -1,13 +1,17 @@
 package byteback.analysis.transformer;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 import byteback.analysis.Namespace;
 import byteback.analysis.Vimp;
+import byteback.util.Iterables;
 import byteback.util.Lazy;
+import byteback.util.ListHashMap;
+import byteback.util.Stacks;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.RefType;
@@ -51,39 +55,35 @@ public class GuardTransformer extends BodyTransformer {
 	public void transformBody(final Body body) {
 		final Chain<Unit> units = body.getUnits();
 		final Chain<Trap> traps = body.getTraps();
-		final HashMap<Unit, Trap> startToTrap = new HashMap<>();
-		final HashMap<Unit, Trap> endToTrap = new HashMap<>();
+		final ListHashMap<Unit, Trap> startToTraps = new ListHashMap<>();
+		final ListHashMap<Unit, Trap> endToTraps = new ListHashMap<>();
 		final Stack<Trap> activeTraps = new Stack<>();
 		final Unit terminalUnit = Grimp.v().newReturnVoidStmt();
 		units.addLast(terminalUnit);
 		final Iterator<Unit> unitIterator = units.snapshotIterator();
 
-		System.out.println(body);
-
-		for (final Trap trap : traps) {
-			startToTrap.put(trap.getBeginUnit(), trap);
-			endToTrap.put(trap.getEndUnit(), trap);
+		for (final Trap trap : Iterables.reversed(traps)) {
+			startToTraps.add(trap.getBeginUnit(), trap);
+			endToTraps.add(trap.getEndUnit(), trap);
 			final AssignStmt assignment = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), NullConstant.v());
 			units.insertAfter(assignment, trap.getHandlerUnit());
 		}
 
 		while (unitIterator.hasNext()) {
 			final Unit unit = unitIterator.next();
-			final Trap startedTrap = startToTrap.get(unit);
-			final Trap endedTrap = endToTrap.get(unit);
+			final List<Trap> startedTraps = startToTraps.get(unit);
+			final List<Trap> endedTraps = endToTraps.get(unit);
 
-			if (startedTrap != null) {
-				activeTraps.push(startToTrap.get(unit));
+			if (startedTraps != null) {
+				Stacks.pushAll(activeTraps, startToTraps.get(unit));
 			}
 
-			if (endedTrap != null) {
-				assert activeTraps.peek() == endedTrap;
-				activeTraps.pop();
+			if (endedTraps != null) {
+				Stacks.popAll(activeTraps, endToTraps.get(unit));
 			}
 
 			if (unit instanceof ThrowStmt throwUnit) {
 				if (throwUnit.getOp().getType() instanceof RefType throwType) {
-
 					for (final Trap activeTrap : activeTraps) {
 						final RefType trapType = activeTrap.getException().getType();
 

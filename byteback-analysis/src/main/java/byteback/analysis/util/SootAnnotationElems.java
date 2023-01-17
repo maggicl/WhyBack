@@ -1,7 +1,6 @@
 package byteback.analysis.util;
 
 import byteback.analysis.AnnotationElemSwitch;
-import soot.SootClass;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationStringElem;

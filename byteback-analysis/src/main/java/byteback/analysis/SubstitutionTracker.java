@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import byteback.util.Cons;
-import byteback.util.MultiMap;
+import byteback.util.SetHashMap;
 import soot.Local;
 import soot.SootClass;
 import soot.SootMethod;
@@ -22,11 +22,11 @@ public class SubstitutionTracker {
 
 	final HashMap<Local, Cons<Unit, Value>> localToSubstitution;
 
-	final MultiMap<Value, Local> dependencyToLocals;
+	final SetHashMap<Value, Local> dependencyToLocals;
 
 	public SubstitutionTracker() {
 		this.localToSubstitution = new HashMap<>();
-		this.dependencyToLocals = new MultiMap<>();
+		this.dependencyToLocals = new SetHashMap<>();
 	}
 
 	public static boolean isPureInvocation(final InvokeExpr invokeValue) {

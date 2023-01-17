@@ -8,7 +8,7 @@ public class CountingMapTest {
 
 	@Test
 	public void GetAccessCount_GivenNewEntry_YieldsSingleAccessCountOf1() {
-		final CountingMap<Object, Object> map = new CountingMap<>();
+		final CountingHashMap<Object, Object> map = new CountingHashMap<>();
 		final Object key = new Object();
 		final Object value = new Object();
 		map.put(key, value);
@@ -17,7 +17,7 @@ public class CountingMapTest {
 
 	@Test
 	public void GetAccessCount_GivenDoublyAccessedEntry_YieldsSingleAccessCountOf2() {
-		final CountingMap<Object, Object> map = new CountingMap<>();
+		final CountingHashMap<Object, Object> map = new CountingHashMap<>();
 		final Object key = new Object();
 		final Object value1 = new Object();
 		final Object value2 = new Object();
@@ -28,7 +28,7 @@ public class CountingMapTest {
 
 	@Test
 	public void GetAccessCount_GivenDoublyAccessedEntry_YieldsDoubleAccessCountOf1() {
-		final CountingMap<Object, Object> map = new CountingMap<>();
+		final CountingHashMap<Object, Object> map = new CountingHashMap<>();
 		final Object key1 = new Object();
 		final Object key2 = new Object();
 		final Object value = new Object();

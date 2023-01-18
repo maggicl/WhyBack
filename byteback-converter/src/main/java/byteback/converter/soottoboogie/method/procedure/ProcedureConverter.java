@@ -131,7 +131,6 @@ public class ProcedureConverter extends MethodConverter {
 
 	public static List<Expression> makeArguments(final SootMethod method) {
 		final List<Expression> references = new List<>();
-
 		references.add(Prelude.v().getHeapVariable().makeValueReference());
 
 		for (Local local : getParameterLocals(method)) {
@@ -159,14 +158,14 @@ public class ProcedureConverter extends MethodConverter {
 		SootMethods.getAnnotations(method).forEach((tag) -> {
 			SootAnnotations.getAnnotations(tag).forEach((sub) -> {
 				final ArrayList<Type> parameters = new ArrayList<>(method.getParameterTypes());
-				final Function<Expression, Condition> conditionConstructor;
+				final Function<Expression, Condition> conditionCtor;
 
 				switch (sub.getType()) {
 					case Namespace.REQUIRE_ANNOTATION:
-						conditionConstructor = (expression) -> new PreCondition(false, expression);
+						conditionCtor = (expression) -> new PreCondition(false, expression);
 						break;
 					case Namespace.ENSURE_ANNOTATION:
-						conditionConstructor = (expression) -> new PostCondition(false, expression);
+						conditionCtor = (expression) -> new PostCondition(false, expression);
 
 						if (method.getReturnType() != VoidType.v()) {
 								parameters.add(method.getReturnType());
@@ -183,7 +182,7 @@ public class ProcedureConverter extends MethodConverter {
 						instanceOfReference.addArgument(heapReference);
 						instanceOfReference.addArgument(Convention.makeExceptionReference());
 						instanceOfReference.addArgument(typeReference);
-						conditionConstructor = (expression) -> new PostCondition(false, new ImplicationOperation(expression, instanceOfReference));
+						conditionCtor = (expression) -> new PostCondition(false, new ImplicationOperation(expression, instanceOfReference));
 						checksExceptions.set(true);
 						break;
 					default:
@@ -201,7 +200,7 @@ public class ProcedureConverter extends MethodConverter {
 				}
 
 				final Expression expression = makeCondition(method, source);
-				final Condition condition = conditionConstructor.apply(expression);
+				final Condition condition = conditionCtor.apply(expression);
 				builder.addSpecification(condition);
 			});
 		});

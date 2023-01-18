@@ -1,7 +1,6 @@
 package byteback.analysis.transformer;
 
 import byteback.analysis.SubstitutionTracker;
-import byteback.analysis.UseDefineChain;
 import byteback.analysis.util.SootBodies;
 import byteback.util.Cons;
 
@@ -24,10 +23,7 @@ import soot.util.HashChain;
 
 public class ExpressionFolder extends BodyTransformer {
 
-	final UseDefineChain useDefineChain;
-
 	public ExpressionFolder() {
-		this.useDefineChain = new UseDefineChain();
 	}
 
 	@Override

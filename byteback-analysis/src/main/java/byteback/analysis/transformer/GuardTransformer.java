@@ -1,6 +1,6 @@
 package byteback.analysis.transformer;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +57,7 @@ public class GuardTransformer extends BodyTransformer {
 		final Chain<Trap> traps = body.getTraps();
 		final ListHashMap<Unit, Trap> startToTraps = new ListHashMap<>();
 		final ListHashMap<Unit, Trap> endToTraps = new ListHashMap<>();
+		final HashSet<Unit> trapHandlers = new HashSet<>();
 		final Stack<Trap> activeTraps = new Stack<>();
 		final Unit terminalUnit = Grimp.v().newReturnVoidStmt();
 		units.addLast(terminalUnit);
@@ -65,8 +66,12 @@ public class GuardTransformer extends BodyTransformer {
 		for (final Trap trap : Iterables.reversed(traps)) {
 			startToTraps.add(trap.getBeginUnit(), trap);
 			endToTraps.add(trap.getEndUnit(), trap);
+			trapHandlers.add(trap.getHandlerUnit());
+		}
+
+		for (final Unit handler : trapHandlers) {
 			final AssignStmt assignment = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), NullConstant.v());
-			units.insertAfter(assignment, trap.getHandlerUnit());
+			units.insertAfter(assignment, handler);
 		}
 
 		while (unitIterator.hasNext()) {

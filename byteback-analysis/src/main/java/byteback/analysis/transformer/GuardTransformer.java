@@ -25,9 +25,11 @@ import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
+import soot.jimple.EqExpr;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.InvokeExpr;
+import soot.jimple.NeExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
@@ -62,6 +64,8 @@ public class GuardTransformer extends BodyTransformer {
 		final Unit terminalUnit = Grimp.v().newReturnVoidStmt();
 		units.addLast(terminalUnit);
 		final Iterator<Unit> unitIterator = units.snapshotIterator();
+
+		units.addFirst(Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), NullConstant.v()));
 
 		for (final Trap trap : Iterables.reversed(traps)) {
 			startToTraps.add(trap.getBeginUnit(), trap);
@@ -106,12 +110,19 @@ public class GuardTransformer extends BodyTransformer {
 
 					if (value instanceof InvokeExpr invoke
 							&& !Namespace.isPureMethod(invoke.getMethod())) {
+						Unit currentGuardUnit = unit;
+
 						for (final Trap trap : activeTraps) {
 							final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
 							final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref, trap.getException().getType());
-							final IfStmt guardUnit = Vimp.v().newIfStmt(condition, trap.getHandlerUnit());
-							units.insertAfter(guardUnit, unit);
+							currentGuardUnit = Vimp.v().newIfStmt(condition, trap.getHandlerUnit());
+							units.insertAfter(currentGuardUnit, unit);
 						}
+
+						final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
+						final NeExpr condition = Vimp.v().newNeExpr(eref, NullConstant.v());
+						final IfStmt guardUnit = Vimp.v().newIfStmt(condition, terminalUnit);
+						units.insertAfter(guardUnit, currentGuardUnit);
 					}
 				}
 			}

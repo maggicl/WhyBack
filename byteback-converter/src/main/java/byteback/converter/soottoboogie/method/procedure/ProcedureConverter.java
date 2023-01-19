@@ -133,7 +133,7 @@ public class ProcedureConverter extends MethodConverter {
 		final List<Expression> references = new List<>();
 		references.add(Prelude.v().getHeapVariable().makeValueReference());
 
-		for (Local local : getParameterLocals(method)) {
+		for (final Local local : getParameterLocals(method)) {
 			references.add(ValueReference.of(parameterName(local)));
 		}
 
@@ -214,16 +214,8 @@ public class ProcedureConverter extends MethodConverter {
 		}
 	}
 
-	public static void insertExceptionInitialization(final ProcedureBodyExtractor bodyExtractor) {
-		final Assignee assignee = Assignee.of(Convention.makeExceptionReference());
-		final ValueReference assigned = Prelude.v().getNullConstant().makeValueReference();
-		final var assignment = new AssignmentStatement(assignee, assigned);
-		bodyExtractor.addStatement(assignment);
-	}
-
 	public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {
 		final var bodyExtractor = new ProcedureBodyExtractor();
-		insertExceptionInitialization(bodyExtractor);
 		final Body body = bodyExtractor.visit(method.retrieveActiveBody());
 
 		for (Local local : SootBodies.getLocals(method.retrieveActiveBody())) {

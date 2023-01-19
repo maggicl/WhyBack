@@ -3,6 +3,7 @@
  */
 package byteback.test.exceptions;
 
+import static byteback.annotations.Operator.*;
 import static byteback.annotations.Contract.*;
 
 public class Basic {
@@ -31,7 +32,7 @@ public class Basic {
 		return true;
 	}
 
-	@Raise(exception=Exception.class, value="always_throws")
+	@Raise(exception = Exception.class, value = "always_throws")
 	public void alwaysThrows() throws Exception {
 		throw new Exception();
 	}
@@ -44,7 +45,7 @@ public class Basic {
 		}
 	}
 
-	@Raise(exception=Exception.class, value="always_throws")
+	@Raise(exception = Exception.class, value = "always_throws")
 	public void callsAlwaysThrows() throws Exception {
 		alwaysThrows();
 	}
@@ -54,11 +55,36 @@ public class Basic {
 
 		try {
 			alwaysThrows();
-			alwaysThrows();
 		} catch (Exception e) {
 			f = true;
 		} finally {
 			assertion(f);
+		}
+	}
+
+	@Predicate
+	public boolean argument_is_even(final int n) {
+		return eq(n % 2, 0);
+	}
+
+	@Raise(exception = Exception.class, value = "argument_is_even")
+	public void throwsIfEven(final int n) throws Exception {
+		if (n % 2 == 0) {
+			throw new Exception();
+		}
+	}
+
+	public void catchesIfEven() {
+		try {
+			throwsIfEven(2);
+			assertion(false);
+		} catch (Exception e) {
+		}
+
+		try {
+			throwsIfEven(3);
+		} catch (Exception e) {
+			assertion(false);
 		}
 	}
 

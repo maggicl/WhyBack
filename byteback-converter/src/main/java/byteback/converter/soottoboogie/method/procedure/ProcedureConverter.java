@@ -14,8 +14,6 @@ import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.converter.soottoboogie.type.TypeReferenceExtractor;
-import byteback.frontend.boogie.ast.Assignee;
-import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Condition;

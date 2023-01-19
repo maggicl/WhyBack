@@ -32,7 +32,7 @@ public class Basic {
 		return true;
 	}
 
-	@Raise(exception = Exception.class, value = "always_throws")
+	@Raise(exception = Exception.class, when = "always_throws")
 	public void alwaysThrows() throws Exception {
 		throw new Exception();
 	}
@@ -45,7 +45,7 @@ public class Basic {
 		}
 	}
 
-	@Raise(exception = Exception.class, value = "always_throws")
+	@Raise(exception = Exception.class, when = "always_throws")
 	public void callsAlwaysThrows() throws Exception {
 		alwaysThrows();
 	}
@@ -67,7 +67,7 @@ public class Basic {
 		return eq(n % 2, 0);
 	}
 
-	@Raise(exception = Exception.class, value = "argument_is_even")
+	@Raise(exception = Exception.class, when = "argument_is_even")
 	public void throwsIfEven(final int n) throws Exception {
 		if (n % 2 == 0) {
 			throw new Exception();

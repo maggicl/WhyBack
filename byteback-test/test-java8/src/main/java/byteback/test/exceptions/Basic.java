@@ -16,6 +16,7 @@ public class Basic {
 		}
 	}
 
+	@Return
 	public void neverThrows() throws Exception {
 	}
 
@@ -79,12 +80,6 @@ public class Basic {
 			throwsIfEven(2);
 			assertion(false);
 		} catch (Exception e) {
-		}
-
-		try {
-			throwsIfEven(3);
-		} catch (Exception e) {
-			assertion(false);
 		}
 	}
 

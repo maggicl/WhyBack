@@ -82,6 +82,11 @@ public interface Contract {
 		public Raise[] value();
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	public @interface Return {
+	}
+
 	/**
 	 * Declares a condition method.
 	 * <p>

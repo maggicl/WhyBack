@@ -34,6 +34,7 @@ public class BinarySearch {
 		return neq(a, null);
 	}
 
+	@Return
 	@Require("array_is_not_null")
 	@Require("sorted_array")
 	@Require("bounded_indices")

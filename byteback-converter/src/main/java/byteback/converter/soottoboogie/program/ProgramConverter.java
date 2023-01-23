@@ -41,13 +41,13 @@ public class ProgramConverter {
 	}
 
 	public static void convertFields(final Program program, final SootClass clazz) {
-		for (SootField field : clazz.getFields()) {
+		for (final SootField field : clazz.getFields()) {
 			program.addDeclaration(FieldConverter.instance().convert(field));
 		}
 	}
 
 	public static void transformMethods(final SootClass clazz) {
-		for (SootMethod method : clazz.getMethods()) {
+		for (final SootMethod method : clazz.getMethods()) {
 			if (SootMethods.hasBody(method)) {
 				final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
 				LogicUnitTransformer.v().transform(body);
@@ -65,7 +65,7 @@ public class ProgramConverter {
 	public static void convertMethods(final Program program, final SootClass clazz) {
 		transformMethods(clazz);
 
-		for (SootMethod method : clazz.getMethods()) {
+		for (final SootMethod method : clazz.getMethods()) {
 			try {
 				log.info("Converting method {}", method.getSignature());
 
@@ -78,8 +78,6 @@ public class ProgramConverter {
 
 					program.addDeclaration(ProcedureConverter.v().convert(method));
 				}
-
-				log.info("Method {} converted", method.getSignature());
 			} catch (final ConversionException exception) {
 				log.error("Conversion exception:");
 				exception.printStackTrace();

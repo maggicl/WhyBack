@@ -46,6 +46,7 @@ import soot.SootMethod;
 import soot.Type;
 import soot.VoidType;
 import soot.tagkit.AnnotationElem;
+import soot.tagkit.AnnotationTag;
 
 public class ProcedureConverter extends MethodConverter {
 
@@ -151,18 +152,23 @@ public class ProcedureConverter extends MethodConverter {
 	}
 
 	public static void buildSpecification(final ProcedureDeclarationBuilder builder, final SootMethod method) {
-		var checksExceptions = new AtomicBoolean(false);
-
 		SootMethods.getAnnotations(method).forEach((tag) -> {
 			SootAnnotations.getAnnotations(tag).forEach((sub) -> {
-				final ArrayList<Type> parameters = new ArrayList<>(method.getParameterTypes());
+				final var parameters = new ArrayList<Type>(method.getParameterTypes());
 				final Function<Expression, Condition> conditionCtor;
+				final String tagName;
 
 				switch (sub.getType()) {
 					case Namespace.REQUIRE_ANNOTATION:
+						// Translates to:
+						// requires {condition};
+						tagName = "value";
 						conditionCtor = (expression) -> new PreCondition(false, expression);
 						break;
 					case Namespace.ENSURE_ANNOTATION:
+						// Translates to:
+						// ensures {condition};
+						tagName = "value";
 						conditionCtor = (expression) -> new PostCondition(false, expression);
 
 						if (method.getReturnType() != VoidType.v()) {
@@ -171,6 +177,9 @@ public class ProcedureConverter extends MethodConverter {
 
 						break;
 					case Namespace.RAISE_ANNOTATION:
+						// Translates to:
+						// ensures ({condition}) -> ~exc == {exception};
+						tagName = "when";
 						final AnnotationElem exceptionElem = SootAnnotations.getElem(sub, "exception").orElseThrow();
 						final String value = new ClassElemExtractor().visit(exceptionElem);
 						final RefType exceptionType = Scene.v().loadClass(Namespace.stripDescriptor(value), 0).getType();
@@ -181,13 +190,20 @@ public class ProcedureConverter extends MethodConverter {
 						instanceOfReference.addArgument(Convention.makeExceptionReference());
 						instanceOfReference.addArgument(typeReference);
 						conditionCtor = (expression) -> new PostCondition(false, new ImplicationOperation(expression, instanceOfReference));
-						checksExceptions.set(true);
 						break;
+				case Namespace.RETURN_ANNOTATION:
+					// Translates to:
+					// ensures ~exc == ~null;
+					final PostCondition exceptionalCondition = new PostCondition();
+					final EqualsOperation expression = new EqualsOperation(Convention.makeExceptionReference(),
+																																 Prelude.v().getNullConstant().makeValueReference());
+					exceptionalCondition.setExpression(expression);
+					builder.addSpecification(exceptionalCondition);
 					default:
 						return;
 				}
 
-				final AnnotationElem elem = SootAnnotations.getValue(sub).orElseThrow();
+				final AnnotationElem elem = SootAnnotations.getElem(sub, tagName).orElseThrow();
 				final String name = new StringElemExtractor().visit(elem);
 				final SootClass clazz = method.getDeclaringClass();
 				final SootMethod source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
@@ -202,14 +218,6 @@ public class ProcedureConverter extends MethodConverter {
 				builder.addSpecification(condition);
 			});
 		});
-
-		if (!checksExceptions.get()) {
-			final PostCondition exceptionalCondition = new PostCondition();
-			final EqualsOperation expression = new EqualsOperation(Convention.makeExceptionReference(),
-					Prelude.v().getNullConstant().makeValueReference());
-			exceptionalCondition.setExpression(expression);
-			builder.addSpecification(exceptionalCondition);
-		}
 	}
 
 	public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {

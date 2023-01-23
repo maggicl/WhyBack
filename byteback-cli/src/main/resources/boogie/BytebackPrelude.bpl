@@ -5,6 +5,8 @@ type Reference;
 
 const unique ~null: Reference;
 
+const unique ~void: Reference;
+
 type Field a;
 
 type Store = [Reference]<a>[Field a]a;

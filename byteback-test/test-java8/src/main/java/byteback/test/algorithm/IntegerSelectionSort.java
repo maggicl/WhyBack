@@ -36,6 +36,7 @@ public class IntegerSelectionSort {
 		return is_minimum(a, i, a.length, m);
 	}
 
+	@Return
 	@Require("bounded_index")
 	@Ensure("is_minimum")
 	@Ensure("bounded_index")

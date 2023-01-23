@@ -170,7 +170,7 @@ public class Prelude {
 	 */
 	public Type getRealType() {
 		return RealType.instance();
-	}
+ }
 
 	/**
 	 * Getter for the global variable representing the heap.
@@ -180,6 +180,11 @@ public class Prelude {
 	public Variable getNullConstant() {
 		return program().lookupLocalVariable("~null")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~null function"));
+	}
+
+	public Variable getVoidConstant() {
+		return program().lookupLocalVariable("~void")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~void function"));
 	}
 
 	/**

@@ -13,7 +13,9 @@ import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
+import byteback.converter.soottoboogie.type.ClassHierarchyConverter;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
+import byteback.frontend.boogie.ast.AxiomDeclaration;
 import byteback.frontend.boogie.ast.Program;
 import byteback.util.Lazy;
 import org.slf4j.Logger;
@@ -88,6 +90,11 @@ public class ProgramConverter {
 		log.info("Converting class {}", clazz.getName());
 		final var program = new Program();
 		program.addDeclaration(ReferenceTypeConverter.v().convert(clazz));
+
+		for (final AxiomDeclaration axiomDeclaration : ClassHierarchyConverter.v().convert(clazz)) {
+			program.addDeclaration(axiomDeclaration);
+		}
+
 		convertFields(program, clazz);
 		convertMethods(program, clazz);
 

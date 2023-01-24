@@ -194,8 +194,8 @@ public class ProcedureConverter extends MethodConverter {
 					case Namespace.RETURN_ANNOTATION :
 						// Translates to:
 						// ensures ~exc == ~null;
-						final PostCondition exceptionalCondition = new PostCondition();
-						final EqualsOperation expression = new EqualsOperation(Convention.makeExceptionReference(),
+						final var exceptionalCondition = new PostCondition();
+						final var expression = new EqualsOperation(Convention.makeExceptionReference(),
 								Prelude.v().getNullConstant().makeValueReference());
 						exceptionalCondition.setExpression(expression);
 						builder.addSpecification(exceptionalCondition);

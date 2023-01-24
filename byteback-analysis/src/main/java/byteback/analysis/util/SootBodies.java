@@ -1,12 +1,11 @@
 package byteback.analysis.util;
 
+import byteback.analysis.SwappableUnitBox;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import byteback.analysis.SwappableUnitBox;
 import soot.Body;
 import soot.Local;
 import soot.Unit;

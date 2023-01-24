@@ -73,7 +73,7 @@ public class ProcedureBodyExtractor extends JimpleStmtSwitch<Body> {
 
 	public ValueReference generateReference(final Type type) {
 		final TypeAccess access = new TypeAccessExtractor().visit(type);
-		
+
 		return variableProvider.get(access);
 	}
 

@@ -2,7 +2,6 @@ package byteback.analysis.vimp;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.internal.GRValueBox;

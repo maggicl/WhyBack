@@ -1,17 +1,16 @@
 package byteback.analysis.transformer;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
 import byteback.analysis.Namespace;
 import byteback.analysis.Vimp;
 import byteback.util.Iterables;
 import byteback.util.Lazy;
 import byteback.util.ListHashMap;
 import byteback.util.Stacks;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.RefType;
@@ -20,13 +19,13 @@ import soot.Trap;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.jimple.InstanceOfExpr;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
+import soot.jimple.InstanceOfExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.NullConstant;
@@ -91,11 +90,12 @@ public class GuardTransformer extends BodyTransformer {
 			}
 
 			if (unit instanceof ThrowStmt throwUnit) {
-				if (throwUnit.getOp().getType() instanceof RefType throwType) {
+				if (throwUnit.getOp().getType()instanceof RefType throwType) {
 					for (final Trap activeTrap : activeTraps) {
 						final RefType trapType = activeTrap.getException().getType();
 
-						if (Scene.v().getFastHierarchy().isSubclass(throwType.getSootClass(), trapType.getSootClass())) {
+						if (Scene.v().getFastHierarchy().isSubclass(throwType.getSootClass(),
+								trapType.getSootClass())) {
 							final GotoStmt guardUnit = Grimp.v().newGotoStmt(activeTrap.getHandlerUnit());
 							units.insertAfter(guardUnit, unit);
 							units.remove(unit);
@@ -107,13 +107,13 @@ public class GuardTransformer extends BodyTransformer {
 				for (final ValueBox vbox : unit.getUseBoxes()) {
 					final Value value = vbox.getValue();
 
-					if (value instanceof InvokeExpr invoke
-							&& !Namespace.isPureMethod(invoke.getMethod())) {
+					if (value instanceof InvokeExpr invoke && !Namespace.isPureMethod(invoke.getMethod())) {
 						Unit currentGuardUnit = unit;
 
 						for (final Trap trap : activeTraps) {
 							final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
-							final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref, trap.getException().getType());
+							final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref,
+									trap.getException().getType());
 							currentGuardUnit = Vimp.v().newIfStmt(condition, trap.getHandlerUnit());
 							units.insertAfter(currentGuardUnit, unit);
 						}

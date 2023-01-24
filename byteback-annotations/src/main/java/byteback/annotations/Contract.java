@@ -88,7 +88,7 @@ public interface Contract {
 	}
 
 	/**
-	 * Declares a condition method.
+	 * Declares a predicate method.
 	 * <p>
 	 * Condition methods can be used to represent preconditions, postconditions or
 	 * invariants. Every condition method must be both, static and pure. The return

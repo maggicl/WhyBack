@@ -29,7 +29,6 @@ import byteback.frontend.boogie.ast.Statement;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
 import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
-
 import java.util.Iterator;
 import java.util.function.Supplier;
 import soot.Local;
@@ -111,8 +110,9 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 				final BoundedBinding variableBinding = ProcedureConverter.makeBinding(local);
 				bodyExtractor.addLocalDeclaration(variableBuilder.addBinding(variableBinding).build());
 
-				final var assignment = new AssignmentStatement(Assignee.of(ValueReference.of(PureExpressionExtractor.localName(local))),
-					ValueReference.of(ProcedureConverter.parameterName(local)));
+				final var assignment = new AssignmentStatement(
+						Assignee.of(ValueReference.of(PureExpressionExtractor.localName(local))),
+						ValueReference.of(ProcedureConverter.parameterName(local)));
 				addStatement(assignment);
 			}
 		}

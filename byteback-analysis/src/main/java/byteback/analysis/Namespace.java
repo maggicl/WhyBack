@@ -63,7 +63,7 @@ public class Namespace {
 	public static final String EXISTENTIAL_QUANTIFIER_NAME = "exists";
 
 	public static String stripDescriptor(final String descriptor) {
-    return descriptor.substring(1, descriptor.length() - 1).replace("/", ".");
+		return descriptor.substring(1, descriptor.length() - 1).replace("/", ".");
 	}
 
 	/**

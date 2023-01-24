@@ -1,10 +1,9 @@
 package byteback.analysis;
 
-import java.util.HashMap;
-import java.util.Set;
-
 import byteback.util.Cons;
 import byteback.util.SetHashMap;
+import java.util.HashMap;
+import java.util.Set;
 import soot.Local;
 import soot.SootClass;
 import soot.SootMethod;
@@ -33,15 +32,13 @@ public class SubstitutionTracker {
 		final SootMethod method = invokeValue.getMethod();
 		final SootClass clazz = method.getDeclaringClass();
 
-		return Namespace.isPureMethod(method)
-			|| Namespace.isPredicateMethod(method)
-			|| Namespace.isSpecialClass(clazz)
-			|| Namespace.isQuantifierClass(clazz);
+		return Namespace.isPureMethod(method) || Namespace.isPredicateMethod(method) || Namespace.isSpecialClass(clazz)
+				|| Namespace.isQuantifierClass(clazz);
 	}
 
 	public static boolean hasSideEffects(final Value value) {
 		return (value instanceof final InvokeExpr invokeValue && !isPureInvocation(invokeValue))
-			|| value instanceof NewExpr || value instanceof NewArrayExpr;
+				|| value instanceof NewExpr || value instanceof NewArrayExpr;
 	}
 
 	public void track(final AssignStmt assignUnit) {

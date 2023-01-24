@@ -1,8 +1,7 @@
 package byteback.analysis.transformer;
 
-import java.util.Iterator;
-
 import byteback.analysis.SwappableUnitBox;
+import java.util.Iterator;
 import soot.Body;
 import soot.Unit;
 import soot.UnitBox;

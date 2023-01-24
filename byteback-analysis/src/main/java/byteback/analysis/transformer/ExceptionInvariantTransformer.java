@@ -1,11 +1,10 @@
 package byteback.analysis.transformer;
 
+import byteback.analysis.Vimp;
+import byteback.util.Lazy;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import byteback.analysis.Vimp;
-import byteback.util.Lazy;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;

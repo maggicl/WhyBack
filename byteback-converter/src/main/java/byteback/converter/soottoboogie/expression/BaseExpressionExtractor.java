@@ -61,8 +61,7 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 	public void setFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
 		final var referenceBuilder = new FunctionReferenceBuilder();
 		final String name = SootMethods.getAnnotation(method, Namespace.PRELUDE_ANNOTATION)
-				.flatMap(SootAnnotations::getValue)
-				.map((element) -> new StringElemExtractor().visit(element))
+				.flatMap(SootAnnotations::getValue).map((element) -> new StringElemExtractor().visit(element))
 				.orElseGet(() -> MethodConverter.methodName(method));
 		referenceBuilder.name(name);
 

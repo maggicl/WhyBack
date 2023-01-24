@@ -170,7 +170,7 @@ public class Prelude {
 	 */
 	public Type getRealType() {
 		return RealType.instance();
- }
+	}
 
 	/**
 	 * Getter for the global variable representing the heap.

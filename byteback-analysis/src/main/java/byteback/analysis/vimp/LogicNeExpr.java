@@ -3,8 +3,8 @@ package byteback.analysis.vimp;
 import byteback.analysis.Vimp;
 import soot.Value;
 import soot.ValueBox;
-import soot.jimple.NeExpr;
 import soot.jimple.ExprSwitch;
+import soot.jimple.NeExpr;
 import soot.util.Switch;
 
 public class LogicNeExpr extends AbstractLogicBinopExpr implements NeExpr {

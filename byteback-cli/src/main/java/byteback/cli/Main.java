@@ -1,7 +1,6 @@
 package byteback.cli;
 
 import byteback.converter.soottoboogie.Prelude;
-
 import com.beust.jcommander.ParameterException;
 import java.io.File;
 import java.io.FileOutputStream;

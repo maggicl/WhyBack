@@ -11,7 +11,6 @@ import byteback.analysis.vimp.LogicConstant;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -42,9 +41,9 @@ import soot.jimple.LtExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.NegExpr;
 import soot.jimple.OrExpr;
-import soot.jimple.XorExpr;
 import soot.jimple.ReturnStmt;
 import soot.jimple.UnopExpr;
+import soot.jimple.XorExpr;
 
 public class LogicValueTransformer extends BodyTransformer implements UnitTransformer {
 
@@ -78,7 +77,8 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 			new LogicValueSwitch(expectedType, operandBox).visit(operandBox.getValue());
 		}
 
-		public void setBinaryValue(final BinaryConstructor constructor, final Type expectedType, final BinopExpr value) {
+		public void setBinaryValue(final BinaryConstructor constructor, final Type expectedType,
+				final BinopExpr value) {
 			final ValueBox leftBox = value.getOp1Box();
 			final ValueBox rightBox = value.getOp2Box();
 			setValue(constructor.apply(leftBox, rightBox));
@@ -239,8 +239,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 		public void caseInvokeExpr(final InvokeExpr value) {
 			for (int i = 0; i < value.getArgCount(); ++i) {
 				final ValueBox argumentBox = value.getArgBox(i);
-				new LogicValueSwitch(value.getMethod().getParameterType(i), argumentBox)
-						.visit(argumentBox.getValue());
+				new LogicValueSwitch(value.getMethod().getParameterType(i), argumentBox).visit(argumentBox.getValue());
 			}
 		}
 
@@ -267,10 +266,8 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 			if (defaultValue instanceof BinopExpr value) {
 				final ValueBox leftBox = value.getOp1Box();
 				final ValueBox rightBox = value.getOp2Box();
-				new LogicValueSwitch(expectedType, leftBox)
-					.visit(leftBox.getValue());
-				new LogicValueSwitch(expectedType, rightBox)
-					.visit(rightBox.getValue());
+				new LogicValueSwitch(expectedType, leftBox).visit(leftBox.getValue());
+				new LogicValueSwitch(expectedType, rightBox).visit(rightBox.getValue());
 			}
 
 			if (defaultValue instanceof UnopExpr value) {

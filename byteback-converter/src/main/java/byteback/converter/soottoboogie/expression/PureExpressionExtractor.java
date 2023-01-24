@@ -134,15 +134,15 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	public void caseAndExpr(final AndExpr v) {
 		v.getType().apply(new TypeSwitch<>() {
 
-				@Override
-				public void caseBooleanType(final BooleanType $) {
-					setBinaryExpression(v, new AndOperation());
-				}
+			@Override
+			public void caseBooleanType(final BooleanType $) {
+				setBinaryExpression(v, new AndOperation());
+			}
 
-				@Override
-				public void caseIntType(final IntType $) {
-					throw new ExpressionConversionException(v, "Bitwise AND is currently not supported");
-				}
+			@Override
+			public void caseIntType(final IntType $) {
+				throw new ExpressionConversionException(v, "Bitwise AND is currently not supported");
+			}
 
 		});
 	}
@@ -151,15 +151,15 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	public void caseXorExpr(final XorExpr v) {
 		v.getType().apply(new TypeSwitch<>() {
 
-				@Override
-				public void caseBooleanType(final BooleanType $) {
-					setBinaryExpression(v, new NotEqualsOperation());
-				}
+			@Override
+			public void caseBooleanType(final BooleanType $) {
+				setBinaryExpression(v, new NotEqualsOperation());
+			}
 
-				@Override
-				public void caseIntType(final IntType $) {
-					throw new ExpressionConversionException(v, "Bitwise XOR is currently not supported");
-				}
+			@Override
+			public void caseIntType(final IntType $) {
+				throw new ExpressionConversionException(v, "Bitwise XOR is currently not supported");
+			}
 
 		});
 	}
@@ -337,8 +337,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseDefault(final Value v) {
-		throw new ExpressionConversionException(v,
-				"Unable to convert expression of type " + v.getClass().getName());
+		throw new ExpressionConversionException(v, "Unable to convert expression of type " + v.getClass().getName());
 	}
 
 }

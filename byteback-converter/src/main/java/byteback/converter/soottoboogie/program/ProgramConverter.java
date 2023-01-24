@@ -16,10 +16,8 @@ import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.frontend.boogie.ast.Program;
 import byteback.util.Lazy;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import soot.Body;
 import soot.SootClass;
 import soot.SootField;

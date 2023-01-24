@@ -1,8 +1,8 @@
 package byteback.converter.soottoboogie.method.procedure;
 
 import byteback.analysis.Namespace;
-import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
 import byteback.analysis.util.SootAnnotationElems.ClassElemExtractor;
+import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootMethods;
@@ -33,9 +33,7 @@ import byteback.frontend.boogie.builder.ProcedureDeclarationBuilder;
 import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
 import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import byteback.util.Lazy;
-
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import soot.BooleanType;
 import soot.Local;
@@ -46,7 +44,6 @@ import soot.SootMethod;
 import soot.Type;
 import soot.VoidType;
 import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationTag;
 
 public class ProcedureConverter extends MethodConverter {
 
@@ -159,47 +156,50 @@ public class ProcedureConverter extends MethodConverter {
 				final String tagName;
 
 				switch (sub.getType()) {
-					case Namespace.REQUIRE_ANNOTATION:
+					case Namespace.REQUIRE_ANNOTATION :
 						// Translates to:
 						// requires {condition};
 						tagName = "value";
 						conditionCtor = (expression) -> new PreCondition(false, expression);
 						break;
-					case Namespace.ENSURE_ANNOTATION:
+					case Namespace.ENSURE_ANNOTATION :
 						// Translates to:
 						// ensures {condition};
 						tagName = "value";
 						conditionCtor = (expression) -> new PostCondition(false, expression);
 
 						if (method.getReturnType() != VoidType.v()) {
-								parameters.add(method.getReturnType());
+							parameters.add(method.getReturnType());
 						}
 
 						break;
-					case Namespace.RAISE_ANNOTATION:
+					case Namespace.RAISE_ANNOTATION :
 						// Translates to:
 						// ensures ({condition}) -> ~exc == {exception};
 						tagName = "when";
 						final AnnotationElem exceptionElem = SootAnnotations.getElem(sub, "exception").orElseThrow();
 						final String value = new ClassElemExtractor().visit(exceptionElem);
-						final RefType exceptionType = Scene.v().loadClass(Namespace.stripDescriptor(value), 0).getType();
+						final RefType exceptionType = Scene.v().loadClass(Namespace.stripDescriptor(value), 0)
+								.getType();
 						final SymbolicReference typeReference = new TypeReferenceExtractor().visit(exceptionType);
-						final FunctionReference instanceOfReference = Prelude.v().getInstanceOfFunction().makeFunctionReference();
+						final FunctionReference instanceOfReference = Prelude.v().getInstanceOfFunction()
+								.makeFunctionReference();
 						final ValueReference heapReference = Prelude.v().getHeapVariable().makeValueReference();
 						instanceOfReference.addArgument(heapReference);
 						instanceOfReference.addArgument(Convention.makeExceptionReference());
 						instanceOfReference.addArgument(typeReference);
-						conditionCtor = (expression) -> new PostCondition(false, new ImplicationOperation(expression, instanceOfReference));
+						conditionCtor = (expression) -> new PostCondition(false,
+								new ImplicationOperation(expression, instanceOfReference));
 						break;
-				case Namespace.RETURN_ANNOTATION:
-					// Translates to:
-					// ensures ~exc == ~null;
-					final PostCondition exceptionalCondition = new PostCondition();
-					final EqualsOperation expression = new EqualsOperation(Convention.makeExceptionReference(),
-																																 Prelude.v().getNullConstant().makeValueReference());
-					exceptionalCondition.setExpression(expression);
-					builder.addSpecification(exceptionalCondition);
-					default:
+					case Namespace.RETURN_ANNOTATION :
+						// Translates to:
+						// ensures ~exc == ~null;
+						final PostCondition exceptionalCondition = new PostCondition();
+						final EqualsOperation expression = new EqualsOperation(Convention.makeExceptionReference(),
+								Prelude.v().getNullConstant().makeValueReference());
+						exceptionalCondition.setExpression(expression);
+						builder.addSpecification(exceptionalCondition);
+					default :
 						return;
 				}
 

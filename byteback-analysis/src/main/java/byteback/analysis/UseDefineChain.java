@@ -7,7 +7,7 @@ import soot.Value;
 public class UseDefineChain {
 
 	final ListHashMap<Value, Unit> definitions;
-	
+
 	final ListHashMap<Unit, Unit> uses;
 
 	public UseDefineChain() {
@@ -16,4 +16,3 @@ public class UseDefineChain {
 	}
 
 }
-

@@ -35,7 +35,6 @@ public class SootTypes {
 			return 4;
 		}
 
-
 		return -1;
 	}
 

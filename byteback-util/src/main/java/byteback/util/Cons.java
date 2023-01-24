@@ -12,9 +12,8 @@ public class Cons<T, D> {
 	}
 
 	@Override
-	public boolean equals(final Object object)  {
-		return (object instanceof final Cons<?, ?> cons)
-			&& cons.car.equals(this.car) && cons.cdr.equals(this.cdr);
+	public boolean equals(final Object object) {
+		return (object instanceof final Cons<?, ?> cons) && cons.car.equals(this.car) && cons.cdr.equals(this.cdr);
 	}
 
 	@Override

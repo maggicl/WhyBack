@@ -1,12 +1,11 @@
 package byteback.cli;
 
-import java.util.Iterator;
-
 import byteback.analysis.Namespace;
 import byteback.analysis.util.SootClasses;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.program.ProgramConverter;
 import byteback.frontend.boogie.ast.Program;
+import java.util.Iterator;
 import soot.Scene;
 import soot.SootClass;
 
@@ -28,8 +27,7 @@ public class ConversionTask {
 		while (classIterator.hasNext()) {
 			final SootClass clazz = classIterator.next();
 
-			if (clazz.resolvingLevel() >= SootClass.SIGNATURES
-					&& !SootClasses.isBasicClass(clazz)
+			if (clazz.resolvingLevel() >= SootClass.SIGNATURES && !SootClasses.isBasicClass(clazz)
 					&& !Namespace.isAnnotationClass(clazz)) {
 				ProgramConverter.v().convert(clazz).inject(program);
 			}

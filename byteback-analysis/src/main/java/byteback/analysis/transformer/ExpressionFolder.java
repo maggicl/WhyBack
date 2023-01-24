@@ -3,10 +3,8 @@ package byteback.analysis.transformer;
 import byteback.analysis.SubstitutionTracker;
 import byteback.analysis.util.SootBodies;
 import byteback.util.Cons;
-
 import java.util.List;
 import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -51,8 +49,7 @@ public class ExpressionFolder extends BodyTransformer {
 			for (final Unit unit : unitsSnapshot) {
 				substitutionTracker.track(unit);
 
-				FOLD_NEXT:
-				for (final ValueBox valueBox : unit.getUseBoxes()) {
+				FOLD_NEXT : for (final ValueBox valueBox : unit.getUseBoxes()) {
 					final Value value = valueBox.getValue();
 
 					if (value instanceof final Local local) {

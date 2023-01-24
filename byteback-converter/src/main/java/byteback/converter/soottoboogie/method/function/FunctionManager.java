@@ -2,7 +2,6 @@ package byteback.converter.soottoboogie.method.function;
 
 import byteback.frontend.boogie.ast.FunctionDeclaration;
 import byteback.util.Lazy;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import soot.SootMethod;

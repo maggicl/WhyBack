@@ -68,7 +68,13 @@ public class Basic {
 		return eq(n % 2, 0);
 	}
 
+	@Predicate
+	public boolean throws_iff_even(final int n, final Exception e) {
+		return implies(neq(n % 2, 0), eq(e, null));
+	}
+
 	@Raise(exception = Exception.class, when = "argument_is_even")
+	@Ensure("throws_iff_even")
 	public void throwsIfEven(final int n) throws Exception {
 		if (n % 2 == 0) {
 			throw new Exception();

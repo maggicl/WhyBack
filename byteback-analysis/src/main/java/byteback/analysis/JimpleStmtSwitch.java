@@ -18,7 +18,7 @@ public abstract class JimpleStmtSwitch<R> extends AbstractStmtSwitch<R> implemen
 	}
 
 	public R visit(final Body body) {
-		for (Unit unit : body.getUnits()) {
+		for (final Unit unit : body.getUnits()) {
 			unit.apply(this);
 		}
 

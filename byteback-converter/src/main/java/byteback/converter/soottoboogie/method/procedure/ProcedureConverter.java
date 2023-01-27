@@ -22,6 +22,7 @@ import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.ImplicationOperation;
 import byteback.frontend.boogie.ast.List;
+import byteback.frontend.boogie.ast.OldReference;
 import byteback.frontend.boogie.ast.PostCondition;
 import byteback.frontend.boogie.ast.PreCondition;
 import byteback.frontend.boogie.ast.ProcedureDeclaration;
@@ -133,7 +134,13 @@ public class ProcedureConverter extends MethodConverter {
 			references.add(ValueReference.of(parameterName(local)));
 		}
 
-		references.add(Convention.makeReturnReference());
+		if (method.getReturnType() != VoidType.v()) {
+			references.add(Convention.makeReturnReference());
+		}
+
+		for (final SootClass $ : method.getExceptions()) {
+			references.add(Convention.makeExceptionReference());
+		}
 
 		return references;
 	}
@@ -172,6 +179,10 @@ public class ProcedureConverter extends MethodConverter {
 							parameters.add(method.getReturnType());
 						}
 
+						for (final SootClass c : method.getExceptions()) {
+							parameters.add(c.getType());
+						}
+
 						break;
 					case Namespace.RAISE_ANNOTATION :
 						// Translates to:
@@ -188,8 +199,10 @@ public class ProcedureConverter extends MethodConverter {
 						instanceOfReference.addArgument(heapReference);
 						instanceOfReference.addArgument(Convention.makeExceptionReference());
 						instanceOfReference.addArgument(typeReference);
-						conditionCtor = (expression) -> new PostCondition(false,
-								new ImplicationOperation(expression, instanceOfReference));
+						conditionCtor = (expression) -> {
+							final Expression condition = new ImplicationOperation(new OldReference(expression), instanceOfReference);
+							return new PostCondition(false, condition);
+						};
 						break;
 					case Namespace.RETURN_ANNOTATION :
 						// Translates to:

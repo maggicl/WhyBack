@@ -122,6 +122,19 @@ procedure ~array(t: Type, l: int) returns (~ret: Reference, ~exc: Reference);
 	ensures ~lengthof(~ret) == l;
 	ensures ~exc == ~null;
 
+// -------------------------------------------------------------------
+// String model
+// -------------------------------------------------------------------
+
+const unique $java.lang.String: Type;
+
+function ~string_constants(id: int) returns (~ret: Reference);
+
+procedure ~string(chars: Reference) returns (~ret: Reference, ~exc: Reference);
+	ensures ~ret != ~null;
+	ensures ~allocated(~ret);
+	ensures ~typeof(~heap, ~ret) == $java.lang.String;
+	ensures ~exc == ~null;
 
 // -------------------------------------------------------------------
 // Binary operators

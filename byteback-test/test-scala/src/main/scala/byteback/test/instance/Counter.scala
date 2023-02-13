@@ -1,4 +1,4 @@
-package byteback.test.complete;
+package byteback.test.instance;
 
 import byteback.annotations.Contract._;
 import byteback.annotations.Special._;

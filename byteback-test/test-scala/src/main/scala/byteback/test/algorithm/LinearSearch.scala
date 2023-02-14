@@ -1,7 +1,7 @@
 /**
  * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
-package byteback.test.complete;
+package byteback.test.algorithm;
 
 import byteback.annotations.Contract._;
 import byteback.annotations.Operator._;

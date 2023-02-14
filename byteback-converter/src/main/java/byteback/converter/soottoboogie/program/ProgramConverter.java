@@ -58,6 +58,8 @@ public class ProgramConverter {
 				ExceptionInvariantTransformer.v().transform(body);
 				InvariantExpander.v().transform(body);
 				method.setActiveBody(body);
+
+				System.out.println(body);
 			}
 		}
 	}

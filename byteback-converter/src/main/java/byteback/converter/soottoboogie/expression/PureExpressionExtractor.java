@@ -264,6 +264,12 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	}
 
 	@Override
+	public void caseStringConstant(final StringConstant v) {
+		final int code = v.value.hashCode();
+		setExpression(Prelude.v().makeStringConstExpression(new NumberLiteral(Integer.toString(code))));
+	}
+
+	@Override
 	public void caseLocal(final Local v) {
 		setExpression(ValueReference.of(localName(v)));
 	}

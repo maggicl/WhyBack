@@ -5,12 +5,9 @@ import byteback.util.Lazy;
 import java.util.Iterator;
 import java.util.Map;
 
-import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
-import soot.Local;
 import soot.LocalGenerator;
-import soot.RefType;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
@@ -30,8 +27,7 @@ public class StringTransformer extends BodyTransformer {
 	}
 
 	public Value expandStringConstant(final StringConstant stringConst, final Unit initUnit, final LocalGenerator localGenerator) {
-		final Local arrayLocal = localGenerator.generateLocal(ArrayType.v(null, 0));
-		final Local stringLocal = localGenerator.generateLocal(RefType.v("java.lang.String"));
+		// TODO
 		return null;
 	}
 
@@ -48,7 +44,6 @@ public class StringTransformer extends BodyTransformer {
 			for (final ValueBox vbox : unit.getUseBoxes()) {
 				if (vbox.getValue() instanceof StringConstant stringConst) {
 					vbox.setValue(expandStringConstant(stringConst, initUnit, localGenerator));
-					value.
 				}
 			}
 			

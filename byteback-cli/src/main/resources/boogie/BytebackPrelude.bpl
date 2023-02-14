@@ -128,7 +128,12 @@ procedure ~array(t: Type, l: int) returns (~ret: Reference, ~exc: Reference);
 
 const unique $java.lang.String: Type;
 
-function ~string_constants(id: int) returns (~ret: Reference);
+function ~string.const(id: int) returns (~ret: Reference);
+
+function ~string.invariant(h: Store, r: Reference) returns (bool)
+{ ~allocated(r) && ~instanceof(h, r, $java.lang.String) }
+
+axiom (forall id: int, h: Store :: ~string.invariant(h, ~string.const(id)));
 
 procedure ~string(chars: Reference) returns (~ret: Reference, ~exc: Reference);
 	ensures ~ret != ~null;

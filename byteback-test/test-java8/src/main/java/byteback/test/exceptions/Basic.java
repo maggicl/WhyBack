@@ -6,7 +6,6 @@ package byteback.test.exceptions;
 import static byteback.annotations.Operator.*;
 
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 
 import static byteback.annotations.Contract.*;
@@ -106,7 +105,6 @@ public class Basic {
 
 	public void tryWithResources() throws IOException {
 		try (final FileInputStream input = new FileInputStream("file.txt")) {
-			"test".replace('a', 'b');
 		}
 	}
 

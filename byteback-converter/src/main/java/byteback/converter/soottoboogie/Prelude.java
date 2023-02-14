@@ -317,6 +317,18 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for ~array.update"));
 	}
 
+	public Function getStringConstFunction() {
+		return program().lookupFunction("~string.const")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~string.const"));
+	}
+
+	public Expression makeStringConstExpression(final NumberLiteral literal) {
+		final FunctionReference reference = getStringConstFunction().makeFunctionReference();
+		reference.addArgument(literal);
+
+		return reference;
+	}
+
 	/**
 	 * Builder for a length-access expression.
 	 *

@@ -75,10 +75,20 @@ public class Basic {
 
 	@Raise(exception = Exception.class, when = "argument_is_even")
 	@Ensure("throws_iff_even")
-	public void throwsIfEven(final int n) throws Exception {
+	public void throwsIfEven(int n) throws Exception {
 		if (n % 2 == 0) {
 			throw new Exception();
 		}
+	}
+
+	@Predicate
+	public boolean throws_iff_even(final int n, final Exception e1, final Throwable e2) {
+		return and(implies(neq(n % 2, 0), eq(e1, null)), eq(e1, e2));
+	}
+
+	@Ensure("throws_iff_even")
+	public void throwsIfEvenOverloaded(int n) throws Exception, Throwable {
+		throwsIfEven(n);
 	}
 
 	public void catchesIfEven() {

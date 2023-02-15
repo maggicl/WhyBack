@@ -103,9 +103,9 @@ public class Basic {
 		}
 	}
 
-	public class Exception1 extends Exception {}
+	public static class Exception1 extends Exception {}
 
-	public class Exception2 extends Exception {}
+	public static class Exception2 extends Exception {}
 
 	public void multiCatch(int i) {
 		try {
@@ -115,6 +115,13 @@ public class Basic {
 				throw new Exception2();
 			}
 		} catch (Exception1 | Exception2 e) {
+			/**
+			 * Should this specification pass?
+			 * assertion(implies(gt(i, 0), e instanceof Exception1));
+			 *
+			 * I think this not going to pass because the constructors of
+			 * Exception1 and Exception2 are not specified to always return.
+			 */
 		}
 	}
 

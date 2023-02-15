@@ -103,8 +103,18 @@ public class Basic {
 		}
 	}
 
-	public void tryWithResources() throws IOException {
-		try (final FileInputStream input = new FileInputStream("file.txt")) {
+	public class Exception1 extends Exception {}
+
+	public class Exception2 extends Exception {}
+
+	public void multiCatch(int i) {
+		try {
+			if (i > 0) {
+				throw new Exception1();
+			} else {
+				throw new Exception2();
+			}
+		} catch (Exception1 | Exception2 e) {
 		}
 	}
 

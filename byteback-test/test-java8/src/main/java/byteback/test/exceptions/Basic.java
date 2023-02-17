@@ -5,9 +5,6 @@ package byteback.test.exceptions;
 
 import static byteback.annotations.Operator.*;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-
 import static byteback.annotations.Contract.*;
 
 public class Basic {
@@ -110,6 +107,7 @@ public class Basic {
 	public void multiCatch(int i) {
 		try {
 			if (i > 0) {
+				assertion(gt(i, 0));
 				throw new Exception1();
 			} else {
 				throw new Exception2();

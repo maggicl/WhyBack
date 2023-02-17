@@ -55,6 +55,10 @@ public class ExpressionFolder extends BodyTransformer {
 					if (value instanceof final Local local) {
 						final Cons<Unit, Value> substitutionPair = substitutionTracker.substitute(local);
 
+						System.out.println("=======SUBSTITUTING");
+						System.out.println(local);
+						System.out.println(substitutionPair);
+
 						if (substitutionPair != null && !substitutionPair.car.equals(unit)) {
 							final Unit definition = substitutionPair.car;
 							final Value substitution = substitutionPair.cdr;

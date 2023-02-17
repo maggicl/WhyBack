@@ -45,9 +45,15 @@ public class SubstitutionTracker {
 		final Value leftValue = assignUnit.getLeftOp();
 		final Value rightValue = assignUnit.getRightOp();
 
+		System.out.println("=======TRACKING");
+		System.out.println(leftValue);
+		System.out.println(rightValue);
+
 		if (leftValue instanceof final Local local) {
 			if (!hasSideEffects(rightValue)) {
 				localToSubstitution.put(local, new Cons<>(assignUnit, rightValue));
+				System.out.println("has no side effects");
+				System.out.println(localToSubstitution.get(leftValue));
 			}
 
 			for (final ValueBox useBox : assignUnit.getUseBoxes()) {
@@ -64,6 +70,7 @@ public class SubstitutionTracker {
 			if (dependentLocals != null) {
 				for (final Local local : dependentLocals) {
 					localToSubstitution.remove(local);
+					System.out.println("Removing " + local);
 				}
 			}
 

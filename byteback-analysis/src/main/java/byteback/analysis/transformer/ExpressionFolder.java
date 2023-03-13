@@ -38,6 +38,8 @@ public class ExpressionFolder extends BodyTransformer {
 		final SimpleLocalDefs localDefs = new SimpleLocalDefs(SootBodies.getUnitGraph(body));
 		final SimpleLocalUses localUses = new SimpleLocalUses(body, localDefs);
 
+		System.out.println(graph);
+
 		for (final Block block : graph) {
 			final var substitutionTracker = new SubstitutionTracker();
 			final var unitsSnapshot = new HashChain<Unit>();
@@ -47,6 +49,8 @@ public class ExpressionFolder extends BodyTransformer {
 			}
 
 			for (final Unit unit : unitsSnapshot) {
+				System.out.println("1: " + substitutionTracker.localToSubstitution);
+				System.out.println(substitutionTracker);
 				substitutionTracker.track(unit);
 
 				FOLD_NEXT : for (final ValueBox valueBox : unit.getUseBoxes()) {
@@ -58,6 +62,8 @@ public class ExpressionFolder extends BodyTransformer {
 						System.out.println("=======SUBSTITUTING");
 						System.out.println(local);
 						System.out.println(substitutionPair);
+						System.out.println("=======CURRENT MAP");
+						System.out.println("2: " + substitutionTracker.localToSubstitution);
 
 						if (substitutionPair != null && !substitutionPair.car.equals(unit)) {
 							final Unit definition = substitutionPair.car;
@@ -80,6 +86,9 @@ public class ExpressionFolder extends BodyTransformer {
 							valueBox.setValue(substitution);
 							block.remove(definition);
 						}
+
+						System.out.println("3: " + substitutionTracker.localToSubstitution);
+						System.out.println(substitutionTracker);
 					}
 				}
 			}

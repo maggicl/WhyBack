@@ -19,7 +19,7 @@ import soot.jimple.toolkits.infoflow.CachedEquivalentValue;
 
 public class SubstitutionTracker {
 
-	final HashMap<Local, Cons<Unit, Value>> localToSubstitution;
+	public final HashMap<Local, Cons<Unit, Value>> localToSubstitution;
 
 	final SetHashMap<Value, Local> dependencyToLocals;
 
@@ -53,7 +53,6 @@ public class SubstitutionTracker {
 			if (!hasSideEffects(rightValue)) {
 				localToSubstitution.put(local, new Cons<>(assignUnit, rightValue));
 				System.out.println("has no side effects");
-				System.out.println(localToSubstitution.get(leftValue));
 			}
 
 			for (final ValueBox useBox : assignUnit.getUseBoxes()) {
@@ -76,6 +75,7 @@ public class SubstitutionTracker {
 
 			dependencyToLocals.remove(cachedRef);
 		}
+
 	}
 
 	public void track(final Unit unit) {

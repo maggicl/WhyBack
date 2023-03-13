@@ -129,7 +129,6 @@ public class GuardTransformer extends BodyTransformer {
 			}
 
 		}
-		System.out.println(body);
 	}
 
 }

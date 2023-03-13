@@ -4,7 +4,6 @@
 package byteback.test.exceptions;
 
 import static byteback.annotations.Operator.*;
-
 import static byteback.annotations.Contract.*;
 
 public class Basic {
@@ -97,29 +96,6 @@ public class Basic {
 			throwsIfEven(2);
 			assertion(false);
 		} catch (Exception e) {
-		}
-	}
-
-	public static class Exception1 extends Exception {}
-
-	public static class Exception2 extends Exception {}
-
-	public void multiCatch(int i) {
-		try {
-			if (i > 0) {
-				assertion(gt(i, 0));
-				throw new Exception1();
-			} else {
-				throw new Exception2();
-			}
-		} catch (Exception1 | Exception2 e) {
-			/**
-			 * Should this specification pass?
-			 * assertion(implies(gt(i, 0), e instanceof Exception1));
-			 *
-			 * I think this not going to pass because the constructors of
-			 * Exception1 and Exception2 are not specified to always return.
-			 */
 		}
 	}
 

@@ -14,6 +14,7 @@ import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.converter.soottoboogie.type.TypeReferenceExtractor;
+import byteback.frontend.boogie.ast.StringLiteral;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Condition;
@@ -182,11 +183,10 @@ public class ProcedureConverter extends MethodConverter {
 						for (final SootClass c : method.getExceptions()) {
 							parameters.add(c.getType());
 						}
-
 						break;
 					case Namespace.RAISE_ANNOTATION :
 						// Translates to:
-						// ensures ({condition}) -> ~exc == {exception};
+						// ensures old({condition}) -> ~exc == {exception};
 						tagName = "when";
 						final AnnotationElem exceptionElem = SootAnnotations.getElem(sub, "exception").orElseThrow();
 						final String value = new ClassElemExtractor().visit(exceptionElem);

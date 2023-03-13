@@ -114,8 +114,10 @@ public class GuardTransformer extends BodyTransformer {
 							final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
 							final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref,
 									trap.getException().getType());
-							currentGuardUnit = Vimp.v().newIfStmt(condition, trap.getHandlerUnit());
-							units.insertAfter(currentGuardUnit, unit);
+							final Unit newGuardUnit = Vimp.v().newIfStmt(condition, trap.getHandlerUnit());
+							System.out.println(currentGuardUnit);
+							units.insertAfter(newGuardUnit, currentGuardUnit);
+							currentGuardUnit = newGuardUnit;
 						}
 
 						final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
@@ -125,7 +127,9 @@ public class GuardTransformer extends BodyTransformer {
 					}
 				}
 			}
+
 		}
+		System.out.println(body);
 	}
 
 }

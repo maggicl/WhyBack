@@ -5,6 +5,7 @@ import byteback.analysis.TypeSwitch;
 import byteback.analysis.vimp.LogicConstant;
 import byteback.analysis.vimp.LogicExistsExpr;
 import byteback.analysis.vimp.LogicForallExpr;
+import byteback.analysis.vimp.VoidConstant;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
@@ -261,6 +262,11 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	@Override
 	public void caseNullConstant(final NullConstant v) {
 		setExpression(Prelude.v().getNullConstant().makeValueReference());
+	}
+
+	@Override
+	public void caseVoidConstant(final VoidConstant v) {
+		setExpression(Prelude.v().getVoidConstant().makeValueReference());
 	}
 
 	@Override

@@ -213,7 +213,7 @@ RealLiteral : Literal;
 // Statements
 abstract Statement;
 
-AssertStatement : Statement ::= Expression;
+AssertStatement : Statement ::= Attribute* Expression;
 
 AssumeStatement : Statement ::= Expression;
 
@@ -250,7 +250,7 @@ LabelStatement : Statement ::= Label;
 Label ::= <Target:String>;
 
 // Specifications
-abstract Specification ::= <Free:Boolean>;
+abstract Specification ::= Attribute* <Free:Boolean>;
 
 abstract Condition : Specification ::= Expression;
 

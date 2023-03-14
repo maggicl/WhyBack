@@ -86,7 +86,7 @@ LoopInvariant free_loop_invariant
 
 LoopInvariant standard_loop_invariant
     = INVARIANT expression.e SEMICOLON
-    {: return new LoopInvariant(false, e); :}
+    {: return new LoopInvariant(new List<>(), false, e); :}
     ;
 
 IfStatement if_statement
@@ -126,8 +126,8 @@ Statement unit_statement
     ;
 
 AssertStatement assert_statement
-    = ASSERT expression.e
-    {: return new AssertStatement(e); :}
+    = ASSERT attribute_list.al? expression.e
+    {: return new AssertStatement(al, e); :}
     ;
 
 AssumeStatement assume_statement

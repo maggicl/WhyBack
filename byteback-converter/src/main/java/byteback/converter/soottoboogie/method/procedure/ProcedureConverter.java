@@ -8,13 +8,13 @@ import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootMethods;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.ConversionException;
+import byteback.converter.soottoboogie.MessageFormatter;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.converter.soottoboogie.type.TypeReferenceExtractor;
-import byteback.frontend.boogie.ast.StringLiteral;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Condition;
@@ -162,19 +162,19 @@ public class ProcedureConverter extends MethodConverter {
 				final var parameters = new ArrayList<Type>(method.getParameterTypes());
 				final Function<Expression, Condition> conditionCtor;
 				final String tagName;
+				final String message; 
 
 				switch (sub.getType()) {
 					case Namespace.REQUIRE_ANNOTATION :
-						// Translates to:
 						// requires {condition};
 						tagName = "value";
-						conditionCtor = (expression) -> new PreCondition(false, expression);
+						conditionCtor = (expression) -> new PreCondition(new List<>(), false, expression);
+						message = "Precondition error";
 						break;
 					case Namespace.ENSURE_ANNOTATION :
-						// Translates to:
 						// ensures {condition};
 						tagName = "value";
-						conditionCtor = (expression) -> new PostCondition(false, expression);
+						conditionCtor = (expression) -> new PostCondition(new List<>(), false, expression);
 
 						if (method.getReturnType() != VoidType.v()) {
 							parameters.add(method.getReturnType());
@@ -183,9 +183,10 @@ public class ProcedureConverter extends MethodConverter {
 						for (final SootClass c : method.getExceptions()) {
 							parameters.add(c.getType());
 						}
+
+						message = "Postcondition error";
 						break;
 					case Namespace.RAISE_ANNOTATION :
-						// Translates to:
 						// ensures old({condition}) -> ~exc == {exception};
 						tagName = "when";
 						final AnnotationElem exceptionElem = SootAnnotations.getElem(sub, "exception").orElseThrow();
@@ -201,17 +202,20 @@ public class ProcedureConverter extends MethodConverter {
 						instanceOfReference.addArgument(typeReference);
 						conditionCtor = (expression) -> {
 							final Expression condition = new ImplicationOperation(new OldReference(expression), instanceOfReference);
-							return new PostCondition(false, condition);
+							return new PostCondition(new List<>(), false, condition);
 						};
+
+						message = "Raise condition error";
 						break;
 					case Namespace.RETURN_ANNOTATION :
-						// Translates to:
-						// ensures ~exc == ~null;
+						// ensures ~exc == ~void;
 						final var exceptionalCondition = new PostCondition();
 						final var expression = new EqualsOperation(Convention.makeExceptionReference(),
-								Prelude.v().getNullConstant().makeValueReference());
+								Prelude.v().getVoidConstant().makeValueReference());
 						exceptionalCondition.setExpression(expression);
 						builder.addSpecification(exceptionalCondition);
+
+						message = "Return condition error";
 					default :
 						return;
 				}
@@ -229,6 +233,8 @@ public class ProcedureConverter extends MethodConverter {
 				final Expression expression = makeCondition(method, source);
 				final Condition condition = conditionCtor.apply(expression);
 				builder.addSpecification(condition);
+
+				condition.addAttribute(MessageFormatter.makeAttribute(method, message + " for predicate " + source));
 			});
 		});
 	}

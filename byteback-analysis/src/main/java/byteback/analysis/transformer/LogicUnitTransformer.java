@@ -60,6 +60,7 @@ public class LogicUnitTransformer extends BodyTransformer implements UnitTransfo
 						default -> throw new IllegalStateException("Unknown logic statement " + method.getName());
 					};
 
+					newUnit.addAllTagsOf(invokeUnit);
 					unitBox.setUnit(newUnit);
 				}
 			}

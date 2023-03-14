@@ -7,6 +7,7 @@ import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.AssumptionStmt;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.ConversionException;
+import byteback.converter.soottoboogie.MessageFormatter;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.field.FieldConverter;
@@ -17,12 +18,14 @@ import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.Assignee;
 import byteback.frontend.boogie.ast.AssignmentStatement;
 import byteback.frontend.boogie.ast.AssumeStatement;
+import byteback.frontend.boogie.ast.Attribute;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.EqualsOperation;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.GotoStatement;
 import byteback.frontend.boogie.ast.Label;
+import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.NumberLiteral;
 import byteback.frontend.boogie.ast.ReturnStatement;
 import byteback.frontend.boogie.ast.Statement;
@@ -129,7 +132,6 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 			public void caseLocal(final Local local) {
 				final ValueReference reference = ValueReference.of(PureExpressionExtractor.localName(local));
 				final Expression assigned = makeExpressionExtractor().visit(right);
-
 				addSingleAssignment(Assignee.of(reference), assigned);
 			}
 
@@ -168,7 +170,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 			@Override
 			public void caseCaughtExceptionRef(final CaughtExceptionRef exceptionReference) {
 				final ValueReference reference = Convention.makeExceptionReference();
-				final Expression assigned = Prelude.v().getNullConstant().makeValueReference();
+				final Expression assigned = makeExpressionExtractor().visit(right);
 				addSingleAssignment(Assignee.of(reference), assigned);
 			}
 
@@ -255,7 +257,8 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	@Override
 	public void caseAssertionStmt(final AssertionStmt assertionStmt) {
 		final Expression condition = makeExpressionExtractor().visit(assertionStmt.getCondition());
-		addStatement(new AssertStatement(condition));
+		final List<Attribute> attributes = new List<>(MessageFormatter.makeAttribute(assertionStmt, "Assertion failed"));
+		addStatement(new AssertStatement(attributes, condition));
 	}
 
 	@Override

@@ -17,4 +17,10 @@ public abstract class DeclarationBuilder {
 		return this;
 	}
 
+	public DeclarationBuilder addAttributes(final Iterable<Attribute> attributes) {
+		this.attributes.addAll(attributes);
+
+		return this;
+	}
+
 }

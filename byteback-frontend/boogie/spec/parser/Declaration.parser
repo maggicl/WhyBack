@@ -291,16 +291,16 @@ Specification standard_specification
 		;
 
 PreCondition requires_specification
-		= REQUIRES expression.e
-		{: return new PreCondition(false, e); :}
+		= REQUIRES attribute_list.al? expression.e
+		{: return new PreCondition(al, false, e); :}
 		;
 
 PostCondition ensures_specification
-    = ENSURES expression.e
-    {: return new PostCondition(false, e); :}
+    = ENSURES attribute_list.al? expression.e
+    {: return new PostCondition(al, false, e); :}
     ;
 
 FrameCondition modifies_specification
-    = MODIFIES value_reference_comma_list.al
-    {: return new FrameCondition(false, al); :}
+    = MODIFIES attribute_list.al? value_reference_comma_list.rl
+    {: return new FrameCondition(al, false, rl); :}
     ;

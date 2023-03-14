@@ -21,7 +21,7 @@ aspect ConditionInference {
 	 * @param modified The variable that is being modified by this procedure.
 	 */
 	public void Procedure.addFrameCondition(Variable modified) {
-		final FrameCondition condition = new FrameCondition(false, new List<>(modified.makeValueReference()));
+		final FrameCondition condition = new FrameCondition(new List<>(), false, new List<>(modified.makeValueReference()));
 		final Stack<Procedure> next = new Stack<>();
 		next.push(this);
 

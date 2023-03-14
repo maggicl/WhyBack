@@ -2,6 +2,7 @@ package byteback.analysis.transformer;
 
 import byteback.analysis.Namespace;
 import byteback.analysis.Vimp;
+import byteback.analysis.vimp.VoidConstant;
 import byteback.util.Iterables;
 import byteback.util.Lazy;
 import byteback.util.ListHashMap;
@@ -28,7 +29,6 @@ import soot.jimple.IfStmt;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NeExpr;
-import soot.jimple.NullConstant;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
@@ -62,8 +62,7 @@ public class GuardTransformer extends BodyTransformer {
 		final Unit terminalUnit = Grimp.v().newReturnVoidStmt();
 		units.addLast(terminalUnit);
 		final Iterator<Unit> unitIterator = units.snapshotIterator();
-
-		units.addFirst(Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), NullConstant.v()));
+		units.addFirst(Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v()));
 
 		for (final Trap trap : Iterables.reversed(traps)) {
 			startToTraps.add(trap.getBeginUnit(), trap);
@@ -72,7 +71,7 @@ public class GuardTransformer extends BodyTransformer {
 		}
 
 		for (final Unit handler : trapHandlers) {
-			final AssignStmt assignment = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), NullConstant.v());
+			final AssignStmt assignment = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v());
 			units.insertAfter(assignment, handler);
 		}
 
@@ -115,19 +114,17 @@ public class GuardTransformer extends BodyTransformer {
 							final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref,
 									trap.getException().getType());
 							final Unit newGuardUnit = Vimp.v().newIfStmt(condition, trap.getHandlerUnit());
-							System.out.println(currentGuardUnit);
 							units.insertAfter(newGuardUnit, currentGuardUnit);
 							currentGuardUnit = newGuardUnit;
 						}
 
 						final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
-						final NeExpr condition = Vimp.v().newNeExpr(eref, NullConstant.v());
+						final NeExpr condition = Vimp.v().newNeExpr(eref, VoidConstant.v());
 						final IfStmt guardUnit = Vimp.v().newIfStmt(condition, terminalUnit);
 						units.insertAfter(guardUnit, currentGuardUnit);
 					}
 				}
 			}
-
 		}
 	}
 

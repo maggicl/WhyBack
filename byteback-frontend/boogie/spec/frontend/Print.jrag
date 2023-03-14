@@ -339,6 +339,12 @@ aspect Print {
 		builder.append(getValue());
 	}
 
+	public void StringLiteral.print(final StringBuilder builder) {
+		builder.append("\"");
+		builder.append(getValue());
+		builder.append("\"");
+	}
+
 	public void BinaryExpression.print(final StringBuilder builder) {
 		builder.append("(");
 		printLeftOperand(builder);
@@ -539,6 +545,8 @@ aspect Print {
 
 	public void AssertStatement.print(final StringBuilder builder) {
 		builder.append("assert ");
+		PrintUtil.listPrint(builder, ", ", getAttributeList());
+		builder.append(" ");
 		getExpression().print(builder);
 		builder.append(";");
 	}
@@ -742,24 +750,32 @@ aspect Print {
 
 	public void PreCondition.print(final StringBuilder builder) {
 		builder.append("requires ");
+		PrintUtil.listPrint(builder, ", ", getAttributeList());
+		builder.append(" ");
 		getExpression().print(builder);
 		builder.append(";");
 	}
 
 	public void PostCondition.print(final StringBuilder builder) {
 		builder.append("ensures ");
+		PrintUtil.listPrint(builder, ", ", getAttributeList());
+		builder.append(" ");
 		getExpression().print(builder);
 		builder.append(";");
 	}
 
 	public void FrameCondition.print(final StringBuilder builder) {
 		builder.append("modifies ");
+		PrintUtil.listPrint(builder, ", ", getAttributeList());
+		builder.append(" ");
 		PrintUtil.listPrint(builder, ", ", getReferenceList());
 		builder.append(";");
 	}
 
 	public void LoopInvariant.print(final StringBuilder builder) {
 		builder.append("invariant ");
+		PrintUtil.listPrint(builder, ", ", getAttributeList());
+		builder.append(" ");
 		getExpression().print(builder);
 		builder.append(";");
 	}

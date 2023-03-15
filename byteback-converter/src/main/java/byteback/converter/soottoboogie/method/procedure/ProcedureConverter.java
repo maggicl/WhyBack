@@ -15,6 +15,7 @@ import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.converter.soottoboogie.type.TypeReferenceExtractor;
+import byteback.converter.soottoboogie.Configuration;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Condition;
@@ -234,7 +235,9 @@ public class ProcedureConverter extends MethodConverter {
 				final Condition condition = conditionCtor.apply(expression);
 				builder.addSpecification(condition);
 
-				condition.addAttribute(MessageFormatter.makeAttribute(method, message + " for predicate " + source));
+				if (Configuration.v().getMessage()) {
+					condition.addAttribute(MessageFormatter.makeAttribute(method, message + " for predicate " + source));
+				}
 			});
 		});
 	}

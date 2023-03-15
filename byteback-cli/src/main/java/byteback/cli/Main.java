@@ -1,5 +1,6 @@
 package byteback.cli;
 
+import byteback.converter.soottoboogie.Configuration;
 import byteback.converter.soottoboogie.Prelude;
 import com.beust.jcommander.ParameterException;
 import java.io.File;
@@ -23,7 +24,7 @@ public class Main {
 
 	public static final Prelude prelude = Prelude.v();
 
-	public static void convert(final Configuration configuration) {
+	public static void convert(final byteback.cli.Configuration configuration) {
 		final PrintStream output;
 
 		if (configuration.getOutputPath() != null) {
@@ -45,7 +46,7 @@ public class Main {
 		output.close();
 	}
 
-	public static void initialize(final Configuration configuration) {
+	public static void initialize(final byteback.cli.Configuration configuration) {
 		final List<Path> classPaths = configuration.getClassPaths();
 		final List<String> startingClasses = configuration.getStartingClasses();
 		final Path preludePath = configuration.getPreludePath();
@@ -74,19 +75,20 @@ public class Main {
 	}
 
 	public static void main(final String[] args) {
-		final var configuration = new Configuration();
+		final byteback.cli.Configuration config = byteback.cli.Configuration.v();
 		final long totalStart = System.currentTimeMillis();
 
 		try {
-			configuration.parse(args);
+			config.parse(args);
 
-			if (configuration.getHelp()) {
-				configuration.getJCommander().usage();
+			if (config.getHelp()) {
+				config.getJCommander().usage();
 			} else {
-				initialize(configuration);
+				initialize(config);
 				final long conversionStart = System.currentTimeMillis();
 				log.info("Converting classes");
-				convert(configuration);
+				Configuration.v().setMessage(config.getMessage());
+				convert(config);
 				final long endTime = System.currentTimeMillis();
 				final long totalTime = endTime - totalStart;
 				final long conversionTime = endTime - conversionStart;

@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+		implementation project(':byteback-util')
 		implementation project(':byteback-analysis')
 		implementation project(':byteback-converter')
 		implementation project(':byteback-annotations')

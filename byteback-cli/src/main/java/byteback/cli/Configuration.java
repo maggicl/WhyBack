@@ -2,10 +2,21 @@ package byteback.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+
+import byteback.util.Lazy;
+
 import java.nio.file.Path;
 import java.util.List;
 
 public class Configuration {
+
+	private static final Lazy<Configuration> instance = Lazy.from(Configuration::new);
+
+	private Configuration() {}
+
+	public static Configuration v() {
+		return instance.get();
+	}
 
 	@Parameter(names = "--help", help = true)
 	private boolean help;
@@ -21,6 +32,9 @@ public class Configuration {
 
 	@Parameter(names = {"-o", "--output"}, description = "Path to the output verification conditions")
 	private Path outputPath;
+
+	@Parameter(names = {"-m", "--message"}, description = "Generates messages for output Boogie file")
+	private boolean message;
 
 	private JCommander jCommander;
 
@@ -42,6 +56,10 @@ public class Configuration {
 
 	public Path getOutputPath() {
 		return outputPath;
+	}
+
+	public boolean getMessage() {
+		return message;
 	}
 
 	public JCommander getJCommander() {

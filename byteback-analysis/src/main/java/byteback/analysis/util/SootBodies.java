@@ -13,6 +13,9 @@ import soot.UnitBox;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.BriefBlockGraph;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.toolkits.graph.ExceptionalBlockGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.graph.ZonedBlockGraph;
@@ -51,11 +54,11 @@ public class SootBodies {
 	}
 
 	public static BlockGraph getBlockGraph(final Body body) {
-		return new ZonedBlockGraph(body);
+		return new BriefBlockGraph(body);
 	}
 
 	public static UnitGraph getUnitGraph(final Body body) {
-		return new ExceptionalUnitGraph(body);
+		return new BriefUnitGraph(body);
 	}
 
 	public static Chain<UnitBox> getUnitBoxes(final Body body) {

@@ -41,12 +41,13 @@ public class SootTypes {
 	public static Type join(final Type a, final Type b) {
 
 		if (a != b) {
-			if (a == VoidType.v() || b == VoidType.v()) {
-				throw new RuntimeException("Unable to merge void type");
-			}
 
 			if (a == UnknownType.v() || b == UnknownType.v()) {
-				throw new RuntimeException("Unable to merge void type");
+				throw new RuntimeException("Unable to merge unknown type");
+			}
+
+			if (a == VoidType.v() || b == VoidType.v()) {
+				return VoidType.v();
 			}
 
 			if (a == NullType.v() || b == NullType.v()) {

@@ -12,7 +12,7 @@ subprojects { test ->
 						test.exec {
 								environment 'BYTEBACK_ROOT', bytebackRoot
 								environment 'TEST_JAR', project.shadowJar.archivePath
-								commandLine 'lit', target, '-a', '-j', 16
+								commandLine 'lit', target, '-a', '-j', 4
 						}
 				}
 

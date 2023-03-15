@@ -32,6 +32,7 @@ public class SquareSortedArray {
 		return gt(a.length, 0);
 	}
 
+	@Return
 	@Require("array_is_not_empty")
 	@Require("array_is_sorted")
 	public static int[] squareSortedArray(final int[] a) {

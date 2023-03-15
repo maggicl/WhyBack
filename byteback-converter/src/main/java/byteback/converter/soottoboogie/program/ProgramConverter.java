@@ -25,6 +25,7 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.grimp.Grimp;
+import soot.toolkits.graph.BriefBlockGraph;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 public class ProgramConverter {
@@ -50,8 +51,17 @@ public class ProgramConverter {
 		for (final SootMethod method : clazz.getMethods()) {
 			if (SootMethods.hasBody(method)) {
 				final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
+
+				System.out.println("=========================");
+				System.out.println(body);
+
 				LogicUnitTransformer.v().transform(body);
 				new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
+
+				if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+					GuardTransformer.v().transform(body);
+				}
+
 				new ExpressionFolder().transform(body);
 				UnusedLocalEliminator.v().transform(body);
 				QuantifierValueTransformer.v().transform(body);
@@ -72,10 +82,6 @@ public class ProgramConverter {
 				if (SootMethods.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {
 					program.addDeclaration(FunctionManager.v().convert(method));
 				} else if (!SootMethods.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION)) {
-					if (SootMethods.hasBody(method)) {
-						GuardTransformer.v().transform(method.retrieveActiveBody());
-					}
-
 					program.addDeclaration(ProcedureConverter.v().convert(method));
 				}
 			} catch (final ConversionException exception) {

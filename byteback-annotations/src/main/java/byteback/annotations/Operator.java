@@ -376,4 +376,11 @@ public interface Operator {
 		return a >= b;
 	}
 
+	@Pure
+	@Primitive
+	@Prelude("~isvoid")
+	public static boolean isVoid(final Object a) {
+		return false;
+	}
+
 }

@@ -7,6 +7,11 @@ const unique ~null: Reference;
 
 const unique ~void: Reference;
 
+function ~isvoid(r: Reference) returns (bool)
+{
+	r == ~void
+}
+
 type Field a;
 
 type Store = [Reference]<a>[Field a]a;
@@ -49,7 +54,7 @@ procedure ~new(t: Type) returns (~ret: Reference, ~exc: Reference);
 	ensures ~ret != ~null;
 	ensures ~typeof(~heap, ~ret) == t;
 	ensures ~allocated(~ret);
-	ensures ~exc == ~null;
+	ensures ~exc == ~void;
 
 // -------------------------------------------------------------------
 // Type model
@@ -71,6 +76,8 @@ function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 }
 
 axiom (forall h: Store, t: Type :: !~instanceof(h, ~null, t));
+
+axiom (forall h: Store, t: Type :: !~instanceof(h, ~void, t));
 
 function ~type.reference(Type) returns (Reference);
 
@@ -120,7 +127,7 @@ procedure ~array(t: Type, l: int) returns (~ret: Reference, ~exc: Reference);
 	ensures ~typeof(~heap, ~ret) == ~array.type(t);
 	ensures ~allocated(~ret);
 	ensures ~lengthof(~ret) == l;
-	ensures ~exc == ~null;
+	ensures ~exc == ~void;
 
 // -------------------------------------------------------------------
 // String model
@@ -139,7 +146,7 @@ procedure ~string(chars: Reference) returns (~ret: Reference, ~exc: Reference);
 	ensures ~ret != ~null;
 	ensures ~allocated(~ret);
 	ensures ~typeof(~heap, ~ret) == $java.lang.String;
-	ensures ~exc == ~null;
+	ensures ~exc == ~void;
 
 // -------------------------------------------------------------------
 // Binary operators
@@ -260,17 +267,18 @@ function ~real_to_int(a: real) returns (int)
 // Missing definitions
 // -------------------------------------------------------------------
 procedure java.lang.Object.$init$##(this: Reference) returns (~exc: Reference);
-	ensures ~exc == ~null;
+	ensures ~exc == ~void;
 
 procedure java.lang.Exception.$init$##(this: Reference) returns (~exc: Reference);
-	ensures ~exc == ~null;
+	ensures ~exc == ~void;
 
 procedure java.lang.Object.clone##(this: Reference) returns (~ret: Reference);
 	requires this != ~null;
 	ensures this != ~ret;
 	ensures (forall <a> h: Store, f: Field Box ::
 		{ ~unbox(~heap.read(h, ~ret, f)) : a }
-		~heap.read(h, this, f) != ~heap.read(h, ~ret, f) && ~unbox(~heap.read(h, this, f)) : a == ~unbox(~heap.read(h, ~ret, f)) : a);
+		~heap.read(h, this, f) != ~heap.read(h, ~ret, f) &&
+	  ~unbox(~heap.read(h, this, f)) : a == ~unbox(~heap.read(h, ~ret, f)) : a);
 	ensures ~lengthof(this) == ~lengthof(~ret);
 
 const unique $java.lang.Object: Type;

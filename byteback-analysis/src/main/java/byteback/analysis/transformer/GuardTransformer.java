@@ -64,7 +64,7 @@ public class GuardTransformer extends BodyTransformer {
 		final Iterator<Unit> unitIterator = units.snapshotIterator();
 		units.addFirst(Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v()));
 
-		for (final Trap trap : Iterables.reversed(traps)) {
+		for (final Trap trap : traps) {
 			startToTraps.add(trap.getBeginUnit(), trap);
 			endToTraps.add(trap.getEndUnit(), trap);
 			trapHandlers.add(trap.getHandlerUnit());
@@ -89,7 +89,7 @@ public class GuardTransformer extends BodyTransformer {
 			}
 
 			if (unit instanceof ThrowStmt throwUnit) {
-				if (throwUnit.getOp().getType()instanceof RefType throwType) {
+				if (throwUnit.getOp().getType() instanceof RefType throwType) {
 					for (final Trap activeTrap : activeTraps) {
 						final RefType trapType = activeTrap.getException().getType();
 
@@ -110,6 +110,7 @@ public class GuardTransformer extends BodyTransformer {
 						Unit currentGuardUnit = unit;
 
 						for (final Trap trap : activeTraps) {
+							System.out.println(trap.getException());
 							final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
 							final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref,
 									trap.getException().getType());

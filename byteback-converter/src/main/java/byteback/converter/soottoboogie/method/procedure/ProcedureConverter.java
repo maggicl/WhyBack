@@ -181,10 +181,6 @@ public class ProcedureConverter extends MethodConverter {
 							parameters.add(method.getReturnType());
 						}
 
-						for (final SootClass c : method.getExceptions()) {
-							parameters.add(c.getType());
-						}
-
 						message = "Postcondition error";
 						break;
 					case Namespace.RAISE_ANNOTATION :
@@ -224,11 +220,15 @@ public class ProcedureConverter extends MethodConverter {
 				final AnnotationElem elem = SootAnnotations.getElem(sub, tagName).orElseThrow();
 				final String name = new StringElemExtractor().visit(elem);
 				final SootClass clazz = method.getDeclaringClass();
-				final SootMethod source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
+				SootMethod source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
 
 				if (source == null) {
-					throw new ConversionException(
-							"Unable to find matching predicate " + name + " in class" + clazz.getName());
+					parameters.add(Scene.v().getType("java.lang.Throwable"));
+					source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
+
+					if (source == null) {
+						throw new ConversionException("Unable to find matching predicate " + name + " in class " + clazz.getName());
+					}
 				}
 
 				final Expression expression = makeCondition(method, source);

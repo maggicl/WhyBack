@@ -36,6 +36,7 @@ public class DoubleSelectionSort {
 		return is_minimum(a, i, a.length, m);
 	}
 
+	@Return
 	@Require("bounded_index")
 	@Ensure("is_minimum")
 	@Ensure("bounded_index")
@@ -85,6 +86,7 @@ public class DoubleSelectionSort {
 		return neq(a, null);
 	}
 
+	@Return
 	@Require("array_is_not_null")
 	@Require("array_is_not_empty")
 	@Ensure("array_is_sorted")
@@ -105,6 +107,6 @@ public class DoubleSelectionSort {
 
 }
 /**
- * RUN: %{verify} %t.bpl
- * CHECK: Boogie program verifier finished with 2 verified, 0 errors
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 3 verified, 0 errors
  */

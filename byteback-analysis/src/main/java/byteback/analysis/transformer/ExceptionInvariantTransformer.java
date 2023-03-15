@@ -1,6 +1,7 @@
 package byteback.analysis.transformer;
 
 import byteback.analysis.Vimp;
+import byteback.analysis.vimp.VoidConstant;
 import byteback.util.Lazy;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,6 @@ import soot.BodyTransformer;
 import soot.Unit;
 import soot.Value;
 import soot.grimp.GrimpBody;
-import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
@@ -46,7 +46,7 @@ public class ExceptionInvariantTransformer extends BodyTransformer {
 
 			if (loopUnits.size() > 1) {
 				final Unit loopStart = loopUnits.get(0);
-				final Value invariantValue = Vimp.v().newEqExpr(Vimp.v().newCaughtExceptionRef(), NullConstant.v());
+				final Value invariantValue = Vimp.v().newEqExpr(Vimp.v().newCaughtExceptionRef(), VoidConstant.v());
 				final Unit invariantUnit = Vimp.v().newInvariantStmt(invariantValue);
 				units.insertAfter(invariantUnit, loopStart);
 			}

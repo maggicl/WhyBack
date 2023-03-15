@@ -12,19 +12,18 @@ subprojects { test ->
 						test.exec {
 								environment 'BYTEBACK_ROOT', bytebackRoot
 								environment 'TEST_JAR', project.shadowJar.archivePath
-								commandLine 'lit', target, '-a', '-j', 4
+								commandLine 'lit', target, '-a', '-j', 16
 						}
 				}
 
 				doLast {
 						sourceDirs.each { dir ->
-								def target = targetProperty
-								if (target == null) {
+								if (targetProperty == null) {
 										if ((dir.getName().equals("java") || dir.getName().equals("scala")) && dir.exists()) {
 												execute(dir)
 										}
 								} else {
-										execute(target)
+										execute(targetProperty)
 								}
 						}
 				}

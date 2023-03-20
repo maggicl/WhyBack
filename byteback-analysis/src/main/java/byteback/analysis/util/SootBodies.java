@@ -1,6 +1,7 @@
 package byteback.analysis.util;
 
 import byteback.analysis.SwappableUnitBox;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,15 +11,15 @@ import soot.Body;
 import soot.Local;
 import soot.Unit;
 import soot.UnitBox;
+import soot.ValueBox;
+import soot.Value;
+import soot.jimple.InvokeExpr;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.BriefBlockGraph;
 import soot.toolkits.graph.BriefUnitGraph;
-import soot.toolkits.graph.ExceptionalBlockGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
-import soot.toolkits.graph.ZonedBlockGraph;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -69,6 +70,33 @@ public class SootBodies {
 		}
 
 		return unitBoxes;
+	}
+
+	public static class ValidationException extends Exception {
+
+		public ValidationException(final String message) {
+			super(message);
+		}
+
+		public ValidationException(final Exception exception) {
+			super(exception);
+		}
+
+	}
+
+	public static void validateCalls(final Body body) throws ValidationException {
+		for (final ValueBox valueBox : body.getUseAndDefBoxes()) {
+			final Value value = valueBox.getValue();
+
+			if (value instanceof InvokeExpr invokeExpr) {
+				try {
+					System.out.println(invokeExpr);
+					invokeExpr.getMethod();
+				} catch (Exception e) {
+					throw new ValidationException(e);
+				}
+			}
+		}
 	}
 
 }

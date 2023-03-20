@@ -13,7 +13,8 @@ public class SootClasses {
 	public static boolean isBasicClass(final SootClass clazz) {
 		final String name = clazz.getName();
 
-		return clazz.isJavaLibraryClass() || name.startsWith("jdk") || name.startsWith("scala");
+		return clazz.isJavaLibraryClass() || name.startsWith("jdk")
+			|| name.startsWith("scala") || name.startsWith("groovy");
 	}
 
 	public static Optional<SootMethod> lookupMethodByPrefix(final SootClass clazz, final String name, final List<Type> parameterTypes, final Type returnType) {

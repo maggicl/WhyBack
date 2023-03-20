@@ -140,9 +140,7 @@ public class ProcedureConverter extends MethodConverter {
 			references.add(Convention.makeReturnReference());
 		}
 
-		for (final SootClass $ : method.getExceptions()) {
-			references.add(Convention.makeExceptionReference());
-		}
+		references.add(Convention.makeExceptionReference());
 
 		return references;
 	}

@@ -1,0 +1,13 @@
+plugins {
+		id 'groovy'
+		id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+repositories {
+		mavenCentral()
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:2.4.14'
+		implementation project(':byteback-annotations')
+}

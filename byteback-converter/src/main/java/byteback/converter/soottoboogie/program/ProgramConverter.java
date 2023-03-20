@@ -8,7 +8,9 @@ import byteback.analysis.transformer.InvariantExpander;
 import byteback.analysis.transformer.LogicUnitTransformer;
 import byteback.analysis.transformer.LogicValueTransformer;
 import byteback.analysis.transformer.QuantifierValueTransformer;
+import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootMethods;
+import byteback.analysis.util.SootBodies.ValidationException;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
@@ -25,7 +27,6 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.grimp.Grimp;
-import soot.toolkits.graph.BriefBlockGraph;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 public class ProgramConverter {
@@ -48,13 +49,15 @@ public class ProgramConverter {
 	}
 
 	public static void transformMethods(final SootClass clazz) {
+
 		for (final SootMethod method : clazz.getMethods()) {
 			if (SootMethods.hasBody(method)) {
+				log.info("Transforming method {}", method.getSignature());
+
+				try {
+				SootBodies.validateCalls(method.retrieveActiveBody());
+
 				final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
-
-				System.out.println("=========================");
-				System.out.println(body);
-
 				LogicUnitTransformer.v().transform(body);
 				new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
 
@@ -68,6 +71,10 @@ public class ProgramConverter {
 				ExceptionInvariantTransformer.v().transform(body);
 				InvariantExpander.v().transform(body);
 				method.setActiveBody(body);
+				} catch (ValidationException e) {
+					e.printStackTrace();
+					log.warn("Skipping method {}", method.getName());
+				}
 			}
 		}
 	}

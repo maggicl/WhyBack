@@ -239,7 +239,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 		public void caseInvokeExpr(final InvokeExpr value) {
 			for (int i = 0; i < value.getArgCount(); ++i) {
 				final ValueBox argumentBox = value.getArgBox(i);
-				new LogicValueSwitch(value.getMethod().getParameterType(i), argumentBox).visit(argumentBox.getValue());
+				new LogicValueSwitch(value.getMethodRef().getParameterType(i), argumentBox).visit(argumentBox.getValue());
 			}
 		}
 

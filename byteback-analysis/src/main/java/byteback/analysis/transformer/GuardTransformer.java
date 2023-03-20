@@ -3,7 +3,6 @@ package byteback.analysis.transformer;
 import byteback.analysis.Namespace;
 import byteback.analysis.Vimp;
 import byteback.analysis.vimp.VoidConstant;
-import byteback.util.Iterables;
 import byteback.util.Lazy;
 import byteback.util.ListHashMap;
 import byteback.util.Stacks;
@@ -110,7 +109,6 @@ public class GuardTransformer extends BodyTransformer {
 						Unit currentGuardUnit = unit;
 
 						for (final Trap trap : activeTraps) {
-							System.out.println(trap.getException());
 							final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
 							final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref,
 									trap.getException().getType());

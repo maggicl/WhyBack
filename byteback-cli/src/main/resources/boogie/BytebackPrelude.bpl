@@ -289,3 +289,13 @@ const unique $java.lang.Exception: Type;
 
 axiom $java.lang.Exception <: $java.lang.Throwable;
 
+const unique $java.lang.NullPointerException: Type;
+
+axiom $java.lang.NullPointerException <: $java.lang.Exception;
+
+procedure java.lang.NullPointerException.$init$##(this: Reference) returns (~exc: Reference);
+	ensures ~exc == ~void;
+
+
+procedure java.lang.NullPointerException.$init$#java.lang.String#(this: Reference, message: Reference) returns (~exc: Reference);
+	ensures ~exc == ~void;

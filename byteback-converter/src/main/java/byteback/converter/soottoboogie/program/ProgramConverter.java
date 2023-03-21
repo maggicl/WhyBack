@@ -28,6 +28,8 @@ import soot.SootField;
 import soot.SootMethod;
 import soot.grimp.Grimp;
 import soot.toolkits.scalar.UnusedLocalEliminator;
+import soot.util.Chain;
+import soot.util.HashChain;
 
 public class ProgramConverter {
 
@@ -48,41 +50,46 @@ public class ProgramConverter {
 		}
 	}
 
-	public static void transformMethods(final SootClass clazz) {
+	public static Chain<SootMethod> transformMethods(final SootClass clazz) {
+		final Chain<SootMethod> methods = new HashChain<>();
 
 		for (final SootMethod method : clazz.getMethods()) {
 			if (SootMethods.hasBody(method)) {
 				log.info("Transforming method {}", method.getSignature());
 
 				try {
-				SootBodies.validateCalls(method.retrieveActiveBody());
+					SootBodies.validateCalls(method.retrieveActiveBody());
 
-				final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
-				LogicUnitTransformer.v().transform(body);
-				new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
+					final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
+					LogicUnitTransformer.v().transform(body);
+					new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
 
-				if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
-					GuardTransformer.v().transform(body);
-				}
+					if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+						GuardTransformer.v().transform(body);
+					}
 
-				new ExpressionFolder().transform(body);
-				UnusedLocalEliminator.v().transform(body);
-				QuantifierValueTransformer.v().transform(body);
-				ExceptionInvariantTransformer.v().transform(body);
-				InvariantExpander.v().transform(body);
-				method.setActiveBody(body);
+					new ExpressionFolder().transform(body);
+					UnusedLocalEliminator.v().transform(body);
+					QuantifierValueTransformer.v().transform(body);
+					ExceptionInvariantTransformer.v().transform(body);
+					InvariantExpander.v().transform(body);
+					method.setActiveBody(body);
+
+					methods.add(method);
 				} catch (ValidationException e) {
 					e.printStackTrace();
 					log.warn("Skipping method {}", method.getName());
 				}
 			}
 		}
+
+		return methods;
 	}
 
 	public static void convertMethods(final Program program, final SootClass clazz) {
-		transformMethods(clazz);
+		final Chain<SootMethod> methods = transformMethods(clazz);
 
-		for (final SootMethod method : clazz.getMethods()) {
+		for (final SootMethod method : methods) {
 			try {
 				log.info("Converting method {}", method.getSignature());
 

@@ -78,12 +78,7 @@ public class Basic {
 
 	@Predicate
 	public boolean throws_iff_even(final int n, final Throwable e) {
-		return implies(neq(n % 2, 0), isVoid(e));
-	}
-
-	@Ensure("throws_iff_even")
-	public void throwsIfEvenOverloaded(int n) throws Exception {
-		throwsIfEven(n);
+		return iff(neq(n % 2, 0), isVoid(e));
 	}
 
 	public void catchesIfEven() {

@@ -1,5 +1,7 @@
 package byteback.cli;
 
+import byteback.analysis.ApplicationClassResolver;
+import byteback.analysis.util.SootClasses;
 import byteback.converter.soottoboogie.Configuration;
 import byteback.converter.soottoboogie.Prelude;
 import com.beust.jcommander.ParameterException;
@@ -9,10 +11,15 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
 import soot.options.Options;
+import soot.util.Chain;
+import soot.util.HashChain;
 
 public class Main {
 
@@ -48,9 +55,11 @@ public class Main {
 
 	public static void initialize(final byteback.cli.Configuration configuration) {
 		final List<Path> classPaths = configuration.getClassPaths();
-		final List<String> startingClasses = configuration.getStartingClasses();
+		final List<String> startingClassNames = configuration.getStartingClasses();
 		final Path preludePath = configuration.getPreludePath();
 
+		options.set_allow_phantom_refs(true);
+		options.set_keep_line_number(true);
 		options.setPhaseOption("jb", "use-original-names:true");
 		options.setPhaseOption("gb.a1", "enabled:false");
 		options.setPhaseOption("gb.cf", "enabled:false");
@@ -63,9 +72,31 @@ public class Main {
 
 		scene.loadBasicClasses();
 
-		for (String startingClass : startingClasses) {
-			scene.loadClassAndSupport(startingClass);
+		final Chain<SootClass> startingClasses = new HashChain<>();
+
+		for (final String startingClassName : startingClassNames) {
+			final SootClass startingClass = scene.loadClassAndSupport(startingClassName);
+			startingClass.setApplicationClass();
+			startingClasses.add(startingClass);
 		}
+
+		final Iterator<SootClass> classIterator = scene.getClasses().snapshotIterator();
+
+		while (classIterator.hasNext()) {
+			final SootClass clazz = classIterator.next();
+
+			if (SootClasses.isBasicClass(clazz)) {
+				clazz.setResolvingLevel(SootClass.SIGNATURES);
+			} else {
+				for (final SootMethod method : clazz.getMethods()) {
+					if (method.isConcrete()) {
+						method.retrieveActiveBody();
+					}
+				}
+			}
+		}
+
+		new ApplicationClassResolver().resolve(startingClasses);
 
 		if (preludePath != null) {
 			prelude.loadFile(preludePath);

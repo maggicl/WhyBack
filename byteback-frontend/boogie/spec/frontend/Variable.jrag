@@ -201,6 +201,10 @@ aspect Variable {
 
   eq Program.getChild().getVariableDeclaration() = Optional.empty();
 
+	syn Variable ValueReference.getVariable();
+
+	eq ValueReference.getVariable() = getAccessor().lookupRemoteVariable().get();
+
   /**
    * Create variable declaration from reference.
    */
@@ -217,7 +221,6 @@ aspect Variable {
 
   eq ValueReference.makeAssignee() =
 		new Assignee(getAccessor());
-
 
   /**
    * Delete a variable and all of its assignments.

@@ -276,6 +276,11 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	}
 
 	@Override
+	public void caseClassConstant(final ClassConstant classConstant) {
+		// TODO
+	}
+
+	@Override
 	public void caseLocal(final Local v) {
 		setExpression(ValueReference.of(localName(v)));
 	}

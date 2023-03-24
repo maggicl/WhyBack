@@ -90,7 +90,6 @@ public class SootBodies {
 
 			if (value instanceof InvokeExpr invokeExpr) {
 				try {
-					System.out.println(invokeExpr);
 					invokeExpr.getMethod();
 				} catch (Exception e) {
 					throw new ValidationException(e);

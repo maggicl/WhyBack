@@ -49,6 +49,14 @@ aspect ConditionInference {
 		}
 	}
 
+	public void Procedure.inferModifies() {
+		for (Procedure caller : callers()) {
+			for (ValueReference frameCondition : frameConditions()) {
+				caller.addFrameCondition(frameCondition.getVariable());
+			}
+		}
+	}
+
 	/**
 	 * Infer frame conditions for procedures that are modifying global
 	 * variables in this program.
@@ -56,6 +64,10 @@ aspect ConditionInference {
 	public void Program.inferModifies() {
 		for (Variable variable : variables()) {
 			variable.inferModifies();
+		}
+
+		for (Procedure procedure : procedures()) {
+			procedure.inferModifies();
 		}
 	}
 	

@@ -133,19 +133,11 @@ procedure ~array(t: Type, l: int) returns (~ret: Reference, ~exc: Reference);
 // String model
 // -------------------------------------------------------------------
 
-const unique $java.lang.String: Type;
-
 function ~string.const(id: int) returns (~ret: Reference);
-
-function ~string.invariant(h: Store, r: Reference) returns (bool)
-{ ~allocated(r) && ~instanceof(h, r, $java.lang.String) }
-
-axiom (forall id: int, h: Store :: ~string.invariant(h, ~string.const(id)));
 
 procedure ~string(chars: Reference) returns (~ret: Reference, ~exc: Reference);
 	ensures ~ret != ~null;
 	ensures ~allocated(~ret);
-	ensures ~typeof(~heap, ~ret) == $java.lang.String;
 	ensures ~exc == ~void;
 
 // -------------------------------------------------------------------
@@ -263,39 +255,3 @@ function ~int_to_real(a: int) returns (real)
 function ~real_to_int(a: real) returns (int)
 { int(a) }
 
-// -------------------------------------------------------------------
-// Missing definitions
-// -------------------------------------------------------------------
-procedure java.lang.Object.$init$##(this: Reference) returns (~exc: Reference);
-	ensures ~exc == ~void;
-
-procedure java.lang.Exception.$init$##(this: Reference) returns (~exc: Reference);
-	ensures ~exc == ~void;
-
-procedure java.lang.Object.clone##(this: Reference) returns (~ret: Reference);
-	requires this != ~null;
-	ensures this != ~ret;
-	ensures (forall <a> h: Store, f: Field Box ::
-		{ ~unbox(~heap.read(h, ~ret, f)) : a }
-		~heap.read(h, this, f) != ~heap.read(h, ~ret, f) &&
-	  ~unbox(~heap.read(h, this, f)) : a == ~unbox(~heap.read(h, ~ret, f)) : a);
-	ensures ~lengthof(this) == ~lengthof(~ret);
-
-const unique $java.lang.Object: Type;
-
-const unique $java.lang.Throwable: Type;
-
-const unique $java.lang.Exception: Type;
-
-axiom $java.lang.Exception <: $java.lang.Throwable;
-
-const unique $java.lang.NullPointerException: Type;
-
-axiom $java.lang.NullPointerException <: $java.lang.Exception;
-
-procedure java.lang.NullPointerException.$init$##(this: Reference) returns (~exc: Reference);
-	ensures ~exc == ~void;
-
-
-procedure java.lang.NullPointerException.$init$#java.lang.String#(this: Reference, message: Reference) returns (~exc: Reference);
-	ensures ~exc == ~void;

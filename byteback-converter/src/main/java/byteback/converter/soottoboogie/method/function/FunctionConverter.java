@@ -37,10 +37,10 @@ public class FunctionConverter extends MethodConverter {
 	}
 
 	public static void buildSignature(final FunctionDeclarationBuilder functionBuilder, final SootMethod method) {
-		final FunctionSignatureBuilder signatureBuilder = new FunctionSignatureBuilder();
+		final var signatureBuilder = new FunctionSignatureBuilder();
 		signatureBuilder.addInputBinding(Prelude.v().getHeapVariable().makeOptionalBinding());
 
-		for (Local local : SootBodies.getParameterLocals(method.retrieveActiveBody())) {
+		for (Local local : SootBodies.getParameterLocals(method.getActiveBody())) {
 			signatureBuilder.addInputBinding(makeBinding(local));
 		}
 

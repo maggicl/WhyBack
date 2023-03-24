@@ -14,7 +14,8 @@ public class SootClasses {
 		final String name = clazz.getName();
 
 		return clazz.isJavaLibraryClass() || name.startsWith("jdk")
-			|| name.startsWith("scala") || name.startsWith("groovy");
+			|| name.startsWith("scala") || name.startsWith("groovy")
+			|| name.startsWith("sun") || name.startsWith("java");
 	}
 
 	public static Optional<SootMethod> lookupMethodByPrefix(final SootClass clazz, final String name, final List<Type> parameterTypes, final Type returnType) {

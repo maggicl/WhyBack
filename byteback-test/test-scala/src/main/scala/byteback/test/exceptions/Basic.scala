@@ -24,7 +24,6 @@ class Basic {
 
   @Return
   def neverThrows(): Unit = {
-
   }
 
   def neverCatches(): Unit = {

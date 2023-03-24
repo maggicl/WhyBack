@@ -93,8 +93,8 @@ public class ProcedureConverter extends MethodConverter {
 	}
 
 	public static Iterable<Local> getParameterLocals(final SootMethod method) {
-		if (SootMethods.hasBody(method)) {
-			return SootBodies.getParameterLocals(method.retrieveActiveBody());
+		if (method.hasActiveBody()) {
+			return SootBodies.getParameterLocals(method.getActiveBody());
 		} else {
 			return SootMethods.makeFakeParameterLocals(method);
 		}
@@ -242,9 +242,9 @@ public class ProcedureConverter extends MethodConverter {
 
 	public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {
 		final var bodyExtractor = new ProcedureBodyExtractor();
-		final Body body = bodyExtractor.visit(method.retrieveActiveBody());
+		final Body body = bodyExtractor.visit(method.getActiveBody());
 
-		for (Local local : SootBodies.getLocals(method.retrieveActiveBody())) {
+		for (Local local : SootBodies.getLocals(method.getActiveBody())) {
 			final var variableBuilder = new VariableDeclarationBuilder();
 			body.addLocalDeclaration(variableBuilder.addBinding(makeBinding(local)).build());
 		}
@@ -264,7 +264,7 @@ public class ProcedureConverter extends MethodConverter {
 			buildSignature(builder, method);
 			buildSpecification(builder, method);
 
-			if (SootMethods.hasBody(method)) {
+			if (method.hasActiveBody()) {
 				if (!SootMethods.hasAnnotation(method, Namespace.LEMMA_ANNOTATION)) {
 					buildBody(builder, method);
 				}

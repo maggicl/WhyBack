@@ -22,8 +22,8 @@ public class Multicatch {
 	}
 
 	@Predicate
-	public boolean always_throws_exception1_exception2(Exception1 e1, Exception2 e2) {
-		return e1 instanceof Exception1 | e2 instanceof Exception2;
+	public boolean always_throws_exception1_exception2(Throwable e) {
+		return e instanceof Exception1 | e instanceof Exception2;
 	}
 
 	@Ensure("always_throws_exception1_exception2")
@@ -42,4 +42,5 @@ public class Multicatch {
 }
 /**
  * RUN: %{verify} %t.bpl
+ * CHECK: Boogie program verifier finished with 5 verified
  */

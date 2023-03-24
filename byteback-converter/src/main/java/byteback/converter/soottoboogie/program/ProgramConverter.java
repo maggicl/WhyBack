@@ -9,6 +9,7 @@ import byteback.analysis.transformer.LogicUnitTransformer;
 import byteback.analysis.transformer.LogicValueTransformer;
 import byteback.analysis.transformer.QuantifierValueTransformer;
 import byteback.analysis.util.SootBodies;
+import byteback.analysis.util.SootClasses;
 import byteback.analysis.util.SootMethods;
 import byteback.analysis.util.SootBodies.ValidationException;
 import byteback.converter.soottoboogie.ConversionException;
@@ -20,6 +21,7 @@ import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.frontend.boogie.ast.AxiomDeclaration;
 import byteback.frontend.boogie.ast.Program;
 import byteback.util.Lazy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.Body;
@@ -54,13 +56,21 @@ public class ProgramConverter {
 		final Chain<SootMethod> methods = new HashChain<>();
 
 		for (final SootMethod method : clazz.getMethods()) {
-			if (SootMethods.hasBody(method)) {
+
+			if (SootClasses.isBasicClass(clazz)) {
+				if (method.isConcrete()) {
+					method.setActiveBody(null);
+				}
+			} else if (clazz.isApplicationClass()) {
+				method.retrieveActiveBody();
+			} 
+
+			if (method.hasActiveBody()) {
 				log.info("Transforming method {}", method.getSignature());
 
 				try {
 					SootBodies.validateCalls(method.retrieveActiveBody());
-
-					final Body body = Grimp.v().newBody(method.retrieveActiveBody(), "");
+					final Body body = Grimp.v().newBody(method.getActiveBody(), "");
 					LogicUnitTransformer.v().transform(body);
 					new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
 
@@ -74,22 +84,23 @@ public class ProgramConverter {
 					ExceptionInvariantTransformer.v().transform(body);
 					InvariantExpander.v().transform(body);
 					method.setActiveBody(body);
-
-					methods.add(method);
-				} catch (ValidationException e) {
+				} catch (final ValidationException e) {
 					e.printStackTrace();
 					log.warn("Skipping method {}", method.getName());
 				}
 			}
+
+			methods.add(method);
 		}
 
 		return methods;
 	}
 
 	public static void convertMethods(final Program program, final SootClass clazz) {
-		final Chain<SootMethod> methods = transformMethods(clazz);
+		final Iterable<SootMethod> methods = transformMethods(clazz);
 
 		for (final SootMethod method : methods) {
+
 			try {
 				log.info("Converting method {}", method.getSignature());
 
@@ -108,6 +119,7 @@ public class ProgramConverter {
 
 	public Program convert(final SootClass clazz) {
 		log.info("Converting class {}", clazz.getName());
+
 		final var program = new Program();
 		program.addDeclaration(ReferenceTypeConverter.v().convert(clazz));
 

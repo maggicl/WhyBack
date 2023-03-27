@@ -40,7 +40,7 @@ public class FunctionConverter extends MethodConverter {
 		final var signatureBuilder = new FunctionSignatureBuilder();
 		signatureBuilder.addInputBinding(Prelude.v().getHeapVariable().makeOptionalBinding());
 
-		for (Local local : SootBodies.getParameterLocals(method.getActiveBody())) {
+		for (Local local : SootBodies.getParameterLocals(method.retrieveActiveBody())) {
 			signatureBuilder.addInputBinding(makeBinding(local));
 		}
 

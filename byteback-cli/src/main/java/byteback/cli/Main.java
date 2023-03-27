@@ -31,6 +31,8 @@ public class Main {
 
 	public static final Prelude prelude = Prelude.v();
 
+	public static final ApplicationClassResolver resolver = new ApplicationClassResolver();
+
 	public static void convert(final byteback.cli.Configuration configuration) {
 		final PrintStream output;
 
@@ -48,7 +50,7 @@ public class Main {
 			output = System.out;
 		}
 
-		final var task = new ConversionTask(scene, prelude);
+		final var task = new ConversionTask(resolver, prelude);
 		output.print(task.run().print());
 		output.close();
 	}
@@ -76,27 +78,10 @@ public class Main {
 
 		for (final String startingClassName : startingClassNames) {
 			final SootClass startingClass = scene.loadClassAndSupport(startingClassName);
-			startingClass.setApplicationClass();
 			startingClasses.add(startingClass);
 		}
 
-		final Iterator<SootClass> classIterator = scene.getClasses().snapshotIterator();
-
-		while (classIterator.hasNext()) {
-			final SootClass clazz = classIterator.next();
-
-			if (SootClasses.isBasicClass(clazz)) {
-				clazz.setResolvingLevel(SootClass.SIGNATURES);
-			} else {
-				for (final SootMethod method : clazz.getMethods()) {
-					if (method.isConcrete()) {
-						method.retrieveActiveBody();
-					}
-				}
-			}
-		}
-
-		new ApplicationClassResolver().resolve(startingClasses);
+		resolver.resolve(startingClasses);
 
 		if (preludePath != null) {
 			prelude.loadFile(preludePath);
@@ -119,6 +104,7 @@ public class Main {
 				final long conversionStart = System.currentTimeMillis();
 				log.info("Converting classes");
 				Configuration.v().setMessage(config.getMessage());
+
 				convert(config);
 				final long endTime = System.currentTimeMillis();
 				final long totalTime = endTime - totalStart;

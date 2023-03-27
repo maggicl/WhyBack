@@ -92,7 +92,7 @@ public class GuardTransformer extends BodyTransformer {
 					for (final Trap activeTrap : activeTraps) {
 						final RefType trapType = activeTrap.getException().getType();
 
-						if (Scene.v().getFastHierarchy().isSubclass(throwType.getSootClass(),
+						if (Scene.v().getOrMakeFastHierarchy().isSubclass(throwType.getSootClass(),
 								trapType.getSootClass())) {
 							final GotoStmt guardUnit = Grimp.v().newGotoStmt(activeTrap.getHandlerUnit());
 							units.insertAfter(guardUnit, unit);

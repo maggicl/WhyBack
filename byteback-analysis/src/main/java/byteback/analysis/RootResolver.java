@@ -19,11 +19,9 @@ import soot.ValueBox;
 import soot.jimple.FieldRef;
 import soot.jimple.InvokeExpr;
 
-public class ApplicationClassResolver {
+public class RootResolver {
 
 	private final Deque<SootClass> next;
-
-	private final Set<SootClass> classes;
 
 	private final Set<SootMethod> usedMethods;
 
@@ -31,16 +29,15 @@ public class ApplicationClassResolver {
 
 	private final Set<SootClass> usedClasses;
 
-	public ApplicationClassResolver() {
+	public RootResolver() {
 		this.next = new LinkedList<>();
-		this.classes = new HashSet<>();
 		this.usedMethods = new HashSet<>();
 		this.usedFields = new HashSet<>();
 		this.usedClasses = new HashSet<>();
 	}
 
 	public void addNext(final SootClass clazz) {
-		if (!classes.contains(clazz)) {
+		if (!usedClasses.contains(clazz)) {
 			next.add(clazz);
 		}
 	}
@@ -70,8 +67,7 @@ public class ApplicationClassResolver {
 	}
 
 	public void scanMethod(final SootMethod method) {
-		if (method.getDeclaringClass().resolvingLevel() < SootClass.BODIES ||
-				SootClasses.isBasicClass(method.getDeclaringClass())) {
+		if (method.getDeclaringClass().resolvingLevel() < SootClass.BODIES) {
 			scanSignature(method);
 			return;
 		}
@@ -86,6 +82,7 @@ public class ApplicationClassResolver {
 			scanType(useDef.getType());
 
 			if (useDef instanceof InvokeExpr invoke) {
+				addNext(invoke.getMethod().getDeclaringClass());
 				usedMethods.add(invoke.getMethod());
 			}
 
@@ -97,7 +94,7 @@ public class ApplicationClassResolver {
 	}
 
 	public void scanClass(final SootClass clazz) {
-		classes.add(clazz);
+		usedClasses.add(clazz);
 
 		if (clazz.hasSuperclass()) {
 			addNext(clazz.getSuperclass());
@@ -116,16 +113,16 @@ public class ApplicationClassResolver {
 		}
 	}
 
-	public Set<SootClass> getClasses() {
-		return classes;
+	public Set<SootClass> getUsedClasses() {
+		return usedClasses;
 	}
 
-	public boolean isUsed(final SootMethod method) {
-		return usedMethods.contains(method);
+	public Set<SootMethod> getUsedMethods() {
+		return usedMethods;
 	}
 
-	public boolean isUsed(final SootField field) {
-		return usedFields.contains(field);
+	public Set<SootField> getUsedFields() {
+		return usedFields;
 	}
 
 	public void resolve(final Collection<SootClass> initials) {
@@ -133,6 +130,11 @@ public class ApplicationClassResolver {
 
 		while (!next.isEmpty()) {
 			final SootClass current = next.pollFirst();
+
+			if (SootClasses.isBasicClass(current)) {
+				current.setResolvingLevel(SootClass.SIGNATURES);
+			}
+
 			scanClass(current);
 		}
 	}

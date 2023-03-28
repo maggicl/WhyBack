@@ -5,6 +5,7 @@ import byteback.analysis.util.SootAnnotationElems.ClassElemExtractor;
 import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootBodies;
+import byteback.analysis.util.SootHosts;
 import byteback.analysis.util.SootMethods;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.ConversionException;
@@ -156,7 +157,7 @@ public class ProcedureConverter extends MethodConverter {
 	}
 
 	public static void buildSpecification(final ProcedureDeclarationBuilder builder, final SootMethod method) {
-		SootMethods.getAnnotations(method).forEach((tag) -> {
+		SootHosts.getAnnotations(method).forEach((tag) -> {
 			SootAnnotations.getAnnotations(tag).forEach((sub) -> {
 				final var parameters = new ArrayList<Type>(method.getParameterTypes());
 				final Function<Expression, Condition> conditionCtor;
@@ -186,7 +187,7 @@ public class ProcedureConverter extends MethodConverter {
 						tagName = "when";
 						final AnnotationElem exceptionElem = SootAnnotations.getElem(sub, "exception").orElseThrow();
 						final String value = new ClassElemExtractor().visit(exceptionElem);
-						final RefType exceptionType = Scene.v().loadClass(Namespace.stripDescriptor(value), 0)
+						final RefType exceptionType = Scene.v().loadClassAndSupport(Namespace.stripDescriptor(value))
 								.getType();
 						final SymbolicReference typeReference = new TypeReferenceExtractor().visit(exceptionType);
 						final FunctionReference instanceOfReference = Prelude.v().getInstanceOfFunction()
@@ -265,7 +266,7 @@ public class ProcedureConverter extends MethodConverter {
 			buildSpecification(builder, method);
 
 			if (method.hasActiveBody()) {
-				if (!SootMethods.hasAnnotation(method, Namespace.LEMMA_ANNOTATION)) {
+				if (!SootHosts.hasAnnotation(method, Namespace.LEMMA_ANNOTATION)) {
 					buildBody(builder, method);
 				}
 			} else {

@@ -2,14 +2,10 @@ package byteback.analysis.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 import soot.Local;
+import soot.SootClass;
 import soot.SootMethod;
 import soot.jimple.internal.JimpleLocal;
-import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationTag;
-import soot.tagkit.VisibilityAnnotationTag;
 
 public class SootMethods {
 
@@ -28,31 +24,11 @@ public class SootMethods {
 		return parameterLocals;
 	}
 
-	public static Stream<AnnotationTag> getAnnotations(final SootMethod method) {
-		final var tag = (VisibilityAnnotationTag) method.getTag("VisibilityAnnotationTag");
-
-		if (tag != null) {
-			return tag.getAnnotations().stream();
-		} else {
-			return Stream.empty();
-		}
-	}
-
-	public static Optional<AnnotationTag> getAnnotation(final SootMethod method, final String name) {
-		return getAnnotations(method).filter((tag) -> tag.getType().equals(name)).findFirst();
-	}
-
-	public Optional<AnnotationElem> getAnnotationValue(final SootMethod method, final String name) {
-		return getAnnotation(method, name).flatMap(SootAnnotations::getValue);
-	}
-
-	public static boolean hasAnnotation(final SootMethod method, final String name) {
-		return getAnnotation(method, name).isPresent();
-	}
-
 	public static boolean hasBody(final SootMethod method) {
 		try {
-			return !method.isAbstract() && method.retrieveActiveBody() != null;
+			return !method.isAbstract()
+				&& method.getDeclaringClass().resolvingLevel() >= SootClass.BODIES
+				&& method.retrieveActiveBody() != null;
 		} catch (final RuntimeException exception) {
 			return false;
 		}

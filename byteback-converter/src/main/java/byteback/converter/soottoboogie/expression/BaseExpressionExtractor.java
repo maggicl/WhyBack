@@ -4,7 +4,7 @@ import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Namespace;
 import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
 import byteback.analysis.util.SootAnnotations;
-import byteback.analysis.util.SootMethods;
+import byteback.analysis.util.SootHosts;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.frontend.boogie.ast.BinaryExpression;
@@ -60,12 +60,12 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 
 	public void setFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
 		final var referenceBuilder = new FunctionReferenceBuilder();
-		final String name = SootMethods.getAnnotation(method, Namespace.PRELUDE_ANNOTATION)
+		final String name = SootHosts.getAnnotation(method, Namespace.PRELUDE_ANNOTATION)
 				.flatMap(SootAnnotations::getValue).map((element) -> new StringElemExtractor().visit(element))
 				.orElseGet(() -> MethodConverter.methodName(method));
 		referenceBuilder.name(name);
 
-		if (!SootMethods.hasAnnotation(method, Namespace.PRIMITIVE_ANNOTATION)) {
+		if (!SootHosts.hasAnnotation(method, Namespace.PRIMITIVE_ANNOTATION)) {
 			final ValueReference heapReference = Prelude.v().getHeapVariable().makeValueReference();
 			referenceBuilder.prependArgument(heapReference);
 		}

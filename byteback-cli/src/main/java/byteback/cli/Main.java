@@ -1,7 +1,7 @@
 package byteback.cli;
 
-import byteback.analysis.ApplicationClassResolver;
-import byteback.analysis.util.SootClasses;
+import byteback.analysis.AnnotationsAttacher;
+import byteback.analysis.RootResolver;
 import byteback.converter.soottoboogie.Configuration;
 import byteback.converter.soottoboogie.Prelude;
 import com.beust.jcommander.ParameterException;
@@ -11,12 +11,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.Scene;
 import soot.SootClass;
-import soot.SootMethod;
 import soot.options.Options;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -31,7 +29,7 @@ public class Main {
 
 	public static final Prelude prelude = Prelude.v();
 
-	public static final ApplicationClassResolver resolver = new ApplicationClassResolver();
+	public static final RootResolver resolver = new RootResolver();
 
 	public static void convert(final byteback.cli.Configuration configuration) {
 		final PrintStream output;
@@ -75,12 +73,15 @@ public class Main {
 		scene.loadBasicClasses();
 
 		final Chain<SootClass> startingClasses = new HashChain<>();
+		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ObjectSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ExceptionSpec"));
 
 		for (final String startingClassName : startingClassNames) {
 			final SootClass startingClass = scene.loadClassAndSupport(startingClassName);
 			startingClasses.add(startingClass);
 		}
 
+		AnnotationsAttacher.attachAll(Scene.v());
 		resolver.resolve(startingClasses);
 
 		if (preludePath != null) {

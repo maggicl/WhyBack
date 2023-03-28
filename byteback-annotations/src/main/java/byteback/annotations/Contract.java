@@ -100,6 +100,10 @@ public interface Contract {
 	public static @interface Predicate {
 	}
 
+	public static @interface Attach {
+		public Class<?> value();
+	}
+
 	public static void assertion(boolean condition) {
 	}
 

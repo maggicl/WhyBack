@@ -1,6 +1,6 @@
 package byteback.analysis;
 
-import byteback.analysis.util.SootMethods;
+import byteback.analysis.util.SootHosts;
 import soot.SootClass;
 import soot.SootMethod;
 
@@ -47,6 +47,8 @@ public class Namespace {
 	public static final String RETURN_ANNOTATION = "Lbyteback/annotations/Contract$Return;";
 
 	public static final String PRIMITIVE_ANNOTATION = "Lbyteback/annotations/Contract$Primitive;";
+
+	public static final String ATTACH_ANNOTATION = "Lbyteback/annotations/Contract$Attach;";
 
 	public static final String OLD_NAME = "old";
 
@@ -122,11 +124,11 @@ public class Namespace {
 	}
 
 	public static boolean isPureMethod(final SootMethod method) {
-		return SootMethods.hasAnnotation(method, PURE_ANNOTATION);
+		return SootHosts.hasAnnotation(method, PURE_ANNOTATION);
 	}
 
 	public static boolean isPredicateMethod(final SootMethod method) {
-		return SootMethods.hasAnnotation(method, PREDICATE_ANNOTATION);
+		return SootHosts.hasAnnotation(method, PREDICATE_ANNOTATION);
 	}
 
 }

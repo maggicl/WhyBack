@@ -1,6 +1,6 @@
 package byteback.cli;
 
-import byteback.analysis.ApplicationClassResolver;
+import byteback.analysis.RootResolver;
 import byteback.analysis.Namespace;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.program.ProgramConverter;
@@ -9,11 +9,11 @@ import soot.SootClass;
 
 public class ConversionTask {
 
-	private final ApplicationClassResolver resolver;
+	private final RootResolver resolver;
 
 	private Prelude prelude;
 
-	public ConversionTask(final ApplicationClassResolver resolver, final Prelude prelude) {
+	public ConversionTask(final RootResolver resolver, final Prelude prelude) {
 		this.resolver = resolver;
 		this.prelude = prelude;
 	}

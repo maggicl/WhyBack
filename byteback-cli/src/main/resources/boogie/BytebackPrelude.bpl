@@ -28,9 +28,11 @@ function {:inline} ~heap.update<a>(h: Store, r: Reference, f: Field a, v: a) ret
 
 function ~heap.succ(h1: Store, h2: Store) returns (bool);
 
-axiom (forall <a> h: Store, r: Reference, f: Field a, v: a ::
-	{ ~heap.update(h, r, f, v) }
-	~heap.isgood(~heap.update(h, r, f, v)) ==> ~heap.succ(h, ~heap.update(h, r, f, v)));
+function ~heap.isgood(h: Store) returns (bool);
+
+function ~heap.isanchor(h: Store) returns (bool);
+
+var ~heap: Store where ~heap.isgood(~heap) && ~heap.isanchor(~heap);
 
 axiom (forall h1: Store, h2: Store, h3: Store ::
 	{ ~heap.succ(h1, h2), ~heap.succ(h2, h3) }
@@ -38,22 +40,22 @@ axiom (forall h1: Store, h2: Store, h3: Store ::
 
 axiom (forall h1: Store, h2: Store ::
 	~heap.succ(h1, h2) &&
-	(forall <a> r: Reference, f: Field a ::
-		{ ~heap.read(h2, r, f) }
-		~heap.read(h1, r, f) == ~heap.read(h2, r, f)))	;
+	(forall r: Reference, t: Type ::
+		{ ~instanceof(h2, r, t) }
+		~instanceof(h1, r, t) == ~instanceof(h2, r, t)))	;
 
-function ~heap.isgood(h: Store) returns (bool);
+axiom (forall h1: Store, h2: Store ::
+	~heap.succ(h1, h2) &&
+	(forall r: Reference ::
+		{ ~allocated(h2, r) }
+		~allocated(h1, r) == ~allocated(h2, r)))	;
 
-function ~heap.isanchor(h: Store) returns (bool);
-
-var ~heap: Store where ~heap.isgood(~heap) && ~heap.isanchor(~heap);
-
-function ~allocated(Reference) returns (bool);
+function ~allocated(Store, Reference) returns (bool);
 
 procedure ~new(t: Type) returns (~ret: Reference, ~exc: Reference);
 	ensures ~ret != ~null;
 	ensures ~typeof(~heap, ~ret) == t;
-	ensures ~allocated(~ret);
+	ensures ~allocated(~heap, ~ret);
 	ensures ~exc == ~void;
 
 // -------------------------------------------------------------------
@@ -78,6 +80,9 @@ function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 axiom (forall h: Store, t: Type :: !~instanceof(h, ~null, t));
 
 axiom (forall h: Store, t: Type :: !~instanceof(h, ~void, t));
+
+axiom (forall t1: Type ::
+	(forall t2: Type, t3: Type :: t2 <: t1 && t3 <: t1 ==> !(t2 <: t1)));
 
 function ~type.reference(Type) returns (Reference);
 
@@ -125,7 +130,7 @@ function {:inline} ~array.update<b>(h: Store, a: Reference, i: int, v: b) return
 procedure ~array(t: Type, l: int) returns (~ret: Reference, ~exc: Reference);
 	ensures ~ret != ~null;
 	ensures ~typeof(~heap, ~ret) == ~array.type(t);
-	ensures ~allocated(~ret);
+	ensures ~allocated(~heap, ~ret);
 	ensures ~lengthof(~ret) == l;
 	ensures ~exc == ~void;
 
@@ -137,7 +142,7 @@ function ~string.const(id: int) returns (~ret: Reference);
 
 procedure ~string(chars: Reference) returns (~ret: Reference, ~exc: Reference);
 	ensures ~ret != ~null;
-	ensures ~allocated(~ret);
+	ensures ~allocated(~heap, ~ret);
 	ensures ~exc == ~void;
 
 // -------------------------------------------------------------------

@@ -34,13 +34,22 @@ public class Multicatch {
 	public void multiCatch() {
 		try {
 			alwaysThrowsMultiple();
+		} catch (Exception1 | Exception2 e) {
+		}
+	}
+
+	public void multiCatchAssertion() {
+		try {
+			alwaysThrowsMultiple();
 			assertion(false);
 		} catch (Exception1 | Exception2 e) {
 			assertion(e instanceof Exception1 | e instanceof Exception2);
 		}
 	}
+
+
 }
 /**
- * RUN: %{verify} %t.bpl
- * CHECK: Boogie program verifier finished with 5 verified
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 6 verified
  */

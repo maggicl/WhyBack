@@ -40,14 +40,7 @@ public class AnnotationsAttacher {
 						hostClass.removeMethod(hostMethod);
 					}
 
-
 					hostClass.addMethod(attachedMethod);
-					final SootMethod newMethod = hostClass.getMethod(hostMethod.getNumberedSubSignature());
-
-					System.out.println(hostClass);
-					for (final SootMethod method : hostClass.getMethods()) {
-						System.out.println(method);
-					}
 				}
 			}
 		}

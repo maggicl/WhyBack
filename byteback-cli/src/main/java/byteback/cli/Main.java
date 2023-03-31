@@ -2,6 +2,7 @@ package byteback.cli;
 
 import byteback.analysis.AnnotationsAttacher;
 import byteback.analysis.RootResolver;
+import byteback.analysis.util.SootClasses;
 import byteback.converter.soottoboogie.Configuration;
 import byteback.converter.soottoboogie.Prelude;
 import com.beust.jcommander.ParameterException;
@@ -29,7 +30,7 @@ public class Main {
 
 	public static final Prelude prelude = Prelude.v();
 
-	public static final RootResolver resolver = new RootResolver();
+	public static final RootResolver resolver = new RootResolver(SootClasses::isBasicClass);
 
 	public static void convert(final byteback.cli.Configuration configuration) {
 		final PrintStream output;
@@ -58,8 +59,7 @@ public class Main {
 		final List<String> startingClassNames = configuration.getStartingClasses();
 		final Path preludePath = configuration.getPreludePath();
 
-		options.set_allow_phantom_refs(true);
-		options.set_keep_line_number(true);
+		options.set_whole_program(true);
 		options.setPhaseOption("jb", "use-original-names:true");
 		options.setPhaseOption("gb.a1", "enabled:false");
 		options.setPhaseOption("gb.cf", "enabled:false");
@@ -105,7 +105,6 @@ public class Main {
 				final long conversionStart = System.currentTimeMillis();
 				log.info("Converting classes");
 				Configuration.v().setMessage(config.getMessage());
-
 				convert(config);
 				final long endTime = System.currentTimeMillis();
 				final long totalTime = endTime - totalStart;

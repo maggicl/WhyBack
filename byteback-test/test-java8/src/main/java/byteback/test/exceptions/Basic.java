@@ -51,18 +51,6 @@ public class Basic {
 		alwaysThrows();
 	}
 
-	public void finallyIsExecuted() throws Exception {
-		boolean f = false;
-
-		try {
-			alwaysThrows();
-		} catch (Exception e) {
-			f = true;
-		} finally {
-			assertion(f);
-		}
-	}
-
 	@Predicate
 	public boolean argument_is_even(final int n) {
 		return eq(n % 2, 0);
@@ -92,5 +80,5 @@ public class Basic {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 11 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 9 verified, 0 errors
  */

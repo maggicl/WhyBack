@@ -55,10 +55,10 @@ public interface Comparator {
 		LessThanComparator ltComparator = new LessThanComparator();
 		GreaterThanComparator gtComparator = new GreaterThanComparator();
 
-		final boolean a = ltComparator.compare(2, 1);
+		boolean a = ltComparator.compare(2, 1);
 		assertion(not(a));
 
-		final boolean b = gtComparator.compare(1, 2);
+		boolean b = gtComparator.compare(1, 2);
 		assertion(not(b));
 	}
 

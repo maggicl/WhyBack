@@ -2,8 +2,8 @@ package byteback.analysis.util;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import soot.Local;
-import soot.SootClass;
 import soot.SootMethod;
 import soot.jimple.internal.JimpleLocal;
 
@@ -25,13 +25,14 @@ public class SootMethods {
 	}
 
 	public static boolean hasBody(final SootMethod method) {
-		try {
-			return !method.isAbstract()
-				&& method.getDeclaringClass().resolvingLevel() >= SootClass.BODIES
-				&& method.retrieveActiveBody() != null;
-		} catch (final RuntimeException exception) {
-			return false;
-		}
+		return method.isConcrete()
+				&& !method.isPhantom()
+				&& !method.getDeclaringClass().isPhantom()
+				&& !SootClasses.isBasicClass(method.getDeclaringClass());
+	}
+
+	public static boolean isDynamic(final SootMethod method) {
+		return method.hasActiveBody() && SootBodies.isDynamic(method.getActiveBody());
 	}
 
 }

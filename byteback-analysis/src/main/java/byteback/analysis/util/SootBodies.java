@@ -14,6 +14,7 @@ import soot.UnitBox;
 import soot.ValueBox;
 import soot.Value;
 import soot.jimple.InvokeExpr;
+import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 import soot.toolkits.graph.BlockGraph;
@@ -96,6 +97,18 @@ public class SootBodies {
 				}
 			}
 		}
+	}
+
+	public static boolean isDynamic(final Body body) {
+		for (final ValueBox valueBox : body.getUseAndDefBoxes()) {
+			final Value value = valueBox.getValue();
+
+			if (value instanceof DynamicInvokeExpr) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

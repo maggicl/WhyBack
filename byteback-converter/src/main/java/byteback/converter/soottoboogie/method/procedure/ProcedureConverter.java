@@ -183,7 +183,7 @@ public class ProcedureConverter extends MethodConverter {
 						message = "Postcondition error";
 						break;
 					case Namespace.RAISE_ANNOTATION :
-						// ensures old({condition}) -> ~exc == {exception};
+						// ensures old({condition}) <==> ~exc == {exception};
 						tagName = "when";
 						final AnnotationElem exceptionElem = SootAnnotations.getElem(sub, "exception").orElseThrow();
 						final String value = new ClassElemExtractor().visit(exceptionElem);
@@ -238,7 +238,15 @@ public class ProcedureConverter extends MethodConverter {
 					condition.addAttribute(MessageFormatter.makeAttribute(method, message + " for predicate " + source));
 				}
 			});
+
 		});
+
+		buildDefaultHeapInvariant(builder);
+	}
+
+	public static void buildDefaultHeapInvariant(final ProcedureDeclarationBuilder builder) {
+		final Expression expression = Prelude.v().makeDefaultHeapInvariant();
+		builder.addSpecification(new PostCondition(new List<>(), true, expression));
 	}
 
 	public static void buildBody(final ProcedureDeclarationBuilder builder, final SootMethod method) {
@@ -265,7 +273,7 @@ public class ProcedureConverter extends MethodConverter {
 			buildSignature(builder, method);
 			buildSpecification(builder, method);
 
-			if (method.hasActiveBody()) {
+			if (SootMethods.hasBody(method)) {
 				if (!SootHosts.hasAnnotation(method, Namespace.LEMMA_ANNOTATION)) {
 					buildBody(builder, method);
 				}

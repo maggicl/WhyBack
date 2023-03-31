@@ -21,6 +21,8 @@ public abstract class MethodConverter {
 
 		builder.append(printType(method.getReturnType()));
 
+		builder.append("#");
+
 		while (typeIterator.hasNext()) {
 			builder.append(printType(typeIterator.next()));
 			builder.append("#");

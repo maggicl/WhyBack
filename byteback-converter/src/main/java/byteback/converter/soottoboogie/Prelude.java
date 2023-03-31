@@ -483,4 +483,19 @@ public class Prelude {
 		return fieldTypeAccess;
 	}
 
+	public Function getHeapSuccFunction() {
+		return program().lookupFunction("~heap.succ")
+			.orElseThrow(() -> new IllegalStateException("Missing definition for ~heap.succ."));
+	}
+
+	public Expression makeDefaultHeapInvariant() {
+		final FunctionReference heapSuccReference = getHeapSuccFunction().makeFunctionReference();
+		final Expression left = new OldReference(getHeapVariable().makeValueReference());
+		final Expression right = getHeapVariable().makeValueReference();
+		heapSuccReference.addArgument(left);
+		heapSuccReference.addArgument(right);
+
+		return heapSuccReference;
+	}
+
 }

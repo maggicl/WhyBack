@@ -5,7 +5,9 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import byteback.analysis.util.SootMethods;
 import byteback.analysis.util.SootClasses;
 import soot.ArrayType;
 import soot.Body;
@@ -13,129 +15,167 @@ import soot.RefType;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
+import soot.Trap;
 import soot.Type;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.FieldRef;
 import soot.jimple.InvokeExpr;
+import soot.jimple.NewExpr;
+import soot.tagkit.AbstractHost;
 
 public class RootResolver {
 
-	private final Deque<SootClass> next;
+	private final Deque<AbstractHost> next;
 
-	private final Set<SootMethod> usedMethods;
+	private final Set<AbstractHost> visited;
 
-	private final Set<SootField> usedFields;
-
-	private final Set<SootClass> usedClasses;
-
-	public RootResolver() {
+	public RootResolver(Predicate<SootClass> boundaryFunction) {
 		this.next = new LinkedList<>();
-		this.usedMethods = new HashSet<>();
-		this.usedFields = new HashSet<>();
-		this.usedClasses = new HashSet<>();
+		this.visited = new HashSet<>();
 	}
 
-	public void addNext(final SootClass clazz) {
-		if (!usedClasses.contains(clazz)) {
-			next.add(clazz);
+	public boolean classIsValid(final SootClass clazz)  {
+		return !Namespace.isAnnotationClass(clazz);
+	}
+
+	public void addNext(final AbstractHost host) {
+		if (!visited.contains(host)) {
+			visited.add(host);
+			next.add(host);
 		}
 	}
 
-	public void scanType(final Type type) {
+	public void addType(final Type type) {
 		if (type instanceof ArrayType arrayType) {
-			scanType(arrayType.getElementType());
+			addType(arrayType.getElementType());
 		}
 
 		if (type instanceof RefType refType) {
 			final SootClass clazz = refType.getSootClass();
+			addClass(clazz);
+		}
+	}
 
+	public void addClass(final SootClass clazz) {
+		if (classIsValid(clazz)) {
 			addNext(clazz);
 		}
 	}
 
+	public void addMethod(final SootMethod method) {
+		if (classIsValid(method.getDeclaringClass())) {
+			addNext(method);
+		}
+	}
+
+	public void addField(final SootField field) {
+		if (classIsValid(field.getDeclaringClass())) {
+			addNext(field);
+		}
+	}
+
 	public void scanField(final SootField field) {
-		scanType(field.getType());
+		final SootClass declaringClass = field.getDeclaringClass();
+		addType(field.getType());
+		addClass(declaringClass);
 	}
 
 	public void scanSignature(final SootMethod method) {
 		for (final Type type : method.getParameterTypes()) {
-			scanType(type);
+			addType(type);
 		}
 
-		scanType(method.getReturnType());
+		addType(method.getReturnType());
 	}
 
 	public void scanMethod(final SootMethod method) {
-		if (method.getDeclaringClass().resolvingLevel() < SootClass.BODIES) {
+		if (!SootMethods.hasBody(method)) {
 			scanSignature(method);
 			return;
 		}
-
-		usedMethods.add(method);
 
 		final Body body = method.retrieveActiveBody();
 
 		for (final ValueBox useDefBox : body.getUseAndDefBoxes()) {
 			final Value useDef = useDefBox.getValue();
-
-			scanType(useDef.getType());
+			addType(useDef.getType());
 
 			if (useDef instanceof InvokeExpr invoke) {
-				addNext(invoke.getMethod().getDeclaringClass());
-				usedMethods.add(invoke.getMethod());
+				final SootMethod usedMethod = invoke.getMethod();
+				final SootClass declaringClass = usedMethod.getDeclaringClass();
+				addMethod(usedMethod);
+				addClass(declaringClass);
+			}
+
+			if (useDef instanceof NewExpr newExpr) {
+				addType(newExpr.getBaseType());
 			}
 
 			if (useDef instanceof FieldRef fieldRef) {
-				addNext(fieldRef.getField().getDeclaringClass());
-				usedFields.add(fieldRef.getField());
+				addField(fieldRef.getField());
 			}
+		}
+
+		for (final Trap trap : body.getTraps()) {
+			addClass(trap.getException());
 		}
 	}
 
 	public void scanClass(final SootClass clazz) {
-		usedClasses.add(clazz);
-
 		if (clazz.hasSuperclass()) {
-			addNext(clazz.getSuperclass());
+			addClass(clazz.getSuperclass());
 		}
 
 		for (final SootClass intf : clazz.getInterfaces()) {
-			addNext(intf);
+			addClass(intf);
 		}
 
-		for (final SootField field : clazz.getFields()) {
-			scanField(field);
-		}
+		if (!SootClasses.isBasicClass(clazz)) {
+			for (final SootMethod method : clazz.getMethods()) {
+				addMethod(method);
+			}
 
-		for (final SootMethod method : clazz.getMethods()) {
-			scanMethod(method);
+			for (final SootField field : clazz.getFields()) {
+				addField(field);
+			}
 		}
 	}
 
-	public Set<SootClass> getUsedClasses() {
-		return usedClasses;
+	public Iterable<SootClass> getUsedClasses() {
+		return visited.stream().filter((v) -> v instanceof SootClass)
+			.map((v) -> (SootClass) v)::iterator;
 	}
 
-	public Set<SootMethod> getUsedMethods() {
-		return usedMethods;
+	public Iterable<SootMethod> getUsedMethods() {
+		return visited.stream().filter((v) -> v instanceof SootMethod)
+			.map((v) -> (SootMethod) v)::iterator;
 	}
 
-	public Set<SootField> getUsedFields() {
-		return usedFields;
+	public Iterable<SootField> getUsedFields() {
+		return visited.stream().filter((v) -> v instanceof SootField)
+			.map((v) -> (SootField) v)::iterator;
 	}
 
 	public void resolve(final Collection<SootClass> initials) {
-		next.addAll(initials);
+		for (final SootClass initial : initials) {
+			addClass(initial);
+
+			for (SootMethod method : initial.getMethods()) {
+				addMethod(method);
+			}
+		}
 
 		while (!next.isEmpty()) {
-			final SootClass current = next.pollFirst();
+			final AbstractHost current = next.pollFirst();
 
-			if (SootClasses.isBasicClass(current)) {
-				current.setResolvingLevel(SootClass.SIGNATURES);
+			if (current instanceof SootClass clazz) {
+				scanClass(clazz);
+			} else if (current instanceof SootMethod method) {
+				scanMethod(method);
+			} else if (current instanceof SootField field) {
+				scanField(field);
 			}
-
-			scanClass(current);
 		}
 	}
 

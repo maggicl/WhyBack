@@ -1,8 +1,8 @@
 package byteback.converter.soottoboogie.program;
 
 import byteback.analysis.RootResolver;
-import byteback.analysis.AnnotationsAttacher;
 import byteback.analysis.Namespace;
+import byteback.analysis.transformer.DynamicToStaticTransformer;
 import byteback.analysis.transformer.ExceptionInvariantTransformer;
 import byteback.analysis.transformer.ExpressionFolder;
 import byteback.analysis.transformer.GuardTransformer;
@@ -24,13 +24,9 @@ import byteback.frontend.boogie.ast.AxiomDeclaration;
 import byteback.frontend.boogie.ast.Program;
 import byteback.util.Lazy;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.Body;
-import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -47,10 +43,7 @@ public class ProgramConverter {
 		return instance.get();
 	}
 
-	private final Set<SootMethod> converted;
-
 	private ProgramConverter() {
-		converted = new HashSet<>();
 	}
 
 	public void convertFields(final Program program, final RootResolver resolver) {
@@ -61,7 +54,6 @@ public class ProgramConverter {
 
 	public void transformMethods(final RootResolver resolver) {
 		for (final SootMethod method : resolver.getUsedMethods()) {
-
 			if (SootMethods.hasBody(method)) {
 				log.info("Transforming method {}", method.getSignature());
 
@@ -75,15 +67,17 @@ public class ProgramConverter {
 					LogicUnitTransformer.v().transform(body);
 					new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
 
-					if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
-						GuardTransformer.v().transform(body);
-					}
-
 					new ExpressionFolder().transform(body);
 					UnusedLocalEliminator.v().transform(body);
 					QuantifierValueTransformer.v().transform(body);
 					ExceptionInvariantTransformer.v().transform(body);
 					InvariantExpander.v().transform(body);
+					DynamicToStaticTransformer.v().transform(body);
+
+					if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+						GuardTransformer.v().transform(body);
+					}
+
 					method.setActiveBody(body);
 				} catch (final ValidationException e) {
 					e.printStackTrace();
@@ -112,8 +106,6 @@ public class ProgramConverter {
 				exception.printStackTrace();
 				log.warn("Skipping method {}", method.getName());
 			}
-
-			converted.add(method);
 		}
 	}
 

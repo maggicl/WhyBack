@@ -42,6 +42,14 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 
+import byteback.annotations.Contract.Ensure;
+import byteback.annotations.Contract.Predicate;
+import byteback.annotations.Contract.Raise;
+import byteback.annotations.Contract.Return;
+
+import static byteback.annotations.Contract.*;
+import static byteback.annotations.Operator.*;
+
 /**
  * Doubly-linked list implementation of the {@code List} and {@code Deque}
  * interfaces. Implements all optional list operations, and permits all
@@ -259,17 +267,28 @@ public class LinkedList<E>
 		return element;
 	}
 
+	@Predicate
+	public boolean first_is_null() {
+		return eq(first, null);
+	}
+
 	/**
 	 * Returns the first element in this list.
 	 *
 	 * @return the first element in this list
 	 * @throws NoSuchElementException if this list is empty
 	 */
+	@Raise(exception = NoSuchElementException.class, when = "first_is_null")
 	public E getFirst() {
 		final Node<E> f = first;
 		if (f == null)
 			throw new NoSuchElementException();
 		return f.item;
+	}
+
+	@Predicate
+	public boolean last_is_null() {
+		return eq(last, null);
 	}
 
 	/**
@@ -278,6 +297,7 @@ public class LinkedList<E>
 	 * @return the last element in this list
 	 * @throws NoSuchElementException if this list is empty
 	 */
+	@Raise(exception = NoSuchElementException.class, when = "last_is_null")
 	public E getLast() {
 		final Node<E> l = last;
 		if (l == null)
@@ -291,6 +311,8 @@ public class LinkedList<E>
 	 * @return the first element from this list
 	 * @throws NoSuchElementException if this list is empty
 	 */
+
+	@Raise(exception = NoSuchElementException.class, when = "first_is_null")
 	public E removeFirst() {
 		final Node<E> f = first;
 		if (f == null)
@@ -304,6 +326,7 @@ public class LinkedList<E>
 	 * @return the last element from this list
 	 * @throws NoSuchElementException if this list is empty
 	 */
+	@Raise(exception = NoSuchElementException.class, when = "last_is_null")
 	public E removeLast() {
 		final Node<E> l = last;
 		if (l == null)
@@ -412,6 +435,13 @@ public class LinkedList<E>
 	 * @return {@code true} if this list changed as a result of the call
 	 * @throws NullPointerException if the specified collection is null
 	 */
+
+	@Predicate
+	public boolean size_is_invalid(Collection<? extends E> c) {
+		return lt(size, 0);
+	}
+
+	@Raise(exception = IndexOutOfBoundsException.class, when = "size_is_invalid")
 	public boolean addAll(Collection<? extends E> c) {
 		return addAll(size, c);
 	}
@@ -431,6 +461,13 @@ public class LinkedList<E>
 	 * @throws IndexOutOfBoundsException {@inheritDoc}
 	 * @throws NullPointerException      if the specified collection is null
 	 */
+
+	@Predicate
+	public boolean index_is_invalid(int index, Collection<? extends E> c) {
+		return lt(index, 0) | gt(index, size);
+	}
+
+	@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_invalid")
 	public boolean addAll(int index, Collection<? extends E> c) {
 		checkPositionIndex(index);
 
@@ -555,9 +592,16 @@ public class LinkedList<E>
 		return unlink(node(index));
 	}
 
+	@Predicate
+	public boolean is_element_index(int index, boolean returns) {
+		return implies(returns, gte(index, 0) & lt(index, size));
+	}
+
 	/**
 	 * Tells if the argument is the index of an existing element.
 	 */
+	@Return
+	@Ensure("is_element_index")
 	private boolean isElementIndex(int index) {
 		return index >= 0 && index < size;
 	}
@@ -566,6 +610,13 @@ public class LinkedList<E>
 	 * Tells if the argument is the index of a valid position for an
 	 * iterator or an add operation.
 	 */
+	@Predicate
+	public boolean is_position_index(int index, boolean returns) {
+		return implies(returns, gte(index, 0) & lte(index, size));
+	}
+
+	@Return
+	@Ensure("is_position_index")
 	private boolean isPositionIndex(int index) {
 		return index >= 0 && index <= size;
 	}
@@ -575,15 +626,29 @@ public class LinkedList<E>
 	 * Of the many possible refactorings of the error handling code,
 	 * this "outlining" performs best with both server and client VMs.
 	 */
+	@Return
+	@Lemma
 	private String outOfBoundsMsg(int index) {
 		return "Index: " + index + ", Size: " + size;
 	}
 
+	@Predicate
+	public boolean index_is_out_of_bounds(int index) {
+		return lt(index, 0) | gte(index, size);
+	}
+
+	@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_out_of_bounds")
 	private void checkElementIndex(int index) {
 		if (!isElementIndex(index))
 			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 	}
 
+	@Predicate
+	public boolean index_is_in_bounds(int index) {
+		return lt(index, 0) | gt(index, size);
+	}
+
+	@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_in_bounds")
 	private void checkPositionIndex(int index) {
 		if (!isPositionIndex(index))
 			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
@@ -592,6 +657,7 @@ public class LinkedList<E>
 	/**
 	 * Returns the (non-null) Node at the specified element index.
 	 */
+	@Return
 	Node<E> node(int index) {
 		// assert isElementIndex(index);
 
@@ -688,6 +754,7 @@ public class LinkedList<E>
 	 * @throws NoSuchElementException if this list is empty
 	 * @since 1.5
 	 */
+	@Raise(exception = NoSuchElementException.class, when = "first_is_null")
 	public E element() {
 		return getFirst();
 	}
@@ -710,6 +777,7 @@ public class LinkedList<E>
 	 * @throws NoSuchElementException if this list is empty
 	 * @since 1.5
 	 */
+	@Raise(exception = NoSuchElementException.class, when = "first_is_null")
 	public E remove() {
 		return removeFirst();
 	}
@@ -1004,6 +1072,7 @@ public class LinkedList<E>
 		Node<E> next;
 		Node<E> prev;
 
+		@Return
 		Node(Node<E> prev, E element, Node<E> next) {
 			this.item = element;
 			this.next = next;

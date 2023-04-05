@@ -81,8 +81,7 @@ axiom (forall h: Store, t: Type :: !~instanceof(h, ~null, t));
 
 axiom (forall h: Store, t: Type :: !~instanceof(h, ~void, t));
 
-axiom (forall t1: Type ::
-	(forall t2: Type, t3: Type :: t2 <: t1 && t3 <: t1 ==> !(t2 <: t1)));
+axiom (forall t1 : Type, t2 : Type, t3 : Type :: (((t2 <: t1) && (t3 <: t1)) ==> t2 != t1));
 
 function ~type.reference(Type) returns (Reference);
 

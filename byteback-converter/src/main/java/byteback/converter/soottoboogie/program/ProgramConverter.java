@@ -13,8 +13,6 @@ import byteback.analysis.transformer.QuantifierValueTransformer;
 import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootHosts;
 import byteback.analysis.util.SootMethods;
-import byteback.analysis.util.SootBodies.ValidationException;
-import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
@@ -61,50 +59,39 @@ public class ProgramConverter {
 					continue;
 				}
 
-				try {
-					SootBodies.validateCalls(method.retrieveActiveBody());
-					final Body body = Grimp.v().newBody(method.getActiveBody(), "");
-					LogicUnitTransformer.v().transform(body);
-					new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
+				SootBodies.validateCalls(method.retrieveActiveBody());
+				final Body body = Grimp.v().newBody(method.getActiveBody(), "");
+				LogicUnitTransformer.v().transform(body);
+				new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
 
-					new ExpressionFolder().transform(body);
-					UnusedLocalEliminator.v().transform(body);
-					QuantifierValueTransformer.v().transform(body);
-					ExceptionInvariantTransformer.v().transform(body);
-					InvariantExpander.v().transform(body);
-					DynamicToStaticTransformer.v().transform(body);
+				new ExpressionFolder().transform(body);
+				UnusedLocalEliminator.v().transform(body);
+				QuantifierValueTransformer.v().transform(body);
+				ExceptionInvariantTransformer.v().transform(body);
+				InvariantExpander.v().transform(body);
+				DynamicToStaticTransformer.v().transform(body);
 
-					if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
-						GuardTransformer.v().transform(body);
-					}
-
-					method.setActiveBody(body);
-				} catch (final ValidationException e) {
-					e.printStackTrace();
-					log.warn("Skipping method {}", method.getName());
+				if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+					GuardTransformer.v().transform(body);
 				}
+
+				method.setActiveBody(body);
 			}
 		}
 	}
 
 	public void convertMethods(final Program program, final RootResolver resolver) {
 		for (final SootMethod method : resolver.getUsedMethods()) {
-			try {
-				log.info("Converting method {}", method.getSignature());
+			log.info("Converting method {}", method.getSignature());
 
-				if (SootHosts.hasAnnotation(method, Namespace.PRELUDE_ANNOTATION)) {
-					continue;
-				}
+			if (SootHosts.hasAnnotation(method, Namespace.PRELUDE_ANNOTATION)) {
+				continue;
+			}
 
-				if (SootHosts.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {
-					program.addDeclaration(FunctionManager.v().convert(method));
-				} else if (!SootHosts.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION)) {
-					program.addDeclaration(ProcedureConverter.v().convert(method));
-				}
-			} catch (final ConversionException exception) {
-				log.error("Conversion exception:");
-				exception.printStackTrace();
-				log.warn("Skipping method {}", method.getName());
+			if (SootHosts.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {
+				program.addDeclaration(FunctionManager.v().convert(method));
+			} else if (!SootHosts.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION)) {
+				program.addDeclaration(ProcedureConverter.v().convert(method));
 			}
 		}
 	}

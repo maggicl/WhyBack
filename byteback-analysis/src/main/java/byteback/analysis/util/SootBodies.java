@@ -73,7 +73,7 @@ public class SootBodies {
 		return unitBoxes;
 	}
 
-	public static class ValidationException extends Exception {
+	public static class ValidationException extends RuntimeException {
 
 		public ValidationException(final String message) {
 			super(message);
@@ -85,7 +85,7 @@ public class SootBodies {
 
 	}
 
-	public static void validateCalls(final Body body) throws ValidationException {
+	public static void validateCalls(final Body body) {
 		for (final ValueBox valueBox : body.getUseAndDefBoxes()) {
 			final Value value = valueBox.getValue();
 

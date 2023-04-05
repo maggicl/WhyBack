@@ -60,6 +60,7 @@ public class Main {
 		final Path preludePath = configuration.getPreludePath();
 
 		options.set_whole_program(true);
+		options.allow_phantom_refs();
 		options.setPhaseOption("jb", "use-original-names:true");
 		options.setPhaseOption("gb.a1", "enabled:false");
 		options.setPhaseOption("gb.cf", "enabled:false");
@@ -75,6 +76,9 @@ public class Main {
 		final Chain<SootClass> startingClasses = new HashChain<>();
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ObjectSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.CollectionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.IndexOutOfBoundsExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.NoSuchElementExceptionSpec"));
 
 		for (final String startingClassName : startingClassNames) {
 			final SootClass startingClass = scene.loadClassAndSupport(startingClassName);

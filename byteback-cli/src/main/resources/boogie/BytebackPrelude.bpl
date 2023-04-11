@@ -42,13 +42,13 @@ axiom (forall h1: Store, h2: Store ::
 	~heap.succ(h1, h2) &&
 	(forall r: Reference, t: Type ::
 		{ ~instanceof(h2, r, t) }
-		~instanceof(h1, r, t) == ~instanceof(h2, r, t)))	;
+		~instanceof(h1, r, t) == ~instanceof(h2, r, t)));
 
 axiom (forall h1: Store, h2: Store ::
 	~heap.succ(h1, h2) &&
 	(forall r: Reference ::
 		{ ~allocated(h2, r) }
-		~allocated(h1, r) == ~allocated(h2, r)))	;
+		~allocated(h1, r) == ~allocated(h2, r)));
 
 function ~allocated(Store, Reference) returns (bool);
 
@@ -81,7 +81,10 @@ axiom (forall h: Store, t: Type :: !~instanceof(h, ~null, t));
 
 axiom (forall h: Store, t: Type :: !~instanceof(h, ~void, t));
 
-axiom (forall t1 : Type, t2 : Type, t3 : Type :: (((t2 <: t1) && (t3 <: t1)) ==> t2 != t1));
+axiom (forall t1 : Type, t2 : Type, t3 : Type ::
+	(((t1 != t2) && (t2 != t3)) && ((t2 <: t1) && (t3 <: t1)) <==> t1 != t2));
+
+axiom (forall t1 : Type, t2 : Type, t3 : Type :: (t1 <: t2 && t2 <: t3 ==> t1 <: t3));
 
 function ~type.reference(Type) returns (Reference);
 

@@ -23,11 +23,11 @@ public class TryFinally {
 	};
 
 	@Predicate
-	public boolean always_throws1() {
+	public boolean always() {
 		return true;
 	}
 
-	@Raise(exception = Exception1.class, when = "always_throws1")
+	@Raise(exception = Exception1.class, when = "always")
 	public void alwaysThrows1() throws Exception1, Exception2 {
 		throw new Exception1();
 	}
@@ -49,14 +49,12 @@ public class TryFinally {
 		try {
 			alwaysThrows1();
 			assertion(false);
-		} catch (Exception2 e) {
-			assertion(false);
 		} finally {
 		}
 		assertion(false);
 	}
 
-	public void finallyIsExecutedAfterThrowInCatch() throws Exception {
+	public void finallyIsExecutedAfterThrowAndCatch() throws Exception {
 		try {
 			alwaysThrows1();
 			assertion(false);
@@ -66,6 +64,15 @@ public class TryFinally {
 		} finally {
 		}
 		assertion(false);
+	}
+
+	public void unreachableCatch() throws Exception {
+		try {
+			alwaysThrows1();
+			assertion(false);
+		} catch (Exception2 e)  {
+			assertion(false);
+		}
 	}
 
 	@Predicate
@@ -127,5 +134,6 @@ public class TryFinally {
 
 }
 /**
- * RUN: %{verify} %t.bpl
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 13 verified, 0 errors
  */

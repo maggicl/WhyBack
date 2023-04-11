@@ -18,6 +18,7 @@ import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.converter.soottoboogie.type.TypeReferenceExtractor;
 import byteback.converter.soottoboogie.Configuration;
 import byteback.frontend.boogie.ast.Body;
+import byteback.frontend.boogie.ast.BooleanLiteral;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Condition;
 import byteback.frontend.boogie.ast.EqualsOperation;
@@ -162,14 +163,12 @@ public class ProcedureConverter extends MethodConverter {
 				final var parameters = new ArrayList<Type>(method.getParameterTypes());
 				final Function<Expression, Condition> conditionCtor;
 				final String tagName;
-				final String message; 
 
 				switch (sub.getType()) {
 					case Namespace.REQUIRE_ANNOTATION :
 						// requires {condition};
 						tagName = "value";
 						conditionCtor = (expression) -> new PreCondition(new List<>(), false, expression);
-						message = "Precondition error";
 						break;
 					case Namespace.ENSURE_ANNOTATION :
 						// ensures {condition};
@@ -179,11 +178,9 @@ public class ProcedureConverter extends MethodConverter {
 						if (method.getReturnType() != VoidType.v()) {
 							parameters.add(method.getReturnType());
 						}
-
-						message = "Postcondition error";
 						break;
 					case Namespace.RAISE_ANNOTATION :
-						// ensures old({condition}) <==> ~exc == {exception};
+						// ensures old({condition}) ==> ~exc == {exception};
 						tagName = "when";
 						final AnnotationElem exceptionElem = SootAnnotations.getElem(sub, "exception").orElseThrow();
 						final String value = new ClassElemExtractor().visit(exceptionElem);
@@ -200,45 +197,42 @@ public class ProcedureConverter extends MethodConverter {
 							final Expression condition = new ImplicationOperation(new OldReference(expression), instanceOfReference);
 							return new PostCondition(new List<>(), false, condition);
 						};
-
-						message = "Raise condition error";
 						break;
 					case Namespace.RETURN_ANNOTATION :
-						// ensures ~exc == ~void;
-						final var exceptionalCondition = new PostCondition();
-						final var expression = new EqualsOperation(Convention.makeExceptionReference(),
+						// ensures old({condition}) ~exc == ~void;
+						tagName = "when";
+						conditionCtor = (expression) -> {
+							final var rightExpression = new EqualsOperation(Convention.makeExceptionReference(),
 								Prelude.v().getVoidConstant().makeValueReference());
-						exceptionalCondition.setExpression(expression);
-						builder.addSpecification(exceptionalCondition);
-
-						message = "Return condition error";
-					default :
+							final Expression condition = new ImplicationOperation(new OldReference(expression), rightExpression);
+							return new PostCondition(new List<>(), false, condition);
+						};
+						break;
+					default:
 						return;
 				}
 
-				final AnnotationElem elem = SootAnnotations.getElem(sub, tagName).orElseThrow();
-				final String name = new StringElemExtractor().visit(elem);
-				final SootClass clazz = method.getDeclaringClass();
-				SootMethod source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
+				SootAnnotations.getElem(sub, tagName)
+						.ifPresentOrElse((elem) -> {
+							final String name = new StringElemExtractor().visit(elem);
+							final SootClass clazz = method.getDeclaringClass();
+							SootMethod source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
+							if (source == null) {
+								parameters.add(Scene.v().getType("java.lang.Throwable"));
+								source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
 
-				if (source == null) {
-					parameters.add(Scene.v().getType("java.lang.Throwable"));
-					source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
-
-					if (source == null) {
-						throw new ConversionException("Unable to find matching predicate " + name + " in class " + clazz.getName());
-					}
-				}
-
-				final Expression expression = makeCondition(method, source);
-				final Condition condition = conditionCtor.apply(expression);
-				builder.addSpecification(condition);
-
-				if (Configuration.v().getMessage()) {
-					condition.addAttribute(MessageFormatter.makeAttribute(method, message + " for predicate " + source));
-				}
+								if (source == null) {
+									throw new ConversionException(
+											"Unable to find matching predicate " + name + " in class " + clazz.getName());
+								}
+							}
+							final Expression expression = makeCondition(method, source);
+							final Condition condition = conditionCtor.apply(expression);
+							builder.addSpecification(condition);
+						}, () -> {
+								builder.addSpecification(conditionCtor.apply(BooleanLiteral.makeTrue()));
+						});
 			});
-
 		});
 
 		buildDefaultHeapInvariant(builder);

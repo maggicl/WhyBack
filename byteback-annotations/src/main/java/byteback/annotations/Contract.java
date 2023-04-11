@@ -85,6 +85,13 @@ public interface Contract {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Return {
+		public String when() default "[unassigned]";
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	public @interface Returns {
+		public Return[] value();
 	}
 
 	/**

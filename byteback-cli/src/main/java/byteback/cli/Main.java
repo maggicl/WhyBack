@@ -59,6 +59,9 @@ public class Main {
 		final List<String> startingClassNames = configuration.getStartingClasses();
 		final Path preludePath = configuration.getPreludePath();
 
+		options.set_allow_phantom_refs(true);
+		scene.allowsPhantomRefs();
+
 		options.set_whole_program(true);
 		options.allow_phantom_refs();
 		options.setPhaseOption("jb", "use-original-names:true");

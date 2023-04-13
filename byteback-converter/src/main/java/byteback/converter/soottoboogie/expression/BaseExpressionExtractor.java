@@ -18,7 +18,6 @@ import soot.SootMethod;
 import soot.Value;
 import soot.jimple.BinopExpr;
 import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.VirtualInvokeExpr;
 

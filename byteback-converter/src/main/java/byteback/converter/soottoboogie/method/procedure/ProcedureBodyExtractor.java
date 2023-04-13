@@ -15,33 +15,34 @@ import soot.Unit;
 
 public class ProcedureBodyExtractor extends JimpleStmtSwitch<Body> {
 
-	public class VariableProvider {
+	public class BodyReferenceProvider implements ReferenceProvider {
 
 		private int variableCounter;
 
-		public VariableProvider() {
+		public BodyReferenceProvider() {
 			variableCounter = 0;
 		}
 
-		public ValueReference get(final TypeAccess typeAccess) {
-			final ValueReference reference = Convention.makeValueReference(++variableCounter);
-			final VariableDeclaration declaration = reference.makeVariableDeclaration(typeAccess);
-			body.addLocalDeclaration(declaration);
+		public ValueReference get(final Type type) {
+			final TypeAccess bTypeAccess = new TypeAccessExtractor().visit(type);
+			final ValueReference bReference = Convention.makeValueReference(++variableCounter);
+			final VariableDeclaration bDeclaration = bReference.makeVariableDeclaration(bTypeAccess);
+			body.addLocalDeclaration(bDeclaration);
 
-			return reference;
+			return bReference;
 		}
 
 	}
 
 	private final Body body;
 
-	private final VariableProvider variableProvider;
+	private final ReferenceProvider variableProvider;
 
 	private final LabelCollector labelCollector;
 
 	public ProcedureBodyExtractor() {
 		this.body = new Body();
-		this.variableProvider = new VariableProvider();
+		this.variableProvider = new BodyReferenceProvider();
 		this.labelCollector = new LabelCollector();
 	}
 
@@ -67,14 +68,8 @@ public class ProcedureBodyExtractor extends JimpleStmtSwitch<Body> {
 		return labelCollector;
 	}
 
-	public VariableProvider getVariableProvider() {
+	public ReferenceProvider getReferenceProvider() {
 		return variableProvider;
-	}
-
-	public ValueReference generateReference(final Type type) {
-		final TypeAccess access = new TypeAccessExtractor().visit(type);
-
-		return variableProvider.get(access);
 	}
 
 	@Override

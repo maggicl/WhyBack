@@ -327,3 +327,7 @@ final case class Success[+T](value: T) extends Try[T] {
     try { fb(value) } catch { case NonFatal(e) => fa(e) }
 
 }
+
+/**
+ * RUN: %{verify} %t.bpl
+ */

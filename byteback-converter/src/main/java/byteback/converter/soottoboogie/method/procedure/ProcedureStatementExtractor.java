@@ -34,7 +34,8 @@ import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.IfStatementBuilder;
 import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import java.util.Iterator;
-import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import soot.Local;
 import soot.SootField;
 import soot.Type;
@@ -61,9 +62,6 @@ import soot.jimple.ThrowStmt;
 
 public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 
-	interface ReferenceSupplier extends Supplier<ValueReference> {
-	}
-
 	private final ProcedureBodyExtractor bodyExtractor;
 
 	public ProcedureStatementExtractor(final ProcedureBodyExtractor bodyExtractor) {
@@ -74,8 +72,8 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 		return new ProcedureExpressionExtractor(bodyExtractor);
 	}
 
-	public ReferenceSupplier getReferenceSupplier(final Type type) {
-		return () -> bodyExtractor.generateReference(type);
+	public ProcedureExpressionExtractor makeExpressionExtractor(final ReferenceProvider referenceProvider) {
+		return new ProcedureExpressionExtractor(bodyExtractor, referenceProvider);
 	}
 
 	public void addStatement(final Statement statement) {
@@ -132,8 +130,19 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 			@Override
 			public void caseLocal(final Local local) {
 				final ValueReference reference = ValueReference.of(PureExpressionExtractor.localName(local));
-				final Expression assigned = makeExpressionExtractor().visit(right);
-				addSingleAssignment(Assignee.of(reference), assigned);
+				final AtomicBoolean referenceWasAssigned = new AtomicBoolean();
+				final Expression assigned = makeExpressionExtractor(new ReferenceProvider() {
+
+					public ValueReference get(final Type expectedType) {
+						referenceWasAssigned.set(true);
+						return reference;
+					}
+
+				}).visit(right);
+
+				if (!referenceWasAssigned.get()) {
+					addSingleAssignment(Assignee.of(reference), assigned);
+				}
 			}
 
 			@Override
@@ -261,7 +270,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 		final List<Attribute> attributes = new List<>();
 
 		if (Configuration.v().getMessage()) {
-			 attributes.add(MessageFormatter.makeAttribute(assertionStmt, "Assertion failed"));
+			attributes.add(MessageFormatter.makeAttribute(assertionStmt, "Assertion failed"));
 		}
 
 		addStatement(new AssertStatement(attributes, condition));

@@ -30,9 +30,15 @@ import soot.jimple.SpecialInvokeExpr;
 public class ProcedureExpressionExtractor extends PureExpressionExtractor {
 
 	final ProcedureBodyExtractor bodyExtractor;
+	final ReferenceProvider referenceProvider;
 
 	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor) {
+		this(bodyExtractor, bodyExtractor.getReferenceProvider());
+	}
+
+	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor, final ReferenceProvider referenceProvider) {
 		this.bodyExtractor = bodyExtractor;
+		this.referenceProvider = referenceProvider;
 	}
 
 	@Override
@@ -52,7 +58,7 @@ public class ProcedureExpressionExtractor extends PureExpressionExtractor {
 		final List<ValueReference> targets = new List<ValueReference>();
 
 		if (type != VoidType.v() && type != UnknownType.v()) {
-			final ValueReference reference = bodyExtractor.generateReference(type);
+			final ValueReference reference = referenceProvider.get(type);
 			targets.add(reference);
 			setExpression(reference);
 		}

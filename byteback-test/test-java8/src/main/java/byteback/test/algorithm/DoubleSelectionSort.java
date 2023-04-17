@@ -6,6 +6,7 @@ package byteback.test.algorithm;
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
 import static byteback.annotations.Quantifier.*;
+import static byteback.annotations.Special.*;
 
 import byteback.annotations.Binding;
 import byteback.annotations.Contract.Ensure;
@@ -16,6 +17,12 @@ public class DoubleSelectionSort {
 	@Predicate
 	public static boolean bounded_index(final double[] a, final int i) {
 		return lte(0, i) & lt(i, a.length);
+	}
+
+	@Pure
+	@Predicate
+	public static boolean bounded_indices(final double[] a, final int i, final int j) {
+		return bounded_index(a, i) & bounded_index(a, j);
 	}
 
 	@Predicate
@@ -86,6 +93,20 @@ public class DoubleSelectionSort {
 		return neq(a, null);
 	}
 
+	@Predicate
+	public static boolean swapped_elements(final double[] a, final int i, final int j) {
+		return eq(old(a[i]), a[j]) & eq(old(a[j]), a[i]);
+	}
+
+	@Return
+	@Require("bounded_indices")
+	@Ensure("swapped_elements")
+	public static void swap(final double[] a, int i, int j) {
+		final double y = a[i];
+		a[i] = a[j];
+		a[j] = y;
+	}
+
 	@Return
 	@Require("array_is_not_null")
 	@Require("array_is_not_empty")
@@ -97,16 +118,12 @@ public class DoubleSelectionSort {
 			invariant(sorted(a, 0, c));
 
 			final int m = minimum(a, c);
-			final double y;
-
-			y = a[c];
-			a[m] = a[c];
-			a[c] = y;
+			swap(a, m, c);
 		}
 	}
 
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 3 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 4 verified, 0 errors
  */

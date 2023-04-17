@@ -82,6 +82,7 @@ public class Main {
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.CollectionSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.IndexOutOfBoundsExceptionSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.NoSuchElementExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.FileReaderSpec"));
 
 		for (final String startingClassName : startingClassNames) {
 			final SootClass startingClass = scene.loadClassAndSupport(startingClassName);

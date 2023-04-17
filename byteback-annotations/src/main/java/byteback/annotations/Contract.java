@@ -25,12 +25,12 @@ public interface Contract {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
-	public @interface Lemma {
+	public @interface Primitive {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
-	public @interface Primitive {
+	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	public @interface Lemma {
 	}
 
 	/**

@@ -2,9 +2,10 @@ package byteback.converter.soottoboogie.type;
 
 import java.util.ArrayList;
 
+import byteback.converter.soottoboogie.Prelude;
 import byteback.frontend.boogie.ast.AxiomDeclaration;
+import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.List;
-import byteback.frontend.boogie.ast.PartialOrderOperation;
 import byteback.util.Lazy;
 import soot.SootClass;
 
@@ -18,10 +19,9 @@ public class ClassHierarchyConverter {
 
 	public static AxiomDeclaration makeAxiom(final SootClass clazz, final SootClass superClazz) {
 		final var axiomDeclaration = new AxiomDeclaration();
-		final var expression = new PartialOrderOperation();
-		expression.setLeftOperand(new TypeReferenceExtractor().visit(clazz.getType()));
-		expression.setRightOperand(new TypeReferenceExtractor().visit(superClazz.getType()));
-		axiomDeclaration.setExpression(expression);
+		final Expression bT1 = new TypeReferenceExtractor().visit(clazz.getType());
+		final Expression bT2 = new TypeReferenceExtractor().visit(superClazz.getType());
+		axiomDeclaration.setExpression(Prelude.v().makeExtendsExpression(bT1, bT2));
 
 		return axiomDeclaration;
 	}

@@ -202,6 +202,19 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~type.reference function"));
 	}
 
+	public Function getExtendsFunction() {
+		return program().lookupFunction("~extends")
+				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~extends function"));
+	}
+
+	public Expression makeExtendsExpression(final Expression t1, final Expression t2) {
+		final FunctionReference extendsRef = getExtendsFunction().makeFunctionReference();
+		extendsRef.addArgument(t1);
+		extendsRef.addArgument(t2);
+
+		return extendsRef;
+	}
+
 	public Function getTypeOfFunction() {
 		return program().lookupFunction("~typeof")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~typeof function"));

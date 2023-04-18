@@ -207,7 +207,7 @@ public class Prelude {
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~extends function"));
 	}
 
-	public Expression makeExtendsExpression(final Expression t1, final Expression t2) {
+	public FunctionReference makeExtendsExpression(final Expression t1, final Expression t2) {
 		final FunctionReference extendsRef = getExtendsFunction().makeFunctionReference();
 		extendsRef.addArgument(t1);
 		extendsRef.addArgument(t2);

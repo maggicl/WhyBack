@@ -6,6 +6,7 @@ import byteback.frontend.boogie.ast.Option;
 import byteback.frontend.boogie.ast.Quantifier;
 import byteback.frontend.boogie.ast.QuantifierExpression;
 import byteback.frontend.boogie.ast.SetBinding;
+import byteback.frontend.boogie.ast.Trigger;
 import byteback.frontend.boogie.ast.TypeParameter;
 
 public class QuantifierExpressionBuilder {
@@ -20,10 +21,13 @@ public class QuantifierExpressionBuilder {
 
 	private List<Option> options;
 
+	private List<Expression> triggerExpressions;
+
 	public QuantifierExpressionBuilder() {
 		this.typeParameters = new List<>();
 		this.bindings = new List<>();
 		this.options = new List<>();
+		this.triggerExpressions = new List<>();
 	}
 
 	public QuantifierExpressionBuilder operand(final Expression operand) {
@@ -74,6 +78,12 @@ public class QuantifierExpressionBuilder {
 		return this;
 	}
 
+	public QuantifierExpressionBuilder addTrigger(final Expression expression) {
+		this.triggerExpressions.add(expression);
+
+		return this;
+	}
+
 	public QuantifierExpression build() {
 		if (operand == null) {
 			throw new IllegalArgumentException("A quantifier expression must include an operand");
@@ -82,6 +92,8 @@ public class QuantifierExpressionBuilder {
 		if (quantifier == null) {
 			throw new IllegalArgumentException("No quantifier defined");
 		}
+
+		options.add(new Trigger(triggerExpressions));
 
 		return new QuantifierExpression(operand, quantifier, typeParameters, bindings, options);
 	}

@@ -2,7 +2,6 @@ package byteback.converter.soottoboogie.method.function;
 
 import byteback.analysis.TypeSwitch;
 import byteback.analysis.util.SootBodies;
-import byteback.analysis.util.SootMethods;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
@@ -41,7 +40,7 @@ public class FunctionConverter extends MethodConverter {
 		final var signatureBuilder = new FunctionSignatureBuilder();
 		signatureBuilder.addInputBinding(Prelude.v().getHeapVariable().makeOptionalBinding());
 
-		for (Local local : SootMethods.makeFakeParameterLocals(method)) {
+		for (Local local : SootBodies.getParameterLocals(method.retrieveActiveBody())) {
 			signatureBuilder.addInputBinding(makeBinding(local));
 		}
 
@@ -65,11 +64,7 @@ public class FunctionConverter extends MethodConverter {
 	}
 
 	public static void buildExpression(final FunctionDeclarationBuilder functionBuilder, final SootMethod method) {
-		if (SootMethods.hasBody(method)) {
-			functionBuilder.expression(new FunctionBodyExtractor().visit(method.retrieveActiveBody()));
-		} else {
-			System.out.println(method);
-		}
+		functionBuilder.expression(new FunctionBodyExtractor().visit(method.retrieveActiveBody()));
 	}
 
 	public FunctionDeclaration convert(final SootMethod method) {

@@ -7,16 +7,24 @@ import java.util.List;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootHosts;
 import byteback.analysis.util.SootAnnotationElems.ClassElemExtractor;
+import byteback.util.Lazy;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
+import soot.util.Chain;
 
-public class AnnotationsAttacher {
+public class AnnotationInjector {
 
-	public static void attachAll(final Scene scene) {
-		final Iterator<SootClass> classIterator = scene.getClasses().snapshotIterator();
+	private static final Lazy<AnnotationInjector> instance = Lazy.from(AnnotationInjector::new);
+
+	public static AnnotationInjector v() {
+		return instance.get();
+	}
+
+	public void inject(final Chain<SootClass> classes) {
+		final Iterator<SootClass> classIterator = classes.snapshotIterator();
 
 		while (classIterator.hasNext()) {
 			final SootClass attachedClass = classIterator.next();

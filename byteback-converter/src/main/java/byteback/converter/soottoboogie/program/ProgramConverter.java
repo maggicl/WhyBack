@@ -18,7 +18,6 @@ import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.converter.soottoboogie.type.ClassHierarchyConverter;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
-import byteback.frontend.boogie.ast.AxiomDeclaration;
 import byteback.frontend.boogie.ast.Program;
 import byteback.util.Lazy;
 
@@ -99,10 +98,7 @@ public class ProgramConverter {
 	public void convertClasses(final Program program, final RootResolver resolver) {
 		for (final SootClass clazz : resolver.getUsedClasses()) {
 			program.addDeclaration(ReferenceTypeConverter.v().convert(clazz));
-
-			for (final AxiomDeclaration axiomDeclaration : ClassHierarchyConverter.v().convert(clazz)) {
-				program.addDeclaration(axiomDeclaration);
-			}
+			program.addDeclarations(ClassHierarchyConverter.v().convert(clazz, resolver));
 		}
 	}
 

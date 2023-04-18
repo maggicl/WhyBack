@@ -3,6 +3,12 @@
  */
 aspect Program {
 
+	public void Program.addDeclarations(final Iterable<? extends Declaration> declarations) {
+		for (Declaration declaration : declarations) {
+			addDeclaration(declaration);
+		}
+	}
+
   /**
    * Merges two programs into a new program.
    *

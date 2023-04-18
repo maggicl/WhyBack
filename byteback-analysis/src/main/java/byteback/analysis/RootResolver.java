@@ -4,14 +4,16 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import byteback.analysis.util.SootMethods;
+import byteback.util.Lazy;
 import byteback.analysis.util.SootClasses;
 import soot.ArrayType;
 import soot.Body;
 import soot.RefType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -24,13 +26,21 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.NewExpr;
 import soot.tagkit.AbstractHost;
 
+// TODO:
+// Wrap Soot.scene in RootResolver
 public class RootResolver {
+
+	private static final Lazy<RootResolver> instance = Lazy.from(RootResolver::new);
 
 	private final Deque<AbstractHost> next;
 
 	private final Set<AbstractHost> visited;
 
-	public RootResolver(Predicate<SootClass> boundaryFunction) {
+	public static RootResolver v() {
+		return instance.get();
+	}
+
+	private RootResolver() {
 		this.next = new LinkedList<>();
 		this.visited = new HashSet<>();
 	}
@@ -177,6 +187,12 @@ public class RootResolver {
 				scanField(field);
 			}
 		}
+	}
+
+	public List<SootClass> getVisibleSubclassesOf(final SootClass clazz) {
+		final Collection<SootClass> subclasses = Scene.v().getOrMakeFastHierarchy().getSubclassesOf(clazz);
+
+		return subclasses.stream().filter((c) -> visited.contains(c)).toList();
 	}
 
 }

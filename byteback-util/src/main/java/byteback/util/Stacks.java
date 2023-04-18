@@ -1,6 +1,7 @@
 package byteback.util;
 
 import java.util.Stack;
+import java.util.function.BiFunction;
 
 public class Stacks {
 
@@ -16,4 +17,15 @@ public class Stacks {
 			assert popped == element;
 		}
 	}
+
+	public static <T> T reduce(final Stack<T> stack, BiFunction<T, T, T> reducer) {
+		T accumulator = reducer.apply(stack.pop(), stack.pop());
+
+		while(!stack.isEmpty()) {
+			accumulator = reducer.apply(accumulator, stack.pop());
+		}
+
+		return accumulator;
+	}
+
 }

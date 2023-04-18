@@ -5,10 +5,8 @@ import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Vimp;
 import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.AssumptionStmt;
-import byteback.converter.soottoboogie.Configuration;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.ConversionException;
-import byteback.converter.soottoboogie.MessageFormatter;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.field.FieldConverter;
@@ -268,10 +266,6 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	public void caseAssertionStmt(final AssertionStmt assertionStmt) {
 		final Expression condition = makeExpressionExtractor().visit(assertionStmt.getCondition());
 		final List<Attribute> attributes = new List<>();
-
-		if (Configuration.v().getMessage()) {
-			attributes.add(MessageFormatter.makeAttribute(assertionStmt, "Assertion failed"));
-		}
 
 		addStatement(new AssertStatement(attributes, condition));
 	}

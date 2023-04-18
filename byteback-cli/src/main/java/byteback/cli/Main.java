@@ -1,9 +1,7 @@
 package byteback.cli;
 
-import byteback.analysis.AnnotationsAttacher;
+import byteback.analysis.AnnotationInjector;
 import byteback.analysis.RootResolver;
-import byteback.analysis.util.SootClasses;
-import byteback.converter.soottoboogie.Configuration;
 import byteback.converter.soottoboogie.Prelude;
 import com.beust.jcommander.ParameterException;
 import java.io.File;
@@ -30,7 +28,9 @@ public class Main {
 
 	public static final Prelude prelude = Prelude.v();
 
-	public static final RootResolver resolver = new RootResolver(SootClasses::isBasicClass);
+	public static final RootResolver resolver = RootResolver.v();
+
+	public static final AnnotationInjector injector = AnnotationInjector.v();
 
 	public static void convert(final byteback.cli.Configuration configuration) {
 		final PrintStream output;
@@ -89,7 +89,7 @@ public class Main {
 			startingClasses.add(startingClass);
 		}
 
-		AnnotationsAttacher.attachAll(Scene.v());
+		injector.inject(scene.getClasses());
 		resolver.resolve(startingClasses);
 
 		if (preludePath != null) {
@@ -112,7 +112,6 @@ public class Main {
 				initialize(config);
 				final long conversionStart = System.currentTimeMillis();
 				log.info("Converting classes");
-				Configuration.v().setMessage(config.getMessage());
 				convert(config);
 				final long endTime = System.currentTimeMillis();
 				final long totalTime = endTime - totalStart;

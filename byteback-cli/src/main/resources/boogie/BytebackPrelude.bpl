@@ -85,7 +85,7 @@ axiom (forall t1: Type, t2: Type ::
 
 function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 {
-	~extends(~typeof(h, r), t)
+	~typeof(h, r) <: t
 }
 
 axiom (forall h: Store, t: Type :: !~instanceof(h, ~null, t));

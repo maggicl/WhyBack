@@ -163,9 +163,16 @@ public class ArrayList<E> extends AbstractList<E>
 	 */
 	private int size;
 
+	@Pure
 	@byteback.annotations.Contract.Predicate
 	public boolean illegal_capacity(int capacity) {
 		return lt(capacity, 0);
+	}
+
+	@Pure
+	@byteback.annotations.Contract.Predicate
+	public boolean legal_capacity(int capacity) {
+		return gte(capacity, 0);
 	}
 
 	/**
@@ -176,6 +183,7 @@ public class ArrayList<E> extends AbstractList<E>
 	 *                                  is negative
 	 */
 	@Raise(exception = IllegalArgumentException.class, when = "illegal_capacity")
+	@Return(when = "legal_capacity")
 	public ArrayList(int initialCapacity) {
 		super();
 		if (initialCapacity < 0)
@@ -186,6 +194,7 @@ public class ArrayList<E> extends AbstractList<E>
 	/**
 	 * Constructs an empty list with an initial capacity of ten.
 	 */
+	@Return
 	public ArrayList() {
 		super();
 		this.elementData = EMPTY_ELEMENTDATA;
@@ -1057,6 +1066,7 @@ public class ArrayList<E> extends AbstractList<E>
 			this.modCount = ArrayList.this.modCount;
 		}
 
+		@Raise(exception = IndexOutOfBoundsException.class, when = "addition_index_is_invalid")
 		public E set(int index, E e) {
 			rangeCheck(index);
 			checkForComodification();
@@ -1065,6 +1075,7 @@ public class ArrayList<E> extends AbstractList<E>
 			return oldValue;
 		}
 
+		@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_out_of_bounds_incl")
 		public E get(int index) {
 			rangeCheck(index);
 			checkForComodification();
@@ -1076,6 +1087,12 @@ public class ArrayList<E> extends AbstractList<E>
 			return this.size;
 		}
 
+		@byteback.annotations.Contract.Predicate
+		public boolean addition_index_is_invalid(int index, E e) {
+			return index_is_out_of_bounds(index);
+		}
+
+		@Raise(exception = IndexOutOfBoundsException.class, when = "addition_index_is_invalid")
 		public void add(int index, E e) {
 			rangeCheckForAdd(index);
 			checkForComodification();
@@ -1084,6 +1101,7 @@ public class ArrayList<E> extends AbstractList<E>
 			this.size++;
 		}
 
+		@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_out_of_bounds_incl")
 		public E remove(int index) {
 			rangeCheck(index);
 			checkForComodification();
@@ -1105,6 +1123,12 @@ public class ArrayList<E> extends AbstractList<E>
 			return addAll(this.size, c);
 		}
 
+		@byteback.annotations.Contract.Predicate
+		public boolean index_is_out_of_bounds(int index, Collection<? extends E> c) {
+			return index_is_out_of_bounds(index);
+		}
+
+		@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_out_of_bounds")
 		public boolean addAll(int index, Collection<? extends E> c) {
 			rangeCheckForAdd(index);
 			int cSize = c.size();
@@ -1122,9 +1146,10 @@ public class ArrayList<E> extends AbstractList<E>
 			return listIterator();
 		}
 
+		@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_out_of_bounds")
 		public ListIterator<E> listIterator(final int index) {
-			checkForComodification();
 			rangeCheckForAdd(index);
+			checkForComodification();
 			final int offset = this.offset;
 
 			return new ListIterator<E>() {
@@ -1137,6 +1162,7 @@ public class ArrayList<E> extends AbstractList<E>
 				}
 
 				@SuppressWarnings("unchecked")
+				@Raise(exception = ConcurrentModificationException.class, when = "modCount_is_invalid")
 				public E next() {
 					checkForComodification();
 					int i = cursor;
@@ -1154,6 +1180,7 @@ public class ArrayList<E> extends AbstractList<E>
 				}
 
 				@SuppressWarnings("unchecked")
+				@Raise(exception = ConcurrentModificationException.class, when = "modCount_is_invalid")
 				public E previous() {
 					checkForComodification();
 					int i = cursor - 1;
@@ -1194,6 +1221,14 @@ public class ArrayList<E> extends AbstractList<E>
 					return cursor - 1;
 				}
 
+				@Pure
+				@byteback.annotations.Contract.Predicate
+				public boolean lastRet_is_valid_and_modCount_is_invalid() {
+					return lastRet_is_valid() & modCount_is_invalid();
+				}
+
+				@Raise(exception = IllegalStateException.class, when = "lastRet_is_invalid")
+				@Raise(exception = ConcurrentModificationException.class, when = "lastRet_is_valid_and_modCount_is_invalid")
 				public void remove() {
 					if (lastRet < 0)
 						throw new IllegalStateException();
@@ -1209,6 +1244,30 @@ public class ArrayList<E> extends AbstractList<E>
 					}
 				}
 
+				@byteback.annotations.Contract.Predicate
+				public boolean lastRet_is_valid_and_modCount_is_invalid(E e) {
+					return lastRet_is_valid_and_modCount_is_invalid();
+				}
+
+				@Pure
+				@byteback.annotations.Contract.Predicate
+				public boolean lastRet_is_valid() {
+					return gte(lastRet, 0);
+				}
+
+				@Pure
+				@byteback.annotations.Contract.Predicate
+				public boolean lastRet_is_invalid() {
+					return not(lastRet_is_valid());
+				}
+
+				@byteback.annotations.Contract.Predicate
+				public boolean lastRet_is_invalid(E e) {
+					return lastRet_is_invalid();
+				}
+
+				@Raise(exception = IllegalStateException.class, when = "lastRet_is_invalid")
+				@Raise(exception = ConcurrentModificationException.class, when = "lastRet_is_valid_and_modCount_is_invalid")
 				public void set(E e) {
 					if (lastRet < 0)
 						throw new IllegalStateException();
@@ -1221,6 +1280,12 @@ public class ArrayList<E> extends AbstractList<E>
 					}
 				}
 
+				@byteback.annotations.Contract.Predicate
+				public boolean modCount_is_invalid(E e) {
+					return modCount_is_invalid();
+				}
+
+				@Raise(exception = ConcurrentModificationException.class, when = "modCount_is_invalid")
 				public void add(E e) {
 					checkForComodification();
 
@@ -1235,6 +1300,13 @@ public class ArrayList<E> extends AbstractList<E>
 					}
 				}
 
+				@Pure
+				@byteback.annotations.Contract.Predicate
+				public boolean modCount_is_invalid() {
+					return neq(expectedModCount, ArrayList.this.modCount);
+				}
+
+				@Raise(exception = ConcurrentModificationException.class, when = "modCount_is_invalid")
 				final void checkForComodification() {
 					if (expectedModCount != ArrayList.this.modCount)
 						throw new ConcurrentModificationException();
@@ -1247,16 +1319,31 @@ public class ArrayList<E> extends AbstractList<E>
 			return new SubList(this, offset, fromIndex, toIndex);
 		}
 
+		@Pure
+		@byteback.annotations.Contract.Predicate
+		public boolean index_is_out_of_bounds_incl(int index) {
+			return lt(index, 0) | gte(index, this.size);
+		}
+
+		@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_out_of_bounds_incl")
 		private void rangeCheck(int index) {
 			if (index < 0 || index >= this.size)
 				throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 		}
 
+		@Pure
+		@byteback.annotations.Contract.Predicate
+		public boolean index_is_out_of_bounds(int index) {
+			return lt(index, 0) | gt(index, this.size);
+		}
+
+		@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_out_of_bounds")
 		private void rangeCheckForAdd(int index) {
 			if (index < 0 || index > this.size)
 				throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 		}
 
+		@Return
 		private String outOfBoundsMsg(int index) {
 			return "Index: " + index + ", Size: " + this.size;
 		}
@@ -1377,6 +1464,12 @@ public class ArrayList<E> extends AbstractList<E>
 							expectedModCount);
 		}
 
+		@byteback.annotations.Contract.Predicate
+		public boolean action_is_null(Consumer<? super E> e) {
+			return eq(e, null);
+		}
+
+		@Raise(exception = NullPointerException.class, when = "action_is_null")
 		public boolean tryAdvance(Consumer<? super E> action) {
 			if (action == null)
 				throw new NullPointerException();
@@ -1393,6 +1486,7 @@ public class ArrayList<E> extends AbstractList<E>
 			return false;
 		}
 
+		@Raise(exception = NullPointerException.class, when = "action_is_null")
 		public void forEachRemaining(Consumer<? super E> action) {
 			int i, hi, mc; // hoist accesses and checks from loop
 			ArrayList<E> lst;

@@ -83,7 +83,9 @@ public class Main {
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.FileReaderSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.InvokeDynamicSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.IndexOutOfBoundsExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ConcurrentModificationExceptionSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.NoSuchElementExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.IllegalStateExceptionSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.IllegalArgumentExceptionSpec"));
 
 		for (final String startingClassName : startingClassNames) {

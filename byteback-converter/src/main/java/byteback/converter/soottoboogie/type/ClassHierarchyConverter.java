@@ -10,10 +10,10 @@ import byteback.converter.soottoboogie.Prelude;
 import byteback.frontend.boogie.ast.AndOperation;
 import byteback.frontend.boogie.ast.AxiomDeclaration;
 import byteback.frontend.boogie.ast.Expression;
-import byteback.frontend.boogie.ast.FunctionReference;
 import byteback.frontend.boogie.ast.ImplicationOperation;
 import byteback.frontend.boogie.ast.List;
 import byteback.frontend.boogie.ast.NotEqualsOperation;
+import byteback.frontend.boogie.ast.PartialOrderOperation;
 import byteback.frontend.boogie.ast.UniversalQuantifier;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.QuantifierExpressionBuilder;
@@ -60,8 +60,9 @@ public class ClassHierarchyConverter {
 
 			final ValueReference parameterReference = ValueReference.of(parameterName);
 			final ValueReference typeReference = ValueReference.of(ReferenceTypeConverter.typeName(clazz));
-			final FunctionReference extendsReference = Prelude.v().makeExtendsExpression(parameterReference, typeReference);
+			final Expression extendsReference = new PartialOrderOperation(parameterReference, typeReference);
 			antecedentStack.push(extendsReference);
+			quantifierBuilder.addTrigger(extendsReference);
 
 			if (previousParameterReference != null) {
 				Expression left = previousParameterReference;
@@ -96,7 +97,7 @@ public class ClassHierarchyConverter {
 		final var axiomDeclaration = new AxiomDeclaration();
 		final Expression bT1 = new TypeReferenceExtractor().visit(clazz.getType());
 		final Expression bT2 = new TypeReferenceExtractor().visit(superClazz.getType());
-		axiomDeclaration.setExpression(Prelude.v().makeExtendsExpression(bT1, bT2));
+		axiomDeclaration.setExpression(new PartialOrderOperation(bT1, bT2));
 
 		return axiomDeclaration;
 	}
@@ -116,7 +117,7 @@ public class ClassHierarchyConverter {
 			axioms.add(makeExtendsAxiom(clazz, superType));
 		}
 
-		//makeDisjointAxiom(clazz, resolver).ifPresent(axioms::add);
+		makeDisjointAxiom(clazz, resolver).ifPresent(axioms::add);
 
 		return axioms;
 	}

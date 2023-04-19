@@ -296,9 +296,11 @@ aspect Print {
 	Option implements Printable;
 
 	public void Trigger.print(final StringBuilder builder) {
-		builder.append("{");
-		PrintUtil.listPrint(builder, ", ", getExpressionList());
-		builder.append("}");
+		if (getExpressionList().getNumChild() > 0) {
+			builder.append("{");
+			PrintUtil.listPrint(builder, ", ", getExpressionList());
+			builder.append("}");
+		}
 	}
 
 	public void Attribute.print(final StringBuilder builder) {

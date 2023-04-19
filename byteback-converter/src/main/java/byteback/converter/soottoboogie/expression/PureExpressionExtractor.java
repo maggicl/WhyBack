@@ -1,5 +1,6 @@
 package byteback.converter.soottoboogie.expression;
 
+import byteback.analysis.Namespace;
 import byteback.analysis.QuantifierExpr;
 import byteback.analysis.TypeSwitch;
 import byteback.analysis.vimp.LogicConstant;
@@ -221,6 +222,11 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	}
 
 	@Override
+	public void caseUshrExpr(final UshrExpr v) {
+		setSpecialBinaryExpression(v, Prelude.v().getShrFunction().makeFunctionReference());
+	}
+
+	@Override
 	public void caseCastExpr(final CastExpr v) {
 		final Value operand = v.getOp();
 		final Type toType = v.getCastType();
@@ -277,7 +283,11 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseClassConstant(final ClassConstant classConstant) {
-		// TODO
+		final String className = Namespace.stripLabelDescriptor(classConstant.getValue());
+		final ValueReference valueReference = ValueReference.of(ReferenceTypeConverter.typeName(className));
+		final FunctionReference typeReference = Prelude.v().getTypeReferenceFunction().makeFunctionReference();
+		typeReference.addArgument(valueReference);
+		setExpression(typeReference);
 	}
 
 	@Override

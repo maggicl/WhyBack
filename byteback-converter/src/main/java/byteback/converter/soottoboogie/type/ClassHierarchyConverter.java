@@ -116,7 +116,7 @@ public class ClassHierarchyConverter {
 			axioms.add(makeExtendsAxiom(clazz, superType));
 		}
 
-		makeDisjointAxiom(clazz, resolver).ifPresent(axioms::add);
+		//makeDisjointAxiom(clazz, resolver).ifPresent(axioms::add);
 
 		return axioms;
 	}

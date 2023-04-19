@@ -50,6 +50,8 @@ public class Namespace {
 
 	public static final String ATTACH_ANNOTATION = "Lbyteback/annotations/Contract$Attach;";
 
+	public static final String ATTACH_LABEL_ANNOTATION = "Lbyteback/annotations/Contract$AttachLabel;";
+
 	public static final String OLD_NAME = "old";
 
 	public static final String INVARIANT_NAME = "invariant";
@@ -66,6 +68,10 @@ public class Namespace {
 
 	public static String stripDescriptor(final String descriptor) {
 		return descriptor.substring(1, descriptor.length() - 1).replace("/", ".");
+	}
+
+	public static String stripLabelDescriptor(final String descriptor) {
+		return stripDescriptor(descriptor.substring(1, descriptor.length()));
 	}
 
 	/**

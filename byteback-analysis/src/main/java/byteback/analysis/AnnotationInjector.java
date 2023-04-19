@@ -7,6 +7,7 @@ import java.util.List;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootHosts;
 import byteback.analysis.util.SootAnnotationElems.ClassElemExtractor;
+import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
 import byteback.util.Lazy;
 import soot.Scene;
 import soot.SootClass;
@@ -28,30 +29,43 @@ public class AnnotationInjector {
 
 		while (classIterator.hasNext()) {
 			final SootClass attachedClass = classIterator.next();
+			final AnnotationTag annotation;
+			final AnnotationElem element;
+			final String value;
 
 			if (SootHosts.hasAnnotation(attachedClass, Namespace.ATTACH_ANNOTATION)) {
-				final AnnotationTag annotation = SootHosts.getAnnotation(attachedClass, Namespace.ATTACH_ANNOTATION).orElseThrow();
-				final AnnotationElem element = SootAnnotations.getElem(annotation, "value").orElseThrow();
-				final String value = new ClassElemExtractor().visit(element);
-				final SootClass hostClass = Scene.v().loadClassAndSupport(Namespace.stripDescriptor(value));
-				hostClass.addAllTagsOf(attachedClass);
+				annotation = SootHosts.getAnnotation(attachedClass, Namespace.ATTACH_ANNOTATION).orElseThrow();
+				element = SootAnnotations.getElem(annotation, "value").orElseThrow();
+				value = new ClassElemExtractor().visit(element);
 
-				final List<SootMethod> methodsSnapshot = new ArrayList<>(attachedClass.getMethods());
+				System.out.println(value);
+			} else if(SootHosts.hasAnnotation(attachedClass, Namespace.ATTACH_LABEL_ANNOTATION)) {
+				annotation = SootHosts.getAnnotation(attachedClass, Namespace.ATTACH_LABEL_ANNOTATION).orElseThrow();
+				element = SootAnnotations.getElem(annotation, "value").orElseThrow();
+				value = new StringElemExtractor().visit(element);
 
-				for (final SootMethod attachedMethod : methodsSnapshot) {
-					final SootMethod hostMethod = hostClass.getMethodUnsafe(attachedMethod.getNumberedSubSignature());
+				System.out.println(value);
+			} else {
+				continue;
+			}
+			
+			final SootClass hostClass = Scene.v().loadClassAndSupport(Namespace.stripDescriptor(value));
+			hostClass.addAllTagsOf(attachedClass);
 
-					attachedClass.removeMethod(attachedMethod);
-					attachedMethod.setDeclared(false);
+			final List<SootMethod> methodsSnapshot = new ArrayList<>(attachedClass.getMethods());
 
-					if (hostMethod != null) {
-						hostClass.removeMethod(hostMethod);
-					}
+			for (final SootMethod attachedMethod : methodsSnapshot) {
+				final SootMethod hostMethod = hostClass.getMethodUnsafe(attachedMethod.getNumberedSubSignature());
 
-					hostClass.addMethod(attachedMethod);
+				attachedClass.removeMethod(attachedMethod);
+				attachedMethod.setDeclared(false);
+
+				if (hostMethod != null) {
+					hostClass.removeMethod(hostMethod);
 				}
+
+				hostClass.addMethod(attachedMethod);
 			}
 		}
 	}
-
 }

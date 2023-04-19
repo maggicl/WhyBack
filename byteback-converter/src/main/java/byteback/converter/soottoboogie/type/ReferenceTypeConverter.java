@@ -11,7 +11,11 @@ public class ReferenceTypeConverter {
 	private static final ReferenceTypeConverter instance = new ReferenceTypeConverter();
 
 	public static String typeName(final SootClass clazz) {
-		return "$" + clazz.getName();
+		return typeName(clazz.getName());
+	}
+
+	public static String typeName(final String className) {
+		return "$" + className;
 	}
 
 	public static ReferenceTypeConverter v() {

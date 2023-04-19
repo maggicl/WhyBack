@@ -111,6 +111,10 @@ public interface Contract {
 		public Class<?> value();
 	}
 
+	public static @interface AttachLabel {
+		public String value();
+	}
+
 	public static void assertion(boolean condition) {
 	}
 

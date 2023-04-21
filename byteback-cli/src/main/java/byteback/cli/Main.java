@@ -80,7 +80,6 @@ public class Main {
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ObjectSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ExceptionSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.CollectionSpec"));
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.FileReaderSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.InvokeDynamicSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.IndexOutOfBoundsExceptionSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ConcurrentModificationExceptionSpec"));

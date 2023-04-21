@@ -31,14 +31,14 @@ public class Multicatch {
 		throw new Exception1();
 	}
 
-	public void multiCatch() {
+	public void emptyMulticatch() {
 		try {
 			alwaysThrowsMultiple();
 		} catch (Exception1 | Exception2 e) {
 		}
 	}
 
-	public void multiCatchAssertion() {
+	public void multiCatchUnionAssertion() {
 		try {
 			alwaysThrowsMultiple();
 			assertion(false);

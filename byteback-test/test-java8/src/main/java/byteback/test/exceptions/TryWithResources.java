@@ -3,7 +3,6 @@
  */
 package byteback.test.exceptions;
 
-import java.io.FileReader;
 import java.io.IOException;
 
 import static byteback.annotations.Contract.*;
@@ -18,11 +17,13 @@ public class TryWithResources {
 			closed = false;
 		}
 
+		@Ensure("isClosed")
 		public void close() {
 			closed = true;
 		}
 
 		@Pure
+		@Predicate
 		public boolean isClosed() {
 			return closed;
 		}
@@ -34,14 +35,40 @@ public class TryWithResources {
 		}
 	}
 
-	public void tryWithResourcesClosesResource() throws IOException {
+	public void tryWithResourcesClosesResource() {
+		Resource r = new Resource();
+
+		try (Resource resource = r) {
+		}
+
+		assertion(r.isClosed());
 	}
 
-	public void tryWithResourcesFinally() throws IOException {
-		try (FileReader ac = new FileReader("")) {
+	public void emptyTryWithResourcesFinally() {
+		try (Resource resource = new Resource()) {
 		} finally {
 		}
 
+	}
+
+	public void tryWithResourcesFinallyClosesResource() {
+		Resource r = new Resource();
+
+		try (Resource resource = r) {
+		} finally {
+			assertion(r.isClosed());
+		}
+
+	}
+
+	public void throwingTryWithResourcesClosesResource() {
+		Resource r = new Resource();
+
+		try (Resource resource = r) {
+			throw new RuntimeException();
+		} finally {
+			assertion(r.isClosed());
+		}
 	}
 
 }

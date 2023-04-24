@@ -6,6 +6,7 @@ package byteback.test.exceptions;
 import java.io.IOException;
 
 import static byteback.annotations.Contract.*;
+import static byteback.annotations.Operator.*;
 
 public class TryWithResources {
 
@@ -30,7 +31,7 @@ public class TryWithResources {
 
 	}
 
-	public void tryWithResourcesOnExistingResourceClosesResource() throws IOException {
+	public void tryWithResourcesOnExistingResourceClosesResource() {
 		Resource resource = new Resource();
 
 		try (resource) {
@@ -39,7 +40,7 @@ public class TryWithResources {
 		assertion(resource.isClosed());
 	}
 
-	public void tryWithResourcesFinallyOnExistingResourceClosesResource() throws IOException {
+	public void tryWithResourcesFinallyOnExistingResourceClosesResource() {
 		Resource resource = new Resource();
 
 		try (resource) {

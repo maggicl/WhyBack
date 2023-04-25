@@ -50,6 +50,8 @@ public class LabelCollector extends JimpleStmtSwitch<Map<Unit, Label>> {
 		for (final Unit target : switchStatement.getTargets()) {
 			branchTo(target);
 		}
+
+		branchTo(switchStatement.getDefaultTarget());
 	}
 
 	@Override
@@ -57,6 +59,8 @@ public class LabelCollector extends JimpleStmtSwitch<Map<Unit, Label>> {
 		for (final Unit target : switchStatement.getTargets()) {
 			branchTo(target);
 		}
+
+		branchTo(switchStatement.getDefaultTarget());
 	}
 
 	@Override

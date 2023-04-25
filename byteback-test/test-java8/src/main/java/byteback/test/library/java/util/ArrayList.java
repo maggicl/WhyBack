@@ -1227,9 +1227,6 @@ public class ArrayList<E> extends AbstractList<E>
 					return lastRet_is_valid() & modCount_is_invalid();
 				}
 
-				// TODO:
-				// Experiment:
-				// The same exception class is thrown for different reasons.
 				@Raise(exception = IllegalStateException.class, when = "lastRet_is_invalid")
 				@Raise(exception = ConcurrentModificationException.class, when = "lastRet_is_valid_and_modCount_is_invalid")
 				public void remove() {

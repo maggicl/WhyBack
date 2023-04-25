@@ -3,11 +3,13 @@
  */
 package byteback.test.exceptions;
 
-import java.io.IOException;
 
 import static byteback.annotations.Contract.*;
-import static byteback.annotations.Operator.*;
 
+// Java 9 Feature:
+//
+// If the resource is referenced by a final variable, then there is no
+// need to declare a new variable in the declaration block.
 public class TryWithResources {
 
 	public class Resource implements AutoCloseable {

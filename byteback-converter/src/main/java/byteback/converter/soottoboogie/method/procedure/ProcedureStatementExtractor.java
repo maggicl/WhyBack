@@ -228,15 +228,18 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	public void caseTableSwitchStmt(final TableSwitchStmt switchStatement) {
 		final Expression key = new ProcedureExpressionExtractor(bodyExtractor).visit(switchStatement.getKey());
 
-		for (int i = switchStatement.getLowIndex(); i < switchStatement.getHighIndex(); ++i) {
+		for (int i = 0 ; i <= switchStatement.getHighIndex() - switchStatement.getLowIndex(); ++i) {
 			final Unit target = switchStatement.getTarget(i);
 			final var ifBuilder = new IfStatementBuilder();
-			final Expression index = new NumberLiteral(Integer.toString(i));
+			final int offsetIndex = switchStatement.getLowIndex() + i;
+			final Expression index = new NumberLiteral(Integer.toString(offsetIndex));
 			final Label label = bodyExtractor.getLabelCollector().fetchLabel(target);
-
 			ifBuilder.condition(new EqualsOperation(index, key)).thenStatement(new GotoStatement(label));
 			addStatement(ifBuilder.build());
 		}
+
+		final Label defaultLabel = bodyExtractor.getLabelCollector().fetchLabel(switchStatement.getDefaultTarget());
+		addStatement(new GotoStatement(defaultLabel));
 	}
 
 	@Override

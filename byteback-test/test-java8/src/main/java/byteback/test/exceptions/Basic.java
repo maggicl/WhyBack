@@ -8,6 +8,26 @@ import static byteback.annotations.Contract.*;
 
 public class Basic {
 
+	public static class Exception1 extends Exception {
+		@Return
+		public Exception1() {}
+	}
+
+	public static class Exception2 extends Exception {
+		@Return
+		public Exception2() {}
+	}
+
+	public static class Exception3 extends Exception {
+		@Return
+		public Exception3() {}
+	}
+
+	public static class Exception4 extends Exception {
+		@Return
+		public Exception4() {}
+	}
+
 	public Exception tryCatchBlock() {
 		try {
 			throw new Exception();
@@ -57,16 +77,10 @@ public class Basic {
 	}
 
 	@Raise(exception = Exception.class, when = "argument_is_even")
-	@Ensure("throws_iff_even")
 	public void throwsIfEven(int n) throws Exception {
 		if (n % 2 == 0) {
 			throw new Exception();
 		}
-	}
-
-	@Predicate
-	public boolean throws_iff_even(final int n, final Throwable e) {
-		return iff(neq(n % 2, 0), isVoid(e));
 	}
 
 	public void catchesIfEven() {
@@ -74,6 +88,90 @@ public class Basic {
 			throwsIfEven(2);
 			assertion(false);
 		} catch (Exception e) {
+		}
+	}
+
+	int f;
+
+	@Pure
+	@Predicate
+	public boolean f_is_1() {
+		return eq(f, 1);
+	}
+
+	@Pure
+	@Predicate
+	public boolean f_is_2() {
+		return eq(f, 2);
+	}
+
+	@Pure
+	@Predicate
+	public boolean f_is_3() {
+		return eq(f, 3);
+	}
+
+	@Pure
+	@Predicate
+	public boolean f_is_4() {
+		return eq(f, 4);
+	}
+
+	@Pure
+	@Predicate
+	public boolean f_is_gt_4() {
+		return gt(f, 4);
+	}
+
+	@Raise(exception = Exception1.class, when = "f_is_1")
+	@Raise(exception = Exception2.class, when = "f_is_2")
+	@Raise(exception = Exception3.class, when = "f_is_3")
+	@Raise(exception = Exception4.class, when = "f_is_4")
+	@Return(when = "f_is_gt_4")
+	public void throwsMultiple() throws Exception {
+		if (f == 1) {
+			throw new Exception1();
+		} else if (f == 2) {
+			throw new Exception2();
+		} else if (f == 3) {
+			throw new Exception3();
+		} else if (f == 4) {
+			throw new Exception4();
+		}
+	}
+
+	@Pure
+	@Predicate
+	public boolean f_divides_2() {
+		return eq(f % 2, 0);
+	}
+
+	@Pure
+	@Predicate
+	public boolean f_divides_3() {
+		return eq(f % 3, 0);
+	}
+
+	@Pure
+	@Predicate
+	public boolean f_doesnt_divide_2_but_divides_3() {
+		return not(f_divides_2()) & f_divides_3();
+	}
+
+	@Raise(exception = Exception1.class, when = "f_is_3")
+	@Raise(exception = Exception2.class, when = "f_divides_2")
+	@Raise(exception = Exception1.class, when = "f_doesnt_divide_2_but_divides_3")
+	public void throwsAlternatingExceptions() throws Exception {
+		if (f == 3) {
+			throw new Exception1();
+		}
+
+		if (f % 2 == 0) {
+			throw new Exception2();
+		}
+
+		if (f % 3 == 0) {
+			throw new Exception1();
 		}
 	}
 

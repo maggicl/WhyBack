@@ -22,12 +22,11 @@ import soot.Type;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.FieldRef;
+import soot.jimple.InstanceOfExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NewExpr;
 import soot.tagkit.AbstractHost;
 
-// TODO:
-// Wrap Soot.scene in RootResolver
 public class RootResolver {
 
 	private static final Lazy<RootResolver> instance = Lazy.from(RootResolver::new);
@@ -116,6 +115,10 @@ public class RootResolver {
 				final SootClass declaringClass = usedMethod.getDeclaringClass();
 				addMethod(usedMethod);
 				addClass(declaringClass);
+			}
+
+			if (useDef instanceof InstanceOfExpr instanceOfExpr) {
+				addType(instanceOfExpr.getCheckType());
 			}
 
 			if (useDef instanceof NewExpr newExpr) {

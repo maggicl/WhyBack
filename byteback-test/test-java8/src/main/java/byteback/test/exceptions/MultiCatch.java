@@ -5,21 +5,10 @@ package byteback.test.exceptions;
 
 import static byteback.annotations.Contract.*;
 
-public class Multicatch {
+import byteback.test.exceptions.Basic.Exception1;
+import byteback.test.exceptions.Basic.Exception2;
 
-	public static class Exception1 extends Exception {
-
-		@Return
-		public Exception1() {}
-
-	}
-
-	public static class Exception2 extends Exception {
-
-		@Return
-		public Exception2() {}
-
-	}
+public class MultiCatch {
 
 	@Predicate
 	public boolean always_throws_exception1_exception2(Throwable e) {
@@ -46,7 +35,6 @@ public class Multicatch {
 			assertion(e instanceof Exception1 | e instanceof Exception2);
 		}
 	}
-
 
 }
 /**

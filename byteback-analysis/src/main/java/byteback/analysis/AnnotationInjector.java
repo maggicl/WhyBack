@@ -37,14 +37,10 @@ public class AnnotationInjector {
 				annotation = SootHosts.getAnnotation(attachedClass, Namespace.ATTACH_ANNOTATION).orElseThrow();
 				element = SootAnnotations.getElem(annotation, "value").orElseThrow();
 				value = new ClassElemExtractor().visit(element);
-
-				System.out.println(value);
 			} else if(SootHosts.hasAnnotation(attachedClass, Namespace.ATTACH_LABEL_ANNOTATION)) {
 				annotation = SootHosts.getAnnotation(attachedClass, Namespace.ATTACH_LABEL_ANNOTATION).orElseThrow();
 				element = SootAnnotations.getElem(annotation, "value").orElseThrow();
 				value = new StringElemExtractor().visit(element);
-
-				System.out.println(value);
 			} else {
 				continue;
 			}

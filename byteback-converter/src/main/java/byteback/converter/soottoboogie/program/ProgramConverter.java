@@ -75,6 +75,10 @@ public class ProgramConverter {
 				}
 
 				method.setActiveBody(body);
+
+				if (method.getName().equals("throwsMultiple")) {
+					System.out.println(method.getActiveBody());
+				}
 			}
 		}
 	}

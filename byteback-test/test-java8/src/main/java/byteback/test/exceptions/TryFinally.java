@@ -4,23 +4,13 @@
 package byteback.test.exceptions;
 
 import static byteback.annotations.Operator.*;
+
+import byteback.test.exceptions.Basic.Exception1;
+import byteback.test.exceptions.Basic.Exception2;
+
 import static byteback.annotations.Contract.*;
 
 public class TryFinally {
-
-	public class Exception1 extends Exception {
-
-		@Return
-		public Exception1() {}
-
-	};
-
-	public class Exception2 extends Exception {
-
-		@Return
-		public Exception2() {}
-
-	};
 
 	@Predicate
 	public boolean always() {
@@ -54,7 +44,7 @@ public class TryFinally {
 		assertion(false);
 	}
 
-	public void finallyIsExecutedAfterThrowAndCatch() throws Exception {
+	public void finallyIsExecutedAfterThrowInCatch() throws Exception {
 		try {
 			alwaysThrows1();
 			assertion(false);
@@ -63,6 +53,7 @@ public class TryFinally {
 			assertion(false);
 		} finally {
 		}
+
 		assertion(false);
 	}
 

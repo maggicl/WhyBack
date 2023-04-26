@@ -178,5 +178,5 @@ public class Basic {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 9 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 15 verified, 0 errors
  */

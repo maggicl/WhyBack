@@ -86,6 +86,7 @@ public class Main {
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.NoSuchElementExceptionSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.IllegalStateExceptionSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.IllegalArgumentExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.NullPointerExceptionSpec"));
 
 		for (final String startingClassName : startingClassNames) {
 			final SootClass startingClass = scene.loadClassAndSupport(startingClassName);
@@ -93,6 +94,8 @@ public class Main {
 		}
 
 		injector.inject(scene.getClasses());
+		resolver.setCheckNullDereference(Configuration.v().getTransformNullCheck());
+		resolver.setCheckArrayDereference(Configuration.v().getTransformArrayCheck());
 		resolver.resolve(startingClasses);
 
 		if (preludePath != null) {

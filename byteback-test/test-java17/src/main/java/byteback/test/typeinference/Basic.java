@@ -32,5 +32,6 @@ public class Basic {
 
 }
 /**
- * RUN: %{verify} %t.bpl
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 3 verified, 0 errors
  */

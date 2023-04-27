@@ -1,6 +1,6 @@
 /**
- * RUN: %{byteback} -m -cp %{jar} -c %{class} -o %t.bpl
- */
+  * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+  */
 package byteback.test.instance;
 
 import byteback.annotations.Contract._;
@@ -10,7 +10,7 @@ import byteback.annotations.Operator.{eq => equal};
 
 import scala.annotation.meta._;
 
-class Counter() {
+class Counter {
 
   @Predicate
   def sets_count(c: Int): Boolean = {
@@ -23,12 +23,12 @@ class Counter() {
 
   @Predicate
   def increments_count_by_1(): Boolean = {
-		return equal(count, old(count) + 1);
+    return equal(count, old(count) + 1);
   }
 
   @Predicate
   def increments_count_by_10(): Boolean = {
-		return equal(count, old(count) + 10);
+    return equal(count, old(count) + 10);
   }
 
   @Ensure("increments_count_by_1")
@@ -38,11 +38,11 @@ class Counter() {
 
   def incrementTo10(): Unit = {
     var i: Int = 0;
-		var old_count: Int = count;
+    var old_count: Int = count;
 
     while (i < 10) {
-			invariant(lte(0, i) & lte(i, 10));
-			invariant(equal(count, old_count + i));
+      invariant(lte(0, i) & lte(i, 10));
+      invariant(equal(count, old_count + i));
       increment();
       i = i + 1;
     }
@@ -50,6 +50,6 @@ class Counter() {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 4 verified, 0 errors
- */
+  * RUN: %{verify} %t.bpl | filecheck %s
+  * CHECK: Boogie program verifier finished with 4 verified, 0 errors
+  */

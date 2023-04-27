@@ -88,8 +88,6 @@ function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 	~typeof(h, r) <: t
 }
 
-axiom (forall h: Store, t: Type :: !~instanceof(h, ~null, t));
-
 axiom (forall h: Store, t: Type :: !~instanceof(h, ~void, t));
 
 function ~type.reference(Type) returns (Reference);

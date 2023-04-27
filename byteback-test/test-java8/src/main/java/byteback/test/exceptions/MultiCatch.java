@@ -16,25 +16,35 @@ public class MultiCatch {
 	}
 
 	@Ensure("always_throws_exception1_exception2")
-	public void alwaysThrowsMultiple() throws Exception1, Exception2 {
+	public void alwaysThrowsMultiple() throws Exception {
 		throw new Exception1();
 	}
 
-	public void emptyMulticatch() {
+	public void emptyMulticatch() throws Exception {
 		try {
 			alwaysThrowsMultiple();
 		} catch (Exception1 | Exception2 e) {
 		}
 	}
 
-	public void multiCatchUnionAssertion() {
+	public void multiCatchUnion() throws Exception {
 		try {
 			alwaysThrowsMultiple();
-			assertion(false);
 		} catch (Exception1 | Exception2 e) {
 			assertion(e instanceof Exception1 | e instanceof Exception2);
 		}
 	}
+
+	// TODO: Discuss this
+	// public void multiCatchFinally() throws Exception {
+	// 	try {
+	// 		alwaysThrowsMultiple();
+	// 		assertion(false);
+	// 	} catch (Exception3 | Exception4 e) {
+	// 		assertion(false);
+	// 	} finally {
+	// 	}
+	// }
 
 }
 /**

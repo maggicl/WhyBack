@@ -33,10 +33,13 @@ public class Configuration {
 	@Parameter(names = {"-o", "--output"}, description = "Path to the output verification conditions")
 	private Path outputPath;
 
-	@Parameter(names = {"-m", "--message"}, description = "Generates messages for output Boogie file")
-	private boolean message;
-
 	private JCommander jCommander;
+
+	@Parameter(names = {"--nct"}, description = "Injects explicit null checks")
+	private boolean transformNullCheck = false;
+
+	@Parameter(names = {"--act"}, description = "Injects explicit array checks")
+	private boolean transformArrayCheck = false;
 
 	public boolean getHelp() {
 		return help;
@@ -58,10 +61,6 @@ public class Configuration {
 		return outputPath;
 	}
 
-	public boolean getMessage() {
-		return message;
-	}
-
 	public JCommander getJCommander() {
 		return jCommander;
 	}
@@ -69,6 +68,14 @@ public class Configuration {
 	public void parse(final String[] args) {
 		jCommander = JCommander.newBuilder().addObject(this).build();
 		jCommander.parse(args);
+	}
+
+	public boolean getTransformNullCheck() {
+		return transformNullCheck;
+	}
+
+	public boolean getTransformArrayCheck() {
+		return transformArrayCheck;
 	}
 
 }

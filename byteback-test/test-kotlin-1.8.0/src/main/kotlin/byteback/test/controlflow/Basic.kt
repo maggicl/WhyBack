@@ -18,23 +18,19 @@ class Basic {
 				a = a + 42
 		}
 
-		fun emptyWhile(): Unit {
-				val a = false
+		fun emptyWhile(a: Boolean): Unit {
 				// empty while is optimized out
 				while (a) {
 				}
 		}
 
-		fun emptyDoWhile(): Unit {
-				val a = false
+		fun emptyDoWhile(a: Boolean): Unit {
 				// empty do-while is optimized out
 				do {
 				} while (a);
 		}
 
-		fun emptyIf(): Unit {
-				val a: Boolean = false;
-
+		fun emptyIf(a: Boolean): Unit {
 				if (a) {
 				}
 		}

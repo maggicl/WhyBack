@@ -1,6 +1,6 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
- */
+  * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+  */
 package byteback.test.algorithm;
 
 import byteback.annotations.Contract._;
@@ -8,7 +8,7 @@ import byteback.annotations.Special._;
 import byteback.annotations.Operator._;
 import byteback.annotations.Operator.{eq => equal};
 
-class Summary {
+class GCD {
 
   @Pure
   def gcd_recursive(a: Int, b: Int): Int = {
@@ -36,14 +36,14 @@ class Summary {
     var x: Int = b;
 
     while (r != x) {
-			invariant(gt(r, 0) & gt(x, 0));
-			invariant(equal(gcd_recursive(r, x), gcd_recursive(a, b)));
+      invariant(gt(r, 0) & gt(x, 0));
+      invariant(equal(gcd_recursive(r, x), gcd_recursive(a, b)));
 
-			if (r > x) {
-				r = r - x;
-			} else {
-				x = x - r;
-			}
+      if (r > x) {
+        r = r - x;
+      } else {
+        x = x - r;
+      }
     }
 
     return r;
@@ -51,6 +51,6 @@ class Summary {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 2 verified, 0 errors
- */
+  * RUN: %{verify} %t.bpl | filecheck %s
+  * CHECK: Boogie program verifier finished with 2 verified, 0 errors
+  */

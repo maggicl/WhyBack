@@ -22,12 +22,14 @@ public class TryFinally {
 		throw new Exception1();
 	}
 
+	@Return
 	public void finallyBlock() {
 		try {
 		} finally {
 		}
 	}
 
+	@Return
 	public void catchFinallyBlock() {
 		try {
 		} catch (Exception e) {
@@ -35,6 +37,7 @@ public class TryFinally {
 		}
 	}
 
+	@Raise(exception = Exception1.class, when = "always")
 	public void finallyIsExecuted() throws Exception {
 		try {
 			alwaysThrows1();

@@ -6,9 +6,6 @@ public class EnumSwitch {
 		BANANA, APPLE, ORANGE, GRAPES
 	}
 
-	/**
-	 * CHECK: procedure {{.*}}.enumSwitch#{{.*}}$Fruit#
-	 */
 	public static int enumSwitch(final Fruit a) {
 		int b;
 

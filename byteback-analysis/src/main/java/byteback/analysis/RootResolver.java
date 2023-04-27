@@ -9,7 +9,19 @@ import java.util.Set;
 
 import byteback.analysis.util.SootMethods;
 import byteback.util.Lazy;
+import byteback.analysis.transformer.DynamicToStaticTransformer;
+import byteback.analysis.transformer.ExceptionInvariantTransformer;
+import byteback.analysis.transformer.ExpressionFolder;
+import byteback.analysis.transformer.GuardTransformer;
+import byteback.analysis.transformer.IndexCheckTransformer;
+import byteback.analysis.transformer.InvariantExpander;
+import byteback.analysis.transformer.LogicUnitTransformer;
+import byteback.analysis.transformer.LogicValueTransformer;
+import byteback.analysis.transformer.NullCheckTransformer;
+import byteback.analysis.transformer.QuantifierValueTransformer;
+import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootClasses;
+import byteback.analysis.util.SootHosts;
 import soot.ArrayType;
 import soot.Body;
 import soot.RefType;
@@ -21,19 +33,67 @@ import soot.Trap;
 import soot.Type;
 import soot.Value;
 import soot.ValueBox;
+import soot.grimp.Grimp;
 import soot.jimple.FieldRef;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NewExpr;
 import soot.tagkit.AbstractHost;
+import soot.toolkits.scalar.UnusedLocalEliminator;
 
 public class RootResolver {
 
 	private static final Lazy<RootResolver> instance = Lazy.from(RootResolver::new);
 
+	public void transformMethod(final SootMethod method) {
+		if (SootMethods.hasBody(method)) {
+			if (SootHosts.hasAnnotation(method, Namespace.PRELUDE_ANNOTATION)) {
+				return;
+			}
+
+			SootBodies.validateCalls(method.retrieveActiveBody());
+			final Body body = Grimp.v().newBody(method.getActiveBody(), "");
+
+			if (checkNullDereference) {
+				NullCheckTransformer.v().transform(body);
+			}
+
+			if (checkArrayDereference) {
+				IndexCheckTransformer.v().transform(body);
+			}
+
+			LogicUnitTransformer.v().transform(body);
+			new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
+			new ExpressionFolder().transform(body);
+			UnusedLocalEliminator.v().transform(body);
+			QuantifierValueTransformer.v().transform(body);
+			ExceptionInvariantTransformer.v().transform(body);
+			InvariantExpander.v().transform(body);
+			DynamicToStaticTransformer.v().transform(body);
+
+			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+				GuardTransformer.v().transform(body);
+			}
+
+			method.setActiveBody(body);
+		}
+	}
+
 	private final Deque<AbstractHost> next;
 
 	private final Set<AbstractHost> visited;
+
+	private boolean checkArrayDereference;
+
+	private boolean checkNullDereference;
+
+	public void setCheckArrayDereference(boolean f) {
+		checkArrayDereference = f;
+	}
+
+	public void setCheckNullDereference(boolean f) {
+		checkNullDereference = f;
+	}
 
 	public static RootResolver v() {
 		return instance.get();
@@ -42,9 +102,11 @@ public class RootResolver {
 	private RootResolver() {
 		this.next = new LinkedList<>();
 		this.visited = new HashSet<>();
+		this.checkArrayDereference = false;
+		this.checkNullDereference = false;
 	}
 
-	public boolean classIsValid(final SootClass clazz)  {
+	public boolean classIsValid(final SootClass clazz) {
 		return !Namespace.isAnnotationClass(clazz);
 	}
 
@@ -104,6 +166,7 @@ public class RootResolver {
 			return;
 		}
 
+		transformMethod(method);
 		final Body body = method.retrieveActiveBody();
 
 		for (final ValueBox useDefBox : body.getUseAndDefBoxes()) {
@@ -157,17 +220,17 @@ public class RootResolver {
 
 	public Iterable<SootClass> getUsedClasses() {
 		return visited.stream().filter((v) -> v instanceof SootClass)
-			.map((v) -> (SootClass) v)::iterator;
+				.map((v) -> (SootClass) v)::iterator;
 	}
 
 	public Iterable<SootMethod> getUsedMethods() {
 		return visited.stream().filter((v) -> v instanceof SootMethod)
-			.map((v) -> (SootMethod) v)::iterator;
+				.map((v) -> (SootMethod) v)::iterator;
 	}
 
 	public Iterable<SootField> getUsedFields() {
 		return visited.stream().filter((v) -> v instanceof SootField)
-			.map((v) -> (SootField) v)::iterator;
+				.map((v) -> (SootField) v)::iterator;
 	}
 
 	public void resolve(final Collection<SootClass> initials) {

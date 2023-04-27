@@ -71,7 +71,11 @@ public class Namespace {
 	}
 
 	public static String stripLabelDescriptor(final String descriptor) {
-		return stripDescriptor(descriptor.substring(0, descriptor.length()));
+		return stripDescriptor(descriptor.substring(1, descriptor.length()));
+	}
+
+	public static String stripConstantDescriptor(final String descriptor) {
+		return stripLabelDescriptor(descriptor.substring(1, descriptor.length()));
 	}
 
 	/**

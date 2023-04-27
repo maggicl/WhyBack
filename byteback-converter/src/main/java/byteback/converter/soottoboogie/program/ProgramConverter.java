@@ -2,17 +2,7 @@ package byteback.converter.soottoboogie.program;
 
 import byteback.analysis.RootResolver;
 import byteback.analysis.Namespace;
-import byteback.analysis.transformer.DynamicToStaticTransformer;
-import byteback.analysis.transformer.ExceptionInvariantTransformer;
-import byteback.analysis.transformer.ExpressionFolder;
-import byteback.analysis.transformer.GuardTransformer;
-import byteback.analysis.transformer.InvariantExpander;
-import byteback.analysis.transformer.LogicUnitTransformer;
-import byteback.analysis.transformer.LogicValueTransformer;
-import byteback.analysis.transformer.QuantifierValueTransformer;
-import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootHosts;
-import byteback.analysis.util.SootMethods;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
@@ -23,12 +13,9 @@ import byteback.util.Lazy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.Body;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
-import soot.grimp.Grimp;
-import soot.toolkits.scalar.UnusedLocalEliminator;
 
 public class ProgramConverter {
 
@@ -46,40 +33,6 @@ public class ProgramConverter {
 	public void convertFields(final Program program, final RootResolver resolver) {
 		for (final SootField field : resolver.getUsedFields()) {
 			program.addDeclaration(FieldConverter.instance().convert(field));
-		}
-	}
-
-	public void transformMethods(final RootResolver resolver) {
-		for (final SootMethod method : resolver.getUsedMethods()) {
-			if (SootMethods.hasBody(method)) {
-				log.info("Transforming method {}", method.getSignature());
-
-				if (SootHosts.hasAnnotation(method, Namespace.PRELUDE_ANNOTATION)) {
-					continue;
-				}
-
-				SootBodies.validateCalls(method.retrieveActiveBody());
-				final Body body = Grimp.v().newBody(method.getActiveBody(), "");
-				LogicUnitTransformer.v().transform(body);
-				new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
-
-				new ExpressionFolder().transform(body);
-				UnusedLocalEliminator.v().transform(body);
-				QuantifierValueTransformer.v().transform(body);
-				ExceptionInvariantTransformer.v().transform(body);
-				InvariantExpander.v().transform(body);
-				DynamicToStaticTransformer.v().transform(body);
-
-				if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
-					GuardTransformer.v().transform(body);
-				}
-
-				method.setActiveBody(body);
-
-				if (method.getName().equals("throwsMultiple")) {
-					System.out.println(method.getActiveBody());
-				}
-			}
 		}
 	}
 
@@ -111,7 +64,6 @@ public class ProgramConverter {
 
 		convertClasses(program, resolver);
 		convertFields(program, resolver);
-		transformMethods(resolver);
 		convertMethods(program, resolver);
 
 		return program;

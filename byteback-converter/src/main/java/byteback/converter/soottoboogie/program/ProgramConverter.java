@@ -32,7 +32,7 @@ public class ProgramConverter {
 
 	public void convertFields(final Program program, final RootResolver resolver) {
 		for (final SootField field : resolver.getUsedFields()) {
-			program.addDeclaration(FieldConverter.instance().convert(field));
+			program.addDeclarations(FieldConverter.instance().convert(field));
 		}
 	}
 

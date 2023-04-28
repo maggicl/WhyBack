@@ -10,6 +10,7 @@ import byteback.frontend.boogie.ast.ExistentialQuantifier;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.OldReference;
 import byteback.frontend.boogie.ast.Quantifier;
+import byteback.frontend.boogie.ast.SetBinding;
 import byteback.frontend.boogie.ast.UniversalQuantifier;
 import byteback.frontend.boogie.builder.QuantifierExpressionBuilder;
 import byteback.frontend.boogie.builder.SetBindingBuilder;
@@ -24,6 +25,14 @@ public class FunctionExpressionExtractor extends PureExpressionExtractor {
 	@Override
 	public FunctionExpressionExtractor makeExpressionExtractor() {
 		return new FunctionExpressionExtractor();
+	}
+
+	public static SetBinding makeQuantifierBinding(final Local local) {
+		final var bindingBuilder = new SetBindingBuilder();
+		bindingBuilder.typeAccess(new TypeAccessExtractor().visit(local.getType()));
+		bindingBuilder.name(PureExpressionExtractor.localName(local));
+
+		return bindingBuilder.build();
 	}
 
 	public void pushQuantifier(final Quantifier quantifier, final Iterable<Value> arguments) {

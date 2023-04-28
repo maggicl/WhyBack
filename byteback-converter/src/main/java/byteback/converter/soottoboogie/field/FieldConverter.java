@@ -1,9 +1,13 @@
 package byteback.converter.soottoboogie.field;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.frontend.boogie.ast.ConstantDeclaration;
+import byteback.frontend.boogie.ast.Declaration;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.builder.SetBindingBuilder;
 import soot.SootField;
@@ -23,9 +27,10 @@ public class FieldConverter {
 		return "$" + className + "." + fieldName;
 	}
 
-	public ConstantDeclaration convert(final SootField field) {
+	public List<Declaration> convert(final SootField field) {
 		final var constantDeclaration = new ConstantDeclaration();
 		final var bindingBuilder = new SetBindingBuilder();
+		final List<Declaration> declarations = new ArrayList<>();
 		final TypeAccess baseTypeAccess = new TypeAccessExtractor().visit(field.getType());
 		final TypeAccess fieldTypeAccess = Prelude.v().makeFieldTypeAccess(baseTypeAccess);
 
@@ -34,11 +39,12 @@ public class FieldConverter {
 			bindingBuilder.name(fieldName(field));
 			constantDeclaration.setBinding(bindingBuilder.build());
 			constantDeclaration.setUnique(true);
+			declarations.add(constantDeclaration);
 		} catch (final ConversionException exception) {
 			throw new FieldConversionException(field, exception);
 		}
 
-		return constantDeclaration;
+		return declarations;
 	}
 
 }

@@ -50,9 +50,9 @@ public class IndexCheckTransformer extends CheckTransformer {
 			final Value indexValue = arrayRef.getIndex();
 			final Value arrayBase = arrayRef.getBase(); 
 			final Value lengthOfExpr = Grimp.v().newLengthExpr(arrayBase);
-			final Value left = Vimp.v().newGeExpr(indexValue, lengthOfExpr);
-			final Value right = Vimp.v().newGtExpr(IntConstant.v(0), indexValue);
-			return Vimp.v().newLogicOrExpr(left, right);
+			final Value left = Vimp.v().newLtExpr(indexValue, lengthOfExpr);
+			final Value right = Vimp.v().newLeExpr(IntConstant.v(0), indexValue);
+			return Vimp.v().newLogicAndExpr(left, right);
 		} else {
 			throw new IllegalStateException();
 		}

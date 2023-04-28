@@ -5,6 +5,10 @@ package byteback.test.exceptions;
 
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
+import static byteback.annotations.Special.*;
+import static byteback.annotations.Quantifier.*;
+
+import byteback.annotations.Binding;
 
 public class TryWithResources {
 
@@ -17,8 +21,16 @@ public class TryWithResources {
 			closed = false;
 		}
 
+		@Predicate
+		public boolean otherResourcesAreClosed() {
+			final Resource r = (Resource) Binding.reference();
+
+			return forall(r, implies(neq(r, this), eq(old(r.closed), r.closed)));
+		}
+
 		@Return
 		@Ensure("isClosed")
+		@Ensure("otherResourcesAreClosed")
 		public void close() {
 			closed = true;
 		}
@@ -163,9 +175,44 @@ public class TryWithResources {
 				}
 			} finally {
 				assertion(b.isClosed());
+				assertion(c.isClosed());
 			}
 		} finally {
 			assertion(a.isClosed());
+			assertion(b.isClosed());
+			assertion(c.isClosed());
+		}
+	}
+
+	public void tryWithResourcesOn2Resources() {
+		Resource a = new Resource();
+		Resource b = new Resource();
+
+		try (Resource r1 = a;
+				 Resource r2 = b) {
+			assertion(a.isOpen());
+			assertion(b.isOpen());
+		} finally {
+			assertion(a.isClosed());
+			assertion(b.isClosed());
+		}
+	}
+
+	public void tryWithResourcesOn3Resources() {
+		Resource a = new Resource();
+		Resource b = new Resource();
+		Resource c = new Resource();
+
+		try (Resource r1 = a;
+				 Resource r2 = b;
+				 Resource r3 = c) {
+			assertion(a.isOpen());
+			assertion(b.isOpen());
+			assertion(c.isOpen());
+		} finally {
+			assertion(a.isClosed());
+			assertion(b.isClosed());
+			assertion(c.isClosed());
 		}
 	}
 

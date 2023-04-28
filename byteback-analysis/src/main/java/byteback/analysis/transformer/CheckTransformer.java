@@ -21,6 +21,7 @@ import soot.grimp.GrimpBody;
 import soot.jimple.Jimple;
 import soot.jimple.SpecialInvokeExpr;
 import soot.util.Chain;
+import soot.util.HashChain;
 
 public abstract class CheckTransformer extends BodyTransformer {
 
@@ -39,9 +40,9 @@ public abstract class CheckTransformer extends BodyTransformer {
 		}
 	}
 
-	public Unit makeThrowUnits(final Body body) {
+	public Chain<Unit> makeThrowUnits(final Body body) {
+		final Chain<Unit> units = new HashChain<>();
 		final LocalGenerator localGenerator = Scene.v().createLocalGenerator(body);
-		final Chain<Unit> units = body.getUnits();
 		final Local local = localGenerator.generateLocal(exceptionClass.getType());
 		final Unit initUnit = Grimp.v().newAssignStmt(local, Jimple.v().newNewExpr(exceptionClass.getType()));
 		units.addLast(initUnit);
@@ -51,8 +52,7 @@ public abstract class CheckTransformer extends BodyTransformer {
 		units.addLast(constructorUnit);
 		final Unit throwUnit = Grimp.v().newThrowStmt(local);
 		units.addLast(throwUnit);
-
-		return initUnit;
+		return units;
 	}
 
 	public abstract Value extractTarget(Value value);
@@ -62,7 +62,6 @@ public abstract class CheckTransformer extends BodyTransformer {
 	public void transformBody(final Body body) {
 		final Chain<Unit> units = body.getUnits();
 		final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
-		final Lazy<Unit> throwUnitsSupplier = Lazy.from(() -> makeThrowUnits(body));
 
 		while (unitIterator.hasNext()) {
 			final Unit unit = unitIterator.next();
@@ -72,10 +71,11 @@ public abstract class CheckTransformer extends BodyTransformer {
 				Value target = extractTarget(value);
 
 				if (target != null) {
-					final Unit throwUnit = throwUnitsSupplier.get();
 					final Value checkExpr = makeCheckExpr(target, value);
-					final Unit checkStmt = Vimp.v().newIfStmt(checkExpr, throwUnit);
-					units.insertBefore(checkStmt, unit);
+					final Chain<Unit> throwStmts = makeThrowUnits(body);
+					units.insertBefore(throwStmts, unit);
+					final Unit checkStmt = Vimp.v().newIfStmt(checkExpr, unit);
+					units.insertBefore(checkStmt, throwStmts.getFirst());
 				}
 			}
 		}

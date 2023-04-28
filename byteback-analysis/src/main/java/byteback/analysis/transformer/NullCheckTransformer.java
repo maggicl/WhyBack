@@ -66,7 +66,7 @@ public class NullCheckTransformer extends CheckTransformer {
 
 	@Override
 	public Value makeCheckExpr(Value inner, Value outer) {
-		return Grimp.v().newEqExpr(inner, NullConstant.v());
+		return Grimp.v().newNeExpr(inner, NullConstant.v());
 	}
 
 }

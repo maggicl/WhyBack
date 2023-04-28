@@ -9,6 +9,8 @@ import byteback.analysis.vimp.LogicForallExpr;
 import byteback.analysis.vimp.VoidConstant;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.field.FieldConverter;
+import byteback.converter.soottoboogie.method.function.FunctionConverter;
+import byteback.converter.soottoboogie.method.function.FunctionExpressionExtractor;
 import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.converter.soottoboogie.type.CasterProvider;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
@@ -340,7 +342,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 		final var quantifierExpression = new QuantifierExpression();
 
 		for (Local local : v.getFreeLocals()) {
-			quantifierExpression.addBinding(ProcedureConverter.makeBinding(local));
+			quantifierExpression.addBinding(FunctionExpressionExtractor.makeQuantifierBinding(local));
 		}
 
 		quantifierExpression.setOperand(visit(v.getValue()));

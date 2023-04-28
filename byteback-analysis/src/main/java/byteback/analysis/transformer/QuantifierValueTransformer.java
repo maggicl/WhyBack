@@ -14,6 +14,7 @@ import soot.SootMethod;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.GrimpBody;
+import soot.jimple.CastExpr;
 import soot.jimple.InvokeExpr;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -54,8 +55,13 @@ public class QuantifierValueTransformer extends BodyTransformer implements Value
 				if (Namespace.isQuantifierClass(clazz)) {
 					final Chain<Local> locals = new HashChain<>();
 					final Value expression;
+					Value variable = value.getArg(0);
 
-					if (value.getArg(0)instanceof Local local) {
+					while (variable instanceof CastExpr castExpr) {
+						variable = castExpr.getOp();
+					}
+
+					if (variable instanceof Local local) {
 						locals.add(local);
 						expression = value.getArg(1);
 					} else {

@@ -1,6 +1,6 @@
 package byteback.cli;
 
-import byteback.analysis.AnnotationInjector;
+import byteback.analysis.ClassInjector;
 import byteback.analysis.RootResolver;
 import byteback.converter.soottoboogie.Prelude;
 import com.beust.jcommander.ParameterException;
@@ -30,7 +30,7 @@ public class Main {
 
 	public static final RootResolver resolver = RootResolver.v();
 
-	public static final AnnotationInjector injector = AnnotationInjector.v();
+	public static final ClassInjector injector = ClassInjector.v();
 
 	public static void convert(final byteback.cli.Configuration configuration) {
 		final PrintStream output;

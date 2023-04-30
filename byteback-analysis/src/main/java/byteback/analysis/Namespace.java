@@ -75,7 +75,7 @@ public class Namespace {
 	}
 
 	public static String stripConstantDescriptor(final String descriptor) {
-		return stripLabelDescriptor(descriptor.substring(1, descriptor.length()));
+		return stripDescriptor(descriptor.replace("[", "").replace("]", ""));
 	}
 
 	/**

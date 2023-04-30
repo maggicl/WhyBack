@@ -3,6 +3,7 @@ package byteback.analysis.transformer;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import byteback.analysis.Vimp;
 import byteback.util.Lazy;
@@ -40,7 +41,7 @@ public abstract class CheckTransformer extends BodyTransformer {
 		}
 	}
 
-	public Chain<Unit> makeThrowUnits(final Body body) {
+	public Chain<Unit> makeThrowUnits(final Body body, Supplier<Local> localSupplier) {
 		final Chain<Unit> units = new HashChain<>();
 		final LocalGenerator localGenerator = Scene.v().createLocalGenerator(body);
 		final Local local = localGenerator.generateLocal(exceptionClass.getType());
@@ -62,6 +63,7 @@ public abstract class CheckTransformer extends BodyTransformer {
 	public void transformBody(final Body body) {
 		final Chain<Unit> units = body.getUnits();
 		final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
+		final Lazy<Local> exceptionLocalSupplier = Lazy.from(() -> Scene.v().createLocalGenerator(body).generateLocal(exceptionClass.getType()));
 
 		while (unitIterator.hasNext()) {
 			final Unit unit = unitIterator.next();
@@ -72,7 +74,7 @@ public abstract class CheckTransformer extends BodyTransformer {
 
 				if (target != null) {
 					final Value checkExpr = makeCheckExpr(target, value);
-					final Chain<Unit> throwStmts = makeThrowUnits(body);
+					final Chain<Unit> throwStmts = makeThrowUnits(body, exceptionLocalSupplier);
 					units.insertBefore(throwStmts, unit);
 					final Unit checkStmt = Vimp.v().newIfStmt(checkExpr, unit);
 					units.insertBefore(checkStmt, throwStmts.getFirst());

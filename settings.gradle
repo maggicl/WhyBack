@@ -2,4 +2,4 @@ rootProject.name = 'byteback'
 
 includeBuild('./conventions')
 
-include(':byteback-cli', ':byteback-util', 'byteback-frontend:boogie', ':byteback-annotations', ':byteback-test', ':byteback-test:test-scala2', ':byteback-test:test-java8', ':byteback-test:test-java17', ':byteback-test:test-groovy4', ':byteback-test:test-kotlin-1.8.0', ':byteback-analysis', ':byteback-converter')
+include(':byteback-cli', ':byteback-util', 'byteback-frontend:boogie', ':byteback-annotations', ':byteback-test', ':byteback-test:test-scala-2', ':byteback-test:test-java-8', ':byteback-test:test-java-17', ':byteback-test:test-groovy-4', ':byteback-test:test-kotlin-1.8.0', ':byteback-analysis', ':byteback-converter')

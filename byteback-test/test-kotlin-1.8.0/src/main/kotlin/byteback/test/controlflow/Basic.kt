@@ -19,13 +19,11 @@ class Basic {
 		}
 
 		fun emptyWhile(a: Boolean): Unit {
-				// empty while is optimized out
 				while (a) {
 				}
 		}
 
 		fun emptyDoWhile(a: Boolean): Unit {
-				// empty do-while is optimized out
 				do {
 				} while (a);
 		}

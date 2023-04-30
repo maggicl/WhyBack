@@ -9,7 +9,7 @@ import byteback.annotations.Contract.Return;
 import static byteback.annotations.Operator.*;
 
 @SuppressWarnings("unused")
-public class PotentialNullPointerDereferences {
+public class PotentialNullDereference {
 
 	public static class A {
 

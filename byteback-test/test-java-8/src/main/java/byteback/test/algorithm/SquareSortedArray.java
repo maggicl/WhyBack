@@ -18,6 +18,11 @@ public class SquareSortedArray {
 	}
 
 	@Predicate
+	public static boolean array_is_null(final int[] a) {
+		return eq(a, null);
+	}
+
+	@Predicate
 	public static boolean array_is_sorted(final int[] a) {
 		return sorted(a, 0, a.length);
 	}
@@ -32,10 +37,14 @@ public class SquareSortedArray {
 		return gt(a.length, 0);
 	}
 
-	@Return
-	@Require("array_is_not_empty")
+	@Raise(exception = NullPointerException.class, when = "array_is_null")
 	@Require("array_is_sorted")
 	public static int[] squareSortedArray(final int[] a) {
+
+		if (a == null) {
+			throw new NullPointerException();
+		}
+
 		final int[] b = new int[a.length];
 		int i = 0;
 		int j = a.length - 1;

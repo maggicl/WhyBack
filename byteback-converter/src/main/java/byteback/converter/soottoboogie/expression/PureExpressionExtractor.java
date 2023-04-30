@@ -9,9 +9,7 @@ import byteback.analysis.vimp.LogicForallExpr;
 import byteback.analysis.vimp.VoidConstant;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.field.FieldConverter;
-import byteback.converter.soottoboogie.method.function.FunctionConverter;
 import byteback.converter.soottoboogie.method.function.FunctionExpressionExtractor;
-import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.converter.soottoboogie.type.CasterProvider;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
@@ -285,7 +283,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseClassConstant(final ClassConstant classConstant) {
-		final String className = Namespace.stripLabelDescriptor(classConstant.getValue());
+		final String className = Namespace.stripConstantDescriptor(classConstant.getValue());
 		final ValueReference valueReference = ValueReference.of(ReferenceTypeConverter.typeName(className));
 		final FunctionReference typeReference = Prelude.v().getTypeReferenceFunction().makeFunctionReference();
 		typeReference.addArgument(valueReference);

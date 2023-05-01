@@ -20,6 +20,7 @@ import byteback.analysis.vimp.LogicNeExpr;
 import byteback.analysis.vimp.LogicNotExpr;
 import byteback.analysis.vimp.LogicOrExpr;
 import byteback.analysis.vimp.LogicXorExpr;
+import byteback.analysis.vimp.OldExpr;
 import byteback.util.Lazy;
 import soot.Body;
 import soot.Local;
@@ -194,6 +195,14 @@ public class Vimp {
 
 	public CaughtExceptionRef newCaughtExceptionRef() {
 		return new ConcreteCaughtExceptionRef();
+	}
+
+	public OldExpr newOldExpr(final Value value) {
+		return new OldExpr(value);
+	}
+
+	public OldExpr newOldExpr(final ValueBox vbox) {
+		return new OldExpr(vbox);
 	}
 
 }

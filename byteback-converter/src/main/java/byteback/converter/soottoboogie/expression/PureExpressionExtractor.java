@@ -6,6 +6,7 @@ import byteback.analysis.TypeSwitch;
 import byteback.analysis.vimp.LogicConstant;
 import byteback.analysis.vimp.LogicExistsExpr;
 import byteback.analysis.vimp.LogicForallExpr;
+import byteback.analysis.vimp.OldExpr;
 import byteback.analysis.vimp.VoidConstant;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.field.FieldConverter;
@@ -360,6 +361,13 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 		final var quantifierExpression = makeQuantifierExpression(v);
 		quantifierExpression.setQuantifier(new ExistentialQuantifier());
 		setExpression(quantifierExpression);
+	}
+
+	@Override
+	public void caseOldExpr(final OldExpr v) {
+		final Expression operand = makeExpressionExtractor().visit(v.getOp());
+		final Expression oldReference = new OldReference(operand);
+		setExpression(oldReference);
 	}
 
 	@Override

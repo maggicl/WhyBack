@@ -2,6 +2,7 @@ package byteback.analysis.transformer;
 
 import byteback.analysis.JimpleStmtSwitch;
 import byteback.analysis.JimpleValueSwitch;
+import byteback.analysis.Namespace;
 import byteback.analysis.Vimp;
 import byteback.analysis.util.SootTypes;
 import byteback.analysis.vimp.AssertionStmt;
@@ -14,6 +15,7 @@ import java.util.function.Function;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
+import soot.SootMethod;
 import soot.Type;
 import soot.TypeSwitch;
 import soot.Unit;
@@ -235,11 +237,24 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 			});
 		}
 
+		public void setSpecial(final InvokeExpr specialInvokeExpr) {
+			final SootMethod method = specialInvokeExpr.getMethod();
+
+			if (method.getName().equals("old")) {
+				setValue(Vimp.v().newOldExpr(specialInvokeExpr.getArg(0)));
+			} 
+		}
+
 		@Override
 		public void caseInvokeExpr(final InvokeExpr value) {
 			for (int i = 0; i < value.getArgCount(); ++i) {
 				final ValueBox argumentBox = value.getArgBox(i);
-				new LogicValueSwitch(value.getMethodRef().getParameterType(i), argumentBox).visit(argumentBox.getValue());
+				new LogicValueSwitch(value.getMethodRef().getParameterType(i), argumentBox)
+					.visit(argumentBox.getValue());
+			}
+
+			if (Namespace.isSpecialClass(value.getMethod().getDeclaringClass())) {
+				setSpecial(value);
 			}
 		}
 

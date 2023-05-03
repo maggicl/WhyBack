@@ -2,7 +2,7 @@ package byteback.converter.soottoboogie.expression;
 
 import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Namespace;
-import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
+import byteback.analysis.util.AnnotationElems.StringElemExtractor;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootHosts;
 import byteback.converter.soottoboogie.Prelude;

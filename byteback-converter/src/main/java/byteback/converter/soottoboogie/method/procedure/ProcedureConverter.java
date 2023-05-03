@@ -1,8 +1,9 @@
 package byteback.converter.soottoboogie.method.procedure;
 
 import byteback.analysis.Namespace;
-import byteback.analysis.util.SootAnnotationElems.ClassElemExtractor;
-import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
+import byteback.analysis.RootResolver;
+import byteback.analysis.util.AnnotationElems.ClassElemExtractor;
+import byteback.analysis.util.AnnotationElems.StringElemExtractor;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootHosts;
@@ -215,6 +216,7 @@ public class ProcedureConverter extends MethodConverter {
 							final String name = new StringElemExtractor().visit(elem);
 							final SootClass clazz = method.getDeclaringClass();
 							SootMethod source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
+
 							if (source == null) {
 								parameters.add(Scene.v().getType("java.lang.Throwable"));
 								source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
@@ -224,6 +226,9 @@ public class ProcedureConverter extends MethodConverter {
 											"Unable to find matching predicate " + name + " in class " + clazz.getName());
 								}
 							}
+
+							RootResolver.v().ensureResolved(source);
+
 							final Expression expression = makeCondition(method, source);
 							final Condition condition = conditionCtor.apply(expression);
 							builder.addSpecification(condition);

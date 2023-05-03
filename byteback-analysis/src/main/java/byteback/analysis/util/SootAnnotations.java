@@ -43,7 +43,7 @@ public class SootAnnotations {
 	public static Stream<AnnotationTag> getAnnotations(final AnnotationTag tag) {
 		Stream.Builder<AnnotationTag> builder = Stream.builder();
 		builder.add(tag);
-		getValue(tag).ifPresent((elem) -> getAnnotations(builder, elem));
+		getValue(tag).ifPresent((elem) -> { getAnnotations(builder, elem); });
 
 		return builder.build();
 	}

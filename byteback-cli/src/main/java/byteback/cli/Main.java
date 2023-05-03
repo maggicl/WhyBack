@@ -77,6 +77,7 @@ public class Main {
 		scene.loadBasicClasses();
 
 		final Chain<SootClass> startingClasses = new HashChain<>();
+		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.KotlinIntrinsicsSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ObjectSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ExceptionSpec"));
 		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.CollectionSpec"));

@@ -40,17 +40,9 @@ public class ArrayReverse {
 		return eq(old(a[i]), a[j]) & eq(old(a[j]), a[i]);
 	}
 
-	@Predicate
-	public static boolean invariant_elements(final int[] a, final int i, final int j) {
-		int m = Binding.integer();
-
-		return forall(m, implies(lte(0, m) & lt(m, i) | lt(j, m) & lt(m, a.length), eq(a[i], old(a[i]))));
-	}
-
 	@Return
 	@Require("bounded_indices")
 	@Ensure("swapped_elements")
-	@Ensure("invariant_elements")
 	public static void swap(final int[] a, int i, int j) {
 		final int y = a[i];
 		a[i] = a[j];

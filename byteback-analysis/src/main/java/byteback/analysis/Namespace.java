@@ -50,6 +50,8 @@ public class Namespace {
 
 	public static final String ATTACH_ANNOTATION = "Lbyteback/annotations/Contract$Attach;";
 
+	public static final String IGNORE_ANNOTATION = "Lbyteback/annotations/Contract$Ignore;";
+
 	public static final String ATTACH_LABEL_ANNOTATION = "Lbyteback/annotations/Contract$AttachLabel;";
 
 	public static final String OLD_NAME = "old";

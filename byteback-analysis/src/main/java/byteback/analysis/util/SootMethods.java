@@ -3,6 +3,7 @@ package byteback.analysis.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import byteback.analysis.Namespace;
 import soot.Local;
 import soot.SootMethod;
 import soot.jimple.internal.JimpleLocal;
@@ -28,7 +29,9 @@ public class SootMethods {
 		return method.isConcrete()
 				&& !method.isPhantom()
 				&& !method.getDeclaringClass().isPhantom()
-				&& !SootClasses.isBasicClass(method.getDeclaringClass());
+				&& (!SootClasses.isBasicClass(method.getDeclaringClass())
+						|| Namespace.isPredicateMethod(method)
+						|| Namespace.isPureMethod(method));
 	}
 
 	public static boolean isDynamic(final SootMethod method) {

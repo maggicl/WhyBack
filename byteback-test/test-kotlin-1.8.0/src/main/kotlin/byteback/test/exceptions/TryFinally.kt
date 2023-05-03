@@ -5,6 +5,7 @@ import byteback.annotations.Contract.*
 import byteback.annotations.Operator.*
 
 class TryFinally {
+
 		@Predicate
 		fun always(): Boolean {
 				return true

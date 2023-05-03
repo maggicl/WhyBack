@@ -16,11 +16,11 @@ import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 import soot.util.Chain;
 
-public class AnnotationInjector {
+public class ClassInjector {
 
-	private static final Lazy<AnnotationInjector> instance = Lazy.from(AnnotationInjector::new);
+	private static final Lazy<ClassInjector> instance = Lazy.from(ClassInjector::new);
 
-	public static AnnotationInjector v() {
+	public static ClassInjector v() {
 		return instance.get();
 	}
 
@@ -46,8 +46,8 @@ public class AnnotationInjector {
 			}
 			
 			final SootClass hostClass = Scene.v().loadClassAndSupport(Namespace.stripDescriptor(value));
-			hostClass.addAllTagsOf(attachedClass);
 
+			hostClass.addAllTagsOf(attachedClass);
 			final List<SootMethod> methodsSnapshot = new ArrayList<>(attachedClass.getMethods());
 
 			for (final SootMethod attachedMethod : methodsSnapshot) {

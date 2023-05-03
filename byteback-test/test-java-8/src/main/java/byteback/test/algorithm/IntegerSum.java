@@ -13,20 +13,32 @@ import byteback.annotations.Contract.Ensure;
 public class IntegerSum {
 
 	@Pure
-	public static boolean positive_arguments_imply_positive_sum(int[] as, int ret) {
-		return implies(positive_arguments(as), gte(ret, 0));
-	}
-
-	@Pure
 	public static boolean positive_arguments(int[] as) {
 		int i = Binding.integer();
 
 		return forall(i, implies(lt(i, as.length), gt(as[i], 0)));
 	}
 
+	@Pure
+	@Predicate
+	public static boolean array_is_invalid(int[] as) {
+		return eq(as, null);
+	}
+
+	@Pure
+	@Predicate
+	public static boolean positive_arguments_imply_positive_sum(int[] as, int ret) {
+		return implies(not(array_is_invalid(as)), implies(positive_arguments(as), gte(ret, 0)));
+	}
+
+	@Raise(exception = IllegalArgumentException.class, when = "array_is_invalid")
 	@Ensure("positive_arguments_imply_positive_sum")
 	public static int sum(int[] as) {
 		int sum = 0;
+
+		if (as == null) {
+			throw new IllegalArgumentException();
+		}
 
 		for (int i = 0; i < as.length; ++i) {
 			invariant(lte(i, as.length));

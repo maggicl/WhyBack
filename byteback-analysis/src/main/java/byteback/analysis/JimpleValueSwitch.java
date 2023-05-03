@@ -3,6 +3,7 @@ package byteback.analysis;
 import byteback.analysis.vimp.LogicAndExpr;
 import byteback.analysis.vimp.LogicOrExpr;
 import byteback.analysis.vimp.LogicXorExpr;
+import byteback.analysis.vimp.OldExpr;
 import byteback.analysis.vimp.VoidConstant;
 import soot.Value;
 import soot.jimple.*;
@@ -54,6 +55,10 @@ public abstract class JimpleValueSwitch<R> extends AbstractJimpleValueSwitch<R> 
 	}
 
 	public void caseVoidConstant(final VoidConstant v) {
+		defaultCase(v);
+	}
+
+	public void caseOldExpr(final OldExpr v) {
 		defaultCase(v);
 	}
 

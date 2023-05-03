@@ -30,6 +30,7 @@ public class MultiCatch {
 	public void multiCatchUnion() throws Exception {
 		try {
 			alwaysThrowsMultiple();
+			assertion(false);
 		} catch (Exception1 | Exception2 e) {
 			assertion(e instanceof Exception1 | e instanceof Exception2);
 		}

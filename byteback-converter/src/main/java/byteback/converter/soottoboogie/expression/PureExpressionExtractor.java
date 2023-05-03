@@ -6,12 +6,11 @@ import byteback.analysis.TypeSwitch;
 import byteback.analysis.vimp.LogicConstant;
 import byteback.analysis.vimp.LogicExistsExpr;
 import byteback.analysis.vimp.LogicForallExpr;
+import byteback.analysis.vimp.OldExpr;
 import byteback.analysis.vimp.VoidConstant;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.field.FieldConverter;
-import byteback.converter.soottoboogie.method.function.FunctionConverter;
 import byteback.converter.soottoboogie.method.function.FunctionExpressionExtractor;
-import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
 import byteback.converter.soottoboogie.type.CasterProvider;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
@@ -285,7 +284,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseClassConstant(final ClassConstant classConstant) {
-		final String className = Namespace.stripLabelDescriptor(classConstant.getValue());
+		final String className = Namespace.stripConstantDescriptor(classConstant.getValue());
 		final ValueReference valueReference = ValueReference.of(ReferenceTypeConverter.typeName(className));
 		final FunctionReference typeReference = Prelude.v().getTypeReferenceFunction().makeFunctionReference();
 		typeReference.addArgument(valueReference);
@@ -362,6 +361,13 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 		final var quantifierExpression = makeQuantifierExpression(v);
 		quantifierExpression.setQuantifier(new ExistentialQuantifier());
 		setExpression(quantifierExpression);
+	}
+
+	@Override
+	public void caseOldExpr(final OldExpr v) {
+		final Expression operand = makeExpressionExtractor().visit(v.getOp());
+		final Expression oldReference = new OldReference(operand);
+		setExpression(oldReference);
 	}
 
 	@Override

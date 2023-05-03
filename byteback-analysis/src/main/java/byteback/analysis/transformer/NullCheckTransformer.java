@@ -11,6 +11,7 @@ import soot.grimp.GrimpBody;
 import soot.jimple.ArrayRef;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.LengthExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.SpecialInvokeExpr;
@@ -41,7 +42,7 @@ public class NullCheckTransformer extends CheckTransformer {
 	public Value extractTarget(final Value value) {
 		Value target = null;
 
-		if (value instanceof NewExpr || value instanceof SpecialInvokeExpr) {
+		if (value instanceof NewExpr || value instanceof SpecialInvokeExpr || target instanceof ThisRef) {
 			return null;
 		}
 
@@ -57,8 +58,8 @@ public class NullCheckTransformer extends CheckTransformer {
 			target = arrayRef.getBase();
 		}
 
-		if (target instanceof ThisRef) {
-			return null;
+		if (value instanceof LengthExpr lengthExpr) {
+			target = lengthExpr.getOp();
 		}
 
 		return target;

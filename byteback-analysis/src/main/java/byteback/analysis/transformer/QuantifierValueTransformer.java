@@ -5,15 +5,19 @@ import byteback.analysis.Namespace;
 import byteback.analysis.QuantifierExpr;
 import byteback.analysis.Vimp;
 import byteback.util.Lazy;
+
+import java.util.Iterator;
 import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.GrimpBody;
+import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.InvokeExpr;
 import soot.util.Chain;
@@ -36,6 +40,30 @@ public class QuantifierValueTransformer extends BodyTransformer implements Value
 			transformBody(body);
 		} else {
 			throw new IllegalArgumentException("Can only transform Grimp");
+		}
+	}
+
+	@Override
+	public void transformBody(final Body body) {
+		final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
+
+		while (unitIterator.hasNext()) {
+			final Unit unit = unitIterator.next();
+
+			if (unit instanceof AssignStmt assignStmt) {
+				if (assignStmt.getRightOp() instanceof InvokeExpr invokeExpr) {
+					final SootMethod method = invokeExpr.getMethod();
+					final SootClass clazz = method.getDeclaringClass();
+
+					if (Namespace.isBindingClass(clazz)) {
+						body.getUnits().remove(assignStmt);
+					}
+				}
+			} else {
+				for (final ValueBox vbox : unit.getUseAndDefBoxes()) {
+					transformValue(vbox);
+				}
+			}
 		}
 	}
 

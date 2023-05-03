@@ -1,8 +1,9 @@
 package byteback.converter.soottoboogie.method.procedure;
 
 import byteback.analysis.Namespace;
-import byteback.analysis.util.SootAnnotationElems.ClassElemExtractor;
-import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
+import byteback.analysis.RootResolver;
+import byteback.analysis.util.AnnotationElems.ClassElemExtractor;
+import byteback.analysis.util.AnnotationElems.StringElemExtractor;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootHosts;
@@ -163,12 +164,12 @@ public class ProcedureConverter extends MethodConverter {
 				final String tagName;
 
 				switch (sub.getType()) {
-					case Namespace.REQUIRE_ANNOTATION :
+					case Namespace.REQUIRE_ANNOTATION:
 						// requires {condition};
 						tagName = "value";
 						conditionCtor = (expression) -> new PreCondition(new List<>(), false, expression);
 						break;
-					case Namespace.ENSURE_ANNOTATION :
+					case Namespace.ENSURE_ANNOTATION:
 						// ensures {condition};
 						tagName = "value";
 						conditionCtor = (expression) -> new PostCondition(new List<>(), false, expression);
@@ -177,7 +178,7 @@ public class ProcedureConverter extends MethodConverter {
 							parameters.add(method.getReturnType());
 						}
 						break;
-					case Namespace.RAISE_ANNOTATION :
+					case Namespace.RAISE_ANNOTATION:
 						// ensures old({condition}) ==> ~exc == {exception};
 						tagName = "when";
 						final AnnotationElem exceptionElem = SootAnnotations.getElem(sub, "exception").orElseThrow();
@@ -196,12 +197,12 @@ public class ProcedureConverter extends MethodConverter {
 							return new PostCondition(new List<>(), false, condition);
 						};
 						break;
-					case Namespace.RETURN_ANNOTATION :
+					case Namespace.RETURN_ANNOTATION:
 						// ensures old({condition}) ~exc == ~void;
 						tagName = "when";
 						conditionCtor = (expression) -> {
 							final var rightExpression = new EqualsOperation(Convention.makeExceptionReference(),
-								Prelude.v().getVoidConstant().makeValueReference());
+									Prelude.v().getVoidConstant().makeValueReference());
 							final Expression condition = new ImplicationOperation(new OldReference(expression), rightExpression);
 							return new PostCondition(new List<>(), false, condition);
 						};
@@ -215,6 +216,7 @@ public class ProcedureConverter extends MethodConverter {
 							final String name = new StringElemExtractor().visit(elem);
 							final SootClass clazz = method.getDeclaringClass();
 							SootMethod source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
+
 							if (source == null) {
 								parameters.add(Scene.v().getType("java.lang.Throwable"));
 								source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
@@ -224,11 +226,14 @@ public class ProcedureConverter extends MethodConverter {
 											"Unable to find matching predicate " + name + " in class " + clazz.getName());
 								}
 							}
+
+							RootResolver.v().ensureResolved(source);
+
 							final Expression expression = makeCondition(method, source);
 							final Condition condition = conditionCtor.apply(expression);
 							builder.addSpecification(condition);
 						}, () -> {
-								builder.addSpecification(conditionCtor.apply(BooleanLiteral.makeTrue()));
+							builder.addSpecification(conditionCtor.apply(BooleanLiteral.makeTrue()));
 						});
 			});
 		});
@@ -270,7 +275,9 @@ public class ProcedureConverter extends MethodConverter {
 					buildBody(builder, method);
 				}
 			} else {
-				buildFrameInvariant(builder);
+				if (!SootHosts.hasAnnotation(method, Namespace.INVARIANT_ANNOTATION)) {
+					buildFrameInvariant(builder);
+				}
 			}
 		} catch (final ConversionException exception) {
 			throw new ProcedureConversionException(method, exception);

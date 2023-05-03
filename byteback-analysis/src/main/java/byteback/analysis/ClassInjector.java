@@ -6,8 +6,8 @@ import java.util.List;
 
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootHosts;
-import byteback.analysis.util.SootAnnotationElems.ClassElemExtractor;
-import byteback.analysis.util.SootAnnotationElems.StringElemExtractor;
+import byteback.analysis.util.AnnotationElems.ClassElemExtractor;
+import byteback.analysis.util.AnnotationElems.StringElemExtractor;
 import byteback.util.Lazy;
 import soot.Scene;
 import soot.SootClass;
@@ -46,8 +46,6 @@ public class ClassInjector {
 			}
 			
 			final SootClass hostClass = Scene.v().loadClassAndSupport(Namespace.stripDescriptor(value));
-
-			hostClass.addAllTagsOf(attachedClass);
 			final List<SootMethod> methodsSnapshot = new ArrayList<>(attachedClass.getMethods());
 
 			for (final SootMethod attachedMethod : methodsSnapshot) {

@@ -21,6 +21,10 @@ public class OldExpr extends AbstractUnopExpr {
 
 	@Override
 	public void toString(UnitPrinter up) {
+		up.literal("old");
+		up.literal("(");
+		getOp().toString(up);
+		up.literal(")");
 	}
 
 	@Override

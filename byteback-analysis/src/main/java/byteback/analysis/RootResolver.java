@@ -18,7 +18,10 @@ import byteback.analysis.transformer.InvariantExpander;
 import byteback.analysis.transformer.LogicUnitTransformer;
 import byteback.analysis.transformer.LogicValueTransformer;
 import byteback.analysis.transformer.NullCheckTransformer;
+import byteback.analysis.transformer.PureTransformer;
 import byteback.analysis.transformer.QuantifierValueTransformer;
+import byteback.analysis.util.AnnotationElems;
+import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootClasses;
 import byteback.analysis.util.SootHosts;
@@ -54,12 +57,16 @@ public class RootResolver {
 			SootBodies.validateCalls(method.retrieveActiveBody());
 			final Body body = Grimp.v().newBody(method.getActiveBody(), "");
 
-			if (checkNullDereference) {
-				NullCheckTransformer.v().transform(body);
-			}
+			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+				if (checkNullDereference) {
+					NullCheckTransformer.v().transform(body);
+				}
 
-			if (checkArrayDereference) {
-				IndexCheckTransformer.v().transform(body);
+				if (checkArrayDereference) {
+					IndexCheckTransformer.v().transform(body);
+				}
+			} else {
+				PureTransformer.v().transform(body);
 			}
 
 			LogicUnitTransformer.v().transform(body);
@@ -157,6 +164,19 @@ public class RootResolver {
 			addType(type);
 		}
 
+		SootHosts.getAnnotations(method).forEach((tag) -> {
+			SootAnnotations.getAnnotations(tag).forEach((sub) -> {
+				sub.getElems().stream().forEach((elem) -> {
+					final String classDescriptor = new AnnotationElems.ClassElemExtractor().visit(elem);
+
+					if (classDescriptor != null) {
+						final String className = Namespace.stripDescriptor(classDescriptor);
+						addType(Scene.v().getType(className));
+					}
+				});
+			});
+		});
+
 		addType(method.getReturnType());
 	}
 
@@ -242,16 +262,23 @@ public class RootResolver {
 			}
 		}
 
+		resolveAll();
+	}
+
+	public void resolveAll() {
 		while (!next.isEmpty()) {
 			final AbstractHost current = next.pollFirst();
+			scan(current);
+		}
+	}
 
-			if (current instanceof SootClass clazz) {
-				scanClass(clazz);
-			} else if (current instanceof SootMethod method) {
-				scanMethod(method);
-			} else if (current instanceof SootField field) {
-				scanField(field);
-			}
+	public void scan(final AbstractHost host) {
+		if (host instanceof SootClass clazz) {
+			scanClass(clazz);
+		} else if (host instanceof SootMethod method) {
+			scanMethod(method);
+		} else if (host instanceof SootField field) {
+			scanField(field);
 		}
 	}
 
@@ -259,6 +286,13 @@ public class RootResolver {
 		final Collection<SootClass> subclasses = Scene.v().getOrMakeFastHierarchy().getSubclassesOf(clazz);
 
 		return subclasses.stream().filter((c) -> visited.contains(c)).toList();
+	}
+
+	public void ensureResolved(final AbstractHost host) {
+		if (!visited.contains(host)) {
+			scan(host);
+			resolveAll();
+		}
 	}
 
 }

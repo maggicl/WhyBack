@@ -19,19 +19,26 @@ class GCD {
         gcd_recursive(a, b - a)));
   }
 
+  @Pure
   @Predicate
   def result_is_gcd(a: Int, b: Int, r: Int): Boolean = {
-    return equal(r, gcd_recursive(a, b));
+    return implies(not(arguments_are_negative(a, b)), equal(r, gcd_recursive(a, b)));
   }
 
+  @Pure
   @Predicate
-  def arguments_are_positive(a: Int, b: Int): Boolean = {
-    return gt(a, 0) & gt(b, 0);
+  def arguments_are_negative(a: Int, b: Int): Boolean = {
+    return lte(a, 0) | lte(b, 0);
   }
 
-  @Require("arguments_are_positive")
+  @Raise(exception = classOf[IllegalArgumentException], when = "arguments_are_negative")
   @Ensure("result_is_gcd")
   def apply(a: Int, b: Int): Int = {
+
+		if (a <= 0 || b <= 0) {
+			throw new IllegalArgumentException("Both arguments must be positive");
+		}
+
     var r: Int = a;
     var x: Int = b;
 

@@ -54,12 +54,14 @@ public class RootResolver {
 			SootBodies.validateCalls(method.retrieveActiveBody());
 			final Body body = Grimp.v().newBody(method.getActiveBody(), "");
 
-			if (checkNullDereference) {
-				NullCheckTransformer.v().transform(body);
-			}
+			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+				if (checkNullDereference) {
+					NullCheckTransformer.v().transform(body);
+				}
 
-			if (checkArrayDereference) {
-				IndexCheckTransformer.v().transform(body);
+				if (checkArrayDereference) {
+					IndexCheckTransformer.v().transform(body);
+				}
 			}
 
 			LogicUnitTransformer.v().transform(body);

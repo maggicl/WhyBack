@@ -129,4 +129,9 @@ public interface Contract {
 	public static @interface Ignore {
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD})
+	public static @interface Invariant {
+	}
+
 }

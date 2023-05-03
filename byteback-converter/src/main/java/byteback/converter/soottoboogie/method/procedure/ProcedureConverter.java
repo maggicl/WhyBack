@@ -164,12 +164,12 @@ public class ProcedureConverter extends MethodConverter {
 				final String tagName;
 
 				switch (sub.getType()) {
-					case Namespace.REQUIRE_ANNOTATION :
+					case Namespace.REQUIRE_ANNOTATION:
 						// requires {condition};
 						tagName = "value";
 						conditionCtor = (expression) -> new PreCondition(new List<>(), false, expression);
 						break;
-					case Namespace.ENSURE_ANNOTATION :
+					case Namespace.ENSURE_ANNOTATION:
 						// ensures {condition};
 						tagName = "value";
 						conditionCtor = (expression) -> new PostCondition(new List<>(), false, expression);
@@ -178,7 +178,7 @@ public class ProcedureConverter extends MethodConverter {
 							parameters.add(method.getReturnType());
 						}
 						break;
-					case Namespace.RAISE_ANNOTATION :
+					case Namespace.RAISE_ANNOTATION:
 						// ensures old({condition}) ==> ~exc == {exception};
 						tagName = "when";
 						final AnnotationElem exceptionElem = SootAnnotations.getElem(sub, "exception").orElseThrow();
@@ -197,12 +197,12 @@ public class ProcedureConverter extends MethodConverter {
 							return new PostCondition(new List<>(), false, condition);
 						};
 						break;
-					case Namespace.RETURN_ANNOTATION :
+					case Namespace.RETURN_ANNOTATION:
 						// ensures old({condition}) ~exc == ~void;
 						tagName = "when";
 						conditionCtor = (expression) -> {
 							final var rightExpression = new EqualsOperation(Convention.makeExceptionReference(),
-								Prelude.v().getVoidConstant().makeValueReference());
+									Prelude.v().getVoidConstant().makeValueReference());
 							final Expression condition = new ImplicationOperation(new OldReference(expression), rightExpression);
 							return new PostCondition(new List<>(), false, condition);
 						};
@@ -233,7 +233,7 @@ public class ProcedureConverter extends MethodConverter {
 							final Condition condition = conditionCtor.apply(expression);
 							builder.addSpecification(condition);
 						}, () -> {
-								builder.addSpecification(conditionCtor.apply(BooleanLiteral.makeTrue()));
+							builder.addSpecification(conditionCtor.apply(BooleanLiteral.makeTrue()));
 						});
 			});
 		});
@@ -275,7 +275,9 @@ public class ProcedureConverter extends MethodConverter {
 					buildBody(builder, method);
 				}
 			} else {
-				buildFrameInvariant(builder);
+				if (!SootHosts.hasAnnotation(method, Namespace.INVARIANT_ANNOTATION)) {
+					buildFrameInvariant(builder);
+				}
 			}
 		} catch (final ConversionException exception) {
 			throw new ProcedureConversionException(method, exception);

@@ -8,10 +8,10 @@ import static byteback.annotations.Operator.*;
 import static byteback.annotations.Quantifier.*;
 import static byteback.annotations.Special.*;
 
-import javax.annotation.processing.SupportedSourceVersion;
-
 import byteback.annotations.Binding;
 
+// Dafny implementation:
+// https://gist.github.com/Karneades/cd5f1d283e07be858e833b9463c16ab2
 public class ArrayReverse {
 
 	@Pure
@@ -71,8 +71,13 @@ public class ArrayReverse {
 		int i = 0;
 
 		while (i < (l - i)) {
+			final int k = Binding.integer();
+			invariant(forall(k, implies(lte(0, k) & lt(k, i) | lt(l - i, k) & lte(k, l), eq(a[k], old(a[l - k])))));
+			invariant(forall(k, implies(lte(i, k) & lt(k, l - i), eq(a[k], old(a[k])))));
 			invariant(lte(0, i) & lte(i, (l + 1) / 2));
 			swap(a, i, l - i);
+
+			++i;
 		}
 	}
 

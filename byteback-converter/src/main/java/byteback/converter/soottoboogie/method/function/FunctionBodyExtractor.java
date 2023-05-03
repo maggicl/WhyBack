@@ -21,27 +21,6 @@ public class FunctionBodyExtractor extends JimpleStmtSwitch<Expression> {
 	}
 
 	@Override
-	public void caseAssignStmt(final AssignStmt assignment) {
-		final Value left = assignment.getLeftOp();
-		final Value right = assignment.getRightOp();
-		final Local local = new LocalExtractor().visit(left);
-
-		new FunctionExpressionExtractor() {
-
-			@Override
-			public void pushBinding(final SootMethod method, final Iterable<Value> argumentsIterable) {
-				setExpression(ValueReference.of(PureExpressionExtractor.localName(local)));
-			}
-
-			@Override
-			public void caseDefault(final Value value) {
-				FunctionBodyExtractor.this.caseDefault(assignment);
-			}
-
-		}.visit(right);
-	}
-
-	@Override
 	public void caseReturnStmt(final ReturnStmt returnStatement) {
 		final Value operand = returnStatement.getOp();
 		result = new FunctionExpressionExtractor().visit(operand);

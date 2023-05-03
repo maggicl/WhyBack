@@ -2,6 +2,7 @@ package byteback.annotations;
 
 import byteback.annotations.Contract.AttachLabel;
 import byteback.annotations.Contract.Ignore;
+import byteback.annotations.Contract.Invariant;
 import byteback.annotations.Contract.Lemma;
 import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Pure;
@@ -29,6 +30,7 @@ public abstract class KotlinIntrinsicsSpec {
 	public static void checkNotNull(Object o) {}
 
 	@Lemma
+	@Invariant
 	@Raise(exception = IllegalArgumentException.class, when = "parameter_is_null")
 	@Return(when = "parameter_is_not_null")
 	public static void checkNotNullParameter(Object parameter, String name) {}

@@ -7,6 +7,8 @@ import static byteback.annotations.Contract.*;
 
 import byteback.test.exceptions.Basic.Exception1;
 import byteback.test.exceptions.Basic.Exception2;
+import byteback.test.exceptions.Basic.Exception3;
+import byteback.test.exceptions.Basic.Exception4;
 
 public class MultiCatch {
 
@@ -36,16 +38,15 @@ public class MultiCatch {
 		}
 	}
 
-	// TODO: Discuss this
-	// public void multiCatchFinally() throws Exception {
-	// 	try {
-	// 		alwaysThrowsMultiple();
-	// 		assertion(false);
-	// 	} catch (Exception3 | Exception4 e) {
-	// 		assertion(false);
-	// 	} finally {
-	// 	}
-	// }
+	public void multiCatchFinally() throws Exception {
+		try {
+			alwaysThrowsMultiple();
+			assertion(false);
+		} catch (Exception3 | Exception4 e) {
+			assertion(false);
+		} finally {
+		}
+	}
 
 }
 /**

@@ -29,7 +29,9 @@ public class LogicAndExpr extends AbstractLogicBinopExpr implements AndExpr {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprVisitor<?>) sw).caseLogicAndExpr(this);
+		if (sw instanceof LogicExprVisitor<?> visitor) {
+			visitor.caseLogicAndExpr(this);
+		}
 	}
 
 	@Override

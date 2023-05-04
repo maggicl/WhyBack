@@ -2,9 +2,11 @@ package byteback.analysis.transformer;
 
 import java.util.Map;
 
+import byteback.analysis.Vimp;
 import byteback.util.Lazy;
 import soot.Body;
 import soot.Scene;
+import soot.Unit;
 import soot.Value;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
@@ -39,10 +41,21 @@ public class NullCheckTransformer extends CheckTransformer {
 	}
 
 	@Override
+	public void transformBody(final Body body) {
+		if (!body.getMethod().isStatic()) {
+			final Unit unit = body.getThisUnit();
+			final Unit assumption = Vimp.v().newAssumptionStmt(Vimp.v().newNeExpr(body.getThisLocal(), NullConstant.v()));
+			body.getUnits().insertAfter(assumption, unit);
+		}
+
+		super.transformBody(body);
+	}
+
+	@Override
 	public Value extractTarget(final Value value) {
 		Value target = null;
 
-		if (value instanceof NewExpr || value instanceof SpecialInvokeExpr || target instanceof ThisRef) {
+		if (value instanceof NewExpr || value instanceof SpecialInvokeExpr) {
 			return null;
 		}
 
@@ -60,6 +73,10 @@ public class NullCheckTransformer extends CheckTransformer {
 
 		if (value instanceof LengthExpr lengthExpr) {
 			target = lengthExpr.getOp();
+		}
+
+		if (target instanceof ThisRef) {
+			return null;
 		}
 
 		return target;

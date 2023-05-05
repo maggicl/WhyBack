@@ -6,6 +6,8 @@ import byteback.analysis.vimp.VoidConstant;
 import byteback.util.Lazy;
 import byteback.util.ListHashMap;
 import byteback.util.Stacks;
+
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.Stack;
 import soot.Body;
 import soot.BodyTransformer;
+import soot.Local;
 import soot.RefType;
 import soot.Scene;
 import soot.Trap;
@@ -58,8 +61,6 @@ public class GuardTransformer extends BodyTransformer {
 		final ListHashMap<Unit, Trap> endToTraps = new ListHashMap<>();
 		final HashSet<Unit> trapHandlers = new HashSet<>();
 		final Stack<Trap> activeTraps = new Stack<>();
-		final Unit terminalUnit = Grimp.v().newReturnVoidStmt();
-		units.addLast(terminalUnit);
 		final Iterator<Unit> unitIterator = units.snapshotIterator();
 		units.addFirst(Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v()));
 
@@ -70,6 +71,10 @@ public class GuardTransformer extends BodyTransformer {
 		}
 
 		for (final Unit handler : trapHandlers) {
+			assert handler instanceof AssignStmt assign
+				&& assign.getLeftOp() instanceof Local
+				&& assign.getRightOp() instanceof CaughtExceptionRef;
+
 			final AssignStmt assignment = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v());
 			units.insertAfter(assignment, handler);
 		}
@@ -79,48 +84,46 @@ public class GuardTransformer extends BodyTransformer {
 			final List<Trap> startedTraps = startToTraps.get(unit);
 			final List<Trap> endedTraps = endToTraps.get(unit);
 
-			if (startedTraps != null) {
-				Stacks.pushAll(activeTraps, startToTraps.get(unit));
-			}
-
 			if (endedTraps != null) {
 				Stacks.popAll(activeTraps, endToTraps.get(unit));
 			}
 
+			if (startedTraps != null) {
+				Stacks.pushAll(activeTraps, startToTraps.get(unit));
+			}
+
 			if (unit instanceof ThrowStmt throwUnit) {
+				final Unit retUnit = Grimp.v().newReturnVoidStmt();
+
+				units.insertBefore(retUnit, throwUnit);;
+				units.remove(throwUnit);
+
+				final Unit assignUnit;
+
+				if (throwUnit.getOp() instanceof CaughtExceptionRef) {
+					assignUnit = units.getPredOf(retUnit);
+				} else {
+					assignUnit = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), throwUnit.getOp());
+					units.insertBefore(assignUnit, retUnit);
+				}
+
+				final HashSet<RefType> usedTypes = new HashSet<>();
+				Unit indexUnit = assignUnit;
+					
 				if (throwUnit.getOp().getType() instanceof RefType throwType) {
-					for (final Trap activeTrap : activeTraps) {
+					
+					for (int i = activeTraps.size() - 1; i >= 0; --i) {
+						final Trap activeTrap = activeTraps.get(i);
+
 						final RefType trapType = activeTrap.getException().getType();
 
-						if (Scene.v().getOrMakeFastHierarchy().isSubclass(throwType.getSootClass(),
-								trapType.getSootClass())) {
-							final GotoStmt guardUnit = Grimp.v().newGotoStmt(activeTrap.getHandlerUnit());
-							units.insertAfter(guardUnit, unit);
-							units.remove(unit);
-							break;
+						if (!usedTypes.contains(trapType)) {
+							usedTypes.add(trapType);
+							final Value condition = Vimp.v().newInstanceOfExpr(Vimp.v().newCaughtExceptionRef(), trapType);
+							final Unit ifUnit = Vimp.v().newIfStmt(condition, activeTrap.getHandlerUnit());
+							units.insertAfter(ifUnit, indexUnit);
+							indexUnit = ifUnit;
 						}
-					}
-				}
-			} else {
-				for (final ValueBox vbox : unit.getUseBoxes()) {
-					final Value value = vbox.getValue();
-
-					if (value instanceof InvokeExpr invoke && !Namespace.isPureMethod(invoke.getMethod())) {
-						Unit currentGuardUnit = unit;
-
-						for (final Trap trap : activeTraps) {
-							final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
-							final InstanceOfExpr condition = Vimp.v().newInstanceOfExpr(eref,
-									trap.getException().getType());
-							final Unit newGuardUnit = Vimp.v().newIfStmt(condition, trap.getHandlerUnit());
-							units.insertAfter(newGuardUnit, currentGuardUnit);
-							currentGuardUnit = newGuardUnit;
-						}
-
-						final CaughtExceptionRef eref = Vimp.v().newCaughtExceptionRef();
-						final NeExpr condition = Vimp.v().newNeExpr(eref, VoidConstant.v());
-						final IfStmt guardUnit = Vimp.v().newIfStmt(condition, terminalUnit);
-						units.insertAfter(guardUnit, currentGuardUnit);
 					}
 				}
 			}

@@ -15,8 +15,10 @@ public class TryWithResources {
 	public static class Resource implements AutoCloseable {
 		private boolean closed;
 
+		@Lemma
 		@Return
 		@Ensure("isOpen")
+		@Ensure("otherResourcesAreClosed")
 		public Resource() {
 			closed = false;
 		}
@@ -220,5 +222,5 @@ public class TryWithResources {
 
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 13 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 14 verified, 0 errors
  */

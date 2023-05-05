@@ -4,6 +4,7 @@ import byteback.analysis.Vimp;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.util.Lazy;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +14,7 @@ import soot.BodyTransformer;
 import soot.Unit;
 import soot.Value;
 import soot.grimp.GrimpBody;
+import soot.jimple.IfStmt;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
@@ -74,13 +76,21 @@ public class InvariantExpander extends BodyTransformer {
 				final Loop loop = activeLoops.peek();
 				final Value condition = invariantUnit.getCondition();
 				units.insertBefore(Vimp.v().newAssertionStmt(condition), loop.getHead());
-				units.insertAfter(Vimp.v().newAssumptionStmt(condition), loop.getHead());
+
+				if (loop.getHead() instanceof IfStmt) {
+					units.insertAfter(Vimp.v().newAssumptionStmt(condition), loop.getHead());
+				}
+
 				units.insertBefore(Vimp.v().newAssertionStmt(condition), loop.getBackJumpStmt());
 
+				final HashSet<Unit> exitTargets = new HashSet<>();
+
 				for (final Unit exit : loop.getLoopExits()) {
-					for (final Unit exitTarget : loop.targetsOfLoopExit((Stmt) exit)) {
-						units.insertBefore(Vimp.v().newAssumptionStmt(condition), exitTarget);
-					}
+					exitTargets.addAll(loop.targetsOfLoopExit((Stmt) exit));
+				}
+
+				for (final Unit exitTarget : exitTargets) {
+					units.insertBefore(Vimp.v().newAssumptionStmt(condition), exitTarget);
 				}
 
 				units.remove(invariantUnit);

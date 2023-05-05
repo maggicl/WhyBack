@@ -287,10 +287,14 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	@Override
 	public void caseThrowStmt(final ThrowStmt throwStatement) {
 		final Value operand = throwStatement.getOp();
-		final ValueReference valueReference = Convention.makeExceptionReference();
-		final var assignee = Assignee.of(valueReference);
-		final Expression expression = makeExpressionExtractor().visit(operand);
-		addSingleAssignment(assignee, expression);
+
+		if (!(operand instanceof CaughtExceptionRef)) {
+			final ValueReference valueReference = Convention.makeExceptionReference();
+			final var assignee = Assignee.of(valueReference);
+			final Expression expression = makeExpressionExtractor().visit(operand);
+			addSingleAssignment(assignee, expression);
+		}
+
 		addStatement(new ReturnStatement());
 	}
 

@@ -72,23 +72,16 @@ function ~typeof(h: Store, r: Reference) returns (Type)
   ~heap.read(h, r, ~Object.Type)
 }
 
-function ~extends(t1: Type, t2: Type) returns (bool);
-
-axiom (forall t1: Type, t2: Type ::
-	~extends(t1, t2) && ~extends(t2, t1) ==> t1 == t2);
-
-axiom (forall t1: Type, t2: Type, t3: Type ::
-	~extends(t1, t2) && ~extends(t2, t3) ==> ~extends(t1, t3));
-
-axiom (forall t1: Type, t2: Type ::
-	!~extends(t1, t2) ==> t1 != t2);
-
 function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 {
 	~typeof(h, r) <: t
 }
 
-axiom (forall h: Store, t: Type :: !~instanceof(h, ~void, t));
+axiom (forall h: Store, r: Reference, t: Type ::
+	~instanceof(h, r, t) ==> ~heap.read(h, r, ~Object.Type) == t);
+
+axiom (forall h: Store, t: Type ::
+	!~instanceof(h, ~void, t));
 
 function ~type.reference(Type) returns (Reference);
 

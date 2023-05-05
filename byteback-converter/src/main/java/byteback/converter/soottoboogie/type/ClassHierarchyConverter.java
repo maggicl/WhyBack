@@ -49,10 +49,8 @@ public class ClassHierarchyConverter {
 		quantifierBuilder.quantifier(new UniversalQuantifier());
 		int i = 0;
 
-		ValueReference previousParameterReference = null;
-
 		for (final SootClass clazz : classes) {
-			final String parameterName = makeQuantifiedTypeVariableName(i++);
+			final String parameterName = makeQuantifiedTypeVariableName(i);
 			final var bindingBuilder = new SetBindingBuilder();
 			bindingBuilder.typeAccess(Prelude.v().getTypeType().makeTypeAccess());
 			bindingBuilder.name(parameterName);
@@ -64,13 +62,16 @@ public class ClassHierarchyConverter {
 			antecedentStack.push(extendsReference);
 			quantifierBuilder.addTrigger(extendsReference);
 
-			if (previousParameterReference != null) {
-				Expression left = previousParameterReference;
-				Expression right = parameterReference;
-				sequentStack.push(new NotEqualsOperation(left, right));
+			for (int j = 0; j < i; ++j) {
+				if (i != j) {
+					final ValueReference left = ValueReference.of(makeQuantifiedTypeVariableName(i));
+					final ValueReference right = ValueReference.of(makeQuantifiedTypeVariableName(j));
+
+					sequentStack.push(new NotEqualsOperation(left, right));
+				}
 			}
 
-			previousParameterReference = parameterReference;
+			++i;
 		}
 
 		final Expression antecedent = reduceConjunction(antecedentStack);

@@ -9,8 +9,9 @@ import java.util.Set;
 
 import byteback.analysis.util.SootMethods;
 import byteback.util.Lazy;
+import byteback.analysis.transformer.CallCheckTransformer;
 import byteback.analysis.transformer.DynamicToStaticTransformer;
-import byteback.analysis.transformer.ExceptionInvariantTransformer;
+import byteback.analysis.transformer.ExceptionAssumptionTransformer;
 import byteback.analysis.transformer.ExpressionFolder;
 import byteback.analysis.transformer.GuardTransformer;
 import byteback.analysis.transformer.IndexCheckTransformer;
@@ -57,7 +58,14 @@ public class RootResolver {
 			SootBodies.validateCalls(method.retrieveActiveBody());
 			final Body body = Grimp.v().newBody(method.getActiveBody(), "");
 
+			System.out.println(body);
+
+			LogicUnitTransformer.v().transform(body);
+			new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
+
 			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+				CallCheckTransformer.v().transform(body);
+
 				if (checkNullDereference) {
 					NullCheckTransformer.v().transform(body);
 				}
@@ -69,13 +77,12 @@ public class RootResolver {
 				PureTransformer.v().transform(body);
 			}
 
-			LogicUnitTransformer.v().transform(body);
-			new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
 			new ExpressionFolder().transform(body);
 			UnusedLocalEliminator.v().transform(body);
 			QuantifierValueTransformer.v().transform(body);
-			ExceptionInvariantTransformer.v().transform(body);
+
 			InvariantExpander.v().transform(body);
+			ExceptionAssumptionTransformer.v().transform(body);
 			DynamicToStaticTransformer.v().transform(body);
 
 			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {

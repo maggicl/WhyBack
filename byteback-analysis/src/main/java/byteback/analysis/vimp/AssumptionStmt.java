@@ -19,7 +19,9 @@ public class AssumptionStmt extends LogicStmt {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicStmtSwitch<?>) sw).caseAssumptionStmt(this);
+		if (sw instanceof LogicStmtSwitch<?> logicSwitch)  {
+			logicSwitch.caseAssumptionStmt(this);
+		}
 	}
 
 	@Override

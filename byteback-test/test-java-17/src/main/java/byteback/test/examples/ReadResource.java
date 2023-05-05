@@ -104,19 +104,22 @@ public class ReadResource {
 	@Pure
 	@Predicate
 	public static boolean r_is_open(Resource r, final int[] a) {
-		return not(r.isClosed);
+		return implies(neq(r, null), not(r.isClosed));
 	}
 
 	@Pure
 	@Predicate
 	public static boolean r_is_closed(final Resource r, final int[] a) {
-		return r.isClosed;
+		return implies(neq(r, null), r.isClosed);
 	}
 
+	@Require("r_is_open")
+	@Raise(exception = NullPointerException.class, when = "a_or_r_is_null")
+	@Ensure("r_is_closed")
 	public static void readInto(final Resource r, final int[] a) {
 		try (r) {
 			for (int i = 0; i < 10; ++i) {
-				assertion(true);
+				a[i] = r.read();
 			}
 		} catch (IndexOutOfBoundsException | NoSuchElementException e) {
 			return;

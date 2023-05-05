@@ -58,8 +58,6 @@ public class RootResolver {
 			SootBodies.validateCalls(method.retrieveActiveBody());
 			final Body body = Grimp.v().newBody(method.getActiveBody(), "");
 
-			System.out.println(body);
-
 			LogicUnitTransformer.v().transform(body);
 			new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
 

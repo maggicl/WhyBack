@@ -107,7 +107,6 @@ public class GuardTransformer extends BodyTransformer {
 					units.insertBefore(assignUnit, retUnit);
 				}
 
-				final HashSet<RefType> usedTypes = new HashSet<>();
 				Unit indexUnit = assignUnit;
 					
 				if (throwUnit.getOp().getType() instanceof RefType throwType) {
@@ -116,14 +115,10 @@ public class GuardTransformer extends BodyTransformer {
 						final Trap activeTrap = activeTraps.get(i);
 
 						final RefType trapType = activeTrap.getException().getType();
-
-						if (!usedTypes.contains(trapType)) {
-							usedTypes.add(trapType);
-							final Value condition = Vimp.v().newInstanceOfExpr(Vimp.v().newCaughtExceptionRef(), trapType);
-							final Unit ifUnit = Vimp.v().newIfStmt(condition, activeTrap.getHandlerUnit());
-							units.insertAfter(ifUnit, indexUnit);
-							indexUnit = ifUnit;
-						}
+						final Value condition = Vimp.v().newInstanceOfExpr(Vimp.v().newCaughtExceptionRef(), trapType);
+						final Unit ifUnit = Vimp.v().newIfStmt(condition, activeTrap.getHandlerUnit());
+						units.insertAfter(ifUnit, indexUnit);
+						indexUnit = ifUnit;
 					}
 				}
 			}

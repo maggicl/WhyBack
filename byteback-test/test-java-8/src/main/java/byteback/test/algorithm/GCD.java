@@ -16,17 +16,29 @@ public class GCD {
 
 	@Predicate
 	public static boolean result_is_gcd(int a, int b, int r) {
-		return eq(r, gcd_recursive(a, b));
+		return implies(not(arguments_are_negative(a, b)), eq(r, gcd_recursive(a, b)));
 	}
 
+	@Pure
+	@Predicate
+	public static boolean arguments_are_negative(int a, int b) {
+		return lte(a, 0) | lte(b, 0);
+	}
+
+	@Pure
 	@Predicate
 	public static boolean arguments_are_positive(int a, int b) {
-		return gt(a, 0) & gt(b, 0);
+		return lte(a, 0) & lte(b, 0);
 	}
 
-	@Require("arguments_are_positive")
+	@Raise(exception = IllegalArgumentException.class, when = "arguments_are_negative")
 	@Ensure("result_is_gcd")
 	public static int gcd(final int a, final int b) {
+
+		if (a <= 0 || b <= 0) {
+			throw new IllegalArgumentException("Both arguments must be positive");
+		}
+
 		int r = a;
 		int x = b;
 

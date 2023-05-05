@@ -91,8 +91,14 @@ public class ReadResource {
 
 	@Pure
 	@Predicate
-	public static boolean a_or_r_is_null(Resource r, int[] a, final int n) {
-		return eq(a, null) | eq(r, null);
+	public static boolean a_is_null(Resource r, int[] a, final int n) {
+		return eq(a, null) ;
+	}
+
+	@Pure
+	@Predicate
+	public static boolean r_is_null(Resource r, int[] a, final int n) {
+		return eq(r, null) ;
 	}
 
 	@Pure
@@ -115,7 +121,8 @@ public class ReadResource {
 
 	@Require("r_is_open")
 	@Ensure("r_is_closed")
-	@Raise(exception = NullPointerException.class, when = "a_or_r_is_null")
+	@Raise(exception = NullPointerException.class, when = "a_is_null")
+	@Raise(exception = NullPointerException.class, when = "r_is_null")
 	public static void readInto(final Resource r, final int[] a, final int n) {
 		try (r) {
 			int i = 0;

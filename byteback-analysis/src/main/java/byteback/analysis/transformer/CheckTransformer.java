@@ -10,7 +10,6 @@ import byteback.util.Lazy;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
-import soot.LocalGenerator;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethodRef;
@@ -64,7 +63,6 @@ public abstract class CheckTransformer extends BodyTransformer {
 		final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
 		final Lazy<Local> exceptionLocalSupplier = Lazy.from(() -> {
 			final Local local = Scene.v().createLocalGenerator(body).generateLocal(exceptionClass.getType());
-			local.setName("$exception" + local.getNumber());
 
 			return local;
 		});

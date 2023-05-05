@@ -1,13 +1,11 @@
 package byteback.analysis.transformer;
 
-import byteback.analysis.Namespace;
 import byteback.analysis.Vimp;
 import byteback.analysis.vimp.VoidConstant;
 import byteback.util.Lazy;
 import byteback.util.ListHashMap;
 import byteback.util.Stacks;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,20 +15,13 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
 import soot.RefType;
-import soot.Scene;
 import soot.Trap;
 import soot.Unit;
 import soot.Value;
-import soot.ValueBox;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
-import soot.jimple.GotoStmt;
-import soot.jimple.IfStmt;
-import soot.jimple.InstanceOfExpr;
-import soot.jimple.InvokeExpr;
-import soot.jimple.NeExpr;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 

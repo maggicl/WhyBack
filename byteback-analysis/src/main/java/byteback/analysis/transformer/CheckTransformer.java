@@ -43,8 +43,7 @@ public abstract class CheckTransformer extends BodyTransformer {
 
 	public Chain<Unit> makeThrowUnits(final Body body, Supplier<Local> localSupplier) {
 		final Chain<Unit> units = new HashChain<>();
-		final LocalGenerator localGenerator = Scene.v().createLocalGenerator(body);
-		final Local local = localGenerator.generateLocal(exceptionClass.getType());
+		final Local local = localSupplier.get();
 		final Unit initUnit = Grimp.v().newAssignStmt(local, Jimple.v().newNewExpr(exceptionClass.getType()));
 		units.addLast(initUnit);
 		final SootMethodRef constructorRef = exceptionClass.getMethod("<init>", Collections.emptyList()).makeRef();
@@ -63,7 +62,12 @@ public abstract class CheckTransformer extends BodyTransformer {
 	public void transformBody(final Body body) {
 		final Chain<Unit> units = body.getUnits();
 		final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
-		final Lazy<Local> exceptionLocalSupplier = Lazy.from(() -> Scene.v().createLocalGenerator(body).generateLocal(exceptionClass.getType()));
+		final Lazy<Local> exceptionLocalSupplier = Lazy.from(() -> {
+			final Local local = Scene.v().createLocalGenerator(body).generateLocal(exceptionClass.getType());
+			local.setName("$exception" + local.getNumber());
+
+			return local;
+		});
 
 		while (unitIterator.hasNext()) {
 			final Unit unit = unitIterator.next();

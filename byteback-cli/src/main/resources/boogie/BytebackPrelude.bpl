@@ -41,7 +41,6 @@ axiom (forall h1: Store, h2: Store, h3: Store ::
 axiom (forall h1: Store, h2: Store ::
 	~heap.succ(h1, h2) &&
 	(forall r: Reference, t: Type ::
-		{ ~instanceof(h2, r, t) }
 		~typeof(h1, r) == ~typeof(h2, r)));
 
 axiom (forall h1: Store, h2: Store ::
@@ -74,11 +73,8 @@ function ~typeof(h: Store, r: Reference) returns (Type)
 
 function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 {
-	~typeof(h, r) <: t
+	~heap.read(h, r, ~Object.Type) <: t
 }
-
-axiom (forall h: Store, r: Reference, t: Type ::
-	~instanceof(h, r, t) ==> ~heap.read(h, r, ~Object.Type) == t);
 
 axiom (forall h: Store, t: Type ::
 	!~instanceof(h, ~void, t));
@@ -130,7 +126,7 @@ procedure ~array(t: Type, l: int) returns (~ret: Reference, ~exc: Reference);
 	ensures ~ret != ~null;
 	ensures ~typeof(~heap, ~ret) == ~array.type(t);
 	ensures ~allocated(~heap, ~ret);
-	ensures ~lengthof(~ret) == l;
+	ensures ~lengthof(~ret) == l && ~lengthof(~ret) >= 0;
 	ensures ~exc == ~void;
 
 // -------------------------------------------------------------------

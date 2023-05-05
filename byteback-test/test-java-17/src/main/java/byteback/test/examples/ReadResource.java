@@ -91,39 +91,46 @@ public class ReadResource {
 
 	@Pure
 	@Predicate
-	public static boolean a_or_r_is_null(Resource r, int[] a) {
+	public static boolean a_or_r_is_null(Resource r, int[] a, final int n) {
 		return eq(a, null) | eq(r, null);
 	}
 
 	@Pure
 	@Predicate
-	public static boolean r_and_a_are_not_null(Resource r, int[] a) {
+	public static boolean r_and_a_are_not_null(Resource r, int[] a, final int n) {
 		return neq(r, null) & neq(a, null);
 	}
 
 	@Pure
 	@Predicate
-	public static boolean r_is_open(Resource r, final int[] a) {
+	public static boolean r_is_open(Resource r, final int[] a, final int n) {
 		return implies(neq(r, null), not(r.isClosed));
 	}
 
 	@Pure
 	@Predicate
-	public static boolean r_is_closed(final Resource r, final int[] a) {
+	public static boolean r_is_closed(final Resource r, final int[] a, final int n) {
 		return implies(neq(r, null), r.isClosed);
 	}
 
 	@Require("r_is_open")
-	@Raise(exception = NullPointerException.class, when = "a_or_r_is_null")
 	@Ensure("r_is_closed")
-	public static void readInto(final Resource r, final int[] a) {
+	@Raise(exception = NullPointerException.class, when = "a_or_r_is_null")
+	public static void readInto(final Resource r, final int[] a, final int n) {
 		try (r) {
-			for (int i = 0; i < 10; ++i) {
-				a[i] = r.read();
-			}
+			int i = 0;
+			while (true) {
+				invariant(lte(0, i) & lte(i, a.length));
+				a[i++] = r.read();
+  		}
 		} catch (IndexOutOfBoundsException | NoSuchElementException e) {
 			return;
 		}
 	}
 
 }
+
+/**
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 4 verified
+ */

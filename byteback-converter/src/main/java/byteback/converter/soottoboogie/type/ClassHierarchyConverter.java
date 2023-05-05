@@ -2,7 +2,9 @@ package byteback.converter.soottoboogie.type;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Stack;
 
 import byteback.analysis.RootResolver;
@@ -12,12 +14,14 @@ import byteback.frontend.boogie.ast.AxiomDeclaration;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.ImplicationOperation;
 import byteback.frontend.boogie.ast.List;
-import byteback.frontend.boogie.ast.NotEqualsOperation;
+import byteback.frontend.boogie.ast.NegationOperation;
 import byteback.frontend.boogie.ast.PartialOrderOperation;
+import byteback.frontend.boogie.ast.SetBinding;
 import byteback.frontend.boogie.ast.UniversalQuantifier;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.QuantifierExpressionBuilder;
 import byteback.frontend.boogie.builder.SetBindingBuilder;
+import byteback.util.Cons;
 import byteback.util.Lazy;
 import byteback.util.Stacks;
 import soot.SootClass;
@@ -42,56 +46,73 @@ public class ClassHierarchyConverter {
 		}
 	}
 
-	public static Expression makeDisjointQuantifier(final Collection<SootClass> classes) {
-		final Stack<Expression> antecedentStack = new Stack<>();
-		final Stack<Expression> sequentStack = new Stack<>();
-		final var quantifierBuilder = new QuantifierExpressionBuilder();
-		quantifierBuilder.quantifier(new UniversalQuantifier());
-		int i = 0;
+	public static <T> Set<Cons<T, T>> computePairs(final Iterable<T> xs) {
+		final Set<Cons<T, T>> r = new HashSet<>();
 
-		for (final SootClass clazz : classes) {
+		final Iterator<T> leftIterator = xs.iterator();
+
+		while (leftIterator.hasNext()) {
+			final T left = leftIterator.next();
+			final Iterator<T> rightIterator = xs.iterator();
+
+			while (rightIterator.hasNext()) {
+				final T right = rightIterator.next();
+
+				if (left == right) {
+					break;
+				}
+
+				r.add(new Cons<T, T>(left, right));
+			}
+		}
+
+		return r;
+	}
+
+	public static SetBinding makeBinding(final int i) {
 			final String parameterName = makeQuantifiedTypeVariableName(i);
 			final var bindingBuilder = new SetBindingBuilder();
 			bindingBuilder.typeAccess(Prelude.v().getTypeType().makeTypeAccess());
 			bindingBuilder.name(parameterName);
-			quantifierBuilder.addBinding(bindingBuilder.build());
 
-			final ValueReference parameterReference = ValueReference.of(parameterName);
-			final ValueReference typeReference = ValueReference.of(ReferenceTypeConverter.typeName(clazz));
-			final Expression extendsReference = new PartialOrderOperation(parameterReference, typeReference);
-			antecedentStack.push(extendsReference);
-			quantifierBuilder.addTrigger(extendsReference);
-
-			for (int j = 0; j < i; ++j) {
-				if (i != j) {
-					final ValueReference left = ValueReference.of(makeQuantifiedTypeVariableName(i));
-					final ValueReference right = ValueReference.of(makeQuantifiedTypeVariableName(j));
-
-					sequentStack.push(new NotEqualsOperation(left, right));
-				}
-			}
-
-			++i;
-		}
-
-		final Expression antecedent = reduceConjunction(antecedentStack);
-		final Expression sequent = reduceConjunction(sequentStack);
-
-		quantifierBuilder.operand(new ImplicationOperation(antecedent, sequent));
-
-		return quantifierBuilder.build();
+			return bindingBuilder.build();
 	}
 
-	public static Optional<AxiomDeclaration> makeDisjointAxiom(final SootClass clazz, final RootResolver resolver) {
+	public static List<AxiomDeclaration> makeDisjointAxioms(final Collection<SootClass> classes) {
+
+		List<AxiomDeclaration> axioms = new List<>();
+
+		for (final Cons<SootClass, SootClass> classPair : computePairs(classes)) {
+			final var quantifierBuilder = new QuantifierExpressionBuilder();
+			quantifierBuilder.quantifier(new UniversalQuantifier());
+
+			quantifierBuilder.addBinding(makeBinding(1));
+			quantifierBuilder.addBinding(makeBinding(2));
+
+			final ValueReference left = ValueReference.of(makeQuantifiedTypeVariableName(1));
+			final ValueReference right = ValueReference.of(makeQuantifiedTypeVariableName(2));
+
+			final ValueReference leftType = ValueReference.of(ReferenceTypeConverter.typeName(classPair.car));
+			final ValueReference rightType = ValueReference.of(ReferenceTypeConverter.typeName(classPair.cdr));
+			quantifierBuilder.operand(new ImplicationOperation(new AndOperation(new PartialOrderOperation(left, leftType),
+																																					new PartialOrderOperation(right, rightType)), 
+																												 new AndOperation(new NegationOperation(new PartialOrderOperation(left, right)),
+																																					new NegationOperation(new PartialOrderOperation(right, left)))));
+
+			axioms.add(new AxiomDeclaration(new List<>(), quantifierBuilder.build()));
+		}
+
+		return axioms;
+	}
+
+	public static List<AxiomDeclaration> makeDisjointAxiom(final SootClass clazz, final RootResolver resolver) {
 		final Collection<SootClass> subclasses = resolver.getVisibleSubclassesOf(clazz);
 
 		if (subclasses.size() > 1) {
-			final var axiomDeclaration = new AxiomDeclaration();
-			axiomDeclaration.setExpression(makeDisjointQuantifier(subclasses));
-			return Optional.of(axiomDeclaration);
+			return makeDisjointAxioms(subclasses);
 		}
 
-		return Optional.empty();
+		return new List<>();
 	}
 
 	public static AxiomDeclaration makeExtendsAxiom(final SootClass clazz, final SootClass superClazz) {
@@ -118,7 +139,7 @@ public class ClassHierarchyConverter {
 			axioms.add(makeExtendsAxiom(clazz, superType));
 		}
 
-		makeDisjointAxiom(clazz, resolver).ifPresent(axioms::add);
+		axioms.addAll(makeDisjointAxiom(clazz, resolver));
 
 		return axioms;
 	}

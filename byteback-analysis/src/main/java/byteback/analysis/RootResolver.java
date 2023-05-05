@@ -63,7 +63,13 @@ public class RootResolver {
 
 			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
 				CallCheckTransformer.v().transform(body);
+			} else {
+				PureTransformer.v().transform(body);
+			}
 
+			new ExpressionFolder().transform(body);
+
+			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
 				if (checkNullDereference) {
 					NullCheckTransformer.v().transform(body);
 				}
@@ -71,21 +77,19 @@ public class RootResolver {
 				if (checkArrayDereference) {
 					IndexCheckTransformer.v().transform(body);
 				}
-			} else {
-				PureTransformer.v().transform(body);
 			}
 
-			new ExpressionFolder().transform(body);
 			UnusedLocalEliminator.v().transform(body);
 			QuantifierValueTransformer.v().transform(body);
 
-			InvariantExpander.v().transform(body);
 			ExceptionAssumptionTransformer.v().transform(body);
 			DynamicToStaticTransformer.v().transform(body);
 
 			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
 				GuardTransformer.v().transform(body);
 			}
+
+			InvariantExpander.v().transform(body);
 
 			method.setActiveBody(body);
 		}

@@ -14,7 +14,7 @@ public class MultiCatch {
 
 	@Predicate
 	public boolean always_throws_exception1_exception2(Throwable e) {
-		return e instanceof Exception1 | e instanceof Exception2;
+		return e instanceof Exception1;
 	}
 
 	@Ensure("always_throws_exception1_exception2")

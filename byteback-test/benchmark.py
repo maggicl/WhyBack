@@ -7,8 +7,9 @@ import subprocess as sp
 import click as cl
 import sys
 
-BYTEBACK_EXECUTABLE = os.path.join(os.getenv("BYTEBACK_ROOT"), "bin/byteback-core")
+BYTEBACK_EXECUTABLE = os.path.join(os.getenv("BYTEBACK_ROOT"), "bin/byteback-cli")
 BOOGIE_EXECUTABLE = "boogie"
+lg.basicConfig(level=lg.DEBUG)
 
 
 def timeit(f):
@@ -70,7 +71,7 @@ def conversion_benchmark(class_path, class_name, output_path):
     return int(numbers[0]), int(numbers[1])
 
 
-def benchmark(source_path, class_name, jar_path, temp_path, infer_regex=".*", n=5):
+def benchmark(source_path, class_name, jar_path, temp_path, infer_regex=".*", n=1):
     r = re.compile(infer_regex)
     conversion_time = 0
     conversion_overhead = 0
@@ -115,7 +116,7 @@ def walk_tests(source_path, extension):
 
 @cl.command()
 @cl.option("--jar", required=True, help="Path to .jar containing the tests")
-@cl.option("--source", required=True, help="Path to hte source directory")
+@cl.option("--source", required=True, help="Path to the source directory")
 @cl.option("--class-filter", required=False, help="Filter classes by name", default=".*")
 @cl.option("--output", required=True, help="Path to the output .csv file")
 @cl.option("--temp", required=True, help="Temporary directory for boogie files")
@@ -135,8 +136,9 @@ def main(jar, source, class_filter, output, temp, repetitions, infer_filter, ext
         try:
             lg.info(f"Benchmarking {class_name}")
             data.append(benchmark(path, class_name, jar_path, temp_path, infer_filter, repetitions))
-        except (OSError, RuntimeError):
-            lg.warning(f"Skipping {class_name} due to error")
+        except RuntimeError as e:
+            lg.warning(f"Skipping {class_name} due to error:")
+            print(e)
             continue
 
     df = pd.DataFrame(data)

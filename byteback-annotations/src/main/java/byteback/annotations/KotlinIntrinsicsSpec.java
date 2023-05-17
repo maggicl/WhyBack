@@ -29,6 +29,7 @@ public abstract class KotlinIntrinsicsSpec {
 	@Ignore
 	public static void checkNotNull(Object o) {}
 
+	@Ignore
 	@Lemma
 	@Invariant
 	@Raise(exception = IllegalArgumentException.class, when = "parameter_is_null")

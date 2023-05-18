@@ -30,6 +30,7 @@ public class Summary {
 
 	@Require("values_do_not_contain_1")
 	@Ensure("result_is_nonnegative")
+	@Return
 	public static int summary(int... values) {
 		var result = 0;
 
@@ -54,6 +55,6 @@ public class Summary {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
+ * RUN: %{verify} /infer:j %t.bpl | filecheck %s
  * CHECK: Boogie program verifier finished with 2 verified, 0 errors
  */

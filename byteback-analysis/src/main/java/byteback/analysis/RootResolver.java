@@ -70,12 +70,12 @@ public class RootResolver {
 			new ExpressionFolder().transform(body);
 
 			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
-				if (checkNullDereference) {
-					NullCheckTransformer.v().transform(body);
-				}
-
 				if (checkArrayDereference) {
 					IndexCheckTransformer.v().transform(body);
+				}
+
+				if (checkNullDereference) {
+					NullCheckTransformer.v().transform(body);
 				}
 			}
 

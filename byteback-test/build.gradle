@@ -11,10 +11,17 @@ subprojects { test ->
 				def compiledDir = null
 				def targetProperty = project.findProperty("TARGET")
 
+				def summaryDir = "./summary"
+				def tmp = "$summaryDir/tmp"
+
+				project.mkdir(summaryDir)
+				project.mkdir(tmp)
+
 				compiledDirs.each { dir -> if (dir.exists()) compiledDir = dir }
 
 				def execute = { target ->
 						test.exec {
+								environment 'SUMMARY', summaryDir
 								environment 'SRC_BASE', target
 								environment 'CLASS_BASE', compiledDir
 								environment 'BYTEBACK_ROOT', bytebackRoot

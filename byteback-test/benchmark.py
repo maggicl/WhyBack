@@ -25,7 +25,7 @@ def run_byteback(class_path, class_name, output_path):
 
 def run_boogie(path, infer):
     command = [BOOGIE_EXECUTABLE]
-    if infer: command.append("/infer:j")
+    if infer: command.appnd("/infer:j")
     command.append(path)
     
     return sp.run(command, stdout=sp.PIPE)

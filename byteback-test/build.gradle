@@ -5,11 +5,18 @@ subprojects { test ->
 		def bytebackRoot = cli.installDist.destinationDir
 
 		def system = tasks.register('system') {
-				def sourceDirs = project.sourceSets.main.allSource.srcDirs
+				def sourceSet = project.sourceSets.main
+				def sourceDirs = sourceSet.allSource.srcDirs
+				def compiledDirs = sourceSet.output.classesDirs
+				def compiledDir = null
 				def targetProperty = project.findProperty("TARGET")
+
+				compiledDirs.each { dir -> if (dir.exists()) compiledDir = dir }
 
 				def execute = { target ->
 						test.exec {
+								environment 'SRC_BASE', target
+								environment 'CLASS_BASE', compiledDir
 								environment 'BYTEBACK_ROOT', bytebackRoot
 								environment 'TEST_JAR', project.shadowJar.archivePath
 								commandLine 'lit', target, '-a', '-j', 4
@@ -19,7 +26,8 @@ subprojects { test ->
 				doLast {
 						sourceDirs.each { dir ->
 								if (targetProperty == null) {
-										if ((dir.getName().equals("java") || dir.getName().equals("scala")) && dir.exists()) {
+										if ((dir.getName().equals("java") || dir.getName().equals("scala") || dir.getName().equals("kotlin"))
+												&& dir.exists()) {
 												execute(dir)
 										}
 								} else {

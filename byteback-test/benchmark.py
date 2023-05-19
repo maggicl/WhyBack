@@ -7,8 +7,6 @@ import subprocess as sp
 import click as cl
 import sys
 
-BYTEBACK_EXECUTABLE = os.path.join(os.getenv("BYTEBACK_ROOT"), "bin/byteback-cli")
-BOOGIE_EXECUTABLE = "boogie"
 lg.basicConfig(level=lg.DEBUG)
 
 
@@ -98,47 +96,19 @@ def benchmark(source_path, class_name, jar_path, temp_path, infer_regex=".*", n=
     }
 
 
-def test_components(root, source_path, name):
-    path = root + os.sep + name;
-    relative_path = os.path.relpath(path, source_path)
-    path_components = os.path.splitext(relative_path)[0].split(os.sep)
-    class_name = ".".join(path_components)
-
-    return path, class_name
-
-
-def walk_tests(source_path, extension):
-    for root, dirs, files in os.walk(source_path):
-        for name in files:
-            if name.endswith(extension):
-                yield test_components(root, source_path, name)
-
-
 @cl.command()
-@cl.option("--jar", required=True, help="Path to .jar containing the tests")
-@cl.option("--source", required=True, help="Path to the source directory")
-@cl.option("--class-filter", required=False, help="Filter classes by name", default=".*")
 @cl.option("--output", required=True, help="Path to the output .csv file")
-@cl.option("--temp", required=True, help="Temporary directory for boogie files")
 @cl.option("--repetitions", required=True, type=cl.INT, help="Repetitions for each test")
-@cl.option("--infer-filter", required=False, help="Classes that need the /infer:j Boogie option", default=".*")
-@cl.option("--extension", required=True, help="Extension of the test files")
-def main(jar, source, class_filter, output, temp, repetitions, infer_filter, extension):
-    jar_path = jar
-    source_path = source
+@cl.option("--commands", required=True, help="Path to the .csv containing the commands to run")
+def main(output, repetitions, commands):
     output_path = output
-    temp_path = temp
     data = []
-    r = re.compile(class_filter)
-    for path, class_name in walk_tests(source_path, extension):
-        if not r.match(class_name):
-            continue
+
+    for entry in pd.read_csv(commands).iterrows():
         try:
-            lg.info(f"Benchmarking {class_name}")
-            data.append(benchmark(path, class_name, jar_path, temp_path, infer_filter, repetitions))
+            print(entry)
         except RuntimeError as e:
             lg.warning(f"Skipping {class_name} due to error:")
-            print(e)
             continue
 
     df = pd.DataFrame(data)

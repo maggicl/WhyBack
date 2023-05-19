@@ -26,6 +26,6 @@ public class EnhancedFor {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
+ * RUN: %{verify} /infer:j %t.bpl | filecheck %s
  * CHECK: Boogie program verifier finished with 2 verified, 0 errors
  */

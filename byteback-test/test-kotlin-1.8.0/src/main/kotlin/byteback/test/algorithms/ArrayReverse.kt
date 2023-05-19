@@ -60,7 +60,6 @@ class ArrayReverse {
 						invariant(forall(k, implies(lte(0, k) and lt(k, i) or lt(l - i, k) and lte(k, l), eq(a[k], old(a[l - k])))))
 						invariant(forall(k, implies(lte(i, k) and lt(k, l - i), eq(a[k], old(a[k])))))
 						invariant(lte(0, i) and lte(i, (l + 1) / 2))
-
 						swap(a, i, l - i)
 
 						i = i + 1;

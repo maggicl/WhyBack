@@ -9,6 +9,7 @@ subprojects { test ->
 				def sourceDirs = sourceSet.allSource.srcDirs
 				def compiledDirs = sourceSet.output.classesDirs
 				def compiledDir = null
+				def sourceDir = null
 				def targetProperty = project.findProperty("TARGET")
 
 				def summaryDir = "./summary"
@@ -22,7 +23,7 @@ subprojects { test ->
 				def execute = { target ->
 						test.exec {
 								environment 'SUMMARY', summaryDir
-								environment 'SRC_BASE', target
+								environment 'SRC_BASE', sourceDir
 								environment 'CLASS_BASE', compiledDir
 								environment 'BYTEBACK_ROOT', bytebackRoot
 								environment 'TEST_JAR', project.shadowJar.archivePath
@@ -32,13 +33,17 @@ subprojects { test ->
 
 				doLast {
 						sourceDirs.each { dir ->
-								if (targetProperty == null) {
-										if ((dir.getName().equals("java") || dir.getName().equals("scala") || dir.getName().equals("kotlin"))
-												&& dir.exists()) {
-												execute(dir)
+								if ((dir.getName().equals("java") || dir.getName().equals("scala") || dir.getName().equals("kotlin"))
+										&& dir.exists()) {
+										sourceDir = dir
+								}
+
+								if (sourceDir != null) {
+										if (targetProperty == null) {
+												execute(sourceDir)
+										} else {
+												execute(targetProperty)
 										}
-								} else {
-										execute(targetProperty)
 								}
 						}
 				}

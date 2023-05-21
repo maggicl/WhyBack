@@ -91,7 +91,6 @@ public class ClassHierarchyConverter {
 
 			final ValueReference left = ValueReference.of(makeQuantifiedTypeVariableName(1));
 			final ValueReference right = ValueReference.of(makeQuantifiedTypeVariableName(2));
-
 			final ValueReference leftType = ValueReference.of(ReferenceTypeConverter.typeName(classPair.car));
 			final ValueReference rightType = ValueReference.of(ReferenceTypeConverter.typeName(classPair.cdr));
 			quantifierBuilder.operand(new ImplicationOperation(new AndOperation(new PartialOrderOperation(left, leftType),

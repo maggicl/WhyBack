@@ -1,4 +1,6 @@
-/** RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl */
+/**
+ * 	RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ */
 package byteback.test.exceptions
 
 import byteback.annotations.Contract.*

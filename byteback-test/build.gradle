@@ -47,12 +47,18 @@ subprojects { test ->
 
 				dependsOn cli.installDist
 				dependsOn test.shadowJar
+
+				outputs.files fileTree(summaryDir).matching {
+						include '*.csv'
+				} 
+
 		}
 
 		def benchmark = tasks.register('benchmark') {
 				def script = "../benchmark.py"
 				def jar = test.shadowJar.archivePath
 				def sourceDirs = test.sourceSets.main.allSource.srcDirs
+				def benchmarkDir = "./benchmark"
 
 				doLast {
 						sourceDirs.each { dir ->
@@ -60,16 +66,31 @@ subprojects { test ->
 										def source = dir.getName()
 										def output = "./benchmark/benchmark.csv"
 										environment 'BYTEBACK_ROOT', bytebackRoot
-										project.mkdir("./benchmark")
-
+										project.mkdir(benchmarkDir)
 										commandLine 'python', script, '--output', output, '--repetitions', 1, '--summary'	, './summary/summary.csv'
 								}
 						}
 				}
 
-				dependsOn cli.installDist
-				dependsOn test.shadowJar
+				dependsOn test.system
+
+				outputs.files fileTree(benchmarkDir).matching {
+						include '*.csv'
+				} 
 		}
 
 }
 
+def experiment = tasks.register('experiment') {
+
+		doLast {
+				project.exec {
+						commandLine 'sh' 'format-experiments.sh' 
+				}
+		}
+
+		subprojects { test ->
+				dependsOn test.benchmark
+		}
+		
+}

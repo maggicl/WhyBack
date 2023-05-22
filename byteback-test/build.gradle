@@ -13,10 +13,7 @@ subprojects { test ->
 				def targetProperty = project.findProperty("TARGET")
 
 				def summaryDir = "./summary"
-				def tmp = "$summaryDir/tmp"
-
 				project.mkdir(summaryDir)
-				project.mkdir(tmp)
 
 				compiledDirs.each { dir -> if (dir.exists()) compiledDir = dir }
 
@@ -61,17 +58,11 @@ subprojects { test ->
 						sourceDirs.each { dir ->
 								test.exec {
 										def source = dir.getName()
-										def benchmark = "./benchmark/$source"
-										def output = "$benchmark/results.csv"
-										def tmp = "$benchmark/tmp"
+										def output = "./benchmark/benchmark.csv"
 										environment 'BYTEBACK_ROOT', bytebackRoot
-										project.mkdir(benchmark)
-										project.mkdir(tmp)
+										project.mkdir("./benchmark")
 
-										commandLine 'python', script, '--jar', jar,
-												'--source', dir, '--output', output, '--temp', tmp,
-												'--extension', source, '--repetitions', 5,
-												'--infer-filter', '.*java17.*Summary.java|.*java8.*EnhancedFor.java'
+										commandLine 'python', script, '--output', output, '--repetitions', 1, '--summary'	, './summary/summary.csv'
 								}
 						}
 				}

@@ -97,6 +97,7 @@ public class ClassHierarchyConverter {
 			final Expression e = new ImplicationOperation(new AndOperation(new PartialOrderOperation(left, leftType),
 																																		 new PartialOrderOperation(right, rightType)),
 																										new AndOperation(new NegationOperation(l), new NegationOperation(r)));
+
 			quantifierBuilder.addTrigger(new PartialOrderOperation(left, leftType));
 			quantifierBuilder.addTrigger(new PartialOrderOperation(right, rightType));
 			quantifierBuilder.operand(e);

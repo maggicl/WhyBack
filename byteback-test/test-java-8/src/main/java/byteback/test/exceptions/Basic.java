@@ -8,21 +8,6 @@ import static byteback.annotations.Contract.*;
 
 public class Basic {
 
-	public static class Exception1 extends Exception {
-		@Return
-		public Exception1() {}
-	}
-
-	public static class Exception2 extends Exception {
-		@Return
-		public Exception2() {}
-	}
-
-	public static class Exception3 extends Exception {
-		@Return
-		public Exception3() {}
-	}
-
 	public static class Exception4 extends Exception {
 		@Return
 		public Exception4() {}

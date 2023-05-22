@@ -7,13 +7,6 @@ package byteback.test.exceptions
 import byteback.annotations.Operator.*
 import byteback.annotations.Contract.*
 
-class Exception1 @Return constructor() : Exception()
-
-class Exception2 @Return constructor() : Exception()
-
-class Exception3 @Return constructor() : Exception()
-
-class Exception4 @Return constructor() : Exception()
 
 class Basic {
 

@@ -18,32 +18,15 @@ def timeit(f):
     return end - start
 
 
-def run_byteback(class_path, class_name, output_path):
-    return sp.run([BYTEBACK_EXECUTABLE, "-cp", class_path, "-c", class_name,
-                   "-o", output_path], stdout=sp.PIPE, stderr=sp.PIPE)
+def run_command(command):
+    return sp.run(command, stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
 
 
-def run_boogie(path, infer):
-    command = [BOOGIE_EXECUTABLE]
-    if infer: command.appnd("/infer:j")
-    command.append(path)
-    
-    return sp.run(command, stdout=sp.PIPE)
-
-
-def run_javap(class_path, class_name, output_path):
-    with open(output_path, "w") as f:
-        return sp.run(["javap", "-cp", class_path, "-c", class_name], stdout=f)
-
-
-def count_lines(file_path):
-    return int(sp.check_output(f"cat {file_path} | grep -c '[^[:space:]]'", shell=True))
-
-
-def verification_benchmark(path, infer):
+def verification_benchmark(command):
     r = re.compile("Boogie program verifier finished with [0-9]+ verified, 0 errors")
     def f():
-        process = run_boogie(path, infer)
+        process = run_command(command)
+
         if not r.search(process.stdout.decode("utf-8")):
             raise RuntimeError("Boogie program could not be verified")
         if process.returncode != 0:
@@ -52,11 +35,11 @@ def verification_benchmark(path, infer):
     return timeit(f)
 
 
-def conversion_benchmark(class_path, class_name, output_path):
+def conversion_benchmark(command):
     r = re.compile("Conversion completed in ([0-9])+ms, total time ([0-9])+ms")
     d = re.compile("[0-9]+")
 
-    process = run_byteback(class_path, class_name, output_path)
+    process = run_command(command)
     output = r.search(process.stderr.decode("utf-8"));
 
     if process.returncode != 0:
@@ -69,47 +52,42 @@ def conversion_benchmark(class_path, class_name, output_path):
     return int(numbers[0]), int(numbers[1])
 
 
-def benchmark(source_path, class_name, jar_path, temp_path, infer_regex=".*", n=1):
-    r = re.compile(infer_regex)
+def benchmark(entry, repetitions):
     conversion_time = 0
-    conversion_overhead = 0
+    total_conversion_overhead = 0
     total_conversion_time = 0
     total_verification_time = 0
-    bytecode_path = os.path.join(temp_path, class_name + ".j")
-    boogie_path = os.path.join(temp_path, class_name + ".bpl")
-    run_javap(jar_path, class_name, bytecode_path)
 
-    for _ in range(0, n):
-        b, t = conversion_benchmark(jar_path, class_name, boogie_path)
+    lg.info(f"Benchmarking {entry['Test']}")
+
+    for _ in range(0, repetitions):
+        b, t = conversion_benchmark(entry["BytebackCommand"])
         total_conversion_time += t
-        conversion_overhead +=  b / t
-        total_verification_time += verification_benchmark(boogie_path, r.match(source_path))
+        total_conversion_overhead +=  b / t
+        total_verification_time += verification_benchmark(entry["BoogieCommand"])
 
-    return {
-        "Experiment": class_name,
-        "ConversionTime": total_conversion_time / n,
-        "ConversionOverhead": conversion_overhead / n,
-        "VerificationTime": total_verification_time / n,
-        "SourceSize": count_lines(source_path),
-        "BytecodeSize": count_lines(bytecode_path),
-        "BoogieSize": count_lines(boogie_path)
-    }
+    entry["AverageConversionTime"] = total_conversion_time / repetitions
+    entry["AverageVerificationTime"] = total_verification_time / repetitions
+    entry["AverageConversionOverhead"] = total_conversion_overhead / repetitions
+
+    lg.info(f"Results:")
+    lg.info(f"Average Conversion Time: {entry['AverageConversionTime']}")
+    lg.info(f"Average Verification Time: {entry['AverageVerificationTime']}")
+    lg.info(f"Average Conversion Overhead: {entry['AverageConversionOverhead']}")
+
+    return entry
 
 
 @cl.command()
 @cl.option("--output", required=True, help="Path to the output .csv file")
 @cl.option("--repetitions", required=True, type=cl.INT, help="Repetitions for each test")
-@cl.option("--commands", required=True, help="Path to the .csv containing the commands to run")
-def main(output, repetitions, commands):
+@cl.option("--summary", required=True, help="Path to the .csv containing the system tests' summary")
+def main(output, repetitions, summary):
     output_path = output
     data = []
 
-    for entry in pd.read_csv(commands).iterrows():
-        try:
-            print(entry)
-        except RuntimeError as e:
-            lg.warning(f"Skipping {class_name} due to error:")
-            continue
+    for index, entry in pd.read_csv(summary).iterrows():
+        data.append(benchmark(entry, repetitions))
 
     df = pd.DataFrame(data)
     df.to_csv(output_path)

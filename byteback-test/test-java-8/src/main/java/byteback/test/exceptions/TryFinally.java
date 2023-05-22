@@ -4,10 +4,6 @@
 package byteback.test.exceptions;
 
 import static byteback.annotations.Operator.*;
-
-import byteback.test.exceptions.Basic.Exception1;
-import byteback.test.exceptions.Basic.Exception2;
-
 import static byteback.annotations.Contract.*;
 
 public class TryFinally {

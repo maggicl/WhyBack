@@ -6,8 +6,6 @@ package byteback.test.exceptions;
 import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Raise;
 import byteback.annotations.Contract.Return;
-import byteback.test.exceptions.Basic.Exception1;
-import byteback.test.exceptions.Basic.Exception2;
 
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;

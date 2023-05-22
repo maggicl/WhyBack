@@ -10,14 +10,6 @@ import byteback.annotations.Operator.{eq => equal};
 
 import scala.annotation.meta._;
 
-class Exception1 @Return () extends Exception
-
-class Exception2 @Return () extends Exception
-
-class Exception3 @Return () extends Exception
-
-class Exception4 @Return () extends Exception
-
 class Basic(@(Pure @getter) val f: Int) {
 
   def tryCatchBlock(): Unit = {

@@ -51,11 +51,13 @@ public class TryWithResources {
 
 	}
 
+	@Return
 	public void emptyTryWithResources() {
 		try (Resource resource = new Resource()) {
 		}
 	}
 
+	@Return
 	public void tryWithResourcesClosesResource() {
 		Resource r = new Resource();
 
@@ -66,6 +68,7 @@ public class TryWithResources {
 		assertion(r.isClosed());
 	}
 
+	@Return
 	public void emptyTryWithResourcesFinally() {
 		try (Resource resource = new Resource()) {
 			assertion(resource.isOpen());
@@ -74,6 +77,7 @@ public class TryWithResources {
 
 	}
 
+	@Return
 	public void tryWithResourcesFinallyClosesResource() {
 		Resource r = new Resource();
 
@@ -85,6 +89,7 @@ public class TryWithResources {
 
 	}
 
+	@Return
 	public void throwingTryWithResourcesClosesResource() {
 		Resource r = new Resource();
 
@@ -96,6 +101,7 @@ public class TryWithResources {
 		}
 	}
 
+	@Return
 	public void tryWithResourcesAliases() {
 		Resource a = new Resource();
 		Resource b = a;
@@ -120,6 +126,7 @@ public class TryWithResources {
 		}
 	}
 
+	@Return
 	public void nested2TryWithResourcesOnSingleResource() {
 		Resource r = new Resource();
 
@@ -133,6 +140,7 @@ public class TryWithResources {
 		}
 	}
 
+	@Return
 	public void nested3TryWithResourcesOnSingleResource() {
 		Resource r = new Resource();
 
@@ -150,6 +158,7 @@ public class TryWithResources {
 		}
 	}
 
+	@Return
 	public void nested2TryWithResourcesOn2Resources() {
 		Resource a = new Resource();
 		Resource b = new Resource();
@@ -164,6 +173,7 @@ public class TryWithResources {
 		}
 	}
 
+	@Return
 	public void nested3TryWithResourcesOn3Resources() {
 		Resource a = new Resource();
 		Resource b = new Resource();
@@ -186,6 +196,7 @@ public class TryWithResources {
 		}
 	}
 
+	@Return
 	public void tryWithResourcesOn2Resources() {
 		Resource a = new Resource();
 		Resource b = new Resource();
@@ -200,6 +211,7 @@ public class TryWithResources {
 		}
 	}
 
+	@Return
 	public void tryWithResourcesOn3Resources() {
 		Resource a = new Resource();
 		Resource b = new Resource();

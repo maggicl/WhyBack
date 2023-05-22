@@ -13,7 +13,7 @@ import byteback.test.exceptions.Basic.Exception4;
 public class MultiCatch {
 
 	@Predicate
-	public boolean always_throws_exception1_exception2(Throwable e) {
+	public boolean always_throws_exception1_exception2(final Throwable e) {
 		return e instanceof Exception1;
 	}
 

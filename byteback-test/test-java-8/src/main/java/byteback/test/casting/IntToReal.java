@@ -3,8 +3,11 @@
  */
 package byteback.test.casting;
 
+import static byteback.annotations.Contract.*;
+
 public class IntToReal {
 
+	@Return
 	public static double implicit() {
 		int a = 1;
 		float f = a + 3.14f;
@@ -13,6 +16,7 @@ public class IntToReal {
 		return d;
 	}
 
+	@Return
 	public static double explicit() {
 		int a = 1;
 		double f;

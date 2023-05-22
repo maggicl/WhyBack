@@ -46,8 +46,8 @@ public class ExceptionAssumptionTransformer extends BodyTransformer {
 
 			if (loopUnits.size() > 1) {
 				final Value assumptionValue = Vimp.v().newEqExpr(Vimp.v().newCaughtExceptionRef(), VoidConstant.v());
-				units.insertBefore(Vimp.v().newAssumptionStmt(assumptionValue), loop.getHead());
-				units.insertBefore(Vimp.v().newAssumptionStmt(assumptionValue), loop.getBackJumpStmt());
+				units.insertBefore(Vimp.v().newAssertionStmt(assumptionValue), loop.getHead());
+				units.insertBefore(Vimp.v().newAssertionStmt(assumptionValue), loop.getBackJumpStmt());
 			}
 		}
 	}

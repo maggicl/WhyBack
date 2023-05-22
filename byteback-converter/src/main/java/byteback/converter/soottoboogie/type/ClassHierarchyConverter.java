@@ -79,13 +79,11 @@ public class ClassHierarchyConverter {
 	}
 
 	public static List<AxiomDeclaration> makeDisjointAxioms(final Collection<SootClass> classes) {
-
 		List<AxiomDeclaration> axioms = new List<>();
 
 		for (final Cons<SootClass, SootClass> classPair : computePairs(classes)) {
 			final var quantifierBuilder = new QuantifierExpressionBuilder();
 			quantifierBuilder.quantifier(new UniversalQuantifier());
-
 			quantifierBuilder.addBinding(makeBinding(1));
 			quantifierBuilder.addBinding(makeBinding(2));
 
@@ -93,10 +91,15 @@ public class ClassHierarchyConverter {
 			final ValueReference right = ValueReference.of(makeQuantifiedTypeVariableName(2));
 			final ValueReference leftType = ValueReference.of(ReferenceTypeConverter.typeName(classPair.car));
 			final ValueReference rightType = ValueReference.of(ReferenceTypeConverter.typeName(classPair.cdr));
-			quantifierBuilder.operand(new ImplicationOperation(new AndOperation(new PartialOrderOperation(left, leftType),
-																																					new PartialOrderOperation(right, rightType)), 
-																												 new AndOperation(new NegationOperation(new PartialOrderOperation(left, right)),
-																																					new NegationOperation(new PartialOrderOperation(right, left)))));
+
+			final Expression l = new PartialOrderOperation(left, right);
+			final Expression r = new PartialOrderOperation(right, left);
+			final Expression e = new ImplicationOperation(new AndOperation(new PartialOrderOperation(left, leftType),
+																																		 new PartialOrderOperation(right, rightType)),
+																										new AndOperation(new NegationOperation(l), new NegationOperation(r)));
+			quantifierBuilder.addTrigger(new PartialOrderOperation(left, leftType));
+			quantifierBuilder.addTrigger(new PartialOrderOperation(right, rightType));
+			quantifierBuilder.operand(e);
 
 			axioms.add(new AxiomDeclaration(new List<>(), quantifierBuilder.build()));
 		}

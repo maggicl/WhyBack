@@ -89,7 +89,6 @@ public class TryWithResources {
 
 	}
 
-	@Return
 	public void throwingTryWithResourcesClosesResource() {
 		Resource r = new Resource();
 

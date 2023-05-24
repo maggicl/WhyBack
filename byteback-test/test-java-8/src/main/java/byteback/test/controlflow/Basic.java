@@ -3,6 +3,9 @@
  */
 package byteback.test.controlflow;
 
+import static byteback.annotations.Operator.*;
+import static byteback.annotations.Contract.*;
+
 @SuppressWarnings("unused")
 public class Basic {
 
@@ -89,8 +92,15 @@ public class Basic {
 		}
 	}
 
+	public static void breakInLoop() {
+		for (int i = 0; i < 10; ++i) {
+			invariant(lte(0, i) & lte(i, 10));
+			if (i < 5) break;
+		}
+	}
+
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 16 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 17 verified, 0 errors
  */

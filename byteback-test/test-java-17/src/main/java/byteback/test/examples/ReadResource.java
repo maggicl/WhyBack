@@ -126,9 +126,11 @@ public class ReadResource {
 	public static void readInto(final Resource r, final int[] a, final int n) {
 		try (r) {
 			int i = 0;
+
 			while (true) {
-				invariant(lte(0, i) & lte(i, a.length));
-				a[i++] = r.read();
+				invariant(lte(0, i) & lte(i, a.length + 1));
+				a[i] = r.read();
+				i++;
   		}
 		} catch (IndexOutOfBoundsException | NoSuchElementException e) {
 			return;

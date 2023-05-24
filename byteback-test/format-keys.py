@@ -31,8 +31,27 @@ def main(csvs, output, prefix):
 
     df.to_csv("experiments.csv", index=False)
 
+    df = df[(df["SpecRaiseCount"] > 0) | (df["SpecReturnCount"] > 0)]
+
     def print_macro(key, value):
         print(f"{LATEX_MACRO}{{{key}}}{{{value}}}")
+
+    # Experiments count
+    print_macro("/bbe/count/", len(df.index))
+    print_macro("/bbe/count/j8", len(df[df["Group"] == "j8"].index))
+    print_macro("/bbe/count/j17", len(df[df["Group"] == "k18"].index))
+    print_macro("/bbe/count/s2", len(df[df["Group"] == "s2"].index))
+    print_macro("/bbe/count/k18", len(df[df["Group"] == "k18"].index))
+
+    # Methods count
+    print_macro("/bbe/count/method", df["MethodCount"].sum())
+    print_macro("/bbe/count/method/j8", df.loc[df["Group"] == "j8"]["MethodCount"].sum())
+    print_macro("/bbe/count/method/j17", df.loc[df["Group"] == "j17"]["MethodCount"].sum())
+    print_macro("/bbe/count/method/s2", df.loc[df["Group"] == "s2"]["MethodCount"].sum())
+    print_macro("/bbe/count/method/k18", df.loc[df["Group"] == "k18"]["MethodCount"].sum())
+
+    # Annotation count
+    print_macro("/bbe/count/method", df["MethodCount"].sum())
 
     for index, row in df.iterrows():
         prefix = prefix if prefix != None else ""
@@ -40,7 +59,7 @@ def main(csvs, output, prefix):
         identifier = row["Test"].removeprefix(prefix)
 
         def print_field(field):
-            print_macro(f"/bb/{group}/{identifier}/{field}", row[field])
+            print_macro(f"/bbe/{group}/{identifier}/{field}", row[field])
 
         print_field(COL_CONVERSION_TIME)
         print_field(COL_CONVERSION_OVERHEAD)

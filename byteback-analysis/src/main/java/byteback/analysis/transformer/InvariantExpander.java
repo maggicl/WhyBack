@@ -90,7 +90,7 @@ public class InvariantExpander extends BodyTransformer {
 				}
 
 				for (final Unit exitTarget : exitTargets) {
-					units.insertBefore(Vimp.v().newAssumptionStmt(condition), exitTarget);
+					units.insertBefore(Vimp.v().newAssertionStmt(condition), exitTarget);
 				}
 
 				units.remove(invariantUnit);

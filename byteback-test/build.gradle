@@ -48,9 +48,9 @@ subprojects { test ->
 				dependsOn cli.installDist
 				dependsOn test.shadowJar
 
-				outputs.files fileTree(summaryDir).matching {
-						include '*.csv'
-				} 
+				//outputs.files fileTree(summaryDir).matching {
+				//		include '*.csv'
+				//} 
 
 		}
 
@@ -74,9 +74,9 @@ subprojects { test ->
 
 				dependsOn test.system
 
-				outputs.files fileTree(benchmarkDir).matching {
-						include '*.csv'
-				} 
+				//outputs.files fileTree(benchmarkDir).matching {
+				//		include '*.csv'
+				//} 
 		}
 
 }

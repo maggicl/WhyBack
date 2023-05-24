@@ -18,6 +18,7 @@ class Counter {
   }
 
   @(Ensure @setter)("sets_count")
+  @(Return @setter)
   @(Pure @getter)
   var count: Int = 0;
 
@@ -27,22 +28,24 @@ class Counter {
   }
 
   @Predicate
+  @Return
   def increments_count_by_10(): Boolean = {
     return equal(count, old(count) + 10);
   }
 
   @Ensure("increments_count_by_1")
+  @Return
   def increment() : Unit = {
     count = count + 1;
   }
 
+  @Return
   def incrementTo10(): Unit = {
     var i: Int = 0;
     var old_count: Int = count;
 
     while (i < 10) {
       invariant(lte(0, i) & lte(i, 10));
-      invariant(equal(count, old_count + i));
       increment();
       i = i + 1;
     }

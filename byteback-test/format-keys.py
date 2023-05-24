@@ -31,7 +31,7 @@ def main(csvs, output, prefix):
 
     df.to_csv("experiments.csv", index=False)
 
-    df = df[(df["SpecRaiseCount"] > 0) | (df["SpecReturnCount"] > 0)]
+    df = df[(df["SpecRaiseCount"] > 0) | (df["SpecReturnCount"] > 0) | (df["UsesExceptionFeatures"])]
 
     def print_macro(key, value):
         print(f"{LATEX_MACRO}{{{key}}}{{{value}}}")
@@ -51,7 +51,29 @@ def main(csvs, output, prefix):
     print_macro("/bbe/count/method/k18", df.loc[df["Group"] == "k18"]["MethodCount"].sum())
 
     # Annotation count
-    print_macro("/bbe/count/method", df["MethodCount"].sum())
+    print_macro("/bbe/count/raises", df["SpecRaiseCount"].sum())
+    print_macro("/bbe/count/raises/j8", df.loc[df["Group"] == "j8"]["SpecRaiseCount"].sum())
+    print_macro("/bbe/count/raises/j17", df.loc[df["Group"] == "j17"]["SpecRaiseCount"].sum())
+    print_macro("/bbe/count/raises/s2", df.loc[df["Group"] == "s2"]["SpecRaiseCount"].sum())
+    print_macro("/bbe/count/raises/k18", df.loc[df["Group"] == "k18"]["SpecRaiseCount"].sum())
+
+    print_macro("/bbe/count/returns", df["SpecReturnCount"].sum())
+    print_macro("/bbe/count/returns/j8", df.loc[df["Group"] == "j8"]["SpecReturnCount"].sum())
+    print_macro("/bbe/count/returns/j17", df.loc[df["Group"] == "j17"]["SpecReturnCount"].sum())
+    print_macro("/bbe/count/returns/s2", df.loc[df["Group"] == "s2"]["SpecReturnCount"].sum())
+    print_macro("/bbe/count/returns/k18", df.loc[df["Group"] == "k18"]["SpecReturnCount"].sum())
+
+    print_macro("/bbe/count/invariants", df["SpecInvariantCount"].sum())
+    print_macro("/bbe/count/invariants/j8", df.loc[df["Group"] == "j8"]["SpecInvariantCount"].sum())
+    print_macro("/bbe/count/invariants/j17", df.loc[df["Group"] == "j17"]["SpecInvariantCount"].sum())
+    print_macro("/bbe/count/invariants/s2", df.loc[df["Group"] == "s2"]["SpecInvariantCount"].sum())
+    print_macro("/bbe/count/invariants/k18", df.loc[df["Group"] == "k18"]["SpecInvariantCount"].sum())
+
+    print_macro("/bbe/count/assertions", df["SpecAssertionCount"].sum())
+    print_macro("/bbe/count/assertions/j8", df.loc[df["Group"] == "j8"]["SpecAssertionCount"].sum())
+    print_macro("/bbe/count/assertions/j17", df.loc[df["Group"] == "j17"]["SpecAssertionCount"].sum())
+    print_macro("/bbe/count/assertions/s2", df.loc[df["Group"] == "s2"]["SpecAssertionCount"].sum())
+    print_macro("/bbe/count/assertions/k18", df.loc[df["Group"] == "k18"]["SpecAssertionCount"].sum())
 
     for index, row in df.iterrows():
         prefix = prefix if prefix != None else ""

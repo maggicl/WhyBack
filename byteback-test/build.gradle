@@ -85,7 +85,7 @@ def experiment = tasks.register('experiment') {
 
 		doLast {
 				project.exec {
-						commandLine 'sh' 'format-experiments.sh' 
+						commandLine 'sh' './format-experiments.sh' 
 				}
 		}
 

@@ -26,6 +26,7 @@ public class LinearSearch {
 	@Require("array_is_not_null")
 	@Require("bounded_indices")
 	@Ensure("result_is_index")
+	@Return
 	public static int search(int a[], int n, int left, int right) {
 
 		for (int i = left; i < right; ++i) {
@@ -57,6 +58,7 @@ public class LinearSearch {
 	@Require("array_is_not_null")
 	@Require("bounded_indices")
 	@Ensure("result_is_index")
+	@Return
 	public static <T> int search(T[] a, T n, int left, int right) {
 
 		for (int i = left; i < right; ++i) {

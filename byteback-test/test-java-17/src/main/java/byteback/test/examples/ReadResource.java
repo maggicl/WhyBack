@@ -128,7 +128,7 @@ public class ReadResource {
 			int i = 0;
 
 			while (true) {
-				invariant(lte(0, i) & lte(i, a.length + 1));
+				invariant(lte(0, i) & lte(i, a.length));
 				a[i] = r.read();
 				i++;
   		}

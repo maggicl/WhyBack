@@ -39,13 +39,14 @@ class Counter {
     count = count + 1;
   }
 
+  @Ensure("increments_count_by_10")
   @Return
   def incrementTo10(): Unit = {
     var i: Int = 0;
-    var old_count: Int = count;
 
     while (i < 10) {
       invariant(lte(0, i) & lte(i, 10));
+      invariant(equal(count, old(count) + i))
       increment();
       i = i + 1;
     }

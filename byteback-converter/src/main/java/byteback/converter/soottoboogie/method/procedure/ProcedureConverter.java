@@ -49,6 +49,8 @@ import soot.Type;
 import soot.VoidType;
 import soot.tagkit.AnnotationElem;
 
+import static byteback.converter.soottoboogie.expression.PureExpressionExtractor.sanitizeName;
+
 public class ProcedureConverter extends MethodConverter {
 
 	public static final String PARAMETER_PREFIX = "?";
@@ -60,7 +62,7 @@ public class ProcedureConverter extends MethodConverter {
 	}
 
 	public static String parameterName(final Local local) {
-		return PARAMETER_PREFIX + local.getName();
+		return PARAMETER_PREFIX + sanitizeName(local.getName());
 	}
 
 	public static BoundedBinding makeBinding(final String name, final Type type) {

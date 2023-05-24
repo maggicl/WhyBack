@@ -3,13 +3,10 @@
  */
 package byteback.test.casting;
 
-import static byteback.annotations.Contract.*;
-
 public class BoolToInt {
 
 	boolean t;
 
-	@Return
 	public int implicit() {
 		int i = 0;
 

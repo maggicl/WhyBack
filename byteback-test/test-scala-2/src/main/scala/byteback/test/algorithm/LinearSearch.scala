@@ -16,7 +16,7 @@ class LinearSearch {
 
   @Predicate
   def array_is_null(a: Array[Int], n: Int, left: Int, right: Int): Boolean = {
-    return neq(a, null);
+    return equal(a, null);
   }
 
   @Predicate
@@ -36,6 +36,7 @@ class LinearSearch {
   @Require("array_is_not_null")
   @Require("bounded_indices")
   @Ensure("result_is_index")
+  @Return
   def search[T <: AnyRef](a: Array[T], n: T, left: Int, right: Int): Int = {
     var i: Int = left;
 

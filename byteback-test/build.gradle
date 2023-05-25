@@ -67,7 +67,7 @@ subprojects { test ->
 										def output = "./benchmark/benchmark.csv"
 										environment 'BYTEBACK_ROOT', bytebackRoot
 										project.mkdir(benchmarkDir)
-										commandLine 'python', script, '--output', output, '--repetitions', 1, '--summary'	, './summary/summary.csv'
+										commandLine 'python', script, '--output', output, '--repetitions', 5, '--summary'	, './summary/summary.csv'
 								}
 						}
 				}

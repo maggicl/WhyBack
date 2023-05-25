@@ -3,11 +3,8 @@
  */
 package byteback.test.casting;
 
-import static byteback.annotations.Contract.*;
-
 public class RealToInt {
 
-	@Return
 	public int explicit() {
 		float f = 3.14f;
 		double d = 3.14d;

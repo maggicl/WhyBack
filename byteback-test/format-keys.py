@@ -29,9 +29,11 @@ def main(csvs, output, prefix):
         nf["Group"] = group
         df = df.append(nf)
 
-    df.to_csv("experiments.csv", index=False)
-
     df = df[(df["SpecRaiseCount"] > 0) | (df["SpecReturnCount"] > 0) | (df["UsesExceptionFeatures"])]
+    df["AnnotationCount"] = df["SpecReturnCount"] + df["SpecRaiseCount"]
+    df["IntermediateCount"] = df["SpecAssertionCount"] + df["SpecInvariantCount"]
+
+    df.to_csv("experiments.csv", index=False)
 
     def print_macro(key, value):
         print(f"{LATEX_MACRO}{{{key}}}{{{value}}}")
@@ -39,7 +41,7 @@ def main(csvs, output, prefix):
     # Experiments count
     print_macro("/bbe/count/", len(df.index))
     print_macro("/bbe/count/j8", len(df[df["Group"] == "j8"].index))
-    print_macro("/bbe/count/j17", len(df[df["Group"] == "k18"].index))
+    print_macro("/bbe/count/j17", len(df[df["Group"] == "j17"].index))
     print_macro("/bbe/count/s2", len(df[df["Group"] == "s2"].index))
     print_macro("/bbe/count/k18", len(df[df["Group"] == "k18"].index))
 
@@ -99,6 +101,8 @@ def main(csvs, output, prefix):
         print_field("SpecAssertionCount")
         print_field("SpecAssumptionCount")
         print_field("SpecInvariantCount")
+        print_field("AnnotationCount")
+        print_field("IntermediateCount")
 
     def print_mean(column):
         print_macro(f"/bb/average/{column}", df[column].mean())

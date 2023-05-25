@@ -36,9 +36,19 @@ class PotentialNullDereference {
 				}
 		}
 
+		@Predicate
+		fun `a is not null`(a: IntArray?): Boolean {
+				return neq(a, null);
+		}
+
+		@Return(`when` = "a is not null")
+		fun constrainedPassedArrayTarget(a: IntArray): Unit {
+				val a_1: Int = a[1];
+		}
+
 }
 
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 6 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 7 verified, 0 errors
  */

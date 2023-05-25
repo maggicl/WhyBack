@@ -98,9 +98,16 @@ public class IntegerSelectionSort {
 		return eq(old(a[i]), a[j]) & eq(old(a[j]), a[i]);
 	}
 
+	@Predicate
+	public static boolean elements_invariance(final int[] a, final int i, final int j) {
+		final int k = Binding.integer();
+		return  forall(k, implies(lte(0, k) & lt(k, a.length) & neq(k, i) & neq(k, j), eq(k, old(k))));
+	}
+
 	@Return
 	@Require("bounded_indices")
 	@Ensure("swapped_elements")
+	@Ensure("elements_invariance")
 	public static void swap(final int[] a, int i, int j) {
 		final int y = a[i];
 		a[i] = a[j];

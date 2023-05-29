@@ -1,1 +1,0 @@
-* TODO Generalize byteback-core to byteback-converter + byteback-analysis + byteback-app

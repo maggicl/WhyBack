@@ -12,7 +12,7 @@ subprojects { test ->
 				def sourceDir = null
 				def targetProperty = project.findProperty("TARGET")
 
-				def summaryDir = "./summary"
+				def summaryDir = "$buildDir/summary"
 				project.mkdir(summaryDir)
 
 				compiledDirs.each { dir -> if (dir.exists()) compiledDir = dir }
@@ -48,17 +48,16 @@ subprojects { test ->
 				dependsOn cli.installDist
 				dependsOn test.shadowJar
 
-				//outputs.files fileTree(summaryDir).matching {
-				//		include '*.csv'
-				//} 
-
+				outputs.files fileTree(summaryDir).matching {
+						include '*.csv'
+				}
 		}
 
 		def benchmark = tasks.register('benchmark') {
 				def script = "../benchmark.py"
 				def jar = test.shadowJar.archivePath
 				def sourceDirs = test.sourceSets.main.allSource.srcDirs
-				def benchmarkDir = "./benchmark"
+				def benchmarkDir = "$buildDir/benchmark"
 
 				doLast {
 						sourceDirs.each { dir ->
@@ -74,23 +73,26 @@ subprojects { test ->
 
 				dependsOn test.system
 
-				//outputs.files fileTree(benchmarkDir).matching {
-				//		include '*.csv'
-				//} 
+				outputs.files fileTree(benchmarkDir).matching {
+						include '*.csv'
+				} 
 		}
 
 }
 
 def experiment = tasks.register('experiment') {
+		def experimentsDir = "$buildDir/experiments"
 
 		doLast {
+				project.mkdir(experimentsDir)
+
 				project.exec {
-						commandLine 'sh' './format-experiments.sh' 
+						commandLine 'sh', './format-experiments.sh' 
 				}
 		}
 
 		subprojects { test ->
-				dependsOn test.benchmark
+		 		dependsOn test.benchmark
 		}
 		
 }

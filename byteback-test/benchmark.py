@@ -66,14 +66,14 @@ def benchmark(entry, repetitions):
         total_conversion_overhead +=  b / t
         total_verification_time += verification_benchmark(entry["BoogieCommand"])
 
-    entry["AverageConversionTime"] = total_conversion_time / repetitions
-    entry["AverageVerificationTime"] = total_verification_time / repetitions
-    entry["AverageConversionOverhead"] = total_conversion_overhead / repetitions
+    entry["ConversionTime"] = total_conversion_time / repetitions
+    entry["VerificationTime"] = total_verification_time / repetitions
+    entry["ConversionOverhead"] = total_conversion_overhead / repetitions
 
     lg.info(f"Results:")
-    lg.info(f"Average Conversion Time: {entry['AverageConversionTime']}")
-    lg.info(f"Average Verification Time: {entry['AverageVerificationTime']}")
-    lg.info(f"Average Conversion Overhead: {entry['AverageConversionOverhead']}")
+    lg.info(f"Conversion Time: {entry['ConversionTime']}")
+    lg.info(f"Verification Time: {entry['VerificationTime']}")
+    lg.info(f"Conversion Overhead: {entry['ConversionOverhead']}")
 
     return entry
 

@@ -21,21 +21,22 @@ def main(csvs, output_csv, output_tex, index, prefix):
     for csv, group in pairs(csvs):
         nf = pd.read_csv(csv)
         nf["Group"] = group
-        df = df.append(nf)
+        df = df.concat([nf])
 
-    non_exceptional = len(df[(df["SpecRaiseCount"] == 0) & (df["SpecReturnCount"] == 0) & ~(df["UsesExceptionFeatures"])].index)
-
+    idf = pd.read_csv(index)
+    original_df = df
     df = df[(df["SpecRaiseCount"] > 0) | (df["SpecReturnCount"] > 0) | (df["UsesExceptionFeatures"])]
-    df = df.merge(pd.read_csv(index), on=["Group", "Experiment"], how="inner")
-    df["AnnotationCount"] = df["SpecReturnCount"] + df["SpecRaiseCount"]
-    df["IntermediateCount"] = df["SpecAssertionCount"] + df["SpecInvariantCount"]
+    #df = df.merge(idf, on=["Group", "Test"], how="inner")
+    df["SpecExceptionCount"] = df["SpecReturnCount"] + df["SpecRaiseCount"]
+    df["SpecFunctionalCount"] = df["SpecEnsureCount"] + df["SpecRequireCount"]
+    df["SpecIntermediateCount"] = df["SpecAssertionCount"] + df["SpecInvariantCount"]
 
-    df.to_csv(output_csv, index=False) oo
+    df.to_csv(output_csv, index=False)
 
     def print_macro(key, value):
         print(f"{LATEX_MACRO}{{{key}}}{{{value}}}", file=output_tex_file)
 
-    print_macro("/bbe/count/non-exceptional", non_exceptional)
+    print_macro("/bbe/count/non-exceptional", len(original_df.index) - len(df.index))
     print_macro("/bbe/count/java", len(df[df["Group"] == "j8"].index) + len(df[df["Group"] == "j17"].index))
 
     # Experiments count
@@ -101,8 +102,9 @@ def main(csvs, output_csv, output_tex, index, prefix):
         print_field("SpecAssertionCount")
         print_field("SpecAssumptionCount")
         print_field("SpecInvariantCount")
-        print_field("AnnotationCount")
-        print_field("IntermediateCount")
+        print_field("SpecExceptionalCount")
+        print_field("SpecFunctionalCount")
+        print_field("SpecIntermediateCount")
 
     def print_mean(column):
         print_macro(f"/bbe/average/{column}", df[column].mean())
@@ -119,10 +121,11 @@ def main(csvs, output_csv, output_tex, index, prefix):
     print_mean("SpecAssertionCount")
     print_mean("SpecAssumptionCount")
     print_mean("SpecInvariantCount")
-    print_mean("AnnotationCount")
-    print_mean("IntermediateCount")
     print_mean("MethodCount")
+    print_mean("SpecIntermediateCount")
     print_mean("SpecPredicateCount")
+    print_mean("SpecFunctionalCount")
+    print_mean("SpecExceptionalCount")
 
     print_total("ConversionTime")
     print_total("ConversionOverhead")
@@ -141,7 +144,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
     print_total("SpecAssumptionCount")
     print_total("SpecInvariantCount")
     print_total("AnnotationCount")
-    print_total("IntermediateCount")
+    print_total("SpecIntermediateCount")
 
 
 main()

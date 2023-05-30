@@ -69,7 +69,6 @@ def benchmark(entry, repetitions):
     entry["ConversionTime"] = total_conversion_time / repetitions
     entry["VerificationTime"] = total_verification_time / repetitions
     entry["ConversionOverhead"] = total_conversion_overhead / repetitions
-
     lg.info(f"Results:")
     lg.info(f"Conversion Time: {entry['ConversionTime']}")
     lg.info(f"Verification Time: {entry['VerificationTime']}")

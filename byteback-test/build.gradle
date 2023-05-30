@@ -4,6 +4,8 @@ subprojects { test ->
 
 		def bytebackRoot = cli.installDist.destinationDir
 
+		def summaryDir = "$buildDir/summary"
+
 		def system = tasks.register('system') {
 				def sourceSet = project.sourceSets.main
 				def sourceDirs = sourceSet.allSource.srcDirs
@@ -12,7 +14,6 @@ subprojects { test ->
 				def sourceDir = null
 				def targetProperty = project.findProperty("TARGET")
 
-				def summaryDir = "$buildDir/summary"
 				project.mkdir(summaryDir)
 
 				compiledDirs.each { dir -> if (dir.exists()) compiledDir = dir }
@@ -53,20 +54,21 @@ subprojects { test ->
 				}
 		}
 
+		def benchmarkDir = "$buildDir/benchmark"
+
 		def benchmark = tasks.register('benchmark') {
 				def script = "../benchmark.py"
 				def jar = test.shadowJar.archivePath
 				def sourceDirs = test.sourceSets.main.allSource.srcDirs
-				def benchmarkDir = "$buildDir/benchmark"
 
 				doLast {
 						sourceDirs.each { dir ->
 								test.exec {
 										def source = dir.getName()
-										def output = "./benchmark/benchmark.csv"
+										def output = "$benchmarkDir/benchmark.csv"
 										environment 'BYTEBACK_ROOT', bytebackRoot
 										project.mkdir(benchmarkDir)
-										commandLine 'python', script, '--output', output, '--repetitions', 5, '--summary'	, './summary/summary.csv'
+										commandLine 'python', script, '--output', output, '--repetitions', 5, '--summary'	, "$summaryDir/summary.csv"
 								}
 						}
 				}

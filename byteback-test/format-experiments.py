@@ -2,6 +2,9 @@ import pandas as pd
 import click as cl
 import datetime as dt
 import sys
+import warnings
+
+warnings.filterwarnings("ignore")
 
 LATEX_MACRO = "\pgfkeyssetvalue"
 
@@ -21,12 +24,15 @@ def main(csvs, output_csv, output_tex, index, prefix):
     for csv, group in pairs(csvs):
         nf = pd.read_csv(csv)
         nf["Group"] = group
-        df = df.concat([nf])
+        df = pd.concat([df, nf])
 
     idf = pd.read_csv(index)
+    df = df.drop(columns=["BytebackCommand", "BoogieCommand", "SourcePaths", "ClassPaths"])
+    df = df.set_index(["Group", "Test"])
+    df = df.reindex(idf[["Group", "Test"]])
+    df = df.reset_index()
+
     original_df = df
-    df = df[(df["SpecRaiseCount"] > 0) | (df["SpecReturnCount"] > 0) | (df["UsesExceptionFeatures"])]
-    #df = df.merge(idf, on=["Group", "Test"], how="inner")
     df["SpecExceptionCount"] = df["SpecReturnCount"] + df["SpecRaiseCount"]
     df["SpecFunctionalCount"] = df["SpecEnsureCount"] + df["SpecRequireCount"]
     df["SpecIntermediateCount"] = df["SpecAssertionCount"] + df["SpecInvariantCount"]
@@ -102,7 +108,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
         print_field("SpecAssertionCount")
         print_field("SpecAssumptionCount")
         print_field("SpecInvariantCount")
-        print_field("SpecExceptionalCount")
+        print_field("SpecExceptionCount")
         print_field("SpecFunctionalCount")
         print_field("SpecIntermediateCount")
 
@@ -125,7 +131,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
     print_mean("SpecIntermediateCount")
     print_mean("SpecPredicateCount")
     print_mean("SpecFunctionalCount")
-    print_mean("SpecExceptionalCount")
+    print_mean("SpecExceptionCount")
 
     print_total("ConversionTime")
     print_total("ConversionOverhead")
@@ -143,7 +149,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
     print_total("SpecAssertionCount")
     print_total("SpecAssumptionCount")
     print_total("SpecInvariantCount")
-    print_total("AnnotationCount")
+    print_total("SpecFunctionalCount")
     print_total("SpecIntermediateCount")
 
 

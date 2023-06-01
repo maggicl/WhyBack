@@ -59,17 +59,13 @@ subprojects { test ->
 		def benchmark = tasks.register('benchmark') {
 				def script = "../benchmark.py"
 				def jar = test.shadowJar.archivePath
-				def sourceDirs = test.sourceSets.main.allSource.srcDirs
 
 				doLast {
-						sourceDirs.each { dir ->
-								test.exec {
-										def source = dir.getName()
-										def output = "$benchmarkDir/benchmark.csv"
-										environment 'BYTEBACK_ROOT', bytebackRoot
-										project.mkdir(benchmarkDir)
-										commandLine 'python', script, '--output', output, '--repetitions', 5, '--summary'	, "$summaryDir/summary.csv"
-								}
+						test.exec {
+								def output = "$benchmarkDir/benchmark.csv"
+								environment 'BYTEBACK_ROOT', bytebackRoot
+								project.mkdir(benchmarkDir)
+								commandLine 'python', script, '--output', output, '--repetitions', 5, '--summary'	, "$summaryDir/summary.csv"
 						}
 				}
 

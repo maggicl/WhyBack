@@ -84,8 +84,9 @@ def benchmark(entry, repetitions):
 def main(output, repetitions, summary):
     output_path = output
     data = []
+    idf = pd.read_csv(summary)
 
-    for index, entry in pd.read_csv(summary).iterrows():
+    for index, entry in idf.iterrows():
         data.append(benchmark(entry, repetitions))
 
     df = pd.DataFrame(data)

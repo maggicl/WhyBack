@@ -6,8 +6,8 @@ ByteBack is a tool for specifying bytecode programs and for converting them into
 ** Dependencies
 
 In order to verify programs using ByteBack the following dependencies need to be installed separately:
-+ [[https://github.com/Z3Prover/z3][Z3]] solver 4.10.2+
-+ [[https://github.com/boogie-org/boogie][boogie]] 2.15.0+
++ [[https://github.com/Z3Prover/z3][Z3]] solver 4.11.2+
++ [[https://github.com/boogie-org/boogie][boogie]] 2.15.8+
 
 Z3 can be installed with pypi using the [[./requirements.txt]] file, while Boogie can be installed by using the [[https://dotnet.microsoft.com/en-us/download/dotnet/6.0][.NET SDK 6]], issuing the following command:
 #+begin_src sh
@@ -21,19 +21,19 @@ To build the project use the following command:
 	./gradlew install
 #+end_src
 
-This command will build the .jar archive of the core program ~byteback-core~ in
-[[./byteback-core/build/libs/byteback-core.jar]],
+This command will build the .jar archive of the command line application ~byteback-cli~ in
+[[./byteback-cli/build/libs/byteback-cli.jar]],
 and for ~byteback-annotations~ (BBLib) in
 [[./byteback-annotations/build/libs/byteback-annotations.jar]].
-It is possible to call ~byteback-core~ by using the execution script, which will be located in
-[[./byteback-core/install/byteback-core/bin/byteback-core]].
+It is possible to call ~byteback-cli~ by using the execution script, which will be located in
+[[./byteback-cli/build/install/byteback-cli/bin/byteback-cli]].
 
-** Using ByteBack core
+** Using ByteBack's CLI
 
-~byteback-core~ is a converter for Java bytecode into the Boogie intermediate verification language.
-The ~byteback-core~ executable can be invoked with the following options:
+~byteback~ is a converter for Java bytecode into the Boogie intermediate verification language.
+The ~byteback-cli~ executable can be invoked with the following options:
 #+begin_src sh
-	byteback-core -cp {classpath...} -c {target class...} -o {output Boogie file...}
+	byteback-cli -cp {classpath...} -c {target class...} -o {output Boogie file...} [--nct] [--act]
 #+end_src
 
 - classpath :: The ~-cp~ option declares a classpath to be analyzed by ByteBack. This option can be repeated to specify multiple classpaths.
@@ -43,7 +43,9 @@ The ~byteback-core~ executable can be invoked with the following options:
 - output file :: The ~-o~ option will correspond to the path to the output Boogie file. If this option is absent the Boogie program will be printed to stdout.
 
 - prelude :: The ~-p~ option allows the user to specify an alternative prelude to the default one located in
-[[./byteback-core/src/main/resources/boogie/BytebackPrelude.bpl]].
+[[./byteback-cli/src/main/resources/boogie/BytebackPrelude.bpl]].
+
+- implicit exceptions :: Optionally it is possible to add the ~--nct~ option to model implicit runtime null pointer exceptions and the ~--act~ option to model implicit runtime index out-of-bounds exceptions.
 
 After generating the output Boogie program it can be verified using the ~boogie~ verification tool.
 
@@ -51,7 +53,7 @@ After generating the output Boogie program it can be verified using the ~boogie~
 
 The ByteBack annotations library (BBLib) contains the necessary annotations and static methods used to specify bytecode programs.
 
-In order to convert the annotated code, ~byteback-annotations~ must be included in the classpath used by ~byteback-core~.
+In order to convert the annotated code, ~byteback-annotations~ must be included in the classpath passed to ~byteback-cli~.
 
 ** Running the Tests
 
@@ -65,9 +67,9 @@ To run the system tests execute the ~system~ gradle task as follows:
 	./gradlew system
 #+end_src
 
-It is also possible to specify a single test by using the ~TARGET~ property:
+It is also possible to specify a single test by using the ~TARGET~ property and the following command:
 #+begin_src sh
-	./gradlew system -PTARGET={Path to the test file (.java or .scala)}
+	./gradlew system -PTARGET={Path to the test file (.java, .scala, .kt)}
 #+end_src
 
 ** Running the Experiments
@@ -81,7 +83,8 @@ As for the tests dependencies, these dependencies can be found in [[./byteback-t
 
 To run the experiments run the following gradle task:
 #+begin_src sh
-	./gradlew benchmark
+	./gradlew experiment
 #+end_src
 
-This command will produce output in [[./byteback-test/test-java8]], [[./byteback-test/test-java17]], [[./byteback-test/test-scala]], under the subdirectory ~benchmark~. The results of the experiments can be found in the file ~results.csv~.
+This command will produce output in [[./byteback-test/build/experiments/]].
+The results of the experiments can be found in the file ~experiments.csv~.

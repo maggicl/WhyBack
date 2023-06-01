@@ -150,6 +150,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
     print_total("SpecAssumptionCount")
     print_total("SpecInvariantCount")
     print_total("SpecFunctionalCount")
+    print_total("SpecExceptionCount")
     print_total("SpecIntermediateCount")
 
 

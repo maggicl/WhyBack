@@ -9,6 +9,7 @@ j8,/byteback/test/exceptions/TryWithResources
 j8,/byteback/test/algorithm/ArrayReverse
 j8,/byteback/test/algorithm/BinarySearch
 j8,/byteback/test/algorithm/GCD
+j8,/byteback/test/algorithm/LinearSearch
 j8,/byteback/test/algorithm/DoubleSelectionSort
 j8,/byteback/test/algorithm/IntegerSelectionSort
 j8,/byteback/test/algorithm/SquareSortedArray

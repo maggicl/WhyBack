@@ -28,11 +28,11 @@ def main(csvs, output_csv, output_tex, index, prefix):
 
     idf = pd.read_csv(index)
     df = df.drop(columns=["BytebackCommand", "BoogieCommand", "SourcePaths", "ClassPaths"])
+    original_df = df
     df = df.set_index(["Group", "Test"])
     df = df.reindex(idf[["Group", "Test"]])
     df = df.reset_index()
 
-    original_df = df
     df["SpecExceptionCount"] = df["SpecReturnCount"] + df["SpecRaiseCount"]
     df["SpecFunctionalCount"] = df["SpecEnsureCount"] + df["SpecRequireCount"]
     df["SpecIntermediateCount"] = df["SpecAssertionCount"] + df["SpecInvariantCount"]

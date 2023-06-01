@@ -33,7 +33,7 @@ It is possible to call ~byteback-cli~ by using the execution script, which will 
 ~byteback~ is a converter for Java bytecode into the Boogie intermediate verification language.
 The ~byteback-cli~ executable can be invoked with the following options:
 #+begin_src sh
-	byteback-cli -cp {classpath...} -c {target class...} -o {output Boogie file...} [--nct] [--act]
+byteback-cli -cp {classpath...} -c {target class...} -o {output Boogie file...} [--nct] [--act]
 #+end_src
 
 - classpath :: The ~-cp~ option declares a classpath to be analyzed by ByteBack. This option can be repeated to specify multiple classpaths.

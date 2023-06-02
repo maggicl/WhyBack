@@ -70,11 +70,11 @@ public class RootResolver {
 			new ExpressionFolder().transform(body);
 
 			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
-				if (checkArrayDereference) {
+				if (checkArrayDereference || SootHosts.hasAnnotation(method, Namespace.MODEL_IOBE_ANNOTATION)) {
 					IndexCheckTransformer.v().transform(body);
 				}
 
-				if (checkNullDereference) {
+				if (checkNullDereference || SootHosts.hasAnnotation(method, Namespace.MODEL_NPE_ANNOTATION)) {
 					NullCheckTransformer.v().transform(body);
 				}
 			}

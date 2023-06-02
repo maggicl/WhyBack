@@ -134,4 +134,14 @@ public interface Contract {
 	public static @interface Invariant {
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD})
+	public static @interface ModelNPE {
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD})
+	public static @interface ModelIOBE {
+	}
+
 }

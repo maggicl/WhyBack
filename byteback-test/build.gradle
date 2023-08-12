@@ -25,7 +25,7 @@ subprojects { test ->
 								environment 'CLASS_BASE', compiledDir
 								environment 'BYTEBACK_ROOT', bytebackRoot
 								environment 'TEST_JAR', project.shadowJar.archivePath
-								commandLine 'lit', target, '-a', '-j', 4
+								commandLine 'lit', target, '-a', '-j', 1
 						}
 				}
 

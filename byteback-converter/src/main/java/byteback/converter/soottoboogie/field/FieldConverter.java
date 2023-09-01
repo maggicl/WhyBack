@@ -1,8 +1,5 @@
 package byteback.converter.soottoboogie.field;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
@@ -10,6 +7,8 @@ import byteback.frontend.boogie.ast.ConstantDeclaration;
 import byteback.frontend.boogie.ast.Declaration;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.builder.SetBindingBuilder;
+import java.util.ArrayList;
+import java.util.List;
 import soot.SootField;
 
 public class FieldConverter {

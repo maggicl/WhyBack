@@ -1,7 +1,6 @@
 package byteback.analysis.util;
 
 import byteback.analysis.SwappableUnitBox;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,10 +10,10 @@ import soot.Body;
 import soot.Local;
 import soot.Unit;
 import soot.UnitBox;
-import soot.ValueBox;
 import soot.Value;
-import soot.jimple.InvokeExpr;
+import soot.ValueBox;
 import soot.jimple.DynamicInvokeExpr;
+import soot.jimple.InvokeExpr;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 import soot.toolkits.graph.BlockGraph;

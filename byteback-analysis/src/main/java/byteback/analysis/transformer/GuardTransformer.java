@@ -5,7 +5,6 @@ import byteback.analysis.vimp.VoidConstant;
 import byteback.util.Lazy;
 import byteback.util.ListHashMap;
 import byteback.util.Stacks;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -62,9 +61,8 @@ public class GuardTransformer extends BodyTransformer {
 		}
 
 		for (final Unit handler : trapHandlers) {
-			assert handler instanceof AssignStmt assign
-				&& assign.getLeftOp() instanceof Local
-				&& assign.getRightOp() instanceof CaughtExceptionRef;
+			assert handler instanceof AssignStmt assign && assign.getLeftOp() instanceof Local
+					&& assign.getRightOp() instanceof CaughtExceptionRef;
 
 			final AssignStmt assignment = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v());
 			units.insertAfter(assignment, handler);
@@ -99,9 +97,9 @@ public class GuardTransformer extends BodyTransformer {
 				}
 
 				Unit indexUnit = assignUnit;
-					
-				if (throwUnit.getOp().getType() instanceof RefType throwType) {
-					
+
+				if (throwUnit.getOp().getType()instanceof RefType throwType) {
+
 					for (int i = activeTraps.size() - 1; i >= 0; --i) {
 						final Trap activeTrap = activeTraps.get(i);
 

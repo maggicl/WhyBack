@@ -7,9 +7,11 @@ import byteback.annotations.Contract.Return;
 public abstract class ExceptionSpec {
 
 	@Return
-	public ExceptionSpec() {}
+	public ExceptionSpec() {
+	}
 
 	@Return
-	public ExceptionSpec(String message) {}
+	public ExceptionSpec(String message) {
+	}
 
 }

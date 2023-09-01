@@ -1,9 +1,8 @@
 package byteback.analysis.transformer;
 
-import java.util.Map;
-
 import byteback.analysis.Vimp;
 import byteback.util.Lazy;
+import java.util.Map;
 import soot.Body;
 import soot.Scene;
 import soot.Value;
@@ -48,7 +47,7 @@ public class IndexCheckTransformer extends CheckTransformer {
 	public Value makeCheckExpr(Value inner, Value outer) {
 		if (outer instanceof ArrayRef arrayRef) {
 			final Value indexValue = arrayRef.getIndex();
-			final Value arrayBase = arrayRef.getBase(); 
+			final Value arrayBase = arrayRef.getBase();
 			final Value lengthOfExpr = Grimp.v().newLengthExpr(arrayBase);
 			final Value left = Vimp.v().newLtExpr(indexValue, lengthOfExpr);
 			final Value right = Vimp.v().newLeExpr(IntConstant.v(0), indexValue);

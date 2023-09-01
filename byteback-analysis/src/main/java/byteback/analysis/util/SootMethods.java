@@ -1,9 +1,8 @@
 package byteback.analysis.util;
 
+import byteback.analysis.Namespace;
 import java.util.ArrayList;
 import java.util.List;
-
-import byteback.analysis.Namespace;
 import soot.Local;
 import soot.SootMethod;
 import soot.jimple.internal.JimpleLocal;
@@ -26,11 +25,8 @@ public class SootMethods {
 	}
 
 	public static boolean hasBody(final SootMethod method) {
-		return method.isConcrete()
-				&& !method.isPhantom()
-				&& !method.getDeclaringClass().isPhantom()
-				&& (!SootClasses.isBasicClass(method.getDeclaringClass())
-						|| Namespace.isPredicateMethod(method)
+		return method.isConcrete() && !method.isPhantom() && !method.getDeclaringClass().isPhantom()
+				&& (!SootClasses.isBasicClass(method.getDeclaringClass()) || Namespace.isPredicateMethod(method)
 						|| Namespace.isPureMethod(method));
 	}
 

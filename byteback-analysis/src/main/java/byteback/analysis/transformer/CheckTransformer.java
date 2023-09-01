@@ -1,12 +1,11 @@
 package byteback.analysis.transformer;
 
+import byteback.analysis.Vimp;
+import byteback.util.Lazy;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import byteback.analysis.Vimp;
-import byteback.util.Lazy;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -46,7 +45,8 @@ public abstract class CheckTransformer extends BodyTransformer {
 		final Unit initUnit = Grimp.v().newAssignStmt(local, Jimple.v().newNewExpr(exceptionClass.getType()));
 		units.addLast(initUnit);
 		final SootMethodRef constructorRef = exceptionClass.getMethod("<init>", Collections.emptyList()).makeRef();
-		final SpecialInvokeExpr invokeExpr = Grimp.v().newSpecialInvokeExpr(local, constructorRef, Collections.emptyList());
+		final SpecialInvokeExpr invokeExpr = Grimp.v().newSpecialInvokeExpr(local, constructorRef,
+				Collections.emptyList());
 		final Unit constructorUnit = Grimp.v().newInvokeStmt(invokeExpr);
 		units.addLast(constructorUnit);
 		final Unit throwUnit = Grimp.v().newThrowStmt(local);

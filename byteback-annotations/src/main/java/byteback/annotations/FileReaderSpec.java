@@ -1,12 +1,11 @@
 package byteback.annotations;
 
-import java.io.FileReader;
-
 import byteback.annotations.Contract.Attach;
 import byteback.annotations.Contract.Ensure;
 import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Pure;
 import byteback.annotations.Contract.Return;
+import java.io.FileReader;
 
 @Attach(FileReader.class)
 public abstract class FileReaderSpec {

@@ -1,7 +1,7 @@
 package byteback.converter.soottoboogie.program;
 
-import byteback.analysis.RootResolver;
 import byteback.analysis.Namespace;
+import byteback.analysis.RootResolver;
 import byteback.analysis.util.SootHosts;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
@@ -10,7 +10,6 @@ import byteback.converter.soottoboogie.type.ClassHierarchyConverter;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
 import byteback.frontend.boogie.ast.Program;
 import byteback.util.Lazy;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.SootClass;

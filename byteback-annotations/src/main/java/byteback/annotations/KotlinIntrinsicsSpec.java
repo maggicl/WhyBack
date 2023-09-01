@@ -1,5 +1,7 @@
 package byteback.annotations;
 
+import static byteback.annotations.Operator.*;
+
 import byteback.annotations.Contract.AttachLabel;
 import byteback.annotations.Contract.Ignore;
 import byteback.annotations.Contract.Invariant;
@@ -8,8 +10,6 @@ import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Pure;
 import byteback.annotations.Contract.Raise;
 import byteback.annotations.Contract.Return;
-
-import static byteback.annotations.Operator.*;
 
 @AttachLabel("Lkotlin/jvm/internal/Intrinsics;")
 public abstract class KotlinIntrinsicsSpec {
@@ -27,13 +27,15 @@ public abstract class KotlinIntrinsicsSpec {
 	}
 
 	@Ignore
-	public static void checkNotNull(Object o) {}
+	public static void checkNotNull(Object o) {
+	}
 
 	@Ignore
 	@Lemma
 	@Invariant
 	@Raise(exception = IllegalArgumentException.class, when = "parameter_is_null")
 	@Return(when = "parameter_is_not_null")
-	public static void checkNotNullParameter(Object parameter, String name) {}
+	public static void checkNotNullParameter(Object parameter, String name) {
+	}
 
 }

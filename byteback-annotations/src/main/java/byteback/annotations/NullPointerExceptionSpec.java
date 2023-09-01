@@ -7,9 +7,11 @@ import byteback.annotations.Contract.Return;
 public abstract class NullPointerExceptionSpec {
 
 	@Return
-	public NullPointerExceptionSpec() {}
+	public NullPointerExceptionSpec() {
+	}
 
 	@Return
-	public NullPointerExceptionSpec(String message) {}
+	public NullPointerExceptionSpec(String message) {
+	}
 
 }

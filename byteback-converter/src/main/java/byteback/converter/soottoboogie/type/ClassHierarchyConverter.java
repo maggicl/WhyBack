@@ -1,12 +1,5 @@
 package byteback.converter.soottoboogie.type;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Stack;
-
 import byteback.analysis.RootResolver;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.frontend.boogie.ast.AndOperation;
@@ -24,6 +17,12 @@ import byteback.frontend.boogie.builder.SetBindingBuilder;
 import byteback.util.Cons;
 import byteback.util.Lazy;
 import byteback.util.Stacks;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.Stack;
 import soot.SootClass;
 
 public class ClassHierarchyConverter {
@@ -70,12 +69,12 @@ public class ClassHierarchyConverter {
 	}
 
 	public static SetBinding makeBinding(final int i) {
-			final String parameterName = makeQuantifiedTypeVariableName(i);
-			final var bindingBuilder = new SetBindingBuilder();
-			bindingBuilder.typeAccess(Prelude.v().getTypeType().makeTypeAccess());
-			bindingBuilder.name(parameterName);
+		final String parameterName = makeQuantifiedTypeVariableName(i);
+		final var bindingBuilder = new SetBindingBuilder();
+		bindingBuilder.typeAccess(Prelude.v().getTypeType().makeTypeAccess());
+		bindingBuilder.name(parameterName);
 
-			return bindingBuilder.build();
+		return bindingBuilder.build();
 	}
 
 	public static List<AxiomDeclaration> makeDisjointAxioms(final Collection<SootClass> classes) {
@@ -94,9 +93,10 @@ public class ClassHierarchyConverter {
 
 			final Expression l = new PartialOrderOperation(left, right);
 			final Expression r = new PartialOrderOperation(right, left);
-			final Expression e = new ImplicationOperation(new AndOperation(new PartialOrderOperation(left, leftType),
-																																		 new PartialOrderOperation(right, rightType)),
-																										new AndOperation(new NegationOperation(l), new NegationOperation(r)));
+			final Expression e = new ImplicationOperation(
+					new AndOperation(new PartialOrderOperation(left, leftType),
+							new PartialOrderOperation(right, rightType)),
+					new AndOperation(new NegationOperation(l), new NegationOperation(r)));
 
 			quantifierBuilder.addTrigger(new PartialOrderOperation(left, leftType));
 			quantifierBuilder.addTrigger(new PartialOrderOperation(right, rightType));

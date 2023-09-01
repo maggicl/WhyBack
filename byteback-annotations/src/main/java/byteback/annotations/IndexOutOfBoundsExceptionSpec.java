@@ -7,9 +7,11 @@ import byteback.annotations.Contract.Return;
 public abstract class IndexOutOfBoundsExceptionSpec {
 
 	@Return
-	public IndexOutOfBoundsExceptionSpec() {}
+	public IndexOutOfBoundsExceptionSpec() {
+	}
 
 	@Return
-	public IndexOutOfBoundsExceptionSpec(String message) {}
+	public IndexOutOfBoundsExceptionSpec(String message) {
+	}
 
 }

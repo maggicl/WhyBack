@@ -33,7 +33,6 @@ import byteback.frontend.boogie.builder.IfStatementBuilder;
 import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import soot.Local;
 import soot.SootField;
 import soot.Type;
@@ -228,7 +227,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	public void caseTableSwitchStmt(final TableSwitchStmt switchStatement) {
 		final Expression key = new ProcedureExpressionExtractor(bodyExtractor).visit(switchStatement.getKey());
 
-		for (int i = 0 ; i <= switchStatement.getHighIndex() - switchStatement.getLowIndex(); ++i) {
+		for (int i = 0; i <= switchStatement.getHighIndex() - switchStatement.getLowIndex(); ++i) {
 			final Unit target = switchStatement.getTarget(i);
 			final var ifBuilder = new IfStatementBuilder();
 			final int offsetIndex = switchStatement.getLowIndex() + i;

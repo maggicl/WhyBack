@@ -15,7 +15,8 @@ public class VoidConstant extends Constant {
 		return instance.get();
 	}
 
-	private VoidConstant() {}
+	private VoidConstant() {
+	}
 
 	@Override
 	public Type getType() {

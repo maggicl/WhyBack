@@ -36,7 +36,8 @@ public class ProcedureExpressionExtractor extends PureExpressionExtractor {
 		this(bodyExtractor, bodyExtractor.getReferenceProvider());
 	}
 
-	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor, final ReferenceProvider referenceProvider) {
+	public ProcedureExpressionExtractor(final ProcedureBodyExtractor bodyExtractor,
+			final ReferenceProvider referenceProvider) {
 		this.bodyExtractor = bodyExtractor;
 		this.referenceProvider = referenceProvider;
 	}

@@ -20,14 +20,16 @@ def pairs(l):
 def main(csvs, output_csv, output_tex, index, prefix):
     df = pd.DataFrame()
     output_tex_file = open(output_tex, "w") if output_tex else sys.stdout
+    groups = []
 
     for csv, group in pairs(csvs):
-        nf = pd.read_csv(csv)
+        nf = pd.read_csv(csv, index_col=0)
         nf["Group"] = group
         df = pd.concat([df, nf])
+        groups.append(group)
 
     idf = pd.read_csv(index)
-    df = df.drop(columns=["BytebackCommand", "BoogieCommand", "SourcePaths", "ClassPaths"])
+    df = df.drop(columns=["BytebackCommand", "BoogiePath", "BoogieCommand", "SourcePaths", "ClassPaths"])
     original_df = df
     df = df.set_index(["Group", "Test"])
     df = df.reindex(idf[["Group", "Test"]])
@@ -37,7 +39,8 @@ def main(csvs, output_csv, output_tex, index, prefix):
     df["SpecFunctionalCount"] = df["SpecEnsureCount"] + df["SpecRequireCount"]
     df["SpecIntermediateCount"] = df["SpecAssertionCount"] + df["SpecInvariantCount"]
 
-    df.to_csv(output_csv, index=False)
+    df.index += 1
+    df.to_csv(output_csv, index=True)
 
     def print_macro(key, value):
         print(f"{LATEX_MACRO}{{{key}}}{{{value}}}", file=output_tex_file)
@@ -45,45 +48,34 @@ def main(csvs, output_csv, output_tex, index, prefix):
     print_macro("/bbe/count/non-exceptional", len(original_df.index) - len(df.index))
     print_macro("/bbe/count/java", len(df[df["Group"] == "j8"].index) + len(df[df["Group"] == "j17"].index))
 
-    # Experiments count
     print_macro("/bbe/count", len(df.index))
-    print_macro("/bbe/count/j8", len(df[df["Group"] == "j8"].index))
-    print_macro("/bbe/count/j17", len(df[df["Group"] == "j17"].index))
-    print_macro("/bbe/count/s2", len(df[df["Group"] == "s2"].index))
-    print_macro("/bbe/count/k18", len(df[df["Group"] == "k18"].index))
-
-    # Methods count
     print_macro("/bbe/count/method", df["MethodCount"].sum())
-    print_macro("/bbe/count/method/j8", df.loc[df["Group"] == "j8"]["MethodCount"].sum())
-    print_macro("/bbe/count/method/j17", df.loc[df["Group"] == "j17"]["MethodCount"].sum())
-    print_macro("/bbe/count/method/s2", df.loc[df["Group"] == "s2"]["MethodCount"].sum())
-    print_macro("/bbe/count/method/k18", df.loc[df["Group"] == "k18"]["MethodCount"].sum())
-
-    # Annotation count
     print_macro("/bbe/count/raises", df["SpecRaiseCount"].sum())
-    print_macro("/bbe/count/raises/j8", df.loc[df["Group"] == "j8"]["SpecRaiseCount"].sum())
-    print_macro("/bbe/count/raises/j17", df.loc[df["Group"] == "j17"]["SpecRaiseCount"].sum())
-    print_macro("/bbe/count/raises/s2", df.loc[df["Group"] == "s2"]["SpecRaiseCount"].sum())
-    print_macro("/bbe/count/raises/k18", df.loc[df["Group"] == "k18"]["SpecRaiseCount"].sum())
-
     print_macro("/bbe/count/returns", df["SpecReturnCount"].sum())
-    print_macro("/bbe/count/returns/j8", df.loc[df["Group"] == "j8"]["SpecReturnCount"].sum())
-    print_macro("/bbe/count/returns/j17", df.loc[df["Group"] == "j17"]["SpecReturnCount"].sum())
-    print_macro("/bbe/count/returns/s2", df.loc[df["Group"] == "s2"]["SpecReturnCount"].sum())
-    print_macro("/bbe/count/returns/k18", df.loc[df["Group"] == "k18"]["SpecReturnCount"].sum())
-
     print_macro("/bbe/count/invariants", df["SpecInvariantCount"].sum())
-    print_macro("/bbe/count/invariants/j8", df.loc[df["Group"] == "j8"]["SpecInvariantCount"].sum())
-    print_macro("/bbe/count/invariants/j17", df.loc[df["Group"] == "j17"]["SpecInvariantCount"].sum())
-    print_macro("/bbe/count/invariants/s2", df.loc[df["Group"] == "s2"]["SpecInvariantCount"].sum())
-    print_macro("/bbe/count/invariants/k18", df.loc[df["Group"] == "k18"]["SpecInvariantCount"].sum())
-
     print_macro("/bbe/count/assertions", df["SpecAssertionCount"].sum())
-    print_macro("/bbe/count/assertions/j8", df.loc[df["Group"] == "j8"]["SpecAssertionCount"].sum())
-    print_macro("/bbe/count/assertions/j17", df.loc[df["Group"] == "j17"]["SpecAssertionCount"].sum())
-    print_macro("/bbe/count/assertions/s2", df.loc[df["Group"] == "s2"]["SpecAssertionCount"].sum())
-    print_macro("/bbe/count/assertions/k18", df.loc[df["Group"] == "k18"]["SpecAssertionCount"].sum())
 
+    # Group-specific statistics
+    for group in groups:
+        # Experiments Count
+        print_macro(f"/bbe/count/{group}", len(df[df["Group"] == group].index))
+
+        # Methods count
+        print_macro(f"/bbe/count/method/{group}", df.loc[df["Group"] == group]["MethodCount"].sum())
+
+        # Annotation count
+        print_macro(f"/bbe/count/raises/{group}", df.loc[df["Group"] == group]["SpecRaiseCount"].sum())
+
+        # Returns count
+        print_macro(f"/bbe/count/returns/{group}", df.loc[df["Group"] == group]["SpecReturnCount"].sum())
+
+        # Invariants count
+        print_macro(f"/bbe/count/invariants/{group}", df.loc[df["Group"] == group]["SpecInvariantCount"].sum())
+
+        # Invariants count
+        print_macro(f"/bbe/count/assertions/{group}", df.loc[df["Group"] == group]["SpecAssertionCount"].sum())
+
+    # Global statistics
     for index, row in df.iterrows():
         prefix = prefix if prefix != None else ""
         group = row["Group"]

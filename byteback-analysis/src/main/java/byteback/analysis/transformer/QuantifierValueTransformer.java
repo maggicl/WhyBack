@@ -5,7 +5,6 @@ import byteback.analysis.Namespace;
 import byteback.analysis.QuantifierExpr;
 import byteback.analysis.Vimp;
 import byteback.util.Lazy;
-
 import java.util.Iterator;
 import java.util.Map;
 import soot.Body;
@@ -51,7 +50,7 @@ public class QuantifierValueTransformer extends BodyTransformer implements Value
 			final Unit unit = unitIterator.next();
 
 			if (unit instanceof AssignStmt assignStmt) {
-				if (assignStmt.getRightOp() instanceof InvokeExpr invokeExpr) {
+				if (assignStmt.getRightOp()instanceof InvokeExpr invokeExpr) {
 					final SootMethod method = invokeExpr.getMethod();
 					final SootClass clazz = method.getDeclaringClass();
 

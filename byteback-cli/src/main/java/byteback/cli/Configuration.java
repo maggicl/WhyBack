@@ -1,10 +1,8 @@
 package byteback.cli;
 
+import byteback.util.Lazy;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-
-import byteback.util.Lazy;
-
 import java.nio.file.Path;
 import java.util.List;
 
@@ -12,7 +10,8 @@ public class Configuration {
 
 	private static final Lazy<Configuration> instance = Lazy.from(Configuration::new);
 
-	private Configuration() {}
+	private Configuration() {
+	}
 
 	public static Configuration v() {
 		return instance.get();

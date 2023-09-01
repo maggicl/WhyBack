@@ -1,12 +1,11 @@
 package byteback.analysis.transformer;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import byteback.analysis.Namespace;
 import byteback.analysis.Vimp;
 import byteback.analysis.vimp.VoidConstant;
 import byteback.util.Lazy;
+import java.util.Iterator;
+import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;

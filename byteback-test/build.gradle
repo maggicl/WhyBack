@@ -1,3 +1,5 @@
+def scriptsDir = "$projectDir/scripts"
+
 subprojects { test ->
 
 		def cli = project(':byteback-cli')
@@ -6,13 +8,28 @@ subprojects { test ->
 
 		def summaryDir = "$buildDir/summary"
 
+		def dependencyDir = "$rootDir/dependencies"
+
+		def path = "${System.env.PATH}:${dependencyDir}/dotnet/boogie-2.15.7/"
+
 		def system = tasks.register('system') {
 				def sourceSet = project.sourceSets.main
 				def sourceDirs = sourceSet.allSource.srcDirs
 				def compiledDirs = sourceSet.output.classesDirs
 				def compiledDir = null
 				def sourceDir = null
-				def targetProperty = project.findProperty("TARGET")
+				def testDirs = ["java", "scala", "kotlin"]
+				def targetProperty = project.findProperty("TEST_TARGET")
+				def jobsProperty = project.findProperty("TEST_JOBS")
+				def boogieTimeLimitProperty = project.findProperty("BOOGIE_TIME_LIMIT")
+
+				if (jobsProperty == null) {
+						jobsProperty = 1
+				}
+
+				if (boogieTimeLimitProperty == null) {
+						boogieTimeLimitProperty = 20
+				}
 
 				project.mkdir(summaryDir)
 
@@ -25,14 +42,15 @@ subprojects { test ->
 								environment 'CLASS_BASE', compiledDir
 								environment 'BYTEBACK_ROOT', bytebackRoot
 								environment 'TEST_JAR', project.shadowJar.archivePath
-								commandLine 'lit', target, '-a', '-j', 1
+								environment 'BOOGIE_TIME_LIMIT', boogieTimeLimitProperty
+								environment 'PATH', path
+								commandLine 'lit', target, '-a', '-j', jobsProperty
 						}
 				}
 
 				doLast {
 						sourceDirs.each { dir ->
-								if ((dir.getName().equals("java") || dir.getName().equals("scala") || dir.getName().equals("kotlin"))
-										&& dir.exists()) {
+								if (testDirs.contains(dir.getName()) && dir.exists()) {
 										sourceDir = dir
 								}
 
@@ -54,43 +72,58 @@ subprojects { test ->
 				}
 		}
 
-		def benchmarkDir = "$buildDir/benchmark"
+		def experimentsDir = "$buildDir/experiments"
 
-		def benchmark = tasks.register('benchmark') {
-				def script = "../benchmark.py"
+		def experiments = tasks.register('experiments') {
 				def jar = test.shadowJar.archivePath
+				def script = "$scriptsDir/run-experiments.py"
+				def repetitionsProperty = project.findProperty("EXP_REPETITIONS")
+
+				if (repetitionsProperty == null) {
+						repetitionsProperty = 5
+				}
 
 				doLast {
 						test.exec {
-								def output = "$benchmarkDir/benchmark.csv"
+								def output = "$experimentsDir/results.csv"
 								environment 'BYTEBACK_ROOT', bytebackRoot
-								project.mkdir(benchmarkDir)
-								commandLine 'python', script, '--output', output, '--repetitions', 5, '--summary'	, "$summaryDir/summary.csv"
+								environment 'PATH', path
+								project.mkdir(experimentsDir)
+								commandLine 'python3', script,
+										'--output', output,
+										'--repetitions', repetitionsProperty,
+										'--summary', "$summaryDir/summary.csv"
 						}
 				}
 
 				dependsOn test.system
 
-				outputs.files fileTree(benchmarkDir).matching {
+				outputs.files fileTree(experimentsDir).matching {
 						include '*.csv'
 				} 
 		}
 
 }
 
-def experiment = tasks.register('experiment') {
+def results = tasks.register('results') {
 		def experimentsDir = "$buildDir/experiments"
+		def script = "$scriptsDir/format-results.sh"
 
 		doLast {
 				project.mkdir(experimentsDir)
 
 				project.exec {
-						commandLine 'sh', './format-experiments.sh' 
+						commandLine 'sh', script
 				}
 		}
 
 		subprojects { test ->
-		 		dependsOn test.benchmark
+				dependsOn test.experiments
 		}
+
+		outputs.files fileTree(experimentsDir).matching {
+				include '*.csv'
+				include '*.tex'
+		} 
 		
 }

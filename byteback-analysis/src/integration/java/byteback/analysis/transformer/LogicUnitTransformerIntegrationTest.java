@@ -1,8 +1,6 @@
 package byteback.analysis.transformer;
 
 import static byteback.analysis.transformer.UnitTransformerFixture.assertLogicUnitEquiv;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 import byteback.analysis.Namespace;
 import byteback.analysis.Vimp;
@@ -11,8 +9,6 @@ import org.junit.Test;
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
-import soot.jimple.ConditionExpr;
-import soot.jimple.IfStmt;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 import soot.jimple.StaticInvokeExpr;
@@ -58,18 +54,6 @@ public class LogicUnitTransformerIntegrationTest {
 		final Unit transformedUnit = unitBox.getUnit();
 		final Unit expectedunit = Vimp.v().newInvariantStmt(trueConstant);
 		assertLogicUnitEquiv(expectedunit, transformedUnit);
-	}
-
-	@Test
-	public void TransformUnit_GivenAssertionMethodRef_PreservesBranchesToStmt() {
-		final StaticInvokeExpr assertionRef = mockLogicStmtRef(Namespace.ASSERTION_NAME, trueConstant);
-		final InvokeStmt invokeUnit = Jimple.v().newInvokeStmt(assertionRef);
-		final ConditionExpr condValue = mock(ConditionExpr.class);
-		final IfStmt ifUnit = Jimple.v().newIfStmt(condValue, invokeUnit);
-		final UnitBox unitBox = Jimple.v().newStmtBox(invokeUnit);
-		transformer.transformUnit(unitBox);
-		final Unit transformedUnit = unitBox.getUnit();
-		assertEquals(ifUnit.getTarget(), transformedUnit);
 	}
 
 }

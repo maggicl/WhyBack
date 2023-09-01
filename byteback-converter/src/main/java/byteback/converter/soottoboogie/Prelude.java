@@ -498,7 +498,7 @@ public class Prelude {
 
 	public Function getHeapSuccFunction() {
 		return program().lookupFunction("~heap.succ")
-			.orElseThrow(() -> new IllegalStateException("Missing definition for ~heap.succ."));
+				.orElseThrow(() -> new IllegalStateException("Missing definition for ~heap.succ."));
 	}
 
 	public Expression makeDefaultHeapInvariant() {

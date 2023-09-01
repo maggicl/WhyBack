@@ -29,6 +29,7 @@ def verification_benchmark(command):
 
         if not r.search(process.stdout.decode("utf-8")):
             raise RuntimeError("Boogie program could not be verified")
+
         if process.returncode != 0:
             raise RuntimeError("Boogie execution failed")
 
@@ -44,6 +45,7 @@ def conversion_benchmark(command):
 
     if process.returncode != 0:
         raise RuntimeError("ByteBack execution failed")
+
     if not output:
         raise RuntimeError("Could not match byteback's output")
 

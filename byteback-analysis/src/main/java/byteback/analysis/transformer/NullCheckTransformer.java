@@ -1,9 +1,8 @@
 package byteback.analysis.transformer;
 
-import java.util.Map;
-
 import byteback.analysis.Vimp;
 import byteback.util.Lazy;
+import java.util.Map;
 import soot.Body;
 import soot.Scene;
 import soot.Unit;
@@ -44,7 +43,8 @@ public class NullCheckTransformer extends CheckTransformer {
 	public void transformBody(final Body body) {
 		if (!body.getMethod().isStatic()) {
 			final Unit unit = body.getThisUnit();
-			final Unit assumption = Vimp.v().newAssumptionStmt(Vimp.v().newNeExpr(body.getThisLocal(), NullConstant.v()));
+			final Unit assumption = Vimp.v()
+					.newAssumptionStmt(Vimp.v().newNeExpr(body.getThisLocal(), NullConstant.v()));
 			body.getUnits().insertAfter(assumption, unit);
 		}
 

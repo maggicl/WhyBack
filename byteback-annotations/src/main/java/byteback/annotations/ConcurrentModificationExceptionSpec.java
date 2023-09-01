@@ -1,17 +1,18 @@
 package byteback.annotations;
 
-import java.util.ConcurrentModificationException;
-
 import byteback.annotations.Contract.Attach;
 import byteback.annotations.Contract.Return;
+import java.util.ConcurrentModificationException;
 
 @Attach(ConcurrentModificationException.class)
 public class ConcurrentModificationExceptionSpec {
 
 	@Return
-	public ConcurrentModificationExceptionSpec() {}
+	public ConcurrentModificationExceptionSpec() {
+	}
 
 	@Return
-	public ConcurrentModificationExceptionSpec(String message) {}
+	public ConcurrentModificationExceptionSpec(String message) {
+	}
 
 }

@@ -7,9 +7,11 @@ import byteback.annotations.Contract.Return;
 public class IllegalStateExceptionSpec {
 
 	@Return
-	public IllegalStateExceptionSpec() {};
+	public IllegalStateExceptionSpec() {
+	};
 
 	@Return
-	public IllegalStateExceptionSpec(String message) {};
+	public IllegalStateExceptionSpec(String message) {
+	};
 
 }

@@ -2,7 +2,6 @@ package byteback.analysis.util;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.Host;

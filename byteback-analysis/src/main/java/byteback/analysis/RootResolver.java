@@ -1,14 +1,5 @@
 package byteback.analysis;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import byteback.analysis.util.SootMethods;
-import byteback.util.Lazy;
 import byteback.analysis.transformer.CallCheckTransformer;
 import byteback.analysis.transformer.DynamicToStaticTransformer;
 import byteback.analysis.transformer.ExceptionAssumptionTransformer;
@@ -26,6 +17,14 @@ import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootClasses;
 import byteback.analysis.util.SootHosts;
+import byteback.analysis.util.SootMethods;
+import byteback.util.Lazy;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import soot.ArrayType;
 import soot.Body;
 import soot.RefType;
@@ -248,18 +247,15 @@ public class RootResolver {
 	}
 
 	public Iterable<SootClass> getUsedClasses() {
-		return visited.stream().filter((v) -> v instanceof SootClass)
-				.map((v) -> (SootClass) v)::iterator;
+		return visited.stream().filter((v) -> v instanceof SootClass).map((v) -> (SootClass) v)::iterator;
 	}
 
 	public Iterable<SootMethod> getUsedMethods() {
-		return visited.stream().filter((v) -> v instanceof SootMethod)
-				.map((v) -> (SootMethod) v)::iterator;
+		return visited.stream().filter((v) -> v instanceof SootMethod).map((v) -> (SootMethod) v)::iterator;
 	}
 
 	public Iterable<SootField> getUsedFields() {
-		return visited.stream().filter((v) -> v instanceof SootField)
-				.map((v) -> (SootField) v)::iterator;
+		return visited.stream().filter((v) -> v instanceof SootField).map((v) -> (SootField) v)::iterator;
 	}
 
 	public void resolve(final Collection<SootClass> initials) {

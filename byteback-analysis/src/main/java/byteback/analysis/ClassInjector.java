@@ -1,14 +1,13 @@
 package byteback.analysis;
 
+import byteback.analysis.util.AnnotationElems.ClassElemExtractor;
+import byteback.analysis.util.AnnotationElems.StringElemExtractor;
+import byteback.analysis.util.SootAnnotations;
+import byteback.analysis.util.SootHosts;
+import byteback.util.Lazy;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import byteback.analysis.util.SootAnnotations;
-import byteback.analysis.util.SootHosts;
-import byteback.analysis.util.AnnotationElems.ClassElemExtractor;
-import byteback.analysis.util.AnnotationElems.StringElemExtractor;
-import byteback.util.Lazy;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -37,14 +36,14 @@ public class ClassInjector {
 				annotation = SootHosts.getAnnotation(attachedClass, Namespace.ATTACH_ANNOTATION).orElseThrow();
 				element = SootAnnotations.getElem(annotation, "value").orElseThrow();
 				value = new ClassElemExtractor().visit(element);
-			} else if(SootHosts.hasAnnotation(attachedClass, Namespace.ATTACH_LABEL_ANNOTATION)) {
+			} else if (SootHosts.hasAnnotation(attachedClass, Namespace.ATTACH_LABEL_ANNOTATION)) {
 				annotation = SootHosts.getAnnotation(attachedClass, Namespace.ATTACH_LABEL_ANNOTATION).orElseThrow();
 				element = SootAnnotations.getElem(annotation, "value").orElseThrow();
 				value = new StringElemExtractor().visit(element);
 			} else {
 				continue;
 			}
-			
+
 			final SootClass hostClass = Scene.v().loadClassAndSupport(Namespace.stripDescriptor(value));
 			final List<SootMethod> methodsSnapshot = new ArrayList<>(attachedClass.getMethods());
 

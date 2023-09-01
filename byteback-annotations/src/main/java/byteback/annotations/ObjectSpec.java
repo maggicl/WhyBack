@@ -7,6 +7,7 @@ import byteback.annotations.Contract.Return;
 public abstract class ObjectSpec {
 
 	@Return
-	public ObjectSpec() {}
+	public ObjectSpec() {
+	}
 
 }

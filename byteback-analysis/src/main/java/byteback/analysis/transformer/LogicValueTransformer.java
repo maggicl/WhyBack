@@ -242,7 +242,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 
 			if (method.getName().equals("old")) {
 				setValue(Vimp.v().newOldExpr(specialInvokeExpr.getArg(0)));
-			} 
+			}
 		}
 
 		@Override
@@ -250,7 +250,7 @@ public class LogicValueTransformer extends BodyTransformer implements UnitTransf
 			for (int i = 0; i < value.getArgCount(); ++i) {
 				final ValueBox argumentBox = value.getArgBox(i);
 				new LogicValueSwitch(value.getMethodRef().getParameterType(i), argumentBox)
-					.visit(argumentBox.getValue());
+						.visit(argumentBox.getValue());
 			}
 
 			if (Namespace.isSpecialClass(value.getMethod().getDeclaringClass())) {

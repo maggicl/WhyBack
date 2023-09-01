@@ -19,7 +19,8 @@ public class MethodConverterTest {
 		when(method.getDeclaringClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("<init>");
 		when(method.getParameterTypes()).thenReturn(Collections.emptyList());
-		assertEquals(MethodConverter.methodName(method), "dummy.Test.$init$##");
+		when(method.getReturnType().toString()).thenReturn("void");
+		assertEquals(MethodConverter.methodName(method), "dummy.Test.$init$#void##");
 	}
 
 	@Test
@@ -28,7 +29,8 @@ public class MethodConverterTest {
 		when(method.getDeclaringClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("test");
 		when(method.getParameterTypes()).thenReturn(Collections.emptyList());
-		assertEquals(MethodConverter.methodName(method), "dummy.Test.test##");
+		when(method.getReturnType().toString()).thenReturn("void");
+		assertEquals(MethodConverter.methodName(method), "dummy.Test.test#void##");
 	}
 
 	@Test
@@ -39,7 +41,8 @@ public class MethodConverterTest {
 		when(method.getDeclaringClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("test");
 		when(method.getParameterTypes()).thenReturn(List.of(type));
-		assertEquals(MethodConverter.methodName(method), "dummy.Test.test#int?#");
+		when(method.getReturnType().toString()).thenReturn("void");
+		assertEquals(MethodConverter.methodName(method), "dummy.Test.test#void#int?##");
 	}
 
 	@Test
@@ -50,7 +53,8 @@ public class MethodConverterTest {
 		when(method.getDeclaringClass().getName()).thenReturn("dummy.Test");
 		when(method.getName()).thenReturn("test");
 		when(method.getParameterTypes()).thenReturn(List.of(type));
-		assertEquals(MethodConverter.methodName(method), "dummy.Test.test#int#");
+		when(method.getReturnType().toString()).thenReturn("void");
+		assertEquals(MethodConverter.methodName(method), "dummy.Test.test#void#int##");
 	}
 
 }

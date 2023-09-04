@@ -18,6 +18,7 @@ ARG BYTEBACK_PATH /opt/byteback
 ADD . /opt/byteback
 
 WORKDIR "/opt/byteback"
-RUN ./gradlew clean install
+RUN ./gradlew clean build
+RUN ./gradlew install
 
 ENV PATH="$PATH:/opt/byteback/byteback-core/build/install/byteback-core/bin"

@@ -25,41 +25,69 @@ specified using BBLib, which is located in the subproject at
 
 To cite this artifact refer to the DOI.
 
+``` bib
+@misc{ByteBack-Replication-Package-iFM2023,
+    author       = {Marco Paganoni and
+                                    Carlo A. Furia},
+    title        = {ByteBack iFM 2023 Replication Package},
+    month        = aug,
+    year         = 2023,
+    publisher    = {Zenodo},
+    doi          = {10.5281/zenodo.8279413},
+    url          = {https://doi.org/10.5281/zenodo.8279413}
+}
+```
+
 ## Setup
 
-The suggested setup for running the experiments is to use ByteBack's 
-Docker image, available in DockerHub under `paganma/byteback:ifm23`.
-For manual setup instructions refer to [Manual Setup](#sec:manual-setup).
+The recommended way to use ByteBack (in particular, installing it in
+the [iFM 2023 virtual machine](https://doi.org/10.5281/zenodo.7782241))
+is through a Docker image.  The image is available in this replication
+package (directory <./image/>), as well as on DockerHub
+(<`paganma/byteback:ifm23`>).
+
+The following two subsections describe how to install and run in a
+container ByteBack's Docker image: [using this replication package's
+offline copy](#offline-setup) or [pulling from
+DockerHub](#setup-with-docker-and-dockerhub).
+
+### Offline setup
+
+See <./image/README.md> for instructions on how to install and run the
+local copy of ByteBack's Docker image. Then, follow the instructions
+in the rest of this document to test the installation and replicate
+the results.
+
+### Setup with Docker and DockerHub
+
+Assuming you have [Docker](https://www.docker.com) installed and are
+connected to the internet, download and run ByteBack's Docker image
+with:
+
+```bash
+docker run -it paganma/byteback:ifm23
+```
+
+This command runs a shell in a container with ByteBack and this
+replication package's content installed. Follow the instructions in
+the rest of this document to test the installation and replicate the
+results.
 
 ## Resource requirements
 
 This replication package does not have specific hardware requirements.
 
-For running the experiments we suggest a configuration of at least 2
-virtual CPU cores and 8GB of RAM.
+For smoothly running the experiments we suggest a configuration of at
+least 2 virtual CPU cores and 8GB of RAM.
 
-We were able to run the replication package in the iFM 2023 virtual
-machine on a laptop with the following specification:
-
-CPU  
-i7-7600U 4x 3.9Ghz
-
-RAM  
-8GB
-
-With the default settings the replication of the paper's experiments
+We ran this replication package in iFM 2023's virtual machine on a
+laptop with a CPU i7-7600U 4x 3.9Ghz and 8GB of RAM.  With the default
+settings the replication of the paper's experiments (task `results`)
 completed in 43 minutes.
 
-For reference, running the same experiments in the same virtual machine
-on better hardware:
-
-CPU  
-i9-12950HX 24x 4.9Ghz
-
-RAM  
-64GB
-
-reduced the execution times to 24 minutes.
+For reference, running the same experiments in the same virtual
+machine on better hardware (CPU i9-12950HX 24x 4.9Ghz, 64 GB of RAM)
+took 24 minutes.
 
 ## Test instructions
 
@@ -68,7 +96,7 @@ some simple verification tasks in [./byteback-test](./byteback-test).
 The system tests check that the verification tasks are correctly
 translated into Boogie, and that the generated Boogie programs verify.
 
-To run the system tests, trigger Gradle task \`system\`:
+To run the system tests, trigger Gradle task `system`:
 
 ``` bash
 ./gradlew system
@@ -107,75 +135,75 @@ The CSV file `results.csv` includes one row for each verified program,
 in the same order as the paper's Table 4. Each row has the columns
 described below. In the following list of column names, we put between
 square brackets the name of the corresponding column in the paper's
-Table 4. Note that several of the CSV columns are not reported in Table
-4.
+Table 4 if one exists (several of the CSV columns are not reported in
+Table 4).
 
 ### Metrics
 
 For each of the experiments the results table shows the following
 metrics:
 
-SourceLinesOfCode \[SOURCE SIZE\]  
+SourceLinesOfCode [SOURCE SIZE]
 The SLOCs of the experiment's source code.
 
-BytecodeLinesOfCode \[N/A\]  
+BytecodeLinesOfCode   
 The SLOCs of the experiment's bytecode (as given by `javap`).
 
-BoogieLinesOfCode \[BOOGIE SIZE\]  
+BoogieLinesOfCode [BOOGIE SIZE]  
 The SLOCs of the experiment's generated Boogie code.
 
-MethodCount \[MET\]  
+MethodCount [MET]  
 Number of methods in the experiment.
 
-SpecRequireCount \[N/A\]  
+SpecRequireCount   
 The number of `@Require` annotations used.
 
-SpecEnsureCount \[N/A\]  
+SpecEnsureCount   
 Number of `@Ensure` annotations used.
 
-SpecRaiseCount \[N/A\]  
+SpecRaiseCount   
 Number of `@Raise` annotations used.
 
-SpecReturnCount \[N/A\]  
+SpecReturnCount   
 Number of `@Return` annotations used.
 
-SpecPredicateCount \[ANNOTATIONS P\]  
+SpecPredicateCount [ANNOTATIONS P]  
 Number of `@Predicate` annotations used.
 
-SpecPureCount \[N/A\]  
+SpecPureCount   
 Number of `@Pure` annotations used.
 
-SpecAssertionCount \[N/A\]  
+SpecAssertionCount   
 Number of assertions specified.
 
-SpecAssumptionCount \[N/A\]  
+SpecAssumptionCount   
 Number of assumptionsn specified.
 
-SpecInvariantCount \[N/A\]  
+SpecInvariantCount   
 Number of loop invariants specified.
 
-UsesExceptionFeatures \[N/A\]  
+UsesExceptionFeatures   
 Whether the experiment uses exception-related features.
 
-SpecExceptionCount \[ANNOTATIONS E\]  
+SpecExceptionCount [ANNOTATIONS E]  
 Total number of exception-related annotations used.
 
-SpecFunctionalCount \[ANNOTATIONS S\]  
+SpecFunctionalCount [ANNOTATIONS S]  
 Total number of functional (`@Require` and `Ensure`) annotations used.
 
-SpecIntermediateCount \[N/A\]  
+SpecIntermediateCount   
 Total number of intermediate annotations (`assertion` and loop
 `invariant`) used.
 
-ConversionTime \[ENCODING TIME\]  
+ConversionTime [ENCODING TIME]  
 Average time taken by ByteBack to convert the bytecode of the experiment
 to Boogie.
 
-VerificationTime \[VERIFICATION TIME\]  
+VerificationTime [VERIFICATION TIME]  
 Average time taken by Boogie to verify the Boogie code produced by
 ByteBack.
 
-ConversionOverhead \[N/A\]  
+ConversionOverhead   
 Percentage of the overhead introduced by ByteBack for the conversion,
 without accounting for Soot's initialization time.
 
@@ -305,7 +333,8 @@ verification, run the Boogie verification tool on `Main.bpl`:
 boogie Main.bpl
 ```
 
-# Manual Setup 
+# Manual Setup
+
 <span id="sec:manual-setup"></span>
 
 ## Building
@@ -325,8 +354,7 @@ It is possible to call `byteback-cli` by using the execution script,
 which will be located in
 [./byteback-cli/build/install/byteback-cli/bin/byteback-cli](./byteback-cli/build/install/byteback-cli/bin/byteback-cli).
 
-## Dependencies 
-<span id="subsec:dependencies"></span>
+## Dependencies <span id="subsec:dependencies"></span>
 
 In order to verify programs using ByteBack the following dependencies
 need to be installed separately:

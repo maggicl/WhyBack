@@ -70,10 +70,8 @@ public class ReadResource {
 		}
 
 		@Predicate
-		public boolean reads_only_this(int returns) {
-			final Resource r = (Resource) Binding.reference();
-
-			return forall(r, implies(neq(r, this), eq(old(r.hasNext), r.hasNext)));
+		public boolean resource_invariant(int returns) {
+			return eq(old(isClosed), isClosed);
 		}
 
 		@Predicate
@@ -83,7 +81,7 @@ public class ReadResource {
 
 		@Raise(exception = IllegalStateException.class, when = "is_closed")
 		@Raise(exception = NoSuchElementException.class, when = "has_no_next")
-		@Ensure("reads_only_this")
+		@Ensure("resource_invariant")
 		@Return(when = "is_open_and_has_next")
 		public abstract int read();
 
@@ -104,7 +102,13 @@ public class ReadResource {
 	@Pure
 	@Predicate
 	public static boolean r_and_a_are_not_null(Resource r, int[] a, final int n) {
-		return neq(r, null) & neq(a, null);
+		return neq(r, null) & neq(a, null) & eq(a.length, 0);
+	}
+
+	@Pure
+	@Predicate
+	public static boolean r_or_a_is_null(Resource r, int[] a, final int n) {
+		return eq(r, null) | eq(a, null);
 	}
 
 	@Pure
@@ -121,14 +125,15 @@ public class ReadResource {
 
 	@Require("r_is_open")
 	@Ensure("r_is_closed")
-	@Raise(exception = NullPointerException.class, when = "a_is_null")
-	@Raise(exception = NullPointerException.class, when = "r_is_null")
+	@Raise(exception = NullPointerException.class, when = "r_or_a_is_null")
+	@Return(when = "r_and_a_are_not_null")
 	public static void readInto(final Resource r, final int[] a, final int n) {
 		try (r) {
 			int i = 0;
 
 			while (true) {
 				invariant(lte(0, i) & lte(i, a.length));
+				invariant(implies(neq(r, null), r.is_open()));
 				a[i] = r.read();
 				i++;
   		}

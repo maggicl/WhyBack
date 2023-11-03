@@ -107,6 +107,11 @@ public interface Contract {
 	public static @interface Predicate {
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD})
+	public static @interface Isolated {
+	}
+
 	public static @interface Attach {
 		public Class<?> value();
 	}

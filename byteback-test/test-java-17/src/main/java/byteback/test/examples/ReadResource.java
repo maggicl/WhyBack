@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} --act --nct -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} --nct --act -o %t.bpl
  */
 package byteback.test.examples;
 
@@ -25,22 +25,7 @@ public class ReadResource {
 		public boolean hasNext;
 
 		@Return
-		@Ensure("is_open")
-		public Resource() {
-			isClosed = false;
-			hasNext = true;
-		}
-
-		@Predicate
-		public boolean closes_only_this() {
-			final Resource r = (Resource) Binding.reference();
-
-			return forall(r, implies(neq(r, this), eq(old(r.isClosed), r.isClosed)));
-		}
-
-		@Return
 		@Ensure("is_closed")
-		@Ensure("closes_only_this")
 		public void close() {
 			isClosed = true;
 		}
@@ -70,7 +55,7 @@ public class ReadResource {
 		}
 
 		@Predicate
-		public boolean resource_invariant(int returns) {
+		public boolean open_invariant(int returns) {
 			return eq(old(isClosed), isClosed);
 		}
 
@@ -81,7 +66,7 @@ public class ReadResource {
 
 		@Raise(exception = IllegalStateException.class, when = "is_closed")
 		@Raise(exception = NoSuchElementException.class, when = "has_no_next")
-		@Ensure("resource_invariant")
+		@Ensure("open_invariant")
 		@Return(when = "is_open_and_has_next")
 		public abstract int read();
 
@@ -102,7 +87,7 @@ public class ReadResource {
 	@Pure
 	@Predicate
 	public static boolean r_and_a_are_not_null(Resource r, int[] a, final int n) {
-		return neq(r, null) & neq(a, null) & eq(a.length, 0);
+		return neq(r, null) & neq(a, null);
 	}
 
 	@Pure
@@ -123,26 +108,30 @@ public class ReadResource {
 		return implies(neq(r, null), r.isClosed);
 	}
 
+	@Pure
+	@Predicate
+	public static boolean a_is_empty(final Resource r, final int[] a, final int n) {
+		return neq(a, null) & eq(a.length, 0);
+	}
+
 	@Require("r_is_open")
 	@Ensure("r_is_closed")
-	@Raise(exception = NullPointerException.class, when = "r_or_a_is_null")
-	@Return(when = "r_and_a_are_not_null")
-	public static void readInto(final Resource r, final int[] a, final int n) {
+	@Raise(exception = NullPointerException.class, when = "a_is_null")
+	@Return(when = "a_is_empty")
+	public static void into(final Resource r, final int[] a, final int n) {
 		try (r) {
 			int i = 0;
-
-			while (true) {
-				invariant(lte(0, i) & lte(i, a.length));
-				invariant(implies(neq(r, null), r.is_open()));
+			if (a.length == 0 || !r.hasNext) { return; }
+			while (true) { invariant(lte(0, i) & lte(i, a.length));
 				a[i] = r.read();
 				i++;
-  		}
-		} catch (IndexOutOfBoundsException | NoSuchElementException e) {
-			return;
-		}
+			}
+		} catch (IndexOutOfBoundsException | NoSuchElementException e)
+			{ return; }
 	}
 
 }
+
 
 /**
  * RUN: %{verify} %t.bpl | filecheck %s

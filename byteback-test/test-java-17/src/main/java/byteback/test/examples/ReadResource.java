@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} --act --nct -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} --nct --act -o %t.bpl
  */
 package byteback.test.examples;
 
@@ -23,13 +23,6 @@ public class ReadResource {
 		public boolean isClosed;
 
 		public boolean hasNext;
-
-		@Return
-		@Ensure("is_open")
-		public Resource() {
-			isClosed = false;
-			hasNext = true;
-		}
 
 		@Return
 		@Ensure("is_closed")
@@ -62,7 +55,7 @@ public class ReadResource {
 		}
 
 		@Predicate
-		public boolean resource_invariant(int returns) {
+		public boolean open_invariant(int returns) {
 			return eq(old(isClosed), isClosed);
 		}
 
@@ -73,7 +66,7 @@ public class ReadResource {
 
 		@Raise(exception = IllegalStateException.class, when = "is_closed")
 		@Raise(exception = NoSuchElementException.class, when = "has_no_next")
-		@Ensure("resource_invariant")
+		@Ensure("open_invariant")
 		@Return(when = "is_open_and_has_next")
 		public abstract int read();
 
@@ -115,6 +108,12 @@ public class ReadResource {
 		return implies(neq(r, null), r.isClosed);
 	}
 
+	@Pure
+	@Predicate
+	public static boolean a_is_empty(final Resource r, final int[] a, final int n) {
+		return neq(a, null) & eq(a.length, 0);
+	}
+
 	@Require("r_is_open")
 	@Ensure("r_is_closed")
 	@Raise(exception = NullPointerException.class, when = "r_is_null")
@@ -134,6 +133,7 @@ public class ReadResource {
 	}
 
 }
+
 
 /**
  * RUN: %{verify} %t.bpl | filecheck %s

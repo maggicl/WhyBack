@@ -277,10 +277,10 @@ public class ProcedureConverter extends MethodConverter {
 				if (!SootHosts.hasAnnotation(method, Namespace.LEMMA_ANNOTATION)) {
 					buildBody(builder, method);
 				}
-			} else {
-				if (!SootHosts.hasAnnotation(method, Namespace.INVARIANT_ANNOTATION)) {
-					buildFrameInvariant(builder);
-				}
+			} 
+
+			if (!SootHosts.hasAnnotation(method, Namespace.INVARIANT_ANNOTATION)) {
+				buildFrameInvariant(builder);
 			}
 		} catch (final ConversionException exception) {
 			throw new ProcedureConversionException(method, exception);

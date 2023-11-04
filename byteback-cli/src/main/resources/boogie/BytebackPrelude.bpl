@@ -66,7 +66,7 @@ const unique ~Object.Type: Field Type;
 
 const unique ~Primitive: Type;
 
-function ~typeof(h: Store, r: Reference) returns (Type)
+function {:inline} ~typeof(h: Store, r: Reference) returns (Type)
 {
   ~heap.read(h, r, ~Object.Type)
 }
@@ -76,8 +76,7 @@ function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 	~heap.read(h, r, ~Object.Type) <: t
 }
 
-axiom (forall h: Store, t: Type ::
-	!~instanceof(h, ~void, t));
+axiom (forall h: Store, t: Type :: !~instanceof(h, ~void, t));
 
 function ~type.reference(Type) returns (Reference);
 

@@ -121,7 +121,7 @@ javac Main.java -cp ../byteback-annotations/build/libs/byteback-annotations.jar
 boogie Main.bpl
 ```
 
-## Using ByteBack's CLI
+## Command line options
 
 `byteback-cli` is a command line tool that encodes Java bytecode into
 Boogie programs. `byteback-cli` supports the following options:

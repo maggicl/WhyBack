@@ -132,8 +132,8 @@ byteback-cli \
 	  -c TARGET_CLASS \
 	[ -o BOOGIE_OUTPUT ] \
 	[ -p PRELUDE ]\
-	[--nct ] \
-	[--act ]
+	[ --nct ] \
+	[ --act ]
 ```
 
 - `-cp CLASS_PATH` declares the classpath where ByteBack will look for

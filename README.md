@@ -18,7 +18,7 @@ as [Kotlin](https://kotlinlang.org/) and
 ## Docker image
 
 The simplest way of using ByteBack is through its Docker image.  The
-image is available on DockerHub (<`paganma/byteback:ifm23`>), and can
+image is available on DockerHub (<`paganma/byteback:latest`>), and can
 be built using the provided [Dockerfile](./Dockerfile).
 
 ## Manual setup
@@ -121,7 +121,7 @@ javac Main.java -cp ../byteback-annotations/build/libs/byteback-annotations.jar
 boogie Main.bpl
 ```
 
-  This should return with a successful verification (TODO )
+This should return with a successful verification (`Boogie program verifier finished with 2 verified, 0 errors`)
 
 ## Command line options
 

@@ -17,9 +17,9 @@ as [Kotlin](https://kotlinlang.org/) and
 
 ## Docker image
 
-The simplest way of using ByteBack is through its Docker image.
-
-CAF: ADD INSTRUCTIONS HERE
+The simplest way of using ByteBack is through its Docker image.  The
+image is available on DockerHub (<`paganma/byteback:ifm23`>), and can
+be built using the provided [Dockerfile](./Dockerfile).
 
 ## Manual setup
 
@@ -49,9 +49,9 @@ To verify ByteBack's Boogie output, you also need to install:
 -   [Boogie](https://github.com/boogie-org/boogie) 2.15.8+
 
 For example, Z3 can be installed through `pypi` using the
-[./requirements.txt](./requirements.txt) file, while Boogie can be
-installed by using the [.NET SDK
-6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0):
+[./requirements.txt](./requirements.txt) 
+file, while Boogie can be installed by using the 
+[.NET SDK 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0):
 
 ``` bash
 dotnet tool install -g boogie

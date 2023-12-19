@@ -33,7 +33,7 @@ Build ByteBack using [Gradle](https://gradle.org/):
 
 This command builds:
 
-- The command line executable `byteback-cli` in 
+- The command line executable `byteback-cli` in
   [./byteback-cli/build/install/byteback-cli/bin/byteback-cli](./byteback-cli/build/install/byteback-cli/bin/byteback-cli).
 - The `.jar` archive with `byteback-cli`'s implementation in
   [./byteback-cli/build/libs/byteback-cli.jar](./byteback-cli/build/libs/byteback-cli.jar).

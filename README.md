@@ -124,7 +124,9 @@ byteback-cli \
 boogie Main.bpl
 ```
 
-This should return with a successful verification (`Boogie program verifier finished with 2 verified, 0 errors`)
+This should return with a successful verification:
+
+`Boogie program verifier finished with 2 verified, 0 errors`
 
 ## Command line options
 
@@ -172,7 +174,7 @@ BBLib, the ByteBack annotations library, includes annotations and
 static methods for specifying functional properties at the level of
 Java source code, or any other language that compiles to JVM bytecode.
 
-See the annotated programs in [TODO]() for examples of using BBLib.
+See the annotated programs in [./byteback-test](byteback-test) for examples of using BBLib.
 
 
 # Citing ByteBack

@@ -1,26 +1,69 @@
-# Ignore Gradle project-specific cache directory
-.gradle
+# -*- mode: gitignore; -*-
 
-# Ignore Gradle build output directory
-build
+# Simple Build Tool
+# http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
 
-# Ignore compiled resources
-compiled
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+.history
+.cache
+.lib/
 
-# Ignore Emacs files
-.projectile
+# Generated Metals (Scala Language Server) files
+# Reference: https://scalameta.org/metals/
+.metals/
+.bloop/
+project/metals.sbt
+
+# Emacs
+*~
 \#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
 
-# Ignore Buildship files
-.settings
-.classpath
-.project
-bin/
+# Org-mode
+.org-id-locations
+*_archive
 
-# Ignore idea files
-.idea
+# flymake-mode
+*_flymake.*
 
-# Ignore testing files
-.lit*
-*.java.bpl
-Output
+# eshell files
+/eshell/history
+/eshell/lastdir
+
+# elpa packages
+/elpa/
+
+# reftex files
+*.rel
+
+# AUCTeX auto folder
+/auto/
+
+# cask packages
+.cask/
+dist/
+
+# Flycheck
+flycheck_*.el
+
+# server auth directory
+/server/
+
+# projectiles files
+.projectile
+
+# directory configuration
+.dir-locals.el
+
+# network security
+/network-security.data

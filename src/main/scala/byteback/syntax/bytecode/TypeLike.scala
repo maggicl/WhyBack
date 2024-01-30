@@ -1,7 +1,7 @@
 package byteback.syntax.bytecode
 
-import byteback.syntax.common.TypeLike
+import byteback.syntax.common
 
-trait TypeLike[-This](
-  using TypeLike[This]
-)
+trait TypeLike[
+    -This
+] extends common.TypeLike[This]

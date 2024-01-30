@@ -1,10 +1,9 @@
 package byteback.syntax.bytecode
 
-import sootup.core.types.ClassType
-
 trait MethodLike[
-  -This,
-  +Class,
-  +ClassType,
-  +Annotation
-] extends Annotable[Annotation, Annotation, ClassType]
+    -This,
+    +Class,
+    +Annotation,
+    +Type,
+    +ClassType <: Type
+] extends Annotatable[This, Annotation]

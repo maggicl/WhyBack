@@ -1,19 +1,20 @@
 package byteback.syntax.bytecode
 
-import sootup.core.types.ClassType
+import byteback.syntax.common.Typed
 
 trait ClassLike[
-  -This,
-  +ClassType,
-  +Method,
-  +Field,
-  +Annotation
-](
-  using MethodLike[Method, This, Annotation],
-  FieldLike[This, This, ClassType, Annotation]
-) extends Annotable[This, Annotation, ClassType]{
+    -This,
+    +Field,
+    +Method,
+    +Annotation,
+    +ClassType
+](using
+    MethodLike[Method, This, Annotation],
+    FieldLike[Field, This, Annotation]
+) extends Annotatable[This, Annotation]
+    with Typed[This, ClassType] {
   extension (value: This) {
-    def methods: Iterable[Method]
     def fields: Iterable[Field]
+    def methods: Iterable[Method]
   }
 }

@@ -1,7 +1,12 @@
 package byteback.syntax.bytecode
 
-trait Annotable[-This, +Annotation, +ClassType](
-  using AnnotationLike[Annotation, ClassType]
+import byteback.syntax.bytecode.`type`.ClassTypeLike
+
+trait Annotatable[
+    -This,
+    +Annotation
+](using
+    AnnotationLike[Annotation, ?]
 ) {
   extension (value: This) {
     def annotations: Iterable[Annotation]

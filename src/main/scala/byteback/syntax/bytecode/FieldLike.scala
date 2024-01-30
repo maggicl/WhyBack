@@ -1,18 +1,15 @@
 package byteback.syntax.bytecode
 
 import byteback.syntax.common.Typed
+import byteback.syntax.bytecode.Annotatable
+import byteback.syntax.bytecode.MemberLike
 import byteback.syntax.bytecode.`type`.ClassTypeLike
 
 trait FieldLike[
-    -This,
-    +Class,
-    +Annotation,
+    This,
+    +Parent,
     +Type,
-    +ClassType <: Type
-] extends Typed[This, Type]
+    +Annotation
+] extends MemberLike[This, Parent]
+    with Typed[This, Type]
     with Annotatable[This, Annotation]
-    with MemberLike[This, ClassType] {
-  extension (value: This) {
-    def annotations: Iterable[Annotation]
-  }
-}

@@ -1,3 +1,6 @@
 package byteback.syntax.common
 
-trait ReferenceLike[This](using ExpressionLike[This, ?])
+trait ReferenceLike[
+    This,
+    +Type
+] extends ExpressionLike[This, Type]

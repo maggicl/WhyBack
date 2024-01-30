@@ -2,9 +2,9 @@ package byteback.syntax.bytecode
 
 trait MemberLike[
     -This,
-    +ClassType
+    +Parent
 ] {
   extension (value: This) {
-    def declaringClassType: ClassType
+    def parent: Parent
   }
 }

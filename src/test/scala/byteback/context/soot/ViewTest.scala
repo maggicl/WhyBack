@@ -1,4 +1,4 @@
-package byteback.context.soot
+package byteback.context.soot 
 
 import munit.FunSuite
 import sootup.java.core.JavaProject
@@ -7,7 +7,6 @@ import sootup.java.bytecode.inputlocation.JavaClassPathAnalysisInputLocation
 import scala.collection.JavaConverters._
 
 import sootup.java.core.JavaSootClass
-import byteback.syntax.bytecode.declaration.ClassDeclaration
 import java.util.Optional
 
 class ViewTest extends FunSuite {

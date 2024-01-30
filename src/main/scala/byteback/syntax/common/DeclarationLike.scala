@@ -1,3 +1,5 @@
 package byteback.syntax.common
 
-trait DeclarationLike[-This] extends Named[This]
+trait DeclarationLike[
+    -This
+] extends Named[This]

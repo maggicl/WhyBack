@@ -1,9 +1,14 @@
 package byteback.syntax.bytecode.signature
 
-import byteback.syntax.common.Named
+import byteback.syntax.bytecode.SignatureLike
 
-trait MemberSignatureLike[-This, +ClassType] extends Named[This] {
+trait MemberSignatureLike[
+    -This,
+    +ClassSignature
+](using
+    ClassSignatureLike[ClassSignature]
+) extends SignatureLike[This] {
   extension (value: This) {
-    def declaringClassType: ClassType
+    def declaringClassSignature: ClassSignature
   }
 }

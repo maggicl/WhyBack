@@ -3,7 +3,7 @@ package byteback.syntax.bytecode
 import byteback.syntax.bytecode.`type`.ClassTypeLike
 
 trait Annotatable[
-    -This,
+    +This,
     +Annotation
 ](using
     AnnotationLike[Annotation, ?]

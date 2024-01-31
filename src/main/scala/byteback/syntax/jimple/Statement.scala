@@ -10,16 +10,18 @@ import scala.collection.JavaConverters._
 type Statement = Stmt
 
 object Statement {
-  given StatementLike[Statement, Reference] with {
+  given StatementLike[Statement] with {
     extension (statement: Statement) {
       def uses: List[Reference] = {
-        return statement.getUses()
+        return statement
+          .getUses()
           .asScala
           .toList
           .asInstanceOf[List[Reference]]
       }
       def definitions: List[Reference] = {
-        return statement.getDefs()
+        return statement
+          .getDefs()
           .asScala
           .toList
           .asInstanceOf[List[Reference]]

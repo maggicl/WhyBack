@@ -3,5 +3,5 @@ package byteback.syntax.bytecode.`type`
 import byteback.syntax.bytecode.TypeLike
 
 trait ReferenceTypeLike[
-  -This
+  This
 ] extends TypeLike[This]

@@ -4,18 +4,16 @@ import byteback.syntax.common.Typed
 import byteback.syntax.bytecode.signature.ClassSignatureLike
 
 trait ClassLike[
-    -This,
+    This,
     +Signature,
-    +Type,
     +Field,
-    +Method,
-    +Annotation
+    +Method
 ](using
+    Signed[This, Signature],
     ClassSignatureLike[Signature],
-    MethodLike[Method, Signature, Type, Annotation],
-    FieldLike[Field, Signature, Type, Annotation]
-) extends Annotatable[This, Annotation]
-    with Signed[This, Signature] {
+    FieldLike[Field, This],
+    MethodLike[Method, This]
+) {
   extension (value: This) {
     def fields: Iterable[Field]
     def methods: Iterable[Method]

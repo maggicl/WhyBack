@@ -4,9 +4,8 @@ import byteback.syntax.bytecode.Annotatable
 import byteback.syntax.bytecode.MemberLike
 
 trait MethodLike[
-    -This,
-    +Parent,
-    +Type,
-    +Annotation
-] extends MemberLike[This, Parent]
-    with Annotatable[This, Annotation]
+    This,
+    +Parent
+](using
+    MemberLike[This, Parent]
+)

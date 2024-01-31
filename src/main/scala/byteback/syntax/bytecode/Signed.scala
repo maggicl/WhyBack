@@ -1,7 +1,7 @@
 package byteback.syntax.bytecode
 
 trait Signed[
-    -This,
+    This,
     +Signature
 ](using
     SignatureLike[Signature]

@@ -1,15 +1,19 @@
 package byteback.syntax.bytecode.signature
 
 import byteback.syntax.bytecode.TypeLike
+import byteback.syntax.common.Named
 
 trait MethodSignatureLike[
-    -This,
-    +ClassSignature,
-    +ArgumentType
+    This,
+    +Parent,
+    Type
 ](using
-    TypeLike[ArgumentType]
-) extends MemberSignatureLike[This, ClassSignature] {
+    MemberSignatureLike[This, Parent],
+    Named[This],
+    TypeLike[Type]
+) {
   extension (value: This) {
-    def argumentTypes: Iterable[ArgumentType]
+    def argumentTypes: Iterable[Type]
+    def returnType: Type
   }
 }

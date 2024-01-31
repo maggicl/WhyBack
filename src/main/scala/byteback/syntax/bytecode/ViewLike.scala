@@ -5,19 +5,17 @@ import byteback.syntax.bytecode.signature._
 import byteback.syntax.bytecode.member._
 
 trait ViewLike[
-    -This,
-    +Type,
+    This,
     +Class,
     -ClassSignature,
     +Field,
     -FieldSignature,
     +Method,
-    -MethodSignature,
-    +Annotation
+    -MethodSignature
 ](using
-    ClassLike[Class, ClassSignature, Type, Field, Method, Annotation],
-    FieldLike[Field, ClassSignature, Type, Annotation],
-    MethodLike[Method, ClassSignature, Type, Annotation],
+    ClassLike[Class, ClassSignature, Field, Method],
+    FieldLike[Field, ClassSignature],
+    MethodLike[Method, ClassSignature]
 ) {
   extension (value: This) {
     def classes: Iterable[Class]

@@ -1,7 +1,7 @@
 package byteback.syntax.bytecode
 
 trait MemberLike[
-    -This,
+    This,
     +Parent
 ] {
   extension (value: This) {

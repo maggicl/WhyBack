@@ -7,9 +7,7 @@ import byteback.syntax.bytecode.`type`.ClassTypeLike
 
 trait FieldLike[
     This,
-    +Parent,
-    +Type,
-    +Annotation
-] extends MemberLike[This, Parent]
-    with Typed[This, Type]
-    with Annotatable[This, Annotation]
+    +Parent
+](using
+    MemberLike[This, Parent]
+)

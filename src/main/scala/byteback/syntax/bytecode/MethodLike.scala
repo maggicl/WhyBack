@@ -4,5 +4,5 @@ import byteback.syntax.bytecode.Annotatable
 import byteback.syntax.bytecode.MemberLike
 
 trait MethodLike[
-    This: MemberLike
+    This: MemberLike: Signed
 ]

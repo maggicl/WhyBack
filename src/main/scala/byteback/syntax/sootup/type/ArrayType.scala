@@ -11,12 +11,12 @@ export types.ArrayType
 
 object ArrayType {
   given TypeLike[ArrayType] with {}
-  given ArrayTypeLike[ArrayType, Type] with {
+  given ArrayTypeLike[ArrayType] with {
     extension (arrayType: ArrayType) {
       def base: Type = {
         return arrayType.getBaseType()
       }
-      def dimension: scala.Int = {
+      def dimension: Int = {
         return arrayType.getDimension()
       }
     }

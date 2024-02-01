@@ -1,7 +1,7 @@
 package byteback.syntax.common
 
 trait Named[
-  This
+  -This
 ] {
   extension (value: This) {
     def name: String

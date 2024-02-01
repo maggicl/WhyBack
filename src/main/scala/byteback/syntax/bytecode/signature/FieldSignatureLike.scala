@@ -4,5 +4,5 @@ import byteback.syntax.common.Typed
 import byteback.syntax.bytecode.SignatureLike
 
 trait FieldSignatureLike[
-    This: SignatureLike: Typed
+    -This: SignatureLike: Typed
 ]

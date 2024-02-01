@@ -6,8 +6,5 @@ import byteback.syntax.bytecode.MemberLike
 import byteback.syntax.bytecode.`type`.ClassTypeLike
 
 trait FieldLike[
-    This,
-    +Parent
-](using
-    MemberLike[This, Parent]
-)
+    This: MemberLike
+]

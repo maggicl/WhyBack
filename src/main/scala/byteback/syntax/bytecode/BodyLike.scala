@@ -3,12 +3,9 @@ package byteback.syntax.bytecode.member
 import byteback.syntax.common.StatementLike
 
 trait BodyLike[
-    This,
-    +Statement
-](using
-    StatementLike[Statement]
-) {
+    This
+] {
   extension (value: This) {
-    def statements: Iterable[Statement]
+    def statements[Statement: StatementLike]: Iterable[Statement]
   }
 }

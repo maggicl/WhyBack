@@ -1,14 +1,8 @@
 package byteback.syntax.bytecode.signature
 
-import byteback.syntax.common.Named
 import byteback.syntax.common.Typed
+import byteback.syntax.bytecode.SignatureLike
 
 trait FieldSignatureLike[
-    This,
-    +Parent,
-    +Type
-](using
-    MemberSignatureLike[This, Parent],
-    Named[This],
-    Typed[This, Type]
-)
+    This: SignatureLike: Typed
+]

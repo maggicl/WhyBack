@@ -1,10 +1,9 @@
 package byteback.syntax.bytecode
 
 trait MemberLike[
-    This,
-    +Parent
+    This
 ] {
   extension (value: This) {
-    def parent: Parent
+    def parent[ParentSignature: SignatureLike]: ParentSignature
   }
 }

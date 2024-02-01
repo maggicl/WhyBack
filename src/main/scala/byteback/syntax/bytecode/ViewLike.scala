@@ -5,22 +5,22 @@ import byteback.syntax.bytecode.signature._
 import byteback.syntax.bytecode.member._
 
 trait ViewLike[
-    This,
-    +Class,
-    -ClassSignature,
-    +Field,
-    -FieldSignature,
-    +Method,
-    -MethodSignature
-](using
-    ClassLike[Class, ClassSignature, Field, Method],
-    FieldLike[Field, ClassSignature],
-    MethodLike[Method, ClassSignature]
-) {
-  extension (value: This) {
+    This
+] {
+  extension [
+      Class: ClassLike,
+      Method: MethodLike,
+      Field: FieldLike
+  ](value: This) {
     def classes: Iterable[Class]
-    def fetchClass(classSignature: ClassSignature): Option[Class]
-    def fetchMethod(methodSignature: MethodSignature): Option[Method]
-    def fetchField(fieldSignature: FieldSignature): Option[Field]
+    def fetchClass[Signature: SignatureLike](
+        classSignature: Signature
+    ): Option[Class]
+    def fetchMethod[Signature: SignatureLike](
+        methodSignature: Signature
+    ): Option[Method]
+    def fetchField[Signature: SignatureLike](
+        fieldSignature: Signature
+    ): Option[Field]
   }
 }

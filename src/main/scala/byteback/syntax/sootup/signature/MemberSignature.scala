@@ -10,7 +10,8 @@ import byteback.syntax.sootup.`type`.ClassType
 import byteback.syntax.sootup.`type`.ClassType.given
 import sootup.core.signatures.SootClassMemberSignature
 
-type MemberSignature[MemberSubSignature] = signatures.SootClassMemberSignature[MemberSubSignature]
+type MemberSignature[MemberSubSignature <: SootClassMemberSubSignature] =
+  SootClassMemberSignature[MemberSubSignature]
 
 object MemberSignature {
   given SignatureLike[MemberSignature[?]] with {
@@ -20,7 +21,7 @@ object MemberSignature {
       }
     }
   }
-  given MemberSignatureLike[MemberSignature[?]] with {
+  given MemberSignatureLike[MemberSignature[?], ClassType] with {
     extension (memberSignature: MemberSignature[?]) {
       def declaringClassSignature: ClassType = {
         return memberSignature.getDeclClassType()

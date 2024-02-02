@@ -1,5 +1,8 @@
 package byteback.syntax.common
 
 trait ExpressionLike[
-    -This: Typed
-]
+    -This,
+    +Type
+](using
+    Typed[This, Type]
+)

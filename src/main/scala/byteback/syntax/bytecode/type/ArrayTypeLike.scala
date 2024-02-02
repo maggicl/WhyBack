@@ -1,12 +1,16 @@
 package byteback.syntax.bytecode.`type`
 
-import byteback.syntax.bytecode.TypeLike
+import byteback.syntax.common.TypeLike
 
 trait ArrayTypeLike[
-    This: TypeLike
-] {
+    -This,
+    +BaseType
+](using
+    TypeLike[This],
+    TypeLike[BaseType]
+) {
   extension (value: This) {
-    def base[Type: TypeLike]: Type
+    def base: BaseType
     def dimension: Int
   }
 }

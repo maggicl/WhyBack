@@ -1,7 +1,7 @@
 package byteback.syntax.bytecode
 
 trait Modifiable[
-    This
+    -This
 ] {
   def modifiers[Modifier: ModifierLike]: Iterable[Modifier]
 }

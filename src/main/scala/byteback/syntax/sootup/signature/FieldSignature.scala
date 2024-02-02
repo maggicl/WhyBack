@@ -16,12 +16,12 @@ import sootup.core.signatures.SootClassMemberSubSignature
 export signatures.FieldSignature
 
 object FieldSignature {
-  given Typed[FieldSignature] with {
+  given Typed[FieldSignature, Type] with {
     extension (fieldSignature: FieldSignature) {
       def `type`: Type = {
         return fieldSignature.getType()
       }
     }
   }
-  given FieldSignatureLike[FieldSignature] with {}
+  given FieldSignatureLike[FieldSignature, Type] with {}
 }

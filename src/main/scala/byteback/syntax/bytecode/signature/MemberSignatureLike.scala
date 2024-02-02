@@ -4,9 +4,13 @@ import byteback.syntax.bytecode.SignatureLike
 import byteback.syntax.common.Typed
 
 trait MemberSignatureLike[
-    -This: SignatureLike
-] {
+    -This,
+    +ParentSignature
+](using
+    SignatureLike[This],
+    ClassSignatureLike[ParentSignature]
+) {
   extension (value: This) {
-    def declaringClassSignature[Signature: ClassSignatureLike]: Signature
+    def declaringClassSignature: ParentSignature
   }
 }

@@ -8,13 +8,16 @@ import byteback.syntax.bytecode.MemberLike
 import byteback.syntax.bytecode.Signed
 import byteback.syntax.sootup.Member
 import byteback.syntax.sootup.Member.given
-import sootup.core.signatures.MethodSignature
+import byteback.syntax.sootup.signature.MethodSignature
+import byteback.syntax.sootup.signature.MethodSignature.given
+import byteback.syntax.sootup.Signature
+import byteback.syntax.sootup.Signature.given
 
 type Method = JavaSootMethod
 
 object Method {
   given MethodLike[Method] with {}
-  given Signed[Method] with {
+  given Signed[Method, MethodSignature] with {
     extension (method: Method) {
       def signature: MethodSignature = {
         return method.getSignature()

@@ -3,9 +3,12 @@ package byteback.syntax.bytecode
 import byteback.syntax.bytecode.`type`.ClassTypeLike
 
 trait Annotatable[
-    This
-] {
+  -This,
+  +Annotation
+] (
+  using AnnotationLike[Annotation, _]
+) {
   extension (value: This) {
-    def annotations[Annotation: AnnotationLike]: Iterable[Annotation]
+    def annotations: Iterable[Annotation]
   }
 }

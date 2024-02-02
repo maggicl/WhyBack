@@ -1,9 +1,12 @@
 package byteback.syntax.bytecode
 
 trait Signed[
-    This
-] {
+    -This,
+    +Signature
+](using
+    SignatureLike[Signature]
+) {
   extension (value: This) {
-    def signature[Signature: SignatureLike]: Signature
+    def signature: Signature
   }
 }

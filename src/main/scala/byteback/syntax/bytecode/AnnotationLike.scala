@@ -4,5 +4,9 @@ import byteback.syntax.common.Typed
 import byteback.syntax.bytecode.`type`.ClassTypeLike
 
 trait AnnotationLike[
-    This: Typed
-]
+    -This,
+    +Type
+](using
+    Typed[This, Type],
+    ClassTypeLike[Type]
+)

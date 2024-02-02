@@ -1,9 +1,9 @@
 package byteback.syntax.bytecode.`type`
 
-import byteback.syntax.bytecode.TypeLike
+import byteback.syntax.common.TypeLike
 
 trait ClassTypeLike[
-  This: TypeLike
+    -This: TypeLike
 ] {
   extension (value: This) {
     def `package`: String

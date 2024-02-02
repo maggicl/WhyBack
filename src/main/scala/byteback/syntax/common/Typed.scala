@@ -1,9 +1,12 @@
 package byteback.syntax.common
 
 trait Typed[
-    This
-] {
+    -This,
+    +Type
+](using
+    TypeLike[Type]
+) {
   extension (value: This) {
-    def `type`[Type: TypeLike]: Type
+    def `type`: Type
   }
 }

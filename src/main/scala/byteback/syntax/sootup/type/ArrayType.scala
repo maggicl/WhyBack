@@ -11,7 +11,7 @@ export types.ArrayType
 
 object ArrayType {
   given TypeLike[ArrayType] with {}
-  given ArrayTypeLike[ArrayType] with {
+  given ArrayTypeLike[ArrayType, Type] with {
     extension (arrayType: ArrayType) {
       def base: Type = {
         return arrayType.getBaseType()

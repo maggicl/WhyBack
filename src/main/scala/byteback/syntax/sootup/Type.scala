@@ -1,13 +1,9 @@
 package byteback.syntax.sootup
 
-import sootup.core.types.PrimitiveType.BooleanType
-import byteback.syntax.bytecode
-import byteback.syntax.common
-import sootup.core.types
+import byteback.syntax.common.TypeLike
 
-export types.Type
+export sootup.core.types.Type
 
 object Type {
-  given bytecode.TypeLike[Type] with {}
-  given CommonTypeLike: common.TypeLike[Type] with {}
+  given TypeLike[Type] with {}
 }

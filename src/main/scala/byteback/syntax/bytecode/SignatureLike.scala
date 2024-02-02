@@ -4,4 +4,4 @@ import byteback.syntax.common.Named
 
 trait SignatureLike[
     -This: Named
-] 
+]

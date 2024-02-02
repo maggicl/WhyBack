@@ -4,4 +4,4 @@ import byteback.syntax.bytecode.SignatureLike
 
 trait ClassSignatureLike[
     -This: SignatureLike
-] 
+]

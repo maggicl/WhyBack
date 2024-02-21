@@ -2,7 +2,7 @@ package byteback.mlcfg;
 
 import byteback.analysis.RootResolver;
 import byteback.mlcfg.printer.RecordPrinter;
-import byteback.mlcfg.syntax.Program;
+import byteback.mlcfg.syntax.WhyProgram;
 import byteback.mlcfg.vimpParser.VimpClassParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +22,12 @@ public class ProgramConverter {
 
     public String convertClasses(final RootResolver resolver) {
         return StreamSupport.stream(resolver.getUsedClasses().spliterator(), false)
-                .map(classParser::parseClassDeclaration)
+                .flatMap(classParser::parseClassDeclaration)
                 .map(recordPrinter::printRecord)
                 .collect(Collectors.joining("\n\n"));
     }
 
-    public Program convert(final RootResolver resolver) {
-        return new Program(convertClasses(resolver));
+    public WhyProgram convert(final RootResolver resolver) {
+        return new WhyProgram(convertClasses(resolver));
     }
 }

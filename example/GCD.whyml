@@ -1,0 +1,49 @@
+type static__java_u002Elang_u002EException = {
+  serialVersionUID: int.Int
+}
+
+type instance__java_u002Elang_u002EString = {
+  value: array int.Int;
+  coder: int.Int;
+  hash: int.Int;
+  hashIsZero: bool
+}
+
+type static__java_u002Elang_u002EString = {
+  serialVersionUID: int.Int;
+  COMPACT__STRINGS: bool;
+  serialPersistentFields: array ref java_u002Eio_u002EObjectStreamField;
+  REPL: int.Int;
+  CASE__INSENSITIVE__ORDER: ref java_u002Eutil_u002EComparator;
+  LATIN1: int.Int;
+  UTF16: int.Int
+}
+
+type static__java_u002Elang_u002EIllegalArgumentException = {
+  serialVersionUID: int.Int
+}
+
+type instance__java_u002Elang_u002EThrowable = {
+  backtrace: ref java_u002Elang_u002EObject;
+  detailMessage: ref java_u002Elang_u002EString;
+  cause: ref java_u002Elang_u002EThrowable;
+  stackTrace: array ref java_u002Elang_u002EStackTraceElement;
+  depth: int.Int;
+  suppressedExceptions: ref java_u002Eutil_u002EList
+}
+
+type static__java_u002Elang_u002EThrowable = {
+  serialVersionUID: int.Int;
+  UNASSIGNED__STACK: array ref java_u002Elang_u002EStackTraceElement;
+  SUPPRESSED__SENTINEL: ref java_u002Eutil_u002EList;
+  NULL__CAUSE__MESSAGE: ref java_u002Elang_u002EString;
+  SELF__SUPPRESSION__MESSAGE: ref java_u002Elang_u002EString;
+  CAUSE__CAPTION: ref java_u002Elang_u002EString;
+  SUPPRESSED__CAPTION: ref java_u002Elang_u002EString;
+  EMPTY__THROWABLE__ARRAY: array ref java_u002Elang_u002EThrowable;
+  _u0024assertionsDisabled: bool
+}
+
+type static__java_u002Elang_u002ERuntimeException = {
+  serialVersionUID: int.Int
+}

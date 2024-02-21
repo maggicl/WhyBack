@@ -32,10 +32,11 @@ public class Main {
 
 	public static final ClassInjector injector = ClassInjector.v();
 
-	private static final boolean USE_MLCFG = true;
-
 	public static void convert(final byteback.cli.Configuration configuration) {
 		final PrintStream output;
+
+		// TODO: change
+		final boolean useMLCFG = configuration.getOutputPath().getFileName().toString().endsWith(".whyml");
 
 		if (configuration.getOutputPath() != null) {
 			final File file = configuration.getOutputPath().toFile();
@@ -51,7 +52,7 @@ public class Main {
 			output = System.out;
 		}
 
-		final var task = USE_MLCFG ?
+		final var task = useMLCFG ?
 				new MLCFGConversionTask(resolver) :
 				new BoogieConversionTask(resolver, prelude);
 		output.print(task.run().print());
@@ -104,7 +105,9 @@ public class Main {
 		resolver.setCheckArrayDereference(Configuration.v().getTransformArrayCheck());
 		resolver.resolve(startingClasses);
 
-		if (!USE_MLCFG) {
+		// TODO: change
+		final boolean useMLCFG = configuration.getOutputPath().getFileName().toString().endsWith(".whyml");
+		if (!useMLCFG) {
 			if (preludePath != null) {
 				prelude.loadFile(preludePath);
 			} else {

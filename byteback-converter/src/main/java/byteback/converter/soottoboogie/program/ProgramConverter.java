@@ -52,6 +52,7 @@ public class ProgramConverter {
 	}
 
 	public void convertClasses(final Program program, final RootResolver resolver) {
+		// makes sure classes are declared and sub-super class relationships are represented as axioms
 		for (final SootClass clazz : resolver.getUsedClasses()) {
 			program.addDeclaration(ReferenceTypeConverter.v().convert(clazz));
 			program.addDeclarations(ClassHierarchyConverter.v().convert(clazz, resolver));

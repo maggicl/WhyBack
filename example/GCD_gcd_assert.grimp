@@ -1,0 +1,51 @@
+    public static int gcd(int, int)
+    {
+        int l0, l1, l2, l3;
+        java.lang.IllegalArgumentException $stack4;
+
+        @caughtexception = voidc;
+        l0 := @parameter0: int;
+        l1 := @parameter1: int;
+        if l0 <= 0 goto label1;
+        if l1 > 0 goto label3;
+
+     label1:
+        $stack4 = new java.lang.IllegalArgumentException;
+        $stack4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Both arguments must be positive");
+
+        if @caughtexception == voidc goto label2;
+        return;
+
+     label2:
+        @caughtexception = $stack4;
+        return;
+
+     label3:
+        l2 = l0;
+        l3 = l1;
+
+     label4:
+        assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>(l2, 0) \u2227 staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>(l3, 0);
+        assert staticinvoke <byteback.annotations.Operator: boolean eq(int,int)>(staticinvoke <GCD: int gcd_recursive(int,int)>(l2, l3), staticinvoke <GCD: int gcd_recursive(int,int)>(l0, l1));
+        assert @caughtexception == voidc;
+        assert @caughtexception == voidc;
+        if l2 == l3 goto label6;
+        if l2 <= l3 goto label5;
+        l2 = l2 - l3;
+        goto label4;
+
+     label5:
+        l3 = l3 - l2;
+        assert @caughtexception == voidc;
+        assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>(l2, 0) \u2227 staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>(l3, 0);
+        assert staticinvoke <byteback.annotations.Operator: boolean eq(int,int)>(staticinvoke <GCD: int gcd_recursive(int,int)>(l2, l3), staticinvoke <GCD: int gcd_recursive(int,int)>(l0, l1));
+        goto label4;
+
+     label6:
+        assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>(l2, 0) \u2227 staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>(l3, 0);
+        assert staticinvoke <byteback.annotations.Operator: boolean eq(int,int)>(staticinvoke <GCD: int gcd_recursive(int,int)>(l2, l3), staticinvoke <GCD: int gcd_recursive(int,int)>(l0, l1));
+        assert @caughtexception == voidc;
+
+        return l2;
+    }
+

@@ -1,0 +1,28 @@
+    public static int gcd_recursive(int, int)
+    {
+        int l0, l1, $stack4, $stack5, $stack6, $stack7, $stack8, $stack9;
+        boolean $stack2, $stack3;
+
+        l0 := @parameter0: int;
+
+        l1 := @parameter1: int;
+
+        $stack2 = staticinvoke <byteback.annotations.Operator: boolean eq(int,int)>(l0, l1);
+
+        $stack3 = staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>(l0, l1);
+
+        $stack4 = l0 - l1;
+
+        $stack5 = staticinvoke <GCD: int gcd_recursive(int,int)>($stack4, l1);
+
+        $stack6 = l1 - l0;
+
+        $stack7 = staticinvoke <GCD: int gcd_recursive(int,int)>(l0, $stack6);
+
+        $stack8 = staticinvoke <byteback.annotations.Special: int conditional(boolean,int,int)>($stack3, $stack5, $stack7);
+
+        $stack9 = staticinvoke <byteback.annotations.Special: int conditional(boolean,int,int)>($stack2, l0, $stack8);
+
+        return $stack9;
+    }
+

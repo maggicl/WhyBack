@@ -1,0 +1,44 @@
+    public static int gcd(int, int)
+    {
+        java.lang.IllegalArgumentException $stack4;
+        int l0, l1, $stack8, $stack9, l2, l3;
+        boolean $stack5, $stack6, $stack7, $stack10;
+
+        l0 := @parameter0: int;
+        l1 := @parameter1: int;
+
+        if l0 <= 0 goto label1;
+        if l1 > 0 goto label2;
+
+     label1:
+        $stack4 = new java.lang.IllegalArgumentException;
+        specialinvoke $stack4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Both arguments must be positive");
+        throw $stack4;
+
+     label2:
+        l2 = l0;
+        l3 = l1;
+
+     label3:
+        if l2 == l3 goto label5;
+        
+        $stack5 = staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>(l2, 0);
+        $stack6 = staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>(l3, 0);
+        $stack7 = $stack5 & $stack6;
+        staticinvoke <byteback.annotations.Contract: void invariant(boolean)>($stack7);
+        $stack8 = staticinvoke <GCD: int gcd_recursive(int,int)>(l2, l3);
+        $stack9 = staticinvoke <GCD: int gcd_recursive(int,int)>(l0, l1);
+        $stack10 = staticinvoke <byteback.annotations.Operator: boolean eq(int,int)>($stack8, $stack9);
+        staticinvoke <byteback.annotations.Contract: void invariant(boolean)>($stack10);
+
+        if l2 <= l3 goto label4;
+        l2 = l2 - l3;
+        goto label3;
+
+     label4:
+        l3 = l3 - l2;
+        goto label3;
+
+     label5:
+        return l2;
+    }

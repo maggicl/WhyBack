@@ -49,6 +49,7 @@ public class RootResolver {
 			SootBodies.validateCalls(method.retrieveActiveBody());
 			final Body body = Grimp.v().newBody(method.getActiveBody(), "");
 
+			// import line numbers if the class file points to the source file
 			if (clazz.hasTag("SourceFileTag")) {
 				final SourceFileTag tag = (SourceFileTag) clazz.getTag("SourceFileTag");
 				String path = tag.getAbsolutePath();

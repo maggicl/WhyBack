@@ -6,6 +6,9 @@ import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.builder.SetBindingBuilder;
 import soot.SootClass;
 
+/**
+ * Reads soot class declarations and declares the classes in Boogie
+ */
 public class ReferenceTypeConverter {
 
 	private static final ReferenceTypeConverter instance = new ReferenceTypeConverter();

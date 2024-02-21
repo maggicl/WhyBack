@@ -32,6 +32,8 @@ public class Main {
 
 	public static final ClassInjector injector = ClassInjector.v();
 
+	private static final boolean USE_MLCFG = true;
+
 	public static void convert(final byteback.cli.Configuration configuration) {
 		final PrintStream output;
 
@@ -49,7 +51,9 @@ public class Main {
 			output = System.out;
 		}
 
-		final var task = new ConversionTask(resolver, prelude);
+		final var task = USE_MLCFG ?
+				new MLCFGConversionTask(resolver) :
+				new BoogieConversionTask(resolver, prelude);
 		output.print(task.run().print());
 		output.close();
 	}
@@ -100,10 +104,12 @@ public class Main {
 		resolver.setCheckArrayDereference(Configuration.v().getTransformArrayCheck());
 		resolver.resolve(startingClasses);
 
-		if (preludePath != null) {
-			prelude.loadFile(preludePath);
-		} else {
-			prelude.loadDefault();
+		if (!USE_MLCFG) {
+			if (preludePath != null) {
+				prelude.loadFile(preludePath);
+			} else {
+				prelude.loadDefault();
+			}
 		}
 	}
 

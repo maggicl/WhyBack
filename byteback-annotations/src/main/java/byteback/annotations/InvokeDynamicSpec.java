@@ -4,6 +4,9 @@ import byteback.annotations.Contract.AttachLabel;
 import byteback.annotations.Contract.Lemma;
 import byteback.annotations.Contract.Return;
 
+/**
+ * Dummy call targets for dynamic calls for string concatenation
+ */
 @AttachLabel("Lsoot/dummy/InvokeDynamic;")
 public abstract class InvokeDynamicSpec {
 

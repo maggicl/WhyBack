@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {} }:
 
 pkgs.mkShell {
-
+  # lit: LLVM INTEGRATION TESTING framework
   buildInputs = [
     pkgs.openjdk17
     (pkgs.python3.withPackages(

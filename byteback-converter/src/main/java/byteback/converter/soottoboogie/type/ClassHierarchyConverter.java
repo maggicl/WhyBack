@@ -25,6 +25,10 @@ import java.util.Set;
 import java.util.Stack;
 import soot.SootClass;
 
+/**
+ * Encodes the class hierarchy in Boogie. The pair between a class and each (even indirect) superclass or
+ * super-interface of it is encoded with an axiom.
+ */
 public class ClassHierarchyConverter {
 
 	private static final Lazy<ClassHierarchyConverter> instance = Lazy.from(ClassHierarchyConverter::new);

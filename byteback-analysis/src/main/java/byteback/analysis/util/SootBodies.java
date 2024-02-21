@@ -84,6 +84,12 @@ public class SootBodies {
 
 	}
 
+	/**
+	 * Given a method body, iterate over all invoke instructions and resolve each method to resolve the corresponding
+	 * classes
+	 * @param body the method body
+	 * @throws ValidationException if any method resolution fails
+	 */
 	public static void validateCalls(final Body body) {
 		for (final ValueBox valueBox : body.getUseAndDefBoxes()) {
 			final Value value = valueBox.getValue();

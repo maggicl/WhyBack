@@ -15,6 +15,7 @@ public interface UnitTransformer {
 		final Iterator<Unit> iterator = body.getUnits().snapshotIterator();
 
 		while (iterator.hasNext()) {
+			// a unit is essentially an instruction
 			final Unit unit = iterator.next();
 
 			transformUnit(new SwappableUnitBox(unit, body));

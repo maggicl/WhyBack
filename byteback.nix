@@ -9,11 +9,15 @@ pkgs.mkShell {
     ))
     pkgs.boogie
     pkgs.z3
+    pkgs.alt-ergo
+    pkgs.why3
+    pkgs.coq
   ];
 
   shellHook = ''
 export PATH=$PATH:$PWD/byteback-cli/build/install/byteback-cli/bin
 export CLASSPATH=$CLASSPATH:$PWD/byteback-annotations/build/libs/byteback-annotations.jar
+why3 config detect
   '';
 
 }

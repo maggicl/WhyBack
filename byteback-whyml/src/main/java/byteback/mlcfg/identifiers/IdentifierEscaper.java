@@ -40,7 +40,7 @@ public class IdentifierEscaper {
 	private static final String PRIME = "'9";
 
 	// source: src/parser/handcrafted.messages, lines 18-21
-	private static final Set<String> RESERVED_KEYWORDS = Set.of("val", "user", "type", "theory", "scope", "preducate",
+	private static final Set<String> RESERVED_L_KEYWORDS = Set.of("val", "user", "type", "theory", "scope", "preducate",
 			"module", "meda", "let", "lemma", "inductive", "import", "goal", "function", "exception", "eof", "end",
 			"constant", "coinductive", "clone", "axiom");
 
@@ -76,8 +76,8 @@ public class IdentifierEscaper {
 				Character.toString(firstCharBiased) :
 				String.format("%s%c", type.getForceEscaper(), firstChar);
 
-		// and now map the remaining characters
-		final String identifier = input.codePoints().skip(1).mapToObj(e -> {
+		// and now map the remaining charactersÒ
+		return input.codePoints().skip(1).mapToObj(e -> {
 			if (('0' <= e && e <= '9') || ('a' <= e && e <= 'z') || ('A' <= e && e <= 'Z') || e == '_') {
 				return Character.toString(e);
 			}
@@ -88,12 +88,11 @@ public class IdentifierEscaper {
 
 			return e <= 255 ? String.format("%s%02X", ESCAPE_LOW_CP, e) : String.format("%s%04X", ESCAPE_HIGH_CP, e);
 		}).collect(Collectors.joining("", firstIdentifierChar, ""));
-
-		return RESERVED_KEYWORDS.contains(identifier.toLowerCase()) ? identifier + RESERVED : identifier;
 	}
 
 	public Identifier.L escapeL(String input) {
-		return new Identifier.L(escape(input, IdentifierClass.LIDENT));
+		final String identifier = escape(input, IdentifierClass.LIDENT);
+		return new Identifier.L(RESERVED_L_KEYWORDS.contains(identifier.toLowerCase()) ? identifier + RESERVED : identifier);
 	}
 
 	public Identifier.U escapeU(String input) {

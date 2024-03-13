@@ -12,29 +12,58 @@ public sealed abstract class Statement {
 		return new Single(line);
 	}
 
-	public static Statement many(Statement... lines) {
-		return new Multiple(Arrays.asList(lines), 0);
+	public static Statement block(Statement... lines) {
+		return new Multiple(Arrays.asList(lines), 0, true);
 	}
 
 	public static Statement lines(Stream<String> lines) {
-		return new Multiple(lines.map(Single::new).toList(), 0);
+		return new Multiple(lines.map(Single::new).toList(), 0, false);
 	}
 
 	public static Statement many(Stream<Statement> lines) {
-		return new Multiple(lines.toList(), 0);
+		return new Multiple(lines.toList(), 0, false);
 	}
 
-	public static Statement scope(Statement... lines) {
-		return new Multiple(Arrays.asList(lines), 1);
+	public static Statement indent(Statement... lines) {
+		return new Multiple(Arrays.asList(lines), 1, false);
 	}
 
-	protected abstract int getIndent();
-
-	protected abstract Stream<String> getLines();
+	protected abstract Stream<Line> getLines();
 
 	@Override
 	public String toString() {
-		return getLines().collect(Collectors.joining("\n"));
+		final List<Line> lines = getLines().toList();
+		final StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < lines.size() - 1; i++) {
+			final Line line = lines.get(i);
+			final Line next = lines.get(i+1);
+
+			if (!line.text.isEmpty() || line.indent == next.indent) {
+				sb.append(line).append('\n');
+			}
+		}
+		sb.append(lines.get(lines.size() - 1));
+
+		return sb.toString();
+	}
+
+	protected static class Line {
+		private final String text;
+		private final int indent;
+
+		private Line(String text, int indent) {
+			this.text = text;
+			this.indent = indent;
+		}
+
+		private Line indent(int howMuch) {
+			return new Line(text, indent + howMuch);
+		}
+
+		public String toString() {
+			return INDENTATION.repeat(indent) + text;
+		}
 	}
 
 	public static final class Single extends Statement {
@@ -45,35 +74,29 @@ public sealed abstract class Statement {
 		}
 
 		@Override
-		protected int getIndent() {
-			return 0;
-		}
-
-		@Override
-		protected Stream<String> getLines() {
-			return Stream.of(line);
+		protected Stream<Line> getLines() {
+			return Stream.of(new Line(line, 0));
 		}
 	}
 
 	public static final class Multiple extends Statement {
 		private final List<? extends Statement> statements;
 		private final int indent;
+		private final boolean newline;
 
-		private Multiple(List<? extends Statement> statements, int indent) {
+		private Multiple(List<? extends Statement> statements, int indent, boolean newline) {
 			this.statements = statements;
 			this.indent = indent;
+			this.newline = newline;
 		}
 
 		@Override
-		protected int getIndent() {
-			return indent;
-		}
-
-		@Override
-		protected Stream<String> getLines() {
-			return statements.stream()
+		protected Stream<Line> getLines() {
+			final Stream<Line> lines = statements.stream()
 					.flatMap(Statement::getLines)
-					.map(e -> INDENTATION.repeat(indent) + e);
+					.map(e -> e.indent(indent));
+
+			return newline ? Stream.concat(lines, Stream.of(new Line("", indent))) : lines;
 		}
 	}
 }

@@ -22,9 +22,9 @@ public class FQDNEscaper {
 		}
 
 		final List<Identifier.U> parents = Arrays.stream(modules).limit(modules.length - 1)
-				.map(e -> identifierEscaper.escapeU(caseInverter.invertCase(e)))
+				.map(identifierEscaper::escapeU)
 				.collect(Collectors.toCollection(ArrayList::new));
-		parents.add(identifierEscaper.escapeU(modules[modules.length - 1]));
+		parents.add(identifierEscaper.escapeU(caseInverter.invertCase(modules[modules.length - 1])));
 
 		return new Identifier.FQDN(parents);
 	}

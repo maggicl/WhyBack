@@ -14,162 +14,203 @@ module Program
   use mach.int.Int64
   use ieee_float.Float32
   use ieee_float.Float64
-  scope I'2Java
-  scope I'2Lang
-  scope I'2Constant
-  scope I'2ConstantDesc
+  
+  scope Java
+  scope Lang
+  scope Constant
+  scope ConstantDesc
     val constant class: Type.class
   end
   end
   end
   end
-  scope I'2Java
-  scope I'2Lang
-  scope I'2Exception
+  
+  scope Java
+  scope Lang
+  scope Exception
     val constant class: Type.class
+    
     clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
   end
   end
   end
-  scope I'2Java
-  scope I'2Lang
-  scope I'2String
+  
+  scope Java
+  scope Lang
+  scope String
     val constant class: Type.class
+    
     scope Value
       let constant f: Type.t = ByteArray
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     clone prelude.heap.Field as Coder with val f = HeapDef.Byte, axiom of
+    
     clone prelude.heap.Field as Hash with val f = HeapDef.Int, axiom of
+    
     clone prelude.heap.Field as HashIsZero with val f = HeapDef.Int, axiom of
+    
     clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
+    
     clone prelude.heap.Field as I'2COMPACT_STRINGS with val f = HeapDef.Int, axiom of
+    
     scope SerialPersistentFields
-      let constant f: Type.t = Type.ArrayOf (Class I'2Java.I'2Io.I'2ObjectStreamField.class)
+      let constant f: Type.t = Type.ArrayOf (Class Java.Io.ObjectStreamField.class)
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     clone prelude.heap.Field as I'2REPL with val f = HeapDef.Char, axiom of
+    
     scope I'2CASE_INSENSITIVE_ORDER
-      let constant f: Type.t = Class I'2Java.I'2Util.I'2Comparator.class
+      let constant f: Type.t = Class Java.Util.Comparator.class
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     clone prelude.heap.Field as I'2LATIN1 with val f = HeapDef.Byte, axiom of
+    
     clone prelude.heap.Field as I'2UTF16 with val f = HeapDef.Byte, axiom of
   end
   end
   end
-  scope I'2Java
-  scope I'2Lang
-  scope I'2Constant
-  scope I'2Constable
+  
+  scope Java
+  scope Lang
+  scope Constant
+  scope Constable
     val constant class: Type.class
   end
   end
   end
   end
-  scope I'2Java
-  scope I'2Io
-  scope I'2Serializable
+  
+  scope Java
+  scope Io
+  scope Serializable
     val constant class: Type.class
   end
   end
   end
-  scope I'2Java
-  scope I'2Lang
-  scope I'2CharSequence
+  
+  scope Java
+  scope Lang
+  scope CharSequence
     val constant class: Type.class
   end
   end
   end
-  scope I'2Java
-  scope I'2Lang
-  scope I'2IllegalArgumentException
+  
+  scope Java
+  scope Lang
+  scope IllegalArgumentException
     val constant class: Type.class
+    
     clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
   end
   end
   end
-  scope I'2Java
-  scope I'2Lang
-  scope I'2Object
+  
+  scope Java
+  scope Lang
+  scope Object
     val constant class: Type.class
   end
   end
   end
-  scope I'2Java
-  scope I'2Lang
-  scope I'2Throwable
+  
+  scope Java
+  scope Lang
+  scope Throwable
     val constant class: Type.class
+    
     clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
+    
     scope Backtrace
-      let constant f: Type.t = Class I'2Java.I'2Lang.I'2Object.class
+      let constant f: Type.t = Class Java.Lang.Object.class
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     scope DetailMessage
-      let constant f: Type.t = Class I'2Java.I'2Lang.I'2String.class
+      let constant f: Type.t = Class Java.Lang.String.class
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     scope I'2UNASSIGNED_STACK
-      let constant f: Type.t = Type.ArrayOf (Class I'2Java.I'2Lang.I'2StackTraceElement.class)
+      let constant f: Type.t = Type.ArrayOf (Class Java.Lang.StackTraceElement.class)
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     scope Cause
-      let constant f: Type.t = Class I'2Java.I'2Lang.I'2Throwable.class
+      let constant f: Type.t = Class Java.Lang.Throwable.class
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     scope StackTrace
-      let constant f: Type.t = Type.ArrayOf (Class I'2Java.I'2Lang.I'2StackTraceElement.class)
+      let constant f: Type.t = Type.ArrayOf (Class Java.Lang.StackTraceElement.class)
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     clone prelude.heap.Field as Depth with val f = HeapDef.Int, axiom of
+    
     scope I'2SUPPRESSED_SENTINEL
-      let constant f: Type.t = Class I'2Java.I'2Util.I'2List.class
+      let constant f: Type.t = Class Java.Util.List.class
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     scope SuppressedExceptions
-      let constant f: Type.t = Class I'2Java.I'2Util.I'2List.class
+      let constant f: Type.t = Class Java.Util.List.class
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     scope I'2NULL_CAUSE_MESSAGE
-      let constant f: Type.t = Class I'2Java.I'2Lang.I'2String.class
+      let constant f: Type.t = Class Java.Lang.String.class
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     scope I'2SELF_SUPPRESSION_MESSAGE
-      let constant f: Type.t = Class I'2Java.I'2Lang.I'2String.class
+      let constant f: Type.t = Class Java.Lang.String.class
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     scope I'2CAUSE_CAPTION
-      let constant f: Type.t = Class I'2Java.I'2Lang.I'2String.class
+      let constant f: Type.t = Class Java.Lang.String.class
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     scope I'2SUPPRESSED_CAPTION
-      let constant f: Type.t = Class I'2Java.I'2Lang.I'2String.class
+      let constant f: Type.t = Class Java.Lang.String.class
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     scope I'2EMPTY_THROWABLE_ARRAY
-      let constant f: Type.t = Type.ArrayOf (Class I'2Java.I'2Lang.I'2Throwable.class)
+      let constant f: Type.t = Type.ArrayOf (Class Java.Lang.Throwable.class)
       clone export prelude.heap.PtrField with val f = f, axiom of
     end
+    
     clone prelude.heap.Field as I'2$assertionsDisabled with val f = HeapDef.Int, axiom of
   end
   end
   end
-  scope I'2Java
-  scope I'2Lang
-  scope I'2RuntimeException
+  
+  scope Java
+  scope Lang
+  scope RuntimeException
     val constant class: Type.class
+    
     clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
   end
   end
   end
-  scope I'2Java
-  scope I'2Lang
-  scope I'2Comparable
+  
+  scope Java
+  scope Lang
+  scope Comparable
     val constant class: Type.class
   end
   end
   end
-  scope I'2GCD
+  
+  scope GCD
     val constant class: Type.class
   end
 end

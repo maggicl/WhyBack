@@ -4,7 +4,7 @@ import byteback.frontend.boogie.ast.Printable;
 import byteback.mlcfg.printer.Statement;
 import static byteback.mlcfg.printer.Statement.line;
 import static byteback.mlcfg.printer.Statement.many;
-import static byteback.mlcfg.printer.Statement.scope;
+import static byteback.mlcfg.printer.Statement.indent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -36,9 +36,9 @@ public record WhyProgram(Statement program) implements Printable {
 
 	@Override
 	public void print(StringBuilder b) {
-		b.append(many(
+		b.append(Statement.block(
 				line("module Program"),
-				scope(getImports(), program),
+				indent(getImports(), line(""), program),
 				line("end")
 		));
 	}

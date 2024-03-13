@@ -9,7 +9,6 @@ import byteback.mlcfg.vimpParser.VimpClassParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class ProgramConverter {

@@ -1,5 +1,6 @@
 package byteback.mlcfg.vimpParser;
 
+import byteback.mlcfg.identifiers.FQDNEscaper;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
 import byteback.mlcfg.syntax.WhyClassDeclaration;
 import byteback.mlcfg.syntax.WhyFieldDeclaration;
@@ -10,10 +11,12 @@ import soot.SootField;
 
 public class VimpClassParser {
 
+	private final FQDNEscaper fqdnEscaper;
 	private final IdentifierEscaper identifierEscaper;
 	private final TypeResolver typeResolver;
 
-	public VimpClassParser(IdentifierEscaper identifierEscaper, TypeResolver typeResolver) {
+	public VimpClassParser(FQDNEscaper fqdnEscaper, IdentifierEscaper identifierEscaper, TypeResolver typeResolver) {
+		this.fqdnEscaper = fqdnEscaper;
 		this.identifierEscaper = identifierEscaper;
 		this.typeResolver = typeResolver;
 	}
@@ -21,22 +24,14 @@ public class VimpClassParser {
 	private List<WhyFieldDeclaration> toFieldDeclarationList(Stream<SootField> fields) {
 		return fields.map(f -> new WhyFieldDeclaration(
 				identifierEscaper.escapeU(f.getName()),
-				typeResolver.resolveType(f.getType())))
+				typeResolver.resolveType(f.getType()), f.isStatic()))
 				.toList();
 	}
 
-	public Stream<WhyClassDeclaration> parseClassDeclaration(SootClass clazz) {
+	public WhyClassDeclaration parseClassDeclaration(SootClass clazz) {
 		final String className = clazz.getName();
+		final List<WhyFieldDeclaration> fields = toFieldDeclarationList(clazz.getFields().stream());
 
-		final List<WhyFieldDeclaration> instanceFields =
-				toFieldDeclarationList(clazz.getFields().stream().filter(e -> !e.isStatic()));
-
-		final List<WhyFieldDeclaration> staticFields =
-				toFieldDeclarationList(clazz.getFields().stream().filter(SootField::isStatic));
-
-		return Stream.of(
-				new WhyClassDeclaration("instance_" + className, instanceFields),
-				new WhyClassDeclaration("static_" + className, staticFields)
-		).filter(e -> !e.fields().isEmpty());
+		return new WhyClassDeclaration(fqdnEscaper.escape(className), fields);
 	}
 }

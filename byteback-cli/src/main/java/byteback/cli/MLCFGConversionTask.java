@@ -14,7 +14,7 @@ public class MLCFGConversionTask implements ConversionTask {
 
     @Override
     public Printable run() {
-        return IOC.programConverter.convert(resolver);
+        return IOC.PROGRAM_CONVERTER.convert(resolver);
     }
 
 }

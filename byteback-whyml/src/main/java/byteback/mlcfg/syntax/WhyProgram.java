@@ -1,30 +1,34 @@
 package byteback.mlcfg.syntax;
 
 import byteback.frontend.boogie.ast.Printable;
-import byteback.mlcfg.Utils;
+import byteback.mlcfg.printer.Statement;
+import static byteback.mlcfg.printer.Statement.line;
+import static byteback.mlcfg.printer.Statement.many;
+import static byteback.mlcfg.printer.Statement.scope;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public record WhyProgram(String program) implements Printable {
+public record WhyProgram(Statement program) implements Printable {
 	public static final String INDENT = "  ";
 	private static final String IMPORT_FRAGMENT_PATH = "fragment/import.mlw";
 
-	private static String getImports() {
+	private static Statement getImports() {
 		final ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		try (final InputStream is = classloader.getResourceAsStream(IMPORT_FRAGMENT_PATH)) {
 			if (is == null) {
 				throw new IllegalStateException("Could not read import fragment file: input stream is null");
 			}
+			final List<Statement> lines = new ArrayList<>();
 			try (Scanner it = new Scanner(is, StandardCharsets.UTF_8).useDelimiter("\n")) {
-				final StringBuilder sb = new StringBuilder();
 				while (it.hasNext()) {
-					sb.append(INDENT).append(it);
+					lines.add(line(it.next()));
 				}
-				sb.append("\n");
-				return sb.toString();
 			}
+			return many(lines.stream());
 		} catch (IOException e) {
 			throw new IllegalStateException("Could not read import fragment file", e);
 		}
@@ -32,10 +36,10 @@ public record WhyProgram(String program) implements Printable {
 
 	@Override
 	public void print(StringBuilder b) {
-		b.append("module Program\n")
-				.append(getImports())
-				.append('\n')
-				.append(Utils.indent(program, 1))
-				.append("end\n");
+		b.append(many(
+				line("module Program"),
+				scope(getImports(), program),
+				line("end")
+		));
 	}
 }

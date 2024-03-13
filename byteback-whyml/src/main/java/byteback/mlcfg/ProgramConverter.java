@@ -1,6 +1,8 @@
 package byteback.mlcfg;
 
 import byteback.analysis.RootResolver;
+import byteback.mlcfg.printer.Statement;
+import static byteback.mlcfg.printer.Statement.many;
 import byteback.mlcfg.printer.WhyClassPrinter;
 import byteback.mlcfg.syntax.WhyProgram;
 import byteback.mlcfg.vimpParser.VimpClassParser;
@@ -20,11 +22,11 @@ public class ProgramConverter {
         this.whyClassPrinter = whyClassPrinter;
     }
 
-    public String convertClasses(final RootResolver resolver) {
-        return StreamSupport.stream(resolver.getUsedClasses().spliterator(), false)
-                .flatMap(classParser::parseClassDeclaration)
-                .map(whyClassPrinter::toWhy)
-                .collect(Collectors.joining("\n\n"));
+    public Statement convertClasses(final RootResolver resolver) {
+        return many(
+                StreamSupport.stream(resolver.getUsedClasses().spliterator(), false)
+                .map(classParser::parseClassDeclaration)
+                .map(whyClassPrinter::toWhy));
     }
 
     public WhyProgram convert(final RootResolver resolver) {

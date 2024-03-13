@@ -1,4 +1,4 @@
-package byteback.mlcfg.syntax.identifiers;
+package byteback.mlcfg.identifiers;
 
 public class CaseInverter {
 	public int invertCase(int from) {

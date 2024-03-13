@@ -1,4 +1,4 @@
-package byteback.mlcfg.syntax.identifiers;
+package byteback.mlcfg.identifiers;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,7 +58,7 @@ public class IdentifierEscaper {
 	 * @param type  the WhyML identifier class
 	 * @return the valid WhyML identifier for the chosen class
 	 */
-	public String escape(String input, IdentifierClass type) {
+	private String escape(String input, IdentifierClass type) {
 		final int firstChar = input.codePointAt(0);
 		final int firstCharBiased;
 
@@ -90,6 +90,14 @@ public class IdentifierEscaper {
 		}).collect(Collectors.joining("", firstIdentifierChar, ""));
 
 		return RESERVED_KEYWORDS.contains(identifier.toLowerCase()) ? identifier + RESERVED : identifier;
+	}
+
+	public Identifier.L escapeL(String input) {
+		return new Identifier.L(escape(input, IdentifierClass.LIDENT));
+	}
+
+	public Identifier.U escapeU(String input) {
+		return new Identifier.U(escape(input, IdentifierClass.UIDENT));
 	}
 
 	/**

@@ -1,10 +1,12 @@
 package byteback.mlcfg.syntax.types;
 
-public class WhyReference implements WhyPtrType {
-	private final String classWhyScope;
+import byteback.mlcfg.identifiers.Identifier;
 
-	public WhyReference(String classWhyScope) {
-		this.classWhyScope = classWhyScope;
+public class WhyReference implements WhyPtrType {
+	private final Identifier.FQDN clazz;
+
+	public WhyReference(Identifier.FQDN clazz) {
+		this.clazz = clazz;
 	}
 
 	@Override
@@ -14,6 +16,6 @@ public class WhyReference implements WhyPtrType {
 
 	@Override
 	public String getPreludeType() {
-		return "Class %s.class".formatted(classWhyScope);
+		return "Class %s.class".formatted(clazz);
 	}
 }

@@ -1,7 +1,9 @@
-package byteback.mlcfg.syntax.identifiers;
+package byteback.mlcfg.identifiers;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.util.List;
 
 public class FQDNEscaper {
 	private final IdentifierEscaper identifierEscaper;
@@ -12,23 +14,18 @@ public class FQDNEscaper {
 		this.caseInverter = caseInverter;
 	}
 
-	public String escape(String fqdn) {
+	public Identifier.FQDN escape(String fqdn) {
 		final String[] modules = fqdn.split("\\.");
 
 		if (modules.length == 0) {
 			throw new IllegalArgumentException("need a non-empty fqdn string");
 		}
 
-		final String module = Arrays.stream(modules).limit(modules.length - 1)
-				.map(e -> identifierEscaper.escape(
-						caseInverter.invertCase(e),
-						IdentifierEscaper.IdentifierClass.UIDENT))
-				.collect(Collectors.joining(".", "", "."));
+		final List<Identifier.U> parents = Arrays.stream(modules).limit(modules.length - 1)
+				.map(e -> identifierEscaper.escapeU(caseInverter.invertCase(e)))
+				.collect(Collectors.toCollection(ArrayList::new));
+		parents.add(identifierEscaper.escapeU(modules[modules.length - 1]));
 
-		final String className = identifierEscaper.escape(
-				modules[modules.length - 1],
-				IdentifierEscaper.IdentifierClass.UIDENT);
-
-		return module + className;
+		return new Identifier.FQDN(parents);
 	}
 }

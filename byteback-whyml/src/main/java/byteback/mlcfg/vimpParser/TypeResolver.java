@@ -1,7 +1,6 @@
 package byteback.mlcfg.vimpParser;
 
-import byteback.mlcfg.syntax.identifiers.FQDNEscaper;
-import byteback.mlcfg.syntax.identifiers.IdentifierEscaper;
+import byteback.mlcfg.identifiers.FQDNEscaper;
 import byteback.mlcfg.syntax.types.WhyType;
 import soot.Type;
 

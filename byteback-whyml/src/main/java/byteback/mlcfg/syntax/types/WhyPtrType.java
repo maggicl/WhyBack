@@ -1,12 +1,10 @@
 package byteback.mlcfg.syntax.types;
 
-import byteback.mlcfg.syntax.identifiers.IdentifierEscaper;
+import byteback.mlcfg.identifiers.IdentifierEscaper;
 import java.util.Optional;
 
 public interface WhyPtrType extends WhyType {
 	String HEAP_VAR_NAME = IdentifierEscaper.PRELUDE_RESERVED + "heap";
-
-	String getPreludeType();
 
 	@Override
 	default String getWhyType() {

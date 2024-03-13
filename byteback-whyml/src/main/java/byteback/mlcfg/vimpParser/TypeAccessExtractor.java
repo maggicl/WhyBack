@@ -1,8 +1,7 @@
 package byteback.mlcfg.vimpParser;
 
 import byteback.analysis.TypeSwitch;
-import byteback.mlcfg.syntax.identifiers.FQDNEscaper;
-import byteback.mlcfg.syntax.identifiers.IdentifierEscaper;
+import byteback.mlcfg.identifiers.FQDNEscaper;
 import byteback.mlcfg.syntax.types.WhyArrayType;
 import byteback.mlcfg.syntax.types.WhyPrimitive;
 import byteback.mlcfg.syntax.types.WhyReference;

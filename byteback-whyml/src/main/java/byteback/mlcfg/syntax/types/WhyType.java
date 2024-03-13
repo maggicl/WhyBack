@@ -4,6 +4,7 @@ import java.util.Optional;
 
 public interface WhyType {
 	String getWhyType();
+	String getPreludeType();
 
 	/**
 	 * Returns the scope of where the get/put (load/store/(a)newarray for arrays) WhyML prelude function definitions

@@ -1,7 +1,7 @@
 package byteback.mlcfg;
 
 import byteback.analysis.RootResolver;
-import byteback.mlcfg.printer.RecordPrinter;
+import byteback.mlcfg.printer.WhyClassPrinter;
 import byteback.mlcfg.syntax.WhyProgram;
 import byteback.mlcfg.vimpParser.VimpClassParser;
 import org.slf4j.Logger;
@@ -13,17 +13,17 @@ import java.util.stream.StreamSupport;
 public class ProgramConverter {
     public static Logger log = LoggerFactory.getLogger(ProgramConverter.class);
     private final VimpClassParser classParser;
-    private final RecordPrinter recordPrinter;
+    private final WhyClassPrinter whyClassPrinter;
 
-    public ProgramConverter(VimpClassParser classParser, RecordPrinter recordPrinter) {
+    public ProgramConverter(VimpClassParser classParser, WhyClassPrinter whyClassPrinter) {
         this.classParser = classParser;
-        this.recordPrinter = recordPrinter;
+        this.whyClassPrinter = whyClassPrinter;
     }
 
     public String convertClasses(final RootResolver resolver) {
         return StreamSupport.stream(resolver.getUsedClasses().spliterator(), false)
                 .flatMap(classParser::parseClassDeclaration)
-                .map(recordPrinter::printRecord)
+                .map(whyClassPrinter::toWhy)
                 .collect(Collectors.joining("\n\n"));
     }
 

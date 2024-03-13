@@ -1,14 +1,15 @@
 package byteback.mlcfg.vimpParser;
 
+import byteback.mlcfg.syntax.identifiers.FQDNEscaper;
 import byteback.mlcfg.syntax.identifiers.IdentifierEscaper;
 import byteback.mlcfg.syntax.types.WhyType;
 import soot.Type;
 
 public class TypeResolver {
 
-	private final IdentifierEscaper escaper;
+	private final FQDNEscaper escaper;
 
-	public TypeResolver(IdentifierEscaper escaper) {
+	public TypeResolver(FQDNEscaper escaper) {
 		this.escaper = escaper;
 	}
 

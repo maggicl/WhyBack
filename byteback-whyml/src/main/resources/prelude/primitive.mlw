@@ -1,0 +1,106 @@
+module Int16
+  use int.Int
+
+  type int16 = < range -0x8000 0x7fff >
+
+  let constant min_int16 : int = - 0x8000
+  let constant max_int16 : int =   0x7fff
+  function to_int (x : int16) : int = int16'int x
+
+  clone export mach.int.Bounded_int with
+    type t = int16,
+    constant min = int16'minInt,
+    constant max = int16'maxInt,
+    function to_int = int16'int,
+    lemma to_int_in_bounds,
+    lemma extensionality
+end
+
+module Int8
+  use int.Int
+
+  type int8 = < range -0x80 0x7f >
+
+  let constant min_int8 : int = - 0x80
+  let constant max_int8 : int =   0x7f
+  function to_int (x : int8) : int = int8'int x
+
+  clone export mach.int.Bounded_int with
+    type t = int8,
+    constant min = int8'minInt,
+    constant max = int8'maxInt,
+    function to_int = int8'int,
+    lemma to_int_in_bounds,
+    lemma extensionality
+end
+
+module UInt16Gen
+  use int.Int
+
+  type uint16 = < range 0 0xffff >
+
+  let constant max_uint16 : int = 0xffff
+  let constant length : int = 16
+  let constant radix : int = max_uint16 + 1
+  function to_int (x : uint16) : int = uint16'int x
+end
+
+module UInt16
+  use export UInt16Gen
+
+  clone export mach.int.Unsigned with
+    type t = uint16,
+    constant max = uint16'maxInt,
+    constant radix = radix,
+    goal radix_def,
+    function to_int = uint16'int,
+    lemma zero_unsigned_is_zero,
+    lemma to_int_in_bounds,
+    lemma extensionality
+end
+
+module Primitive
+    use Int8
+    use Int16
+    use UInt16
+    use mach.int.Int32
+    use mach.int.Int64
+    use ieee_float.Float32
+    use ieee_float.Float64
+    use array.Array
+    use prelude.ptr.Ptr
+
+    type jbool = bool
+    type jbyte = Int8.int8
+    type jchar = UInt16.uint16
+    type jshort = Int16.int16
+    type jint = Int32.int32
+    type jlong = Int64.int64
+    type jfloat = Float32.t
+    type jdouble = Float64.t
+
+    (* 
+     * Using "snapshot types" to store an immutable structure in the heap.
+     * The heap then re-implements mutable operations by mutating the entire copy.
+     *)
+    type jarraybool = {array bool}
+    type jarraybyte = {array Int8.int8}
+    type jarraychar = {array UInt16.uint16}
+    type jarrayshort = {array Int16.int16}
+    type jarrayint = {array Int32.int32}
+    type jarraylong = {array Int64.int64}
+    type jarrayfloat = {array Float32.t}
+    type jarraydouble = {array Float64.t}
+    type jarrayptr = {array Ptr.t}
+
+    scope Default
+        let constant z: jbool = false
+        let constant b: jbyte = 0
+        let constant s: jshort = 0
+        let constant c: jchar = 0
+        let constant i: jint = 0
+        let constant j: jlong = 0
+        let constant f: jfloat = (0.0:jfloat)
+        let constant d: jdouble = (0.0:jdouble) 
+    end
+end

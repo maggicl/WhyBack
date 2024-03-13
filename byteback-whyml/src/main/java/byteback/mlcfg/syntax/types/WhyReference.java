@@ -1,22 +1,19 @@
 package byteback.mlcfg.syntax.types;
 
-import java.util.Optional;
+public class WhyReference implements WhyPtrType {
+	private final String classWhyScope;
 
-// TODO: using references here is wrong. We need to implement a heap model
-public class WhyReference implements WhyType {
-	private final String className;
-
-	public WhyReference(String className) {
-		this.className = className;
+	public WhyReference(String classWhyScope) {
+		this.classWhyScope = classWhyScope;
 	}
 
 	@Override
-	public Optional<String> getPrefix() {
-		return Optional.of("ref");
+	public String getWhyAccessorScope() {
+		return "L";
 	}
 
 	@Override
-	public String getIdentifier() {
-		return className;
+	public String getPreludeType() {
+		return "Class %s.class".formatted(classWhyScope);
 	}
 }

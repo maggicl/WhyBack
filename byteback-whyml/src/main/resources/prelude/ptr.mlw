@@ -1,0 +1,5 @@
+module Ptr
+    type t = abstract { }
+    
+    val constant null: t
+end

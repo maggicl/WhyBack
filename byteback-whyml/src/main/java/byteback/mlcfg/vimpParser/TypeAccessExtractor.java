@@ -1,6 +1,7 @@
 package byteback.mlcfg.vimpParser;
 
 import byteback.analysis.TypeSwitch;
+import byteback.mlcfg.syntax.identifiers.FQDNEscaper;
 import byteback.mlcfg.syntax.identifiers.IdentifierEscaper;
 import byteback.mlcfg.syntax.types.WhyArrayType;
 import byteback.mlcfg.syntax.types.WhyPrimitive;
@@ -19,48 +20,47 @@ import soot.ShortType;
 import soot.Type;
 
 public class TypeAccessExtractor extends TypeSwitch<WhyType> {
-
-	private final IdentifierEscaper escaper;
+	private final FQDNEscaper fqdnEscaper;
 
 	private WhyType type;
 
-	public TypeAccessExtractor(IdentifierEscaper escaper) {
-		this.escaper = escaper;
+	public TypeAccessExtractor(FQDNEscaper fqdnEscaper) {
+		this.fqdnEscaper = fqdnEscaper;
 	}
 
 	@Override
 	public void caseByteType(final ByteType byteType) {
-		type = WhyPrimitive.INT_INT;
+		type = WhyPrimitive.BYTE;
 	}
 
 	@Override
 	public void caseShortType(final ShortType shortType) {
-		type = WhyPrimitive.INT_INT;
+		type = WhyPrimitive.SHORT;
 	}
 
 	@Override
 	public void caseIntType(final IntType integerType) {
-		type = WhyPrimitive.INT_INT;
+		type = WhyPrimitive.INT;
 	}
 
 	@Override
 	public void caseCharType(final CharType charType) {
-		type = WhyPrimitive.INT_INT;
+		type = WhyPrimitive.CHAR;
 	}
 
 	@Override
 	public void caseLongType(final LongType longType) {
-		type = WhyPrimitive.INT_INT;
+		type = WhyPrimitive.LONG;
 	}
 
 	@Override
 	public void caseDoubleType(final DoubleType doubleType) {
-		type = WhyPrimitive.FLOAT_11_52;
+		type = WhyPrimitive.DOUBLE;
 	}
 
 	@Override
 	public void caseFloatType(final FloatType floatType) {
-		type = WhyPrimitive.FLOAT_8_23;
+		type = WhyPrimitive.FLOAT;
 	}
 
 	@Override
@@ -70,13 +70,13 @@ public class TypeAccessExtractor extends TypeSwitch<WhyType> {
 
 	@Override
 	public void caseRefType(final RefType referenceType) {
-		type = new WhyReference(escaper.escape(referenceType.getClassName()));
+		type = new WhyReference(fqdnEscaper.escape(referenceType.getClassName()));
 	}
 
 	@Override
 	public void caseArrayType(final ArrayType arrayType) {
 		// TODO: consider rewriting this
-		final TypeAccessExtractor e = new TypeAccessExtractor(escaper);
+		final TypeAccessExtractor e = new TypeAccessExtractor(fqdnEscaper);
 		e.visit(arrayType.getElementType());
 		type = new WhyArrayType(e.result());
 	}

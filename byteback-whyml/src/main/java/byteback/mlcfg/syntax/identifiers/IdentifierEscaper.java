@@ -28,20 +28,34 @@ public class IdentifierEscaper {
 	 * Added at the end of the identifier if the identifier matches with one of the reserved identifiers
 	 */
 	private static final String RESERVED = "'3";
+
+	/**
+	 * Used by the prelude to use a separate identifier class for reserved variables (e.g. heap)
+	 * TODO: check if a constant is needed
+	 */
+	public static final String PRELUDE_RESERVED = "'8";
 	/**
 	 * Denotes a prime
 	 */
 	private static final String PRIME = "'9";
+
 	// source: src/parser/handcrafted.messages, lines 18-21
-	public Set<String> reserved = Set.of("val", "user", "type", "theory", "scope", "preducate", "module", "meda", "let",
-			"lemma", "inductive", "import", "goal", "function", "exception", "eof", "end", "constant", "coinductive",
-			"clone", "axiom");
+	private static final Set<String> RESERVED_KEYWORDS = Set.of("val", "user", "type", "theory", "scope", "preducate",
+			"module", "meda", "let", "lemma", "inductive", "import", "goal", "function", "exception", "eof", "end",
+			"constant", "coinductive", "clone", "axiom");
+
+	private final CaseInverter caseInverter;
+
+	public IdentifierEscaper(CaseInverter caseInverter) {
+		this.caseInverter = caseInverter;
+	}
 
 	/**
 	 * Given a JVM identifier made of Unicode codepoints, returns a valid WhyML identifier for the specified identifier
 	 * class
+	 *
 	 * @param input the JVM identifier
-	 * @param type the WhyML identifier class
+	 * @param type  the WhyML identifier class
 	 * @return the valid WhyML identifier for the chosen class
 	 */
 	public String escape(String input, IdentifierClass type) {
@@ -51,11 +65,7 @@ public class IdentifierEscaper {
 		// invert the letter case for uident identifiers as we expect package names, which usually start with a lowercase
 		// letter
 		if (type == IdentifierClass.UIDENT) {
-			firstCharBiased = switch (Character.getType(firstChar)) {
-				case Character.LOWERCASE_LETTER -> Character.toUpperCase(firstChar);
-				case Character.UPPERCASE_LETTER -> Character.toLowerCase(firstChar);
-				default -> firstChar;
-			};
+			firstCharBiased = caseInverter.invertCase(firstChar);
 		} else {
 			firstCharBiased = firstChar;
 		}
@@ -79,7 +89,7 @@ public class IdentifierEscaper {
 			return e <= 255 ? String.format("%s%02X", ESCAPE_LOW_CP, e) : String.format("%s%04X", ESCAPE_HIGH_CP, e);
 		}).collect(Collectors.joining("", firstIdentifierChar, ""));
 
-		return reserved.contains(identifier.toLowerCase()) ? identifier + RESERVED : identifier;
+		return RESERVED_KEYWORDS.contains(identifier.toLowerCase()) ? identifier + RESERVED : identifier;
 	}
 
 	/**

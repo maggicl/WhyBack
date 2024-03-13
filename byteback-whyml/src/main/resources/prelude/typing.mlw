@@ -1,0 +1,34 @@
+module Type
+    use prelude.ptr.Ptr
+    use ref.Ref
+    use map.Map
+
+    (* to be used for classes *)
+    type class = abstract { }
+
+    (* enumerates all non-primitive types *)
+    type t = BoolArray |
+             ByteArray |
+             ShortArray |
+             CharArray |
+             IntArray |
+             LongArray |
+             FloatArray |
+             DoubleArray |
+             Class class |
+             ArrayOf t
+
+    (* the "root" class. This value is used in the java.lang.Object prelude *)
+    val constant root: class
+    let constant root_array: t = ArrayOf (Class root)
+
+    (* if true, t1 extends t2 *)
+    val predicate (:>) (t1: t) (t2: t)
+
+    clone export relations.PartialOrder with type t = t, predicate rel = (:>)
+
+    axiom root_is_top: forall x:t.
+        x :> Class root
+    axiom array_covariance: forall x:t, x2:t.
+        x :> x2 <-> ArrayOf x :> ArrayOf x2
+end

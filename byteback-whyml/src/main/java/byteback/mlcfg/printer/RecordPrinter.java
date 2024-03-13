@@ -17,7 +17,7 @@ public class RecordPrinter {
                 .map(f -> String.format(
 						"  %s: %s",
 						identifierEscaper.escape(f.name()),
-						f.type().getPrefix().map(s -> s + " ").orElse("") + f.type().getIdentifier()))
+						f.type().getPrefix().map(s -> s + " ").orElse("") + f.type().getWhyType()))
                 .collect(Collectors.joining(
 						";\n",
 						String.format(

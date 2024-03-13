@@ -1,10 +1,6 @@
 package byteback.mlcfg.syntax.types;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-public class WhyArrayType implements WhyType {
+public class WhyArrayType implements WhyPtrType {
 	private final WhyType baseType;
 
 	public WhyArrayType(WhyType baseType) {
@@ -12,12 +8,28 @@ public class WhyArrayType implements WhyType {
 	}
 
 	@Override
-	public Optional<String> getPrefix() {
-		return Optional.of("array");
+	public String getPreludeType() {
+		if (baseType instanceof WhyPrimitive) {
+			return switch ((WhyPrimitive) baseType) {
+				case BOOL -> "BoolArray";
+				case BYTE -> "ByteArray";
+				case CHAR -> "CharArray";
+				case SHORT -> "ShortArray";
+				case INT -> "IntArray";
+				case LONG -> "LongArray";
+				case FLOAT -> "FloatArray";
+				case DOUBLE -> "DoubleArray";
+			};
+		} else {
+			final WhyPtrType ptrType = (WhyPtrType) baseType;
+			return "Type.ArrayOf (%s)".formatted(ptrType.getPreludeType());
+		}
 	}
 
 	@Override
-	public String getIdentifier() {
-		return baseType.getPrefix().map(s -> s + " ").orElse("") + baseType.getIdentifier();
+	public String getWhyAccessorScope() {
+		return baseType instanceof WhyPrimitive
+				? "R%s".formatted(baseType.getWhyAccessorScope())
+				: "RL";
 	}
 }

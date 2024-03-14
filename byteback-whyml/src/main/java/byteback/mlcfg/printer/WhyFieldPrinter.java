@@ -10,10 +10,10 @@ import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.vimp.WhyResolver;
 
 public class WhyFieldPrinter {
-	public Statement toWhy(WhyField field, WhyResolver resolver, Identifier.FQDN currentScope) {
+	public Statement toWhy(WhyField field, WhyResolver resolver) {
 		final Identifier.U name = field.name();
 		final WhyType fieldType = field.type();
-		final String preludeType = fieldType.getPreludeType(currentScope);
+		final String preludeType = fieldType.getPreludeType();
 
 		if (fieldType instanceof WhyPrimitive) {
 			return block(

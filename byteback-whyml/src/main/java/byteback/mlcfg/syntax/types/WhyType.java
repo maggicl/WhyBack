@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface WhyType {
 	String getWhyType();
 
-	String getPreludeType(Identifier.FQDN currentScope);
+	String getPreludeType();
 
 	void accept(WhyTypeVisitor visitor);
 

@@ -15,12 +15,20 @@ public sealed abstract class Statement {
 		return new Multiple(Arrays.asList(lines), 0, true);
 	}
 
+	public static Statement block(Stream<Statement> lines) {
+		return new Multiple(lines.toList(), 0, true);
+	}
+
 	public static Statement lines(Stream<String> lines) {
 		return new Multiple(lines.map(Single::new).toList(), 0, false);
 	}
 
 	public static Statement many(Stream<Statement> lines) {
 		return new Multiple(lines.toList(), 0, false);
+	}
+
+	public static Statement many(Statement... lines) {
+		return new Multiple(Arrays.asList(lines), 0, false);
 	}
 
 	public static Statement indent(Statement... lines) {
@@ -38,8 +46,10 @@ public sealed abstract class Statement {
 			final Line line = lines.get(i);
 			final Line next = lines.get(i + 1);
 
-			if (!line.text.isEmpty() || line.indent == next.indent) {
+			if (!line.text.isEmpty()) {
 				sb.append(line).append('\n');
+			} else if (line.indent == next.indent && !next.text.isEmpty()) {
+				sb.append('\n');
 			}
 		}
 		sb.append(lines.get(lines.size() - 1));

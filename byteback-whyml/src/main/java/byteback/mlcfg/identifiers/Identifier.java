@@ -12,6 +12,10 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 		this.contents = Objects.requireNonNull(contents);
 	}
 
+	public static Identifier.FQDN getRoot() {
+		return new FQDN(List.of(new U("Java"), new U("Lang"), new U("Object")));
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

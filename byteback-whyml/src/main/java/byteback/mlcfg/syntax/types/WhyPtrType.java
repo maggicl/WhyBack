@@ -12,8 +12,8 @@ public interface WhyPtrType extends WhyType {
 		return "Ptr.t";
 	}
 
-	default Optional<String> getPrecondition(String paramName, boolean isNonNull, Identifier.FQDN currentScope) {
-		final String precondition = "Heap.ofclass %s %s (%s)".formatted(HEAP_VAR_NAME, paramName, getPreludeType(currentScope));
+	default Optional<String> getPrecondition(String paramName, boolean isNonNull) {
+		final String precondition = "Heap.ofclass %s %s (%s)".formatted(HEAP_VAR_NAME, paramName, getPreludeType());
 		return Optional.of(isNonNull ? "%s <> Ptr.null && %s".formatted(paramName, precondition) : precondition);
 	}
 }

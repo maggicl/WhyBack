@@ -15,7 +15,7 @@ public class WhyArrayType implements WhyPtrType {
 	}
 
 	@Override
-	public String getPreludeType(Identifier.FQDN currentScope) {
+	public String getPreludeType() {
 		if (baseType instanceof WhyPrimitive) {
 			return switch ((WhyPrimitive) baseType) {
 				case BOOL -> "BoolArray";
@@ -29,7 +29,7 @@ public class WhyArrayType implements WhyPtrType {
 			};
 		} else {
 			final WhyPtrType ptrType = (WhyPtrType) baseType;
-			return "Type.ArrayOf (%s)".formatted(ptrType.getPreludeType(currentScope));
+			return "Type.ArrayOf (%s)".formatted(ptrType.getPreludeType());
 		}
 	}
 

@@ -9,10 +9,10 @@ module Bootstrap
     scope Java
         scope Lang
             scope Object
-                let constant id = Type.root
+                let constant class = Type.root
     
                 let init (ghost heap: Heap.t) (this: Ptr.t) : unit 
-                    requires { this <> Ptr.null /\ Heap.ofclass heap this id }
+                    requires { this <> Ptr.null /\ Heap.ofclass heap this class }
                     raises { VM.E _ -> false }
                 = 
                     ()

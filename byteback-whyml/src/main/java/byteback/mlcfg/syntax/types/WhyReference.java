@@ -4,6 +4,10 @@ import byteback.mlcfg.identifiers.Identifier;
 import java.util.Objects;
 
 public class WhyReference implements WhyPtrType {
+	public Identifier.FQDN fqdn() {
+		return clazz;
+	}
+
 	private final Identifier.FQDN clazz;
 
 	public WhyReference(Identifier.FQDN clazz) {
@@ -16,9 +20,9 @@ public class WhyReference implements WhyPtrType {
 	}
 
 	@Override
-	public String getPreludeType(Identifier.FQDN currentScope) {
+	public String getPreludeType() {
 		// we can't use the full name if we are in a scope that matches it
-		return clazz.equals(currentScope) ? "Class class" : "Class %s.class".formatted(clazz);
+		return "Class %s.class".formatted(clazz);
 	}
 
 	@Override

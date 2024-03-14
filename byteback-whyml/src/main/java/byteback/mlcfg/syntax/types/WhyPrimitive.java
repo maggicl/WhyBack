@@ -28,7 +28,7 @@ public enum WhyPrimitive implements WhyType {
 	}
 
 	@Override
-	public String getPreludeType(Identifier.FQDN currentScope) {
+	public String getPreludeType() {
 		return preludeType;
 	}
 

@@ -2,10 +2,12 @@ package byteback.mlcfg.vimp;
 
 import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.syntax.WhyClass;
+import byteback.mlcfg.syntax.WhyMethod;
 import byteback.mlcfg.syntax.types.ReferenceVisitor;
 import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.vimp.order.ReversePostOrder;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import java.util.stream.Stream;
 
 public class WhyResolver {
 	private final Map<Identifier.FQDN, WhyClass> classes = new HashMap<>();
+	private final Map<Identifier.FQDN, List<WhyMethod>> methods = new HashMap<>();
 
 	public Set<WhyClass> getAllSuper(WhyClass from) {
 		final Deque<Identifier.FQDN> toProcess = from.superNames().collect(Collectors.toCollection(ArrayDeque::new));
@@ -30,7 +33,7 @@ public class WhyResolver {
 				final WhyClass c = classes.get(i);
 				result.add(c);
 
-				if (!i.equals(Identifier.getRoot())) {
+				if (!i.equals(Identifier.objectClass())) {
 					toProcess.addAll(c.superNames().toList());
 				}
 			}
@@ -39,8 +42,13 @@ public class WhyResolver {
 		return result;
 	}
 
-	public void add(final WhyClass classDeclaration) {
+	public void addClass(final WhyClass classDeclaration) {
 		classes.put(classDeclaration.type().fqdn(), classDeclaration);
+	}
+
+	public void addMethod(final WhyMethod methodDeclaration) {
+		final Identifier.FQDN declaringClass = methodDeclaration.declaringClass();
+		methods.computeIfAbsent(declaringClass, k -> new ArrayList<>()).add(methodDeclaration);
 	}
 
 	public boolean isResolved(WhyType t) {
@@ -49,13 +57,20 @@ public class WhyResolver {
 				.isEmpty();
 	}
 
-	public Stream<WhyClass> stream() {
+	public Stream<WhyClass> classes() {
+		// classes must be ordered in reverse post order according to the superclass - subclass relationship
+		// this avoids forward references to class type constants, which are not allowed in WhyML
+
 		final Map<WhyClass, Set<WhyClass>> superAdjMap = classes.values().stream()
 				.collect(Collectors.toMap(Function.identity(), this::getAllSuper));
 
-		final WhyClass object = Objects.requireNonNull(classes.get(Identifier.getRoot()));
+		final WhyClass object = Objects.requireNonNull(classes.get(Identifier.objectClass()));
 		final List<WhyClass> rpo = ReversePostOrder.sort(ReversePostOrder.reverseAdjacencyMap(superAdjMap), object);
 
 		return rpo.stream().filter(e -> e != object);
+	}
+
+	public Stream<Map.Entry<Identifier.FQDN, List<WhyMethod>>> methods() {
+		return methods.entrySet().stream();
 	}
 }

@@ -1,5 +1,6 @@
 package byteback.mlcfg.identifiers;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -12,8 +13,16 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 		this.contents = Objects.requireNonNull(contents);
 	}
 
-	public static Identifier.FQDN getRoot() {
-		return new FQDN(List.of(new U("Java"), new U("Lang"), new U("Object")));
+	public static Identifier.FQDN objectClass() {
+		return FQDN.special("Java", "Lang", "Object");
+	}
+
+	public static Identifier.L thisParam() {
+		return new L("this");
+	}
+
+	public static Identifier.L methodParam(int num) {
+		return new L("l%d".formatted(num));
 	}
 
 	@Override
@@ -50,6 +59,10 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 
 		FQDN(List<U> identifiers) {
 			this.identifiers = Collections.unmodifiableList(identifiers);
+		}
+
+		private static FQDN special(String... identifiers) {
+			return new FQDN(Arrays.stream(identifiers).map(U::new).toList());
 		}
 
 		public List<U> getIdentifiers() {

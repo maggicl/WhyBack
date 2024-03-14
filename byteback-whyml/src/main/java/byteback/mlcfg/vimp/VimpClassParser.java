@@ -5,7 +5,6 @@ import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
 import byteback.mlcfg.syntax.WhyClass;
 import byteback.mlcfg.syntax.WhyField;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -33,7 +32,7 @@ public class VimpClassParser {
 				.toList();
 	}
 
-	public WhyClass parseClassDeclaration(SootClass clazz) {
+	public WhyClass parse(SootClass clazz) {
 		final String className = clazz.getName();
 		final Optional<Identifier.FQDN> superclass = clazz.hasSuperclass()
 				? Optional.of(fqdnEscaper.escape(clazz.getSuperclass().getName()))

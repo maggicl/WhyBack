@@ -156,9 +156,21 @@ function ~int_to_real(a : int) returns (real) { real(a) }
 
 function ~real_to_int(a : real) returns (int) { int(a) }
 
-const unique $java.lang.Exception : Type;
+const unique $java.lang.constant.Constable : Type;
 
-axiom ($java.lang.Exception <: $java.lang.Throwable);
+axiom ($java.lang.constant.Constable <: $java.lang.Object);
+
+const unique $java.lang.constant.ConstantDesc : Type;
+
+axiom ($java.lang.constant.ConstantDesc <: $java.lang.Object);
+
+const unique $java.io.Serializable : Type;
+
+axiom ($java.io.Serializable <: $java.lang.Object);
+
+const unique $java.lang.CharSequence : Type;
+
+axiom ($java.lang.CharSequence <: $java.lang.Object);
 
 const unique $java.lang.Throwable : Type;
 
@@ -166,33 +178,25 @@ axiom ($java.lang.Throwable <: $java.lang.Object);
 
 axiom ($java.lang.Throwable <: $java.io.Serializable);
 
+const unique $java.lang.Object : Type;
+
+axiom (forall t1 : Type, t2 : Type :: {(t1 <: $java.lang.String), (t2 <: $java.lang.Throwable)} (((t1 <: $java.lang.String) && (t2 <: $java.lang.Throwable)) ==> (!(t1 <: t2) && !(t2 <: t1))));
+
+axiom (forall t1 : Type, t2 : Type :: {(t1 <: $java.lang.String), (t2 <: $GCD)} (((t1 <: $java.lang.String) && (t2 <: $GCD)) ==> (!(t1 <: t2) && !(t2 <: t1))));
+
+axiom (forall t1 : Type, t2 : Type :: {(t1 <: $GCD), (t2 <: $java.lang.Throwable)} (((t1 <: $GCD) && (t2 <: $java.lang.Throwable)) ==> (!(t1 <: t2) && !(t2 <: t1))));
+
+const unique $java.lang.IllegalArgumentException : Type;
+
+axiom ($java.lang.IllegalArgumentException <: $java.lang.RuntimeException);
+
 const unique $java.lang.Comparable : Type;
 
 axiom ($java.lang.Comparable <: $java.lang.Object);
 
-const unique $java.io.Serializable : Type;
-
-axiom ($java.io.Serializable <: $java.lang.Object);
-
-const unique $java.lang.Object : Type;
-
-axiom (forall t1 : Type, t2 : Type :: {(t1 <: $GCD), (t2 <: $java.lang.Throwable)} (((t1 <: $GCD) && (t2 <: $java.lang.Throwable)) ==> (!(t1 <: t2) && !(t2 <: t1))));
-
-axiom (forall t1 : Type, t2 : Type :: {(t1 <: $java.lang.Throwable), (t2 <: $java.lang.String)} (((t1 <: $java.lang.Throwable) && (t2 <: $java.lang.String)) ==> (!(t1 <: t2) && !(t2 <: t1))));
-
-axiom (forall t1 : Type, t2 : Type :: {(t1 <: $GCD), (t2 <: $java.lang.String)} (((t1 <: $GCD) && (t2 <: $java.lang.String)) ==> (!(t1 <: t2) && !(t2 <: t1))));
-
 const unique $java.lang.RuntimeException : Type;
 
 axiom ($java.lang.RuntimeException <: $java.lang.Exception);
-
-const unique $java.lang.constant.Constable : Type;
-
-axiom ($java.lang.constant.Constable <: $java.lang.Object);
-
-const unique $GCD : Type;
-
-axiom ($GCD <: $java.lang.Object);
 
 const unique $java.lang.String : Type;
 
@@ -208,23 +212,13 @@ axiom ($java.lang.String <: $java.lang.constant.Constable);
 
 axiom ($java.lang.String <: $java.lang.constant.ConstantDesc);
 
-const unique $java.lang.IllegalArgumentException : Type;
+const unique $java.lang.Exception : Type;
 
-axiom ($java.lang.IllegalArgumentException <: $java.lang.RuntimeException);
+axiom ($java.lang.Exception <: $java.lang.Throwable);
 
-const unique $java.lang.constant.ConstantDesc : Type;
+const unique $GCD : Type;
 
-axiom ($java.lang.constant.ConstantDesc <: $java.lang.Object);
-
-const unique $java.lang.CharSequence : Type;
-
-axiom ($java.lang.CharSequence <: $java.lang.Object);
-
-function GCD.arguments_are_negative#boolean#int#int##(~heap : Store, _l0 : int, _l1 : int) returns (bool) { (~int.lte(_l0, 0) || ~int.lte(_l1, 0)) }
-
-function GCD.arguments_are_positive#boolean#int#int##(~heap : Store, _l0 : int, _l1 : int) returns (bool) { (~int.lte(_l0, 0) && ~int.lte(_l1, 0)) }
-
-function GCD.gcd_recursive#int#int#int##(~heap : Store, _l0 : int, _l1 : int) returns (int) { if ~eq(_l0, _l1) then _l0 else if ~int.gt(_l0, _l1) then GCD.gcd_recursive#int#int#int##(~heap, (_l0 - _l1), _l1) else GCD.gcd_recursive#int#int#int##(~heap, _l0, (_l1 - _l0)) }
+axiom ($GCD <: $java.lang.Object);
 
 procedure GCD.$init$#void##(?l0 : Reference where ~instanceof(~heap, ?l0, $GCD)) returns (~exc : Reference)
   free ensures ~heap.succ(old(~heap), ~heap);
@@ -242,7 +236,7 @@ label1:
   return;
 }
 
-procedure java.lang.Object.$init$#void##(?this : Reference where ~instanceof(~heap, ?this, $java.lang.Object)) returns (~exc : Reference);
+procedure java.lang.IllegalArgumentException.$init$#void#java.lang.String##(?this : Reference where ~instanceof(~heap, ?this, $java.lang.IllegalArgumentException), ?p0 : Reference where ~instanceof(~heap, ?p0, $java.lang.String)) returns (~exc : Reference);
   ensures (true ==> (~exc == ~void));
   free ensures ~heap.succ(old(~heap), ~heap);
   modifies ~heap;
@@ -307,7 +301,13 @@ label4:
   return;
 }
 
-procedure java.lang.IllegalArgumentException.$init$#void#java.lang.String##(?this : Reference where ~instanceof(~heap, ?this, $java.lang.IllegalArgumentException), ?p0 : Reference where ~instanceof(~heap, ?p0, $java.lang.String)) returns (~exc : Reference);
+function GCD.gcd_recursive#int#int#int##(~heap : Store, _l0 : int, _l1 : int) returns (int) { if ~eq(_l0, _l1) then _l0 else if ~int.gt(_l0, _l1) then GCD.gcd_recursive#int#int#int##(~heap, (_l0 - _l1), _l1) else GCD.gcd_recursive#int#int#int##(~heap, _l0, (_l1 - _l0)) }
+
+procedure java.lang.Object.$init$#void##(?this : Reference where ~instanceof(~heap, ?this, $java.lang.Object)) returns (~exc : Reference);
   ensures (true ==> (~exc == ~void));
   free ensures ~heap.succ(old(~heap), ~heap);
   modifies ~heap;
+
+function GCD.arguments_are_negative#boolean#int#int##(~heap : Store, _l0 : int, _l1 : int) returns (bool) { (~int.lte(_l0, 0) || ~int.lte(_l1, 0)) }
+
+function GCD.arguments_are_positive#boolean#int#int##(~heap : Store, _l0 : int, _l1 : int) returns (bool) { (~int.lte(_l0, 0) && ~int.lte(_l1, 0)) }

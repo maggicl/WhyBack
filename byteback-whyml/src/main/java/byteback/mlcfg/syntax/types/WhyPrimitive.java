@@ -1,5 +1,7 @@
 package byteback.mlcfg.syntax.types;
 
+import byteback.mlcfg.identifiers.Identifier;
+
 public enum WhyPrimitive implements WhyType {
 	BOOL("jbool", 'Z', "HeapDef.Int"),
 	BYTE("jbyte", 'B', "HeapDef.Byte"),
@@ -26,8 +28,13 @@ public enum WhyPrimitive implements WhyType {
 	}
 
 	@Override
-	public String getPreludeType() {
+	public String getPreludeType(Identifier.FQDN currentScope) {
 		return preludeType;
+	}
+
+	@Override
+	public void accept(WhyTypeVisitor visitor) {
+		visitor.visitPrimitive(this);
 	}
 
 	@Override

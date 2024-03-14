@@ -2,7 +2,6 @@ package byteback.mlcfg.printer;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public sealed abstract class Statement {
@@ -37,7 +36,7 @@ public sealed abstract class Statement {
 
 		for (int i = 0; i < lines.size() - 1; i++) {
 			final Line line = lines.get(i);
-			final Line next = lines.get(i+1);
+			final Line next = lines.get(i + 1);
 
 			if (!line.text.isEmpty() || line.indent == next.indent) {
 				sb.append(line).append('\n');

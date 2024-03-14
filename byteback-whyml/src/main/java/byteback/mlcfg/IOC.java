@@ -5,8 +5,8 @@ import byteback.mlcfg.identifiers.CaseInverter;
 import byteback.mlcfg.identifiers.FQDNEscaper;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
 import byteback.mlcfg.printer.WhyFieldPrinter;
-import byteback.mlcfg.vimpParser.TypeResolver;
-import byteback.mlcfg.vimpParser.VimpClassParser;
+import byteback.mlcfg.vimp.TypeResolver;
+import byteback.mlcfg.vimp.VimpClassParser;
 
 public final class IOC {
     public static final CaseInverter CASE_INVERTER = new CaseInverter();

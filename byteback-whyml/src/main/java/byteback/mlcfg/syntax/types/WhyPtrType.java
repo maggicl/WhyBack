@@ -1,5 +1,6 @@
 package byteback.mlcfg.syntax.types;
 
+import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
 import java.util.Optional;
 
@@ -11,8 +12,8 @@ public interface WhyPtrType extends WhyType {
 		return "Ptr.t";
 	}
 
-	default Optional<String> getPrecondition(String paramName, boolean isNonNull) {
-		final String precondition = "Heap.ofclass %s %s (%s)".formatted(HEAP_VAR_NAME, paramName, getPreludeType());
+	default Optional<String> getPrecondition(String paramName, boolean isNonNull, Identifier.FQDN currentScope) {
+		final String precondition = "Heap.ofclass %s %s (%s)".formatted(HEAP_VAR_NAME, paramName, getPreludeType(currentScope));
 		return Optional.of(isNonNull ? "%s <> Ptr.null && %s".formatted(paramName, precondition) : precondition);
 	}
 }

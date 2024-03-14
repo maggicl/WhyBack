@@ -50,6 +50,18 @@ public class IdentifierEscaper {
 		this.caseInverter = caseInverter;
 	}
 
+	private static String escapeChar(int e) {
+		if (('0' <= e && e <= '9') || ('a' <= e && e <= 'z') || ('A' <= e && e <= 'Z') || e == '_') {
+			return Character.toString(e);
+		}
+
+		if (e == '\'') {
+			return PRIME;
+		}
+
+		return e <= 255 ? String.format("%s%02X", ESCAPE_LOW_CP, e) : String.format("%s%04X", ESCAPE_HIGH_CP, e);
+	}
+
 	/**
 	 * Given a JVM identifier made of Unicode codepoints, returns a valid WhyML identifier for the specified identifier
 	 * class
@@ -74,20 +86,12 @@ public class IdentifierEscaper {
 		// matching force-case escape sequence
 		final String firstIdentifierChar = type.validStart(firstCharBiased) ?
 				Character.toString(firstCharBiased) :
-				String.format("%s%c", type.getForceEscaper(), firstChar);
+				String.format("%s%s", type.getForceEscaper(), escapeChar(firstChar));
 
 		// and now map the remaining charactersÒ
-		return input.codePoints().skip(1).mapToObj(e -> {
-			if (('0' <= e && e <= '9') || ('a' <= e && e <= 'z') || ('A' <= e && e <= 'Z') || e == '_') {
-				return Character.toString(e);
-			}
-
-			if (e == '\'') {
-				return PRIME;
-			}
-
-			return e <= 255 ? String.format("%s%02X", ESCAPE_LOW_CP, e) : String.format("%s%04X", ESCAPE_HIGH_CP, e);
-		}).collect(Collectors.joining("", firstIdentifierChar, ""));
+		return input.codePoints().skip(1)
+				.mapToObj(IdentifierEscaper::escapeChar)
+				.collect(Collectors.joining("", firstIdentifierChar, ""));
 	}
 
 	public Identifier.L escapeL(String input) {

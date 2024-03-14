@@ -36,7 +36,7 @@ public class Main {
 		final PrintStream output;
 
 		// TODO: change
-		final boolean useMLCFG = configuration.getOutputPath().getFileName().toString().endsWith(".whyml");
+		final boolean useMLCFG = configuration.getOutputPath().getFileName().toString().endsWith(".mlw");
 
 		if (configuration.getOutputPath() != null) {
 			final File file = configuration.getOutputPath().toFile();
@@ -106,7 +106,7 @@ public class Main {
 		resolver.resolve(startingClasses);
 
 		// TODO: change
-		final boolean useMLCFG = configuration.getOutputPath().getFileName().toString().endsWith(".whyml");
+		final boolean useMLCFG = configuration.getOutputPath().getFileName().toString().endsWith(".mlw");
 		if (!useMLCFG) {
 			if (preludePath != null) {
 				prelude.loadFile(preludePath);

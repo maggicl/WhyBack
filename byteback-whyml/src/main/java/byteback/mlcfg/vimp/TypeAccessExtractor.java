@@ -1,4 +1,4 @@
-package byteback.mlcfg.vimpParser;
+package byteback.mlcfg.vimp;
 
 import byteback.analysis.TypeSwitch;
 import byteback.mlcfg.identifiers.FQDNEscaper;

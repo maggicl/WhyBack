@@ -1,9 +1,9 @@
-package byteback.mlcfg.vimpParser;
+package byteback.mlcfg.vimp;
 
 import byteback.mlcfg.identifiers.FQDNEscaper;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
-import byteback.mlcfg.syntax.WhyClassDeclaration;
-import byteback.mlcfg.syntax.WhyFieldDeclaration;
+import byteback.mlcfg.syntax.WhyClass;
+import byteback.mlcfg.syntax.WhyField;
 import java.util.List;
 import java.util.stream.Stream;
 import soot.SootClass;
@@ -21,17 +21,17 @@ public class VimpClassParser {
 		this.typeResolver = typeResolver;
 	}
 
-	private List<WhyFieldDeclaration> toFieldDeclarationList(Stream<SootField> fields) {
-		return fields.map(f -> new WhyFieldDeclaration(
+	private List<WhyField> toFieldDeclarationList(Stream<SootField> fields) {
+		return fields.map(f -> new WhyField(
 				identifierEscaper.escapeU(f.getName()),
 				typeResolver.resolveType(f.getType()), f.isStatic()))
 				.toList();
 	}
 
-	public WhyClassDeclaration parseClassDeclaration(SootClass clazz) {
+	public WhyClass parseClassDeclaration(SootClass clazz) {
 		final String className = clazz.getName();
-		final List<WhyFieldDeclaration> fields = toFieldDeclarationList(clazz.getFields().stream());
+		final List<WhyField> fields = toFieldDeclarationList(clazz.getFields().stream());
 
-		return new WhyClassDeclaration(fqdnEscaper.escape(className), fields);
+		return new WhyClass(fqdnEscaper.escape(className), fields);
 	}
 }

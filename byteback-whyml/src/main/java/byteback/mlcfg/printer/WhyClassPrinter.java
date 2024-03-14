@@ -7,7 +7,8 @@ import static byteback.mlcfg.printer.Statement.indent;
 import static byteback.mlcfg.printer.Statement.line;
 import static byteback.mlcfg.printer.Statement.lines;
 import static byteback.mlcfg.printer.Statement.many;
-import byteback.mlcfg.syntax.WhyClassDeclaration;
+import byteback.mlcfg.syntax.WhyClass;
+import byteback.mlcfg.vimp.WhyResolver;
 import java.util.List;
 
 public class WhyClassPrinter {
@@ -17,14 +18,14 @@ public class WhyClassPrinter {
 		this.printer = printer;
 	}
 
-	public Statement toWhy(final WhyClassDeclaration clazz) {
+	public Statement toWhy(final WhyClass clazz, final WhyResolver resolver) {
 		final List<Identifier.U> identifiers = clazz.name().getIdentifiers();
 
 		return block(
 				lines(identifiers.stream().map("scope %s"::formatted)),
 				indent(
 						block(line("val constant class: Type.class")),
-						many(clazz.fields().stream().map(printer::toWhy))
+						many(clazz.fields().stream().map(e -> printer.toWhy(e, resolver, clazz.name())))
 				),
 				lines(Utils.repeat(identifiers.size(), "end"))
 		);

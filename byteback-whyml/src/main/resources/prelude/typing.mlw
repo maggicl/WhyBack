@@ -20,7 +20,9 @@ module Type
 
     (* the "root" class. This value is used in the java.lang.Object prelude *)
     val constant root: class
-    let constant root_array: t = ArrayOf (Class root)
+
+    (* used when the type is unknown, matches object *)
+    let constant unknown: t = Class root
 
     (* if true, t1 extends t2 *)
     val predicate (:>) (t1: t) (t2: t)

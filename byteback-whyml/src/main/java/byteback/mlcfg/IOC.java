@@ -5,7 +5,7 @@ import byteback.mlcfg.identifiers.FQDNEscaper;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
 import byteback.mlcfg.printer.WhyClassPrinter;
 import byteback.mlcfg.printer.WhyFieldPrinter;
-import byteback.mlcfg.printer.WhyMethodPrinter;
+import byteback.mlcfg.printer.WhyFunctionPrinter;
 import byteback.mlcfg.vimp.TypeResolver;
 import byteback.mlcfg.vimp.VimpClassParser;
 import byteback.mlcfg.vimp.VimpMethodParser;
@@ -19,7 +19,7 @@ public final class IOC {
 	public static final VimpMethodParser METHOD_PARSER = new VimpMethodParser(IDENTIFIER_ESCAPER, FQDN_ESCAPER, TYPE_RESOLVER);
 	public static final WhyFieldPrinter WHY_FIELD_PRINTER = new WhyFieldPrinter();
 	public static final WhyClassPrinter WHY_CLASS_PRINTER = new WhyClassPrinter(WHY_FIELD_PRINTER);
-	public static final WhyMethodPrinter WHY_METHOD_PRINTER = new WhyMethodPrinter();
+	public static final WhyFunctionPrinter WHY_METHOD_PRINTER = new WhyFunctionPrinter();
 	public static final ProgramConverter PROGRAM_CONVERTER = new ProgramConverter(CLASS_PARSER, METHOD_PARSER, WHY_CLASS_PRINTER, WHY_METHOD_PRINTER);
 
 	private IOC() {

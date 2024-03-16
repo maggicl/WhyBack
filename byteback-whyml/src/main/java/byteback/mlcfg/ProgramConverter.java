@@ -1,22 +1,27 @@
 package byteback.mlcfg;
 
+import byteback.analysis.Namespace;
 import byteback.analysis.RootResolver;
+import byteback.analysis.util.SootHosts;
 import byteback.mlcfg.printer.Statement;
 import static byteback.mlcfg.printer.Statement.block;
 import static byteback.mlcfg.printer.Statement.line;
 import static byteback.mlcfg.printer.Statement.many;
 import byteback.mlcfg.printer.WhyClassDeclaration;
 import byteback.mlcfg.printer.WhyClassPrinter;
-import byteback.mlcfg.printer.WhyMethodPrinter;
+import byteback.mlcfg.printer.WhyFunctionPrinter;
+import byteback.mlcfg.syntax.WhyFunctionKind;
 import byteback.mlcfg.syntax.WhyProgram;
 import byteback.mlcfg.vimp.VimpClassParser;
 import byteback.mlcfg.vimp.VimpMethodParser;
 import byteback.mlcfg.vimp.WhyResolver;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import soot.SootMethod;
 
 public class ProgramConverter {
 	public static Logger log = LoggerFactory.getLogger(ProgramConverter.class);
@@ -25,13 +30,13 @@ public class ProgramConverter {
 	private final VimpMethodParser methodParser;
 	private final WhyClassPrinter whyClassPrinter;
 
-	private final WhyMethodPrinter whyMethodPrinter;
+	private final WhyFunctionPrinter whyFunctionPrinter;
 
-	public ProgramConverter(VimpClassParser classParser, VimpMethodParser methodParser, WhyClassPrinter whyClassPrinter, WhyMethodPrinter whyMethodPrinter) {
+	public ProgramConverter(VimpClassParser classParser, VimpMethodParser methodParser, WhyClassPrinter whyClassPrinter, WhyFunctionPrinter whyFunctionPrinter) {
 		this.classParser = classParser;
 		this.methodParser = methodParser;
 		this.whyClassPrinter = whyClassPrinter;
-		this.whyMethodPrinter = whyMethodPrinter;
+		this.whyFunctionPrinter = whyFunctionPrinter;
 	}
 
 	public WhyResolver resolve(final RootResolver resolver) {
@@ -43,6 +48,7 @@ public class ProgramConverter {
 
 		StreamSupport.stream(resolver.getUsedMethods().spliterator(), false)
 				.map(methodParser::parse)
+				.flatMap(Optional::stream)
 				.forEach(whyResolver::addMethod);
 
 		return whyResolver;
@@ -56,7 +62,7 @@ public class ProgramConverter {
 				.toList();
 
 		final List<Statement> methodDecls = whyResolver.methods()
-				.map(e -> whyMethodPrinter.toWhy(e.getKey(), e.getValue()))
+				.map(e -> whyFunctionPrinter.toWhy(e.getKey(), e.getValue()))
 				.toList();
 
 		return new WhyProgram(many(

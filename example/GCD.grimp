@@ -1,28 +1,71 @@
-    public static int gcd_recursive(int, int)
+    public static short gcd(short, short)
     {
-        int l0, l1, $stack4, $stack5, $stack6, $stack7, $stack8, $stack9;
-        boolean $stack2, $stack3;
+        short l0, l1, l2, l3;
+        java.lang.IllegalArgumentException $u0;
 
-        l0 := @parameter0: int;
+        @caughtexception = voidc;
 
-        l1 := @parameter1: int;
+        l0 := @parameter0: short;
 
-        $stack2 = staticinvoke <byteback.annotations.Operator: boolean eq(int,int)>(l0, l1);
+        l1 := @parameter1: short;
 
-        $stack3 = staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>(l0, l1);
+        if (int) l0 <= 0 goto label1;
 
-        $stack4 = l0 - l1;
+        if (int) l1 > 0 goto label3;
 
-        $stack5 = staticinvoke <GCD: int gcd_recursive(int,int)>($stack4, l1);
+     label1:
+        $u0 = new java.lang.IllegalArgumentException;
 
-        $stack6 = l1 - l0;
+        $u0.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Both arguments must be positive");
 
-        $stack7 = staticinvoke <GCD: int gcd_recursive(int,int)>(l0, $stack6);
+        if @caughtexception == voidc goto label2;
 
-        $stack8 = staticinvoke <byteback.annotations.Special: int conditional(boolean,int,int)>($stack3, $stack5, $stack7);
+        return;
 
-        $stack9 = staticinvoke <byteback.annotations.Special: int conditional(boolean,int,int)>($stack2, l0, $stack8);
+     label2:
+        @caughtexception = $u0;
 
-        return $stack9;
+        return;
+
+     label3:
+        l2 = l0;
+
+        l3 = l1;
+
+     label4:
+        assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l2, 0) \u2227 staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l3, 0);
+
+        assert staticinvoke <byteback.annotations.Operator: boolean eq(short,short)>(staticinvoke <GCD: short gcd_recursive(short,short)>(l2, l3), staticinvoke <GCD: short gcd_recursive(short,short)>(l0, l1));
+
+        assert @caughtexception == voidc;
+
+        assert @caughtexception == voidc;
+
+        if (int) l2 == (int) l3 goto label6;
+
+        if (int) l2 <= (int) l3 goto label5;
+
+        l2 = (short) ((int) l2 - (int) l3);
+
+        goto label4;
+
+     label5:
+        l3 = (short) ((int) l3 - (int) l2);
+
+        assert @caughtexception == voidc;
+
+        assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l2, 0) \u2227 staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l3, 0);
+
+        assert staticinvoke <byteback.annotations.Operator: boolean eq(short,short)>(staticinvoke <GCD: short gcd_recursive(short,short)>(l2, l3), staticinvoke <GCD: short gcd_recursive(short,short)>(l0, l1));
+
+        goto label4;
+
+     label6:
+        assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l2, 0) \u2227 staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l3, 0);
+
+        assert staticinvoke <byteback.annotations.Operator: boolean eq(short,short)>(staticinvoke <GCD: short gcd_recursive(short,short)>(l2, l3), staticinvoke <GCD: short gcd_recursive(short,short)>(l0, l1));
+
+        assert @caughtexception == voidc;
+
+        return l2;
     }
-

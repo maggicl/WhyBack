@@ -13,18 +13,6 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 		this.contents = Objects.requireNonNull(contents);
 	}
 
-	public static Identifier.FQDN objectClass() {
-		return FQDN.special("Java", "Lang", "Object");
-	}
-
-	public static Identifier.L thisParam() {
-		return new L("this");
-	}
-
-	public static Identifier.L methodParam(int num) {
-		return new L("l%d".formatted(num));
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -40,6 +28,18 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 
 	public String toString() {
 		return contents;
+	}
+
+	public final static class Special {
+		public static final FQDN OBJECT = FQDN.special("Java", "Lang", "Object");
+		public static final Identifier.L THIS = new L("this");
+		public static final Identifier.L RESULT = new L("result");
+		private Special() {
+		}
+
+		public static Identifier.L methodParam(int num) {
+			return new L("l%d".formatted(num));
+		}
 	}
 
 	public static final class L extends Identifier {

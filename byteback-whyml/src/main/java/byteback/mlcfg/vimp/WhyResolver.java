@@ -2,7 +2,7 @@ package byteback.mlcfg.vimp;
 
 import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.syntax.WhyClass;
-import byteback.mlcfg.syntax.WhyMethod;
+import byteback.mlcfg.syntax.WhyFunction;
 import byteback.mlcfg.syntax.types.ReferenceVisitor;
 import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.vimp.order.ReversePostOrder;
@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 public class WhyResolver {
 	private final Map<Identifier.FQDN, WhyClass> classes = new HashMap<>();
-	private final Map<Identifier.FQDN, List<WhyMethod>> methods = new HashMap<>();
+	private final Map<Identifier.FQDN, List<WhyFunction>> methods = new HashMap<>();
 
 	public Set<WhyClass> getAllSuper(WhyClass from) {
 		final Deque<Identifier.FQDN> toProcess = from.superNames().collect(Collectors.toCollection(ArrayDeque::new));
@@ -33,7 +33,7 @@ public class WhyResolver {
 				final WhyClass c = classes.get(i);
 				result.add(c);
 
-				if (!i.equals(Identifier.objectClass())) {
+				if (!i.equals(Identifier.Special.OBJECT)) {
 					toProcess.addAll(c.superNames().toList());
 				}
 			}
@@ -46,7 +46,7 @@ public class WhyResolver {
 		classes.put(classDeclaration.type().fqdn(), classDeclaration);
 	}
 
-	public void addMethod(final WhyMethod methodDeclaration) {
+	public void addMethod(final WhyFunction methodDeclaration) {
 		final Identifier.FQDN declaringClass = methodDeclaration.declaringClass();
 		methods.computeIfAbsent(declaringClass, k -> new ArrayList<>()).add(methodDeclaration);
 	}
@@ -64,13 +64,13 @@ public class WhyResolver {
 		final Map<WhyClass, Set<WhyClass>> superAdjMap = classes.values().stream()
 				.collect(Collectors.toMap(Function.identity(), this::getAllSuper));
 
-		final WhyClass object = Objects.requireNonNull(classes.get(Identifier.objectClass()));
+		final WhyClass object = Objects.requireNonNull(classes.get(Identifier.Special.OBJECT));
 		final List<WhyClass> rpo = ReversePostOrder.sort(ReversePostOrder.reverseAdjacencyMap(superAdjMap), object);
 
 		return rpo.stream().filter(e -> e != object);
 	}
 
-	public Stream<Map.Entry<Identifier.FQDN, List<WhyMethod>>> methods() {
+	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunction>>> methods() {
 		return methods.entrySet().stream();
 	}
 }

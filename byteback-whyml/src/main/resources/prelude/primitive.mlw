@@ -59,6 +59,36 @@ module UInt16
     lemma extensionality
 end
 
+module PrimitiveSupport
+    use ieee_float.Float32
+    use ieee_float.Float64
+    use ieee_float.FloatConverter
+    use ieee_float.RoundingMode
+    use int.Int
+
+    let function int_to_bounds (min max x: int) : int
+        ensures { min <= result <= max }
+    =
+        if x < min then min else if x > max then max else x
+
+    (* in the JVM, float-to-float operations are round to nearest even for floats and round to zero for float-to-int
+       source: https://stackoverflow.com/a/38247753 *)
+
+    val function float64_to_float32_java (x: Float64.t) : Float32.t
+        ensures { result = FloatConverter.to_float32 RoundingMode.RNE x }
+
+    val function float32_to_float64_java (x: Float32.t) : Float64.t
+        ensures { result = FloatConverter.to_float64 RoundingMode.RNE x }
+
+    val function float32_to_int (x: Float32.t) : int
+        ensures { Float32.is_nan x -> result = 0 }
+        ensures { not Float32.is_nan x -> result = Float32.to_int RoundingMode.RTZ x }
+
+    val function float64_to_int (x: Float64.t) : int
+        ensures { Float64.is_nan x -> result = 0 }
+        ensures { not Float64.is_nan x -> result = Float64.to_int RoundingMode.RTZ x }
+end
+
 module Primitive
     use Int8
     use Int16
@@ -68,7 +98,9 @@ module Primitive
     use ieee_float.Float32
     use ieee_float.Float64
     use array.Array
+    use int.ComputerDivision
     use prelude.ptr.Ptr
+    use export PrimitiveSupport
 
     type jbool = bool
     type jbyte = Int8.int8
@@ -103,4 +135,77 @@ module Primitive
         let constant f: jfloat = (0.0:jfloat)
         let constant d: jdouble = (0.0:jdouble) 
     end
+
+    let function d2f (x: jdouble) : jfloat = float64_to_float32_java x
+    let function d2i (x: jdouble) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (float64_to_int x))
+    let function d2l (x: jdouble) : jlong = Int64.of_int (int_to_bounds min_int64 max_int64 (float64_to_int x))
+    let function dneg (x: jdouble) : jdouble = Float64.neg x
+    let function dadd (x y: jdouble) : jdouble = Float64.(.+) x y
+    let function dsub (x y: jdouble) : jdouble = Float64.(.-) x y
+    let function dmul (x y: jdouble) : jdouble = Float64.(.*) x y
+    let function ddiv (x y: jdouble) : jdouble = Float64.(./) x y
+
+    let function f2d (x: jfloat) : jdouble = float32_to_float64_java x
+    let function f2i (x: jfloat) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (float32_to_int x))
+    let function f2l (x: jfloat) : jlong = Int64.of_int (int_to_bounds min_int64 max_int64 (float32_to_int x))
+
+    let function i2b (x: jint) : jbyte = Int8.of_int (int_to_bounds min_int8 max_int8 x)
+    let function i2c (x: jint) : jchar = UInt16.of_int (int_to_bounds 0 max_uint16 x)
+    let function i2s (x: jint) : jshort = Int16.of_int (int_to_bounds min_int16 max_int16 x)
+    let function i2l (x: jint) : jlong = Int64.of_int x
+    let function i2f (x: jint) : jfloat = Float32.of_int x
+    let function i2d (x: jint) : jdouble = Float64.of_int x
+
+    let function l2i (x: jlong) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 x)
+    let function l2f (x: jlong) : jfloat = Float32.of_int x
+    let function l2d (x: jlong) : jdouble = Float64.of_int x
+
+    (* TODO: implicit in java - insert automatically *)
+    let function z2i (x: jbool) : jint = if x then 1 else 0
+    let function i2z (x: jint) : jbool = x <> 0
+
+
+
+
+ (*
+    dcmp<op>
+    drem
+    fadd
+    fcmp<op>
+    fdiv
+    fmul
+    fneg
+    frem
+    fsub
+    iadd
+    iand
+    idiv
+    if_acmp<cond>
+    if_icmp<cond>
+    if<cond>
+    ifnonnull
+    ifnull
+    imul
+    ineg
+    ior
+    irem
+    ishl
+    ishr
+    isub
+    iushr
+    ixor
+    ladd
+    land
+    lcmp
+    ldiv
+    lmul
+    lneg
+    lor
+    lrem
+    lshl
+    lshr
+    lsub
+    lushr
+    lxor*)
+
 end

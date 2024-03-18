@@ -59,17 +59,71 @@ module UInt16
     lemma extensionality
 end
 
+module FloatSupport
+    use int.Int
+    use ieee_float.RoundingMode
+
+    type t
+
+    function of_int (m:mode) (x:int) : t
+    function to_int (m:mode) (x:t) : int
+
+    predicate is_infinite (x: t)
+    predicate is_nan (x: t)
+    predicate is_zero (x: t)
+    predicate is_positive (x: t)
+    predicate is_negative (x: t)
+    predicate le (x y: t)
+
+    function div (x y: t) : t
+    function mul (x y: t) : t
+    function minus (x y: t) : t
+
+    predicate is_finite (x: t) = (not is_nan x) && (not is_infinite x)
+    predicate is_non_zero_finite (x: t) = (is_finite x) && (not is_zero x)
+
+    val constant inf: t
+    val constant minf: t
+    val constant nan: t
+
+    axiom is_inf: is_infinite inf && is_positive inf
+    axiom is_minf: is_infinite minf && is_negative minf
+    axiom is_nan: is_nan nan
+
+    val function to_int_java (x: t) : int
+        ensures { is_nan x -> result = 0 }
+        ensures { not is_nan x -> result = to_int RoundingMode.RTZ x }
+
+    val function of_int_java (x: int) : t
+        ensures { result = of_int RoundingMode.RTZ x }
+
+    (* follows the drem / frem JVM spec: https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.drem *)
+    val function remainder (f1 f2: t) : t
+        ensures { (is_nan f1 || is_nan f2) -> is_nan result }
+        ensures { (not is_nan f1 && not is_nan f2 && not is_nan result) ->
+                  ((is_positive result <-> is_positive f1) &&
+                   (is_negative result <-> is_negative f1)) }
+        ensures { (is_infinite f1 || is_zero f2) -> is_nan result }
+        ensures { (is_finite f1 && is_infinite f2) -> result = f1 }
+        ensures { (is_zero f1 && is_finite f2 && not is_zero f2) -> result = f1 }
+        ensures { let true_quotient = (div f1 f2) in
+                  (is_non_zero_finite f1 && is_non_zero_finite f2) -> (exists q:t.
+                    (result = minus f1 (mul f2 q)) &&
+                    (is_positive q <-> is_positive true_quotient) &&
+                    (is_negative q <-> is_negative true_quotient) &&
+                    (forall r:t. (le r true_quotient) -> (le r q))) }
+end
+
 module PrimitiveSupport
     use ieee_float.Float32
     use ieee_float.Float64
     use ieee_float.FloatConverter
     use ieee_float.RoundingMode
     use int.Int
+    use int.MinMax
 
-    let function int_to_bounds (min max x: int) : int
-        ensures { min <= result <= max }
-    =
-        if x < min then min else if x > max then max else x
+    val function int_to_bounds (a b x: int) : int
+        ensures { result = min (max a x) b }
 
     (* in the JVM, float-to-float operations are round to nearest even for floats and round to zero for float-to-int
        source: https://stackoverflow.com/a/38247753 *)
@@ -80,13 +134,35 @@ module PrimitiveSupport
     val function float32_to_float64_java (x: Float32.t) : Float64.t
         ensures { result = FloatConverter.to_float64 RoundingMode.RNE x }
 
-    val function float32_to_int (x: Float32.t) : int
-        ensures { Float32.is_nan x -> result = 0 }
-        ensures { not Float32.is_nan x -> result = Float32.to_int RoundingMode.RTZ x }
-
-    val function float64_to_int (x: Float64.t) : int
-        ensures { Float64.is_nan x -> result = 0 }
-        ensures { not Float64.is_nan x -> result = Float64.to_int RoundingMode.RTZ x }
+    clone FloatSupport as Float64Support with
+        type t = Float64.t,
+        predicate is_infinite = Float64.is_infinite,
+        predicate is_nan = Float64.is_nan,
+        predicate is_zero = Float64.is_zero,
+        predicate is_positive = Float64.is_positive,
+        predicate is_negative = Float64.is_negative,
+        predicate le = Float64.(.<=),
+        function div = Float64.(./),
+        function mul = Float64.(.*),
+        function minus = Float64.(.-),
+        function to_int = Float64.to_int,
+        function of_int = Float64.of_int,
+        axiom .
+        
+    clone FloatSupport as Float32Support with
+        type t = Float32.t,
+        predicate is_infinite = Float32.is_infinite,
+        predicate is_nan = Float32.is_nan,
+        predicate is_zero = Float32.is_zero,
+        predicate is_positive = Float32.is_positive,
+        predicate is_negative = Float32.is_negative,
+        predicate le = Float32.(.<=),
+        function div = Float32.(./),
+        function mul = Float32.(.*),
+        function minus = Float32.(.-),
+        function to_int = Float32.to_int,
+        function of_int = Float32.of_int,
+        axiom .
 end
 
 module Primitive
@@ -136,47 +212,52 @@ module Primitive
         let constant d: jdouble = (0.0:jdouble) 
     end
 
+    let constant jfloat_inf: jfloat = Float32Support.inf
+    let constant jfloat_minf: jfloat = Float32Support.minf
+    let constant jfloat_nan: jfloat = Float32Support.nan
+
+    let constant jdouble_inf: jdouble = Float64Support.inf
+    let constant jdouble_minf: jdouble = Float64Support.minf
+    let constant jdouble_nan: jdouble = Float64Support.nan
+
     let function d2f (x: jdouble) : jfloat = float64_to_float32_java x
-    let function d2i (x: jdouble) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (float64_to_int x))
-    let function d2l (x: jdouble) : jlong = Int64.of_int (int_to_bounds min_int64 max_int64 (float64_to_int x))
+    let function d2i (x: jdouble) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (Float64Support.to_int_java x))
+    let function d2l (x: jdouble) : jlong = Int64.of_int (int_to_bounds min_int64 max_int64 (Float64Support.to_int_java x))
     let function dneg (x: jdouble) : jdouble = Float64.neg x
     let function dadd (x y: jdouble) : jdouble = Float64.(.+) x y
     let function dsub (x y: jdouble) : jdouble = Float64.(.-) x y
     let function dmul (x y: jdouble) : jdouble = Float64.(.*) x y
     let function ddiv (x y: jdouble) : jdouble = Float64.(./) x y
+    let function drem (x y: jdouble) : jdouble = Float64Support.remainder x y
 
     let function f2d (x: jfloat) : jdouble = float32_to_float64_java x
-    let function f2i (x: jfloat) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (float32_to_int x))
-    let function f2l (x: jfloat) : jlong = Int64.of_int (int_to_bounds min_int64 max_int64 (float32_to_int x))
+    let function f2i (x: jfloat) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (Float32Support.to_int_java x))
+    let function f2l (x: jfloat) : jlong = Int64.of_int (int_to_bounds min_int64 max_int64 (Float32Support.to_int_java x))
+    let function fneg (x: jfloat) : jfloat = Float32.neg x
+    let function fadd (x y: jfloat) : jfloat = Float32.(.+) x y
+    let function fsub (x y: jfloat) : jfloat = Float32.(.-) x y
+    let function fmul (x y: jfloat) : jfloat = Float32.(.*) x y
+    let function fdiv (x y: jfloat) : jfloat = Float32.(./) x y
+    let function frem (x y: jfloat) : jfloat = Float32Support.remainder x y
 
-    let function i2b (x: jint) : jbyte = Int8.of_int (int_to_bounds min_int8 max_int8 x)
-    let function i2c (x: jint) : jchar = UInt16.of_int (int_to_bounds 0 max_uint16 x)
-    let function i2s (x: jint) : jshort = Int16.of_int (int_to_bounds min_int16 max_int16 x)
-    let function i2l (x: jint) : jlong = Int64.of_int x
-    let function i2f (x: jint) : jfloat = Float32.of_int x
-    let function i2d (x: jint) : jdouble = Float64.of_int x
+    let function i2b (x: jint) : jbyte = Int8.of_int (int_to_bounds min_int8 max_int8 (Int32.to_int x))
+    let function i2c (x: jint) : jchar = UInt16.of_int (int_to_bounds 0 max_uint16 (Int32.to_int x))
+    let function i2s (x: jint) : jshort = Int16.of_int (int_to_bounds min_int16 max_int16 (Int32.to_int x))
+    let function i2l (x: jint) : jlong = Int64.of_int (Int32.to_int x)
+    let function i2f (x: jint) : jfloat = Float32Support.of_int_java (Int32.to_int x)
+    let function i2d (x: jint) : jdouble = Float64Support.of_int_java (Int32.to_int x)
 
-    let function l2i (x: jlong) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 x)
-    let function l2f (x: jlong) : jfloat = Float32.of_int x
-    let function l2d (x: jlong) : jdouble = Float64.of_int x
+    let function l2i (x: jlong) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (Int64.to_int x))
+    let function l2f (x: jlong) : jfloat = Float32Support.of_int_java (Int64.to_int x)
+    let function l2d (x: jlong) : jdouble = Float64Support.of_int_java (Int64.to_int x)
 
     (* TODO: implicit in java - insert automatically *)
     let function z2i (x: jbool) : jint = if x then 1 else 0
     let function i2z (x: jint) : jbool = x <> 0
 
-
-
-
  (*
     dcmp<op>
-    drem
-    fadd
     fcmp<op>
-    fdiv
-    fmul
-    fneg
-    frem
-    fsub
     iadd
     iand
     idiv
@@ -207,5 +288,4 @@ module Primitive
     lsub
     lushr
     lxor*)
-
 end

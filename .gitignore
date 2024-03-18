@@ -28,3 +28,4 @@ bin/
 
 # Intellij IDEA
 .idea
+/example/stdlib/

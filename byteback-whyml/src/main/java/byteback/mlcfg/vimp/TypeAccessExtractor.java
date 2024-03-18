@@ -69,7 +69,7 @@ public class TypeAccessExtractor extends TypeSwitch<WhyType> {
 
 	@Override
 	public void caseRefType(final RefType referenceType) {
-		type = new WhyReference(fqdnEscaper.escape(referenceType.getClassName()));
+		type = new WhyReference(fqdnEscaper.escape(referenceType.getClassName(), referenceType.getSootClass().getPackageName().isEmpty()));
 	}
 
 	@Override

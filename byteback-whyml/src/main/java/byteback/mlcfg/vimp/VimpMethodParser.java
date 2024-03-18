@@ -59,7 +59,7 @@ public class VimpMethodParser {
 
 			return new WhyFunction(
 					identifier,
-					fqdnEscaper.escape(method.getDeclaringClass().getName()),
+					fqdnEscaper.escape(method.getDeclaringClass().getName(), method.getDeclaringClass().getPackageName().isEmpty()),
 					whyFunctionKind,
 					parameterTypes,
 					returnType);

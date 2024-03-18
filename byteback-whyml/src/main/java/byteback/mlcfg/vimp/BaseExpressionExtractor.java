@@ -1,12 +1,9 @@
-//package byteback.mlcfg.syntax.spec.expr;
+//package byteback.mlcfg.vimp;
 //
 //import byteback.analysis.JimpleValueSwitch;
-//import byteback.analysis.Namespace;
-//import byteback.analysis.util.AnnotationElems.StringElemExtractor;
-//import byteback.analysis.util.SootAnnotations;
-//import byteback.analysis.util.SootHosts;
-//import byteback.frontend.boogie.builder.FunctionReferenceBuilder;
-//import byteback.mlcfg.printer.Statement;
+//import byteback.mlcfg.syntax.expr.BinaryExpression;
+//import byteback.mlcfg.syntax.expr.Expression;
+//import groovy.xml.Namespace;
 //import soot.SootMethod;
 //import soot.Value;
 //import soot.jimple.BinopExpr;
@@ -14,13 +11,10 @@
 //import soot.jimple.InterfaceInvokeExpr;
 //import soot.jimple.VirtualInvokeExpr;
 //
-//public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Statement> {
+//public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expression> {
+//	protected Expression expression;
 //
-//	protected Statement expression;
-//
-//	public abstract BaseExpressionExtractor makeExpressionExtractor();
-//
-//	public void setExpression(final Statement expression) {
+//	public void setExpression(final Expression expression) {
 //		this.expression = expression;
 //	}
 //
@@ -42,9 +36,10 @@
 //
 //	public List<Expression> convertArguments(final SootMethod method, final Iterable<Value> sources) {
 //		final List<Expression> arguments = new List<>();
+//		final Iterator<Value> sourceIterator = sources.iterator();
 //
-//		for (Value source : sources) {
-//			arguments.add(visit(source));
+//		while (sourceIterator.hasNext()) {
+//			arguments.add(visit(sourceIterator.next()));
 //		}
 //
 //		return arguments;
@@ -82,5 +77,4 @@
 //	public Expression result() {
 //		return expression;
 //	}
-//
 //}

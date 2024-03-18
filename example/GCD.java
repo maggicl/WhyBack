@@ -38,7 +38,7 @@ public class GCD {
 			throw new IllegalArgumentException("Both arguments must be positive");
 		}
 
-		if ((long) a > (long) b) {
+		if ((long) a > (long) "ciao".length()) {
 			System.out.println("aaaa");
 		}
 

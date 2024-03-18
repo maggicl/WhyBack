@@ -1,6 +1,9 @@
-package byteback.mlcfg.syntax.spec;
+package byteback.mlcfg.syntax.expr;
 
-public final class DoubleLiteral extends SpecExpression {
+import byteback.mlcfg.syntax.types.WhyPrimitive;
+import byteback.mlcfg.syntax.types.WhyType;
+
+public final class DoubleLiteral extends Expression {
 	private final double value;
 
 	public DoubleLiteral(double value) {
@@ -28,5 +31,10 @@ public final class DoubleLiteral extends SpecExpression {
 					Double.toString(value)
 			);
 		}
+	}
+
+	@Override
+	public WhyType type() {
+		return WhyPrimitive.DOUBLE;
 	}
 }

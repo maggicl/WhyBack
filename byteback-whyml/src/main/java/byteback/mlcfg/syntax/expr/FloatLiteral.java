@@ -1,6 +1,9 @@
-package byteback.mlcfg.syntax.spec;
+package byteback.mlcfg.syntax.expr;
 
-public final class FloatLiteral extends SpecExpression {
+import byteback.mlcfg.syntax.types.WhyPrimitive;
+import byteback.mlcfg.syntax.types.WhyType;
+
+public final class FloatLiteral extends Expression {
 	private final float value;
 
 	public FloatLiteral(float value) {
@@ -28,5 +31,10 @@ public final class FloatLiteral extends SpecExpression {
 					Float.toString(value)
 			);
 		}
+	}
+
+	@Override
+	public WhyType type() {
+		return WhyPrimitive.FLOAT;
 	}
 }

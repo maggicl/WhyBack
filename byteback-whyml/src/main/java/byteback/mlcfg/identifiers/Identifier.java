@@ -32,6 +32,8 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 
 	public final static class Special {
 		public static final FQDN OBJECT = FQDN.special("Java", "Lang", "Object");
+		public static final FQDN STRING = FQDN.special("Java", "Lang", "String");
+		public static final Identifier.U DEFAULT_PACKAGE = new U("Default" + IdentifierEscaper.PRELUDE_RESERVED);
 		public static final Identifier.L THIS = new L("this");
 		public static final Identifier.L RESULT = new L("result");
 		private Special() {

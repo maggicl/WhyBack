@@ -67,7 +67,7 @@ public class WhyResolver {
 		final WhyClass object = Objects.requireNonNull(classes.get(Identifier.Special.OBJECT));
 		final List<WhyClass> rpo = ReversePostOrder.sort(ReversePostOrder.reverseAdjacencyMap(superAdjMap), object);
 
-		return rpo.stream().filter(e -> e != object);
+		return rpo.stream();
 	}
 
 	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunction>>> methods() {

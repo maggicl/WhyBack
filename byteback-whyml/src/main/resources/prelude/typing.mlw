@@ -18,8 +18,11 @@ module Type
            Class class |
            ArrayOf t
 
-  (* the "root" class. This value is used in the java.lang.Object prelude *)
+  (* the "root" class. This value is used for java.lang.Object prelude *)
   val constant root: class
+
+  (* the String class. This value is used for java.lang.String *)
+  val constant string: class
 
   (* used when the type is unknown, matches object *)
   let constant unknown: t = Class root

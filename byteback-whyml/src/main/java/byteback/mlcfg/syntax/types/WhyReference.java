@@ -4,6 +4,8 @@ import byteback.mlcfg.identifiers.Identifier;
 import java.util.Objects;
 
 public class WhyReference implements WhyPtrType {
+	public static final WhyReference OBJECT = new WhyReference(Identifier.Special.OBJECT);
+
 	public Identifier.FQDN fqdn() {
 		return clazz;
 	}

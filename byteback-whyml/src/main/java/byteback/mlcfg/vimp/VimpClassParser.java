@@ -35,18 +35,17 @@ public class VimpClassParser {
 	public WhyClass parse(SootClass clazz) {
 		final String className = clazz.getName();
 		final Optional<Identifier.FQDN> superclass = clazz.hasSuperclass()
-				? Optional.of(fqdnEscaper.escape(clazz.getSuperclass().getName()))
+				? Optional.of(fqdnEscaper.escape(clazz.getSuperclass().getName(), clazz.getSuperclass().getPackageName().isEmpty()))
 				: Optional.empty();
 
 		final Set<Identifier.FQDN> interfaces = clazz.getInterfaces().stream()
-				.map(SootClass::getName)
-				.map(fqdnEscaper::escape)
+				.map(e -> fqdnEscaper.escape(e.getName(), e.getPackageName().isEmpty()))
 				.collect(Collectors.toSet());
 
 		final List<WhyField> fields = toFieldDeclarationList(clazz.getFields().stream());
 
 		return new WhyClass(
-				fqdnEscaper.escape(className),
+				fqdnEscaper.escape(className, clazz.getPackageName().isEmpty()),
 				superclass,
 				interfaces,
 				fields);

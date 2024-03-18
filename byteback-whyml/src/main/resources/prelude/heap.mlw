@@ -1,184 +1,313 @@
 module HeapDef
-    use export prelude.primitive.Primitive
-    use prelude.ptr.Ptr
-    use prelude.typing.Type
-    use array.Array
-    use set.Set
-    use map.Map
-    use int.Int
+  use export prelude.primitive.Primitive
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use array.Array
+  use set.Set
+  use map.Map
+  use int.Int
 
-    type ft = Bool | Byte | Short | Char | Int | Long | Float | Double
+  type ft = Bool | Byte | Short | Char | Int | Long | Float | Double
 
-    type field = abstract { ftype: ft }
-    type ptrfield = abstract { fptype: Type.t }
+  type field = abstract { ftype: ft }
+  type ptrfield = abstract { fptype: Type.t }
 
-    type contents =
-        ABool jbool |
-        AByte jbyte |
-        AShort jshort |
-        AChar jchar |
-        AInt jint |
-        ALong jlong |
-        AFloat jfloat |
-        ADouble jdouble
+  type contents =
+    ABool jbool |
+    AByte jbyte |
+    AShort jshort |
+    AChar jchar |
+    AInt jint |
+    ALong jlong |
+    AFloat jfloat |
+    ADouble jdouble
 
-    type arrcontents =
-        ARBool jarraybool |
-        ARByte jarraybyte |
-        ARShort jarrayshort |
-        ARChar jarraychar |
-        ARInt jarrayint |
-        ARLong jarraylong |
-        ARFloat jarrayfloat |
-        ARDouble jarraydouble |
-        ARPtr jarrayptr
+  type arrcontents =
+    ARBool jarraybool |
+    ARByte jarraybyte |
+    ARShort jarrayshort |
+    ARChar jarraychar |
+    ARInt jarrayint |
+    ARLong jarraylong |
+    ARFloat jarrayfloat |
+    ARDouble jarraydouble |
+    ARPtr jarrayptr
 
-    (* note: consider nesting multiple maps here - a sub-map per ptr or type? -
-       and then storing each value in refs for perfomance reasons *)
+  (* note: consider nesting multiple maps here - a sub-map per ptr or type? -
+     and then storing each value in refs for perfomance reasons *)
 
-    type t = abstract {
-        mutable ptrs: set Ptr.t;
-        mutable static: (Type.class, field) -> contents;
-        mutable inst: (Ptr.t, field) -> contents;
-        mutable staticptr: (Type.class, ptrfield) -> Ptr.t;
-        mutable instptr: (Ptr.t, ptrfield) -> Ptr.t;
-        mutable arr: (Ptr.t) -> arrcontents;
-        mutable typeof: Ptr.t -> Type.t
-    } invariant {
-        not ptrs[Ptr.null] &&
-        (forall p:Ptr.t, t:Type.class, f:field. exists c:jbool, d:jarraybool.
-            (p <> Ptr.null && f.ftype = Bool <-> inst[(p,f)] = ABool c) &&
-            (p <> Ptr.null <-> arr[p] = ARBool d) &&
-            (f.ftype = Bool <-> static[(t,f)] = ABool c)) &&
-        (forall p:Ptr.t, t:Type.class, f:field. exists c:jbyte, d:jarraybyte.
-            (p <> Ptr.null && f.ftype = Byte <-> inst[(p,f)] = AByte c) &&
-            (p <> Ptr.null <-> arr[p] = ARByte d) &&
-            (f.ftype = Byte <-> static[(t,f)] = AByte c)) &&
-        (forall p:Ptr.t, t:Type.class, f:field. exists c:jshort, d:jarrayshort.
-            (p <> Ptr.null && f.ftype = Short <-> inst[(p,f)] = AShort c) &&
-            (p <> Ptr.null <-> arr[p] = ARShort d) &&
-            (f.ftype = Short <-> static[(t,f)] = AShort c)) &&
-        (forall p:Ptr.t, t:Type.class, f:field. exists c:jchar, d:jarraychar.
-            (p <> Ptr.null && f.ftype = Char <-> inst[(p,f)] = AChar c) &&
-            (p <> Ptr.null <-> arr[p] = ARChar d) &&
-            (f.ftype = Char <-> static[(t,f)] = AChar c)) &&
-        (forall p:Ptr.t, t:Type.class, f:field. exists c:jint, d:jarrayint.
-            (p <> Ptr.null && f.ftype = Int <-> inst[(p,f)] = AInt c) &&
-            (p <> Ptr.null <-> arr[p] = ARInt d) &&
-            (f.ftype = Int <-> static[(t,f)] = AInt c)) &&
-        (forall p:Ptr.t, t:Type.class, f:field. exists c:jlong, d:jarraylong.
-            (p <> Ptr.null && f.ftype = Long <-> inst[(p,f)] = ALong c) &&
-            (p <> Ptr.null <-> arr[p] = ARLong d) &&
-            (f.ftype = Long <-> static[(t,f)] = ALong c)) &&
-        (forall p:Ptr.t, t:Type.class, f:field. exists c:jfloat, d:jarrayfloat.
-            (p <> Ptr.null && f.ftype = Float <-> inst[(p,f)] = AFloat c) &&
-            (p <> Ptr.null <-> arr[p] = ARFloat d) &&
-            (f.ftype = Float <-> static[(t,f)] = AFloat c)) &&
-        (forall p:Ptr.t, t:Type.class, f:field. exists c:jdouble, d:jarraydouble.
-            (p <> Ptr.null && f.ftype = Double <-> inst[(p,f)] = ADouble c) &&
-            (p <> Ptr.null <-> arr[p] = ARDouble d) &&
-            (f.ftype = Double <-> static[(t,f)] = ADouble c)) &&
-        (forall p:Ptr.t, t:Type.class, f:ptrfield. exists c:Ptr.t, d:jarrayptr.
-            (p <> Ptr.null && (c = Ptr.null || typeof[c] :> f.fptype) <-> instptr[(p,f)] = c) &&
-            (p <> Ptr.null <-> arr[p] = ARPtr d) &&
-            ((c = Ptr.null || typeof[c] :> f.fptype) <-> staticptr[(t,f)] = c)) &&
-        (forall p:Ptr.t. exists typ:Type.t. p <> Ptr.null <-> typeof[p] = typ)
-    }
+  type t = abstract {
+    mutable ptrs: set Ptr.t;
+    mutable static: (Type.class, field) -> contents;
+    mutable inst: (Ptr.t, field) -> contents;
+    mutable staticptr: (Type.class, ptrfield) -> Ptr.t;
+    mutable instptr: (Ptr.t, ptrfield) -> Ptr.t;
+    mutable arr: (Ptr.t) -> arrcontents;
+    mutable typeof: Ptr.t -> Type.t
+  } invariant {
+    not ptrs[Ptr.null] &&
+    (forall p:Ptr.t, t:Type.class, f:field. exists c:jbool, d:jarraybool.
+      (p <> Ptr.null && f.ftype = Bool <-> inst[(p,f)] = ABool c) &&
+      (p <> Ptr.null <-> arr[p] = ARBool d) &&
+      (f.ftype = Bool <-> static[(t,f)] = ABool c)) &&
+    (forall p:Ptr.t, t:Type.class, f:field. exists c:jbyte, d:jarraybyte.
+      (p <> Ptr.null && f.ftype = Byte <-> inst[(p,f)] = AByte c) &&
+      (p <> Ptr.null <-> arr[p] = ARByte d) &&
+      (f.ftype = Byte <-> static[(t,f)] = AByte c)) &&
+    (forall p:Ptr.t, t:Type.class, f:field. exists c:jshort, d:jarrayshort.
+      (p <> Ptr.null && f.ftype = Short <-> inst[(p,f)] = AShort c) &&
+      (p <> Ptr.null <-> arr[p] = ARShort d) &&
+      (f.ftype = Short <-> static[(t,f)] = AShort c)) &&
+    (forall p:Ptr.t, t:Type.class, f:field. exists c:jchar, d:jarraychar.
+      (p <> Ptr.null && f.ftype = Char <-> inst[(p,f)] = AChar c) &&
+      (p <> Ptr.null <-> arr[p] = ARChar d) &&
+      (f.ftype = Char <-> static[(t,f)] = AChar c)) &&
+    (forall p:Ptr.t, t:Type.class, f:field. exists c:jint, d:jarrayint.
+      (p <> Ptr.null && f.ftype = Int <-> inst[(p,f)] = AInt c) &&
+      (p <> Ptr.null <-> arr[p] = ARInt d) &&
+      (f.ftype = Int <-> static[(t,f)] = AInt c)) &&
+    (forall p:Ptr.t, t:Type.class, f:field. exists c:jlong, d:jarraylong.
+      (p <> Ptr.null && f.ftype = Long <-> inst[(p,f)] = ALong c) &&
+      (p <> Ptr.null <-> arr[p] = ARLong d) &&
+      (f.ftype = Long <-> static[(t,f)] = ALong c)) &&
+    (forall p:Ptr.t, t:Type.class, f:field. exists c:jfloat, d:jarrayfloat.
+      (p <> Ptr.null && f.ftype = Float <-> inst[(p,f)] = AFloat c) &&
+      (p <> Ptr.null <-> arr[p] = ARFloat d) &&
+      (f.ftype = Float <-> static[(t,f)] = AFloat c)) &&
+    (forall p:Ptr.t, t:Type.class, f:field. exists c:jdouble, d:jarraydouble.
+      (p <> Ptr.null && f.ftype = Double <-> inst[(p,f)] = ADouble c) &&
+      (p <> Ptr.null <-> arr[p] = ARDouble d) &&
+      (f.ftype = Double <-> static[(t,f)] = ADouble c)) &&
+    (forall p:Ptr.t, t:Type.class, f:ptrfield. exists c:Ptr.t, d:jarrayptr.
+      (p <> Ptr.null && (c = Ptr.null || typeof[c] :> f.fptype) <-> instptr[(p,f)] = c) &&
+      (p <> Ptr.null <-> arr[p] = ARPtr d) &&
+      ((c = Ptr.null || typeof[c] :> f.fptype) <-> staticptr[(t,f)] = c)) &&
+    (forall p:Ptr.t. exists typ:Type.t. p <> Ptr.null <-> typeof[p] = typ)
+  }
 
-    predicate other_same_staticptr (heap: t) (old_heap: t) (p: Type.class) (f: ptrfield) =
-        forall p',f'. p <> p' || f <> f' -> heap.staticptr[(p',f')] = old_heap.staticptr[(p',f')]
-    predicate other_same_instptr (heap: t) (old_heap: t) (p: Ptr.t) (f: ptrfield) =
-        forall p',f'. p <> p' || f <> f' -> heap.instptr[(p',f')] = old_heap.instptr[(p',f')]
-    predicate other_same_static (heap: t) (old_heap: t) (p: Type.class) (f: field) =
-        forall p',f'. p <> p' || f <> f' -> heap.static[(p',f')] = old_heap.static[(p',f')]
-    predicate other_same_inst (heap: t) (old_heap: t) (p: Ptr.t) (f: field) =
-        forall p',f'. p <> p' || f <> f' -> heap.inst[(p',f')] = old_heap.inst[(p',f')]
-    predicate other_same_arr (heap: t) (old_heap: t) (p: Ptr.t) =
-        forall p'. p <> p' -> heap.arr[p'] = old_heap.arr[p']
-    predicate other_same_typeof (heap: t) (old_heap: t) (p: Ptr.t) =
-        forall p'. p <> p' -> heap.typeof[p'] = old_heap.typeof[p']
+  predicate other_same_staticptr (heap: t) (old_heap: t) (p: Type.class) (f: ptrfield) =
+    forall p',f'. p <> p' || f <> f' -> heap.staticptr[(p',f')] = old_heap.staticptr[(p',f')]
+  predicate other_same_instptr (heap: t) (old_heap: t) (p: Ptr.t) (f: ptrfield) =
+    forall p',f'. p <> p' || f <> f' -> heap.instptr[(p',f')] = old_heap.instptr[(p',f')]
+  predicate other_same_static (heap: t) (old_heap: t) (p: Type.class) (f: field) =
+    forall p',f'. p <> p' || f <> f' -> heap.static[(p',f')] = old_heap.static[(p',f')]
+  predicate other_same_inst (heap: t) (old_heap: t) (p: Ptr.t) (f: field) =
+    forall p',f'. p <> p' || f <> f' -> heap.inst[(p',f')] = old_heap.inst[(p',f')]
+  predicate other_same_arr (heap: t) (old_heap: t) (p: Ptr.t) =
+    forall p'. p <> p' -> heap.arr[p'] = old_heap.arr[p']
+  predicate other_same_typeof (heap: t) (old_heap: t) (p: Ptr.t) =
+    forall p'. p <> p' -> heap.typeof[p'] = old_heap.typeof[p']
 end
 
 module HeapOp
-    use export prelude.exceptions.Exceptions
-    use prelude.ptr.Ptr
-    use prelude.typing.Type
-    use HeapDef
-    use map.Map
+  use export prelude.exceptions.Exceptions
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use HeapDef
+  use map.Map
 
-    type op_ft
+  type op_ft
 
-    val function ft_marker : ft
-    val function ctor (field: op_ft) : contents
+  val function ft_marker : ft
+  val function ctor (field: op_ft) : contents
 
-    val function isf (ghost heap: t) (p: Ptr.t) (f: field) : op_ft
-        requires { f.ftype = ft_marker }
-        requires { p <> Ptr.null }
-        ensures { ctor result = heap.inst[(p, f)] }
+  val function isf (ghost heap: t) (p: Ptr.t) (f: field) : op_ft
+    requires { f.ftype = ft_marker }
+    requires { p <> Ptr.null }
+    ensures { ctor result = heap.inst[(p, f)] }
 
-    val getf (ghost heap: t) (p: Ptr.t) (f: field) : op_ft
-        requires { f.ftype = ft_marker }
-        raises { VM.E e -> VM.npe_if_null e p }
-        ensures { ctor result = heap.inst[(p, f)] }
+  val getf (ghost heap: t) (p: Ptr.t) (f: field) : op_ft
+    requires { f.ftype = ft_marker }
+    raises { VM.E e -> VM.npe_if_null e p }
+    ensures { ctor result = heap.inst[(p, f)] }
 
-    val putf (ghost heap: t) (p: Ptr.t) (f: field) (c: op_ft) : unit
-        writes { heap.inst }
-        raises { VM.E e -> VM.npe_if_null e p }
-        ensures { heap.inst[(p, f)] = ctor c }
-        ensures { other_same_inst heap (old heap) p f }
+  val putf (ghost heap: t) (p: Ptr.t) (f: field) (c: op_ft) : unit
+    writes { heap.inst }
+    raises { VM.E e -> VM.npe_if_null e p }
+    ensures { heap.inst[(p, f)] = ctor c }
+    ensures { other_same_inst heap (old heap) p f }
 
-    val function gets (ghost heap: t) (p: Type.class) (f: field) : op_ft
-        requires { f.ftype = ft_marker }
-        ensures { ctor result = heap.static[(p,f)] }
+  val function gets (ghost heap: t) (p: Type.class) (f: field) : op_ft
+    requires { f.ftype = ft_marker }
+    ensures { ctor result = heap.static[(p,f)] }
 
-    val puts (ghost heap: t) (p: Type.class) (f: field) (c: op_ft) : unit
-        writes { heap.static }
-        ensures { heap.static[(p,f)] = ctor c }
-        ensures { other_same_static heap (old heap) p f }
+  val puts (ghost heap: t) (p: Type.class) (f: field) (c: op_ft) : unit
+    writes { heap.static }
+    ensures { heap.static[(p,f)] = ctor c }
+    ensures { other_same_static heap (old heap) p f }
 end
 
 module HeapArrayOpRead
-    use export prelude.exceptions.Exceptions
-    use export prelude.primitive.Primitive
-    use prelude.ptr.Ptr
-    use array.Array
-    use map.Map
-    use export HeapDef
-    use int.Int
+  use export prelude.exceptions.Exceptions
+  use export prelude.primitive.Primitive
+  use prelude.ptr.Ptr
+  use array.Array
+  use map.Map
+  use export HeapDef
+  use int.Int
 
-    type elem_t
-    type arr_t = {array elem_t}
+  type elem_t
+  type arr_t = {array elem_t}
 
-    predicate valid_type (heap: t) (p: Ptr.t)
-    val function ctor (field: arr_t) : arrcontents
+  predicate valid_type (heap: t) (p: Ptr.t)
+  val function ctor (field: arr_t) : arrcontents
 
-    predicate valid_ptr (heap: t) (p: Ptr.t) =
-        p <> Ptr.null && valid_type heap p
+  predicate valid_ptr (heap: t) (p: Ptr.t) =
+    p <> Ptr.null && valid_type heap p
 
-    val function is (ghost heap: t) (p: Ptr.t) : arr_t
-        requires { valid_ptr heap p }
-        ensures { ctor result = heap.arr[p] }
+  val function is (ghost heap: t) (p: Ptr.t) : arr_t
+    requires { valid_ptr heap p }
+    ensures { ctor result = heap.arr[p] }
 
-    val function arraylength (ghost heap: t) (p: Ptr.t) : jint
-        requires { valid_ptr heap p }
-        ensures { result = (is heap p).length }
+  val function arraylength (ghost heap: t) (p: Ptr.t) : jint
+    requires { valid_ptr heap p }
+    ensures { result = (is heap p).length }
 
-    val ghost function set (ghost heap: t) (p: Ptr.t) (i: int) (v: elem_t): arr_t
-        requires { valid_ptr heap p }
-        requires { 0 <= i && i < arraylength heap p }
-        ensures { result.length = arraylength heap p }
-        ensures { result.elts = Map.set (is heap p).elts i v }
+  val ghost function set (ghost heap: t) (p: Ptr.t) (i: int) (v: elem_t): arr_t
+    requires { valid_ptr heap p }
+    requires { 0 <= i && i < arraylength heap p }
+    ensures { result.length = arraylength heap p }
+    ensures { result.elts = Map.set (is heap p).elts i v }
 
-    predicate out_of_bounds (e: VM.t) (heap: t) (p: Ptr.t) (i: jint) =
-        p <> Ptr.null && (i < 0 || i >= arraylength heap p) && e = VM.ArrayIndexOutOfBounds
+  predicate out_of_bounds (e: VM.t) (heap: t) (p: Ptr.t) (i: jint) =
+    p <> Ptr.null && (i < 0 || i >= arraylength heap p) && e = VM.ArrayIndexOutOfBounds
 
-    predicate negative_size (e: VM.t) (len: jint) =
-        len < 0 && e = VM.NegativeArraySize
+  predicate negative_size (e: VM.t) (len: jint) =
+    len < 0 && e = VM.NegativeArraySize
 end
 
 module HeapArrayOp
+  use export prelude.exceptions.Exceptions
+  use export prelude.primitive.Primitive
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use export HeapDef
+  use array.Array
+  use map.Map
+  use int.Int
+
+  type elem_t
+  val function init_val : elem_t
+  val function typ : Type.t
+
+  predicate valid_type (heap: t) (p: Ptr.t) =
+    p = Ptr.null || heap.typeof[p] = typ
+
+  clone export HeapArrayOpRead with
+    type elem_t = elem_t,
+    predicate valid_type = valid_type
+
+  val load (ghost heap: t) (p: Ptr.t) (i: jint) : elem_t
+    requires { valid_type heap p }
+    raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e heap p i }
+    ensures { result = (is heap p).elts i }
+
+  val store (ghost heap: t) (p: Ptr.t) (i: jint) (c: elem_t) : unit
+    writes { heap.arr }
+    requires { valid_type heap p }
+    raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e heap p i }
+    ensures { is heap p = set (old heap) p i c }
+    ensures { other_same_arr heap (old heap) p }
+
+  val newarray (ghost heap: t) (len: jint) : Ptr.t
+    writes { heap.ptrs }
+    writes { heap.arr }
+    writes { heap.typeof }
+    raises { VM.E e -> negative_size e len }
+    ensures { result <> Ptr.null && heap.ptrs[result] && not (old heap).ptrs[result] }
+    ensures { valid_type heap result }
+    ensures { heap.typeof[result] = typ }
+    ensures { is heap result = Array.make len init_val }
+    ensures { other_same_arr heap (old heap) result }
+    ensures { other_same_typeof heap (old heap) result }
+end
+
+module Heap
+  use HeapDef
+  use prelude.typing.Type
+  use export prelude.primitive.Primitive
+  use prelude.ptr.Ptr
+  use array.Array
+  use map.Map
+
+  type t = HeapDef.t
+  type field_t = HeapDef.ft
+
+  val new (ghost heap: t) (id: Type.class) : Ptr.t
+    writes { heap.ptrs }
+    writes { heap.typeof }
+    ensures { result <> Ptr.null && heap.ptrs[result] && not (old heap).ptrs[result] }
+    ensures { heap.typeof[result] = Type.Class id }
+
+  val predicate instanceof (ghost heap: t) (p: Ptr.t) (typ: Type.t)
+    ensures { result <-> p <> Ptr.null && heap.typeof[p] :> typ }
+
+  predicate ofclass (heap: t) (p: Ptr.t) (typ: Type.class) =
+    p = Ptr.null || instanceof heap p (Class typ)
+
+  predicate hastype (heap: t) (p: Ptr.t) (typ: Type.t) =
+    p = Ptr.null || instanceof heap p typ
+
+  clone HeapOp as Z with type op_ft = jbool, val ft_marker = Bool, val ctor = ABool
+  clone HeapOp as B with type op_ft = jbyte, val ft_marker = Byte, val ctor = AByte
+  clone HeapOp as S with type op_ft = jshort, val ft_marker = Short, val ctor = AShort
+  clone HeapOp as C with type op_ft = jchar, val ft_marker = Char, val ctor = AChar
+  clone HeapOp as I with type op_ft = jint, val ft_marker = Int, val ctor = AInt
+  clone HeapOp as J with type op_ft = jlong, val ft_marker = Long, val ctor = ALong
+  clone HeapOp as F with type op_ft = jfloat, val ft_marker = Float, val ctor = AFloat
+  clone HeapOp as D with type op_ft = jdouble, val ft_marker = Double, val ctor = ADouble
+
+  scope L
     use export prelude.exceptions.Exceptions
-    use export prelude.primitive.Primitive
+    use prelude.ptr.Ptr
+    use prelude.typing.Type
+    use HeapDef
+    use map.Map
+
+    val function isf (ghost heap: t) (p: Ptr.t) (f: ptrfield) : Ptr.t
+      requires { p <> Ptr.null }
+      ensures { result = heap.instptr[(p,f)] }
+      ensures { hastype heap result f.fptype }
+
+    val getf (ghost heap: t) (p: Ptr.t) (f: ptrfield) : Ptr.t
+      reads { heap }
+      raises { VM.E e -> VM.npe_if_null e p }
+      ensures { result = heap.instptr[(p,f)] }
+      ensures { hastype heap result f.fptype }
+
+    val putf (ghost heap: t) (p: Ptr.t) (f: ptrfield) (c: Ptr.t) : unit
+      writes { heap.instptr }
+      requires { hastype heap c f.fptype }
+      raises { VM.E e -> VM.npe_if_null e p }
+      ensures { heap.instptr[(p,f)] = c }
+      ensures { other_same_instptr heap (old heap) p f }
+
+    val function gets (ghost heap: t) (p: Type.class) (f: ptrfield) : Ptr.t
+      reads { heap }
+      ensures { result = heap.staticptr[(p,f)] }
+      ensures { hastype heap result f.fptype }
+
+    val puts (ghost heap: t) (p: Type.class) (f: ptrfield) (c: Ptr.t) : unit
+      writes { heap.staticptr }
+      requires { hastype heap c f.fptype }
+      ensures { heap.staticptr[(p,f)] = c }
+      ensures { other_same_staticptr heap (old heap) p f }
+  end
+
+  (* "anomaly: Not_found" happens if a global ref is referenced in the
+     contract of a program function in a cloned module *)
+
+  clone HeapArrayOp as RZ with type elem_t = jbool, val typ = Type.BoolArray, val ctor = ARBool, val init_val = Default.z
+  clone HeapArrayOp as RB with type elem_t = jbyte, val typ = Type.ByteArray, val ctor = ARByte, val init_val = Default.b
+  clone HeapArrayOp as RS with type elem_t = jshort, val typ = Type.ShortArray, val ctor = ARShort, val init_val = Default.s
+  clone HeapArrayOp as RC with type elem_t = jchar, val typ = Type.CharArray, val ctor = ARChar, val init_val = Default.c
+  clone HeapArrayOp as RI with type elem_t = jint, val typ = Type.IntArray, val ctor = ARInt, val init_val = Default.i
+  clone HeapArrayOp as RJ with type elem_t = jlong, val typ = Type.LongArray, val ctor = ARLong, val init_val = Default.j
+  clone HeapArrayOp as RF with type elem_t = jfloat, val typ = Type.FloatArray, val ctor = ARFloat, val init_val = Default.f
+  clone HeapArrayOp as RD with type elem_t = jdouble, val typ = Type.DoubleArray, val ctor = ARDouble, val init_val = Default.d
+
+  scope RL
+    use export prelude.exceptions.Exceptions
     use prelude.ptr.Ptr
     use prelude.typing.Type
     use export HeapDef
@@ -186,198 +315,69 @@ module HeapArrayOp
     use map.Map
     use int.Int
 
-    type elem_t
-    val function init_val : elem_t
-    val function typ : Type.t
+    let constant init_val = Ptr.null
 
     predicate valid_type (heap: t) (p: Ptr.t) =
-        p = Ptr.null || heap.typeof[p] = typ
+      p = Ptr.null || exists typ:Type.t. heap.typeof[p] = ArrayOf typ
 
     clone export HeapArrayOpRead with
-        type elem_t = elem_t,
-        predicate valid_type = valid_type
+      type elem_t = Ptr.t,
+      predicate valid_type = valid_type,
+      val ctor = ARPtr
 
-    val load (ghost heap: t) (p: Ptr.t) (i: jint) : elem_t
-        requires { valid_type heap p }
-        raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e heap p i }
-        ensures { result = (is heap p).elts i }
+    (* no need to care about arrays of primitives here, as this function
+       is strictly for reference arrays *)
+    val function elem_type (heap: t) (p: Ptr.t): Type.t
+      requires { exists t:Type.t. heap.typeof[p] = ArrayOf t }
+      ensures { heap.typeof[p] = ArrayOf result }
 
-    val store (ghost heap: t) (p: Ptr.t) (i: jint) (c: elem_t) : unit
-        writes { heap.arr }
-        requires { valid_type heap p }
-        raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e heap p i }
-        ensures { is heap p = set (old heap) p i c }
-        ensures { other_same_arr heap (old heap) p }
+    predicate valid_elem (heap: t) (p: Ptr.t) (e: Ptr.t) =
+      e = Ptr.null || heap.typeof[e] :> (elem_type heap p)
 
-    val newarray (ghost heap: t) (len: jint) : Ptr.t
-        writes { heap.ptrs }
-        writes { heap.arr }
-        writes { heap.typeof }
-        raises { VM.E e -> negative_size e len }
-        ensures { result <> Ptr.null && heap.ptrs[result] && not (old heap).ptrs[result] }
-        ensures { valid_type heap result }
-        ensures { heap.typeof[result] = typ }
-        ensures { is heap result = Array.make len init_val }
-        ensures { other_same_arr heap (old heap) result }
-        ensures { other_same_typeof heap (old heap) result }
-end
+    predicate invalid_store (e: VM.t) (heap: t) (p: Ptr.t) (z: Ptr.t) =
+      not valid_elem heap p z && e = VM.ArrayStore
 
-module Heap
-    use HeapDef
-    use prelude.typing.Type
-    use export prelude.primitive.Primitive
-    use prelude.ptr.Ptr
-    use array.Array
-    use map.Map
+    val load (ghost heap: t) (p: Ptr.t) (i: jint) : Ptr.t
+      requires { valid_type heap p }
+      raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e heap p i }
+      ensures { result = (is heap p).elts i }
+      ensures { valid_elem heap p result }
 
-    type t = HeapDef.t
-    type field_t = HeapDef.ft
+    val store (ghost heap: t) (p: Ptr.t) (i: jint) (c: Ptr.t) : unit
+      writes { heap.arr }
+      requires { valid_type heap p }
+      raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e (old heap) p i || invalid_store e (old heap) p c }
+      ensures { is heap p = set (old heap) p i c }
+      ensures { other_same_arr heap (old heap) p }
 
-    val new (ghost heap: t) (id: Type.class) : Ptr.t
-        writes { heap.ptrs }
-        writes { heap.typeof }
-        ensures { result <> Ptr.null && heap.ptrs[result] && not (old heap).ptrs[result] }
-        ensures { heap.typeof[result] = Type.Class id }
-
-    val predicate instanceof (ghost heap: t) (p: Ptr.t) (typ: Type.t)
-        ensures { result <-> p <> Ptr.null && heap.typeof[p] :> typ }
-
-    predicate ofclass (heap: t) (p: Ptr.t) (typ: Type.class) =
-        p = Ptr.null || instanceof heap p (Class typ)
-
-    predicate hastype (heap: t) (p: Ptr.t) (typ: Type.t) =
-        p = Ptr.null || instanceof heap p typ
-
-    clone HeapOp as Z with type op_ft = jbool, val ft_marker = Bool, val ctor = ABool
-    clone HeapOp as B with type op_ft = jbyte, val ft_marker = Byte, val ctor = AByte
-    clone HeapOp as S with type op_ft = jshort, val ft_marker = Short, val ctor = AShort
-    clone HeapOp as C with type op_ft = jchar, val ft_marker = Char, val ctor = AChar
-    clone HeapOp as I with type op_ft = jint, val ft_marker = Int, val ctor = AInt
-    clone HeapOp as J with type op_ft = jlong, val ft_marker = Long, val ctor = ALong
-    clone HeapOp as F with type op_ft = jfloat, val ft_marker = Float, val ctor = AFloat
-    clone HeapOp as D with type op_ft = jdouble, val ft_marker = Double, val ctor = ADouble
-
-    scope L
-        use export prelude.exceptions.Exceptions
-        use prelude.ptr.Ptr
-        use prelude.typing.Type
-        use HeapDef
-        use map.Map
-
-        val function isf (ghost heap: t) (p: Ptr.t) (f: ptrfield) : Ptr.t
-            requires { p <> Ptr.null }
-            ensures { result = heap.instptr[(p,f)] }
-            ensures { hastype heap result f.fptype }
-
-        val getf (ghost heap: t) (p: Ptr.t) (f: ptrfield) : Ptr.t
-            reads { heap }
-            raises { VM.E e -> VM.npe_if_null e p }
-            ensures { result = heap.instptr[(p,f)] }
-            ensures { hastype heap result f.fptype }
-
-        val putf (ghost heap: t) (p: Ptr.t) (f: ptrfield) (c: Ptr.t) : unit
-            writes { heap.instptr }
-            requires { hastype heap c f.fptype }
-            raises { VM.E e -> VM.npe_if_null e p }
-            ensures { heap.instptr[(p,f)] = c }
-            ensures { other_same_instptr heap (old heap) p f }
-
-        val function gets (ghost heap: t) (p: Type.class) (f: ptrfield) : Ptr.t
-            reads { heap }
-            ensures { result = heap.staticptr[(p,f)] }
-            ensures { hastype heap result f.fptype }
-
-        val puts (ghost heap: t) (p: Type.class) (f: ptrfield) (c: Ptr.t) : unit
-            writes { heap.staticptr }
-            requires { hastype heap c f.fptype }
-            ensures { heap.staticptr[(p,f)] = c }
-            ensures { other_same_staticptr heap (old heap) p f }
-    end
-
-    (* "anomaly: Not_found" happens if a global ref is referenced in the
-       contract of a program function in a cloned module *)
-
-    clone HeapArrayOp as RZ with type elem_t = jbool, val typ = Type.BoolArray, val ctor = ARBool, val init_val = Default.z
-    clone HeapArrayOp as RB with type elem_t = jbyte, val typ = Type.ByteArray, val ctor = ARByte, val init_val = Default.b
-    clone HeapArrayOp as RS with type elem_t = jshort, val typ = Type.ShortArray, val ctor = ARShort, val init_val = Default.s
-    clone HeapArrayOp as RC with type elem_t = jchar, val typ = Type.CharArray, val ctor = ARChar, val init_val = Default.c
-    clone HeapArrayOp as RI with type elem_t = jint, val typ = Type.IntArray, val ctor = ARInt, val init_val = Default.i
-    clone HeapArrayOp as RJ with type elem_t = jlong, val typ = Type.LongArray, val ctor = ARLong, val init_val = Default.j
-    clone HeapArrayOp as RF with type elem_t = jfloat, val typ = Type.FloatArray, val ctor = ARFloat, val init_val = Default.f
-    clone HeapArrayOp as RD with type elem_t = jdouble, val typ = Type.DoubleArray, val ctor = ARDouble, val init_val = Default.d
-
-    scope RL
-        use export prelude.exceptions.Exceptions
-        use prelude.ptr.Ptr
-        use prelude.typing.Type
-        use export HeapDef
-        use array.Array
-        use map.Map
-        use int.Int
-
-        let constant init_val = Ptr.null
-
-        predicate valid_type (heap: t) (p: Ptr.t) =
-            p = Ptr.null || exists typ:Type.t. heap.typeof[p] = ArrayOf typ
-
-        clone export HeapArrayOpRead with
-            type elem_t = Ptr.t,
-            predicate valid_type = valid_type,
-            val ctor = ARPtr
-
-        (* no need to care about arrays of primitives here, as this function
-           is strictly for reference arrays *)
-        val function elem_type (heap: t) (p: Ptr.t): Type.t
-            requires { exists t:Type.t. heap.typeof[p] = ArrayOf t }
-            ensures { heap.typeof[p] = ArrayOf result }
-
-        predicate valid_elem (heap: t) (p: Ptr.t) (e: Ptr.t) =
-            e = Ptr.null || heap.typeof[e] :> (elem_type heap p)
-
-        predicate invalid_store (e: VM.t) (heap: t) (p: Ptr.t) (z: Ptr.t) =
-            not valid_elem heap p z && e = VM.ArrayStore
-
-        val load (ghost heap: t) (p: Ptr.t) (i: jint) : Ptr.t
-            requires { valid_type heap p }
-            raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e heap p i }
-            ensures { result = (is heap p).elts i }
-            ensures { valid_elem heap p result }
-
-        val store (ghost heap: t) (p: Ptr.t) (i: jint) (c: Ptr.t) : unit
-            writes { heap.arr }
-            requires { valid_type heap p }
-            raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e (old heap) p i || invalid_store e (old heap) p c }
-            ensures { is heap p = set (old heap) p i c }
-            ensures { other_same_arr heap (old heap) p }
-
-        val anewarray (ghost heap: t) (typ: Type.t) (len: jint) : Ptr.t
-            writes { heap.ptrs }
-            writes { heap.arr }
-            writes { heap.typeof }
-            raises { VM.E e -> negative_size e len }
-            ensures { result <> Ptr.null && heap.ptrs[result] && not (old heap).ptrs[result] }
-            ensures { heap.typeof[result] = ArrayOf typ }
-            ensures { is heap result = Array.make len init_val }
-            ensures { other_same_arr heap (old heap) result }
-            ensures { other_same_typeof heap (old heap) result }
-    end
+    val anewarray (ghost heap: t) (typ: Type.t) (len: jint) : Ptr.t
+      writes { heap.ptrs }
+      writes { heap.arr }
+      writes { heap.typeof }
+      raises { VM.E e -> negative_size e len }
+      ensures { result <> Ptr.null && heap.ptrs[result] && not (old heap).ptrs[result] }
+      ensures { heap.typeof[result] = ArrayOf typ }
+      ensures { is heap result = Array.make len init_val }
+      ensures { other_same_arr heap (old heap) result }
+      ensures { other_same_typeof heap (old heap) result }
+  end
 end
 
 module Field
-    use HeapDef
+  use HeapDef
 
-    val function f : ft
+  val function f : ft
 
-    val constant v: field
-    axiom of: v.ftype = f
+  val constant v: field
+  axiom of: v.ftype = f
 end
 
 module PtrField
-    use HeapDef
-    use prelude.typing.Type
+  use HeapDef
+  use prelude.typing.Type
 
-    val function f : Type.t
+  val function f : Type.t
 
-    val constant v: ptrfield
-    axiom of: v.fptype = f
+  val constant v: ptrfield
+  axiom of: v.fptype = f
 end

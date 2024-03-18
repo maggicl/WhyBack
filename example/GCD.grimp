@@ -28,11 +28,29 @@
         return;
 
      label3:
+        if (int) ((long) l0 cmp (long) l1) <= 0 goto label4;
+
+        <java.lang.System: java.io.PrintStream out>.<java.io.PrintStream: void println(java.lang.String)>("aaaa");
+
+        if @caughtexception == voidc goto label4;
+
+        return;
+
+     label4:
+        if (int) ((double) l0 cmpl #NaN) <= 0 goto label5;
+
+        <java.lang.System: java.io.PrintStream out>.<java.io.PrintStream: void println(java.lang.String)>("bbbb");
+
+        if @caughtexception == voidc goto label5;
+
+        return;
+
+     label5:
         l2 = l0;
 
         l3 = l1;
 
-     label4:
+     label6:
         assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l2, 0) \u2227 staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l3, 0);
 
         assert staticinvoke <byteback.annotations.Operator: boolean eq(short,short)>(staticinvoke <GCD: short gcd_recursive(short,short)>(l2, l3), staticinvoke <GCD: short gcd_recursive(short,short)>(l0, l1));
@@ -41,15 +59,15 @@
 
         assert @caughtexception == voidc;
 
-        if (int) l2 == (int) l3 goto label6;
+        if (int) l2 == (int) l3 goto label8;
 
-        if (int) l2 <= (int) l3 goto label5;
+        if (int) l2 <= (int) l3 goto label7;
 
         l2 = (short) ((int) l2 - (int) l3);
 
-        goto label4;
+        goto label6;
 
-     label5:
+     label7:
         l3 = (short) ((int) l3 - (int) l2);
 
         assert @caughtexception == voidc;
@@ -58,9 +76,9 @@
 
         assert staticinvoke <byteback.annotations.Operator: boolean eq(short,short)>(staticinvoke <GCD: short gcd_recursive(short,short)>(l2, l3), staticinvoke <GCD: short gcd_recursive(short,short)>(l0, l1));
 
-        goto label4;
+        goto label6;
 
-     label6:
+     label8:
         assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l2, 0) \u2227 staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l3, 0);
 
         assert staticinvoke <byteback.annotations.Operator: boolean eq(short,short)>(staticinvoke <GCD: short gcd_recursive(short,short)>(l2, l3), staticinvoke <GCD: short gcd_recursive(short,short)>(l0, l1));

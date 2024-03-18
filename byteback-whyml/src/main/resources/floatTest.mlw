@@ -1,31 +1,31 @@
 module FloatTest
-    (* primitive types *)
-    use prelude.primitive.Int8
-    use prelude.primitive.Int16
-    use prelude.primitive.UInt16
-    use mach.int.Int32
-    use int.Int
-    use int.ComputerDivision
-    use mach.int.Int64
-    use ieee_float.Float64
-    use real.FromInt
-    use real.Real
-    use export prelude.primitive.Primitive
+  (* primitive types *)
+  use prelude.primitive.Int8
+  use prelude.primitive.Int16
+  use prelude.primitive.UInt16
+  use mach.int.Int32
+  use int.Int
+  use int.ComputerDivision
+  use mach.int.Int64
+  use ieee_float.Float64
+  use real.FromInt
+  use real.Real
+  use export prelude.primitive.Primitive
 
-    goal Calc1: (0x1.4000000000000p2:Float64.t) (* 5.0 *) ./ (0x1.A000000000000p3:Float64.t) (* 13.0 *)
-                = (0x1.89D89D89D89D9p-2:jdouble) (* 0.38461538461538464 *)
-    goal test1: drem jdouble_nan (0.0:Float64.t) = jdouble_nan
-    goal test2: drem (3.0:Float64.t) jdouble_inf = (3.0:Float64.t)
+  goal Calc1: (0x1.4000000000000p2:Float64.t) (* 5.0 *) ./ (0x1.A000000000000p3:Float64.t) (* 13.0 *)
+              = (0x1.89D89D89D89D9p-2:jdouble) (* 0.38461538461538464 *)
+  goal test1: drem jdouble_nan (0.0:Float64.t) = jdouble_nan
+  goal test2: drem (3.0:Float64.t) jdouble_inf = (3.0:Float64.t)
 
-    goal Calc2: Float64.le (drem (0x1.4333333333333p3:jdouble) (* 10.1 *) (0x1.4000000000000p1:jdouble) (* 2.5 *))
-                (3.0:jdouble)
+  goal Calc2: Float64.le (drem (0x1.4333333333333p3:jdouble) (* 10.1 *) (0x1.4000000000000p1:jdouble) (* 2.5 *))
+              (3.0:jdouble)
 
-    goal Wrong1: (5.0:Float64.t) ./ (13.0:Float64.t) = (5.0:Float64.t)
-    goal Wrong2: (5.0:Float64.t) ./ (10.0:Float64.t) .= (1.0:Float64.t)
-    goal Wrong3: (5.0:real) / (10.0:real) = (1.0:real)
-    goal Wrong4: ComputerDivision.div (20:int) (10:int) = (1:int)
-    goal Wrong5: Int.(=) (Int.(+) (3:int) (4:int)) (8:int)
+  goal Wrong1: (5.0:Float64.t) ./ (13.0:Float64.t) = (5.0:Float64.t)
+  goal Wrong2: (5.0:Float64.t) ./ (10.0:Float64.t) .= (1.0:Float64.t)
+  goal Wrong3: (5.0:real) / (10.0:real) = (1.0:real)
+  goal Wrong4: ComputerDivision.div (20:int) (10:int) = (1:int)
+  goal Wrong5: Int.(=) (Int.(+) (3:int) (4:int)) (8:int)
 
-    goal Right1: (5.0:Float64.t) ./ (10.0:Float64.t) .= (0.5:Float64.t)
-    goal Right2: (5.0:real) / (10.0:real) = (0.5:real)
+  goal Right1: (5.0:Float64.t) ./ (10.0:Float64.t) .= (0.5:Float64.t)
+  goal Right2: (5.0:real) / (10.0:real) = (0.5:real)
 end

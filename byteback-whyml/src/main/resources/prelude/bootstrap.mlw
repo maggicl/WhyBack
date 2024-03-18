@@ -1,27 +1,25 @@
 (** {Models the bootstrap java classes} *)
 module Bootstrap
-    use export prelude.exceptions.Exceptions
-    use export prelude.primitive.Primitive
-    use prelude.ptr.Ptr
-    use prelude.typing.Type
-    use prelude.heap.Heap
-   
-    scope Java
-    scope Lang
-    scope Object
-        let constant class = Type.root
+  use export prelude.exceptions.Exceptions
+  use export prelude.primitive.Primitive
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.heap.Heap
+ 
+  scope Java
+  scope Lang
+  scope Object
+    let constant class = Type.root
 
-        let init (ghost heap: Heap.t) (this: Ptr.t) : unit
-            requires { this <> Ptr.null /\ Heap.ofclass heap this class }
-            raises { VM.E _ -> false }
-        =
-            ()
+    let init (ghost heap: Heap.t) (this: Ptr.t) : unit
+        requires { this <> Ptr.null /\ Heap.ofclass heap this class }
+        raises { VM.E _ -> false }
+    = ()
 
-        let clinit (ghost _: Heap.t) () : unit
-        =
-            ()
-    end
-    end
-    end
-
+    let clinit (ghost _: Heap.t) : unit
+        raises { VM.E _ -> false }
+    = ()
+  end
+  end
+  end
 end

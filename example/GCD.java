@@ -38,6 +38,14 @@ public class GCD {
 			throw new IllegalArgumentException("Both arguments must be positive");
 		}
 
+		if ((long) a > (long) b) {
+			System.out.println("aaaa");
+		}
+
+		if (0.1 % Double.NaN == 0.0) {
+			System.out.println("bbbb");
+		}
+
 		short r = a;
 		short x = b;
 

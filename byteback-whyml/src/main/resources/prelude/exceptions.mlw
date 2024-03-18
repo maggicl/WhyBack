@@ -1,20 +1,20 @@
 (** {Potentially Excepting Instruction exceptions} *)
+
 (* This module is factored out from the bootstrap module to allow
    prelude.heap to depend on it *)
 module Exceptions
-    use prelude.ptr.Ptr
+  use prelude.ptr.Ptr
 
-    scope VM
-        (* note: exception are types. Consider adding fields to them *)
-        type t =
-            NullPointer |
-            ArrayIndexOutOfBounds |
-            NegativeArraySize |
-            ArrayStore
+  scope VM
+    (* note: exception are types. Consider adding fields to them *)
+    type t =
+      NullPointer |
+      ArrayIndexOutOfBounds |
+      NegativeArraySize |
+      ArrayStore
 
-        exception E t
+    exception E t
 
-        predicate npe_if_null (e: t) (p: Ptr.t) =
-            p = Ptr.null && e = NullPointer
-    end
+    predicate npe_if_null (e: t) (p: Ptr.t) = p = Ptr.null && e = NullPointer
+  end
 end

@@ -1,4 +1,4 @@
-package byteback.mlcfg.syntax.spec;
+package byteback.mlcfg.syntax.specImpl;
 
 import soot.SootMethod;
 

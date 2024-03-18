@@ -38,7 +38,8 @@ public record WhyProgram(Statement program) implements Printable {
 	public void print(StringBuilder b) {
 		b.append(Statement.block(
 				line("module Program"),
-				indent(getImports(), line(""), program),
+				getImports(),
+				indent(line(""), program),
 				line("end")
 		));
 	}

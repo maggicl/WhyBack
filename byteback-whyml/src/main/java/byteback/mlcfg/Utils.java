@@ -41,6 +41,13 @@ public final class Utils {
 		System.out.println(doubleToBinary(5.0));
 		System.out.println(doubleToBinary(13.0));
 		System.out.println(doubleToBinary(5.0 / 13.0));
+		System.out.println(doubleToBinary(10.1));
+		System.out.println(doubleToBinary(2.5));
+		System.out.println(doubleToBinary(10.1 % 2.5));
+		System.out.println(doubleToBinary(10.1 - ((10.1 / 2.5) * 2.5)));
+
+		System.out.println(doubleToBinary(10.1 / 2.5));
+
 		System.out.println(doubleToBinary(1.0 / 0.0));
 		System.out.println(doubleToBinary(1.5));
 		System.out.println(doubleToBinary(4.0));

@@ -59,6 +59,17 @@ module UInt16
     lemma extensionality
 end
 
+module Int64BV
+  use export mach.int.Int64
+
+  use bv.BV64 as BV64
+
+  val to_bv (x: int64) : BV64.t
+    ensures { BV64.to_int result = to_int x }
+  val of_bv (x: BV64.t) : int64
+    ensures { to_int result = BV64.to_int x }
+end
+
 module FloatSupport
     use int.Int
     use ieee_float.RoundingMode
@@ -106,12 +117,14 @@ module FloatSupport
         ensures { (is_infinite f1 || is_zero f2) -> is_nan result }
         ensures { (is_finite f1 && is_infinite f2) -> result = f1 }
         ensures { (is_zero f1 && is_finite f2 && not is_zero f2) -> result = f1 }
+        (* TODO: this clause is buggy: floatTest.mlw makes it fail with goal Calc2 *)
         ensures { let true_quotient = (div f1 f2) in
-                  (is_non_zero_finite f1 && is_non_zero_finite f2) -> (exists q:t.
-                    (result = minus f1 (mul f2 q)) &&
-                    (is_positive q <-> is_positive true_quotient) &&
-                    (is_negative q <-> is_negative true_quotient) &&
-                    (forall r:t. (le r true_quotient) -> (le r q))) }
+                  (is_non_zero_finite f1 && is_non_zero_finite f2) -> (exists q:int.
+                    let qf = (of_int_java q) in
+                    (result = minus f1 (mul f2 qf)) &&
+                    (is_positive qf <-> is_positive true_quotient) &&
+                    (is_negative qf <-> is_negative true_quotient) &&
+                    (forall r:int. let rf = (of_int_java r) in (le rf true_quotient) -> (le rf qf))) }
 end
 
 module PrimitiveSupport
@@ -121,9 +134,12 @@ module PrimitiveSupport
     use ieee_float.RoundingMode
     use int.Int
     use int.MinMax
+    use mach.int.Int32
 
     val function int_to_bounds (a b x: int) : int
         ensures { result = min (max a x) b }
+
+    let function jint_to_shift (x: int32) : int = Int32.to_int (Int32.(%) x (32:int32))
 
     (* in the JVM, float-to-float operations are round to nearest even for floats and round to zero for float-to-int
        source: https://stackoverflow.com/a/38247753 *)
@@ -170,7 +186,11 @@ module Primitive
     use Int16
     use UInt16
     use mach.int.Int32
+    use mach.int.Int32BV
+    use mach.bv.BVCheck32
     use mach.int.Int64
+    use Int64BV
+    use mach.bv.BVCheck64
     use ieee_float.Float32
     use ieee_float.Float64
     use array.Array
@@ -246,46 +266,51 @@ module Primitive
     let function i2l (x: jint) : jlong = Int64.of_int (Int32.to_int x)
     let function i2f (x: jint) : jfloat = Float32Support.of_int_java (Int32.to_int x)
     let function i2d (x: jint) : jdouble = Float64Support.of_int_java (Int32.to_int x)
+    let function ineg (x: jint) : jint = Int32.(-_) x
+    let function iadd (x y: jint) : jint = Int32.(+) x y
+    let function isub (x y: jint) : jint = Int32.(-) x y
+    let function imul (x y: jint) : jint = Int32.(*) x y
+    let function idiv (x y: jint) : jint = Int32.(/) x y
+    let function irem (x y: jint) : jint = Int32.(%) x y
+    let function iand (x y: jint) : jint = Int32BV.of_bv (BV32.bw_and (Int32BV.to_bv x) (Int32BV.to_bv y))
+    let function ior (x y: jint) : jint = Int32BV.of_bv (BV32.bw_or (Int32BV.to_bv x) (Int32BV.to_bv y))
+    let function ixor (x y: jint) : jint = Int32BV.of_bv (BV32.bw_xor (Int32BV.to_bv x) (Int32BV.to_bv y))
+    let function ishl (x y: jint) : jint = Int32BV.of_bv (BV32.lsl (Int32BV.to_bv x) (jint_to_shift y))
+    let function ishr (x y: jint) : jint = Int32BV.of_bv (BV32.lsr (Int32BV.to_bv x) (jint_to_shift y))
 
     let function l2i (x: jlong) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (Int64.to_int x))
     let function l2f (x: jlong) : jfloat = Float32Support.of_int_java (Int64.to_int x)
     let function l2d (x: jlong) : jdouble = Float64Support.of_int_java (Int64.to_int x)
+    let function lneg (x: jlong) : jlong = Int64.(-_) x
+    let function ladd (x y: jlong) : jlong = Int64.(+) x y
+    let function lsub (x y: jlong) : jlong = Int64.(-) x y
+    let function lmul (x y: jlong) : jlong = Int64.(*) x y
+    let function ldiv (x y: jlong) : jlong = Int64.(/) x y
+    let function lrem (x y: jlong) : jlong = Int64.(%) x y
+    let function land (x y: jlong) : jlong = Int64BV.of_bv (BV64.bw_and (Int64BV.to_bv x) (Int64BV.to_bv y))
+    let function lor (x y: jlong) : jlong = Int64BV.of_bv (BV64.bw_or (Int64BV.to_bv x) (Int64BV.to_bv y))
+    let function lxor (x y: jlong) : jlong = Int64BV.of_bv (BV64.bw_xor (Int64BV.to_bv x) (Int64BV.to_bv y))
+    let function lshl (x: jlong) (y: jint) : jlong = Int64BV.of_bv (BV64.lsl (Int64BV.to_bv x) (jint_to_shift y))
+    let function lshr (x: jlong) (y: jint) : jlong = Int64BV.of_bv (BV64.lsr (Int64BV.to_bv x) (jint_to_shift y))
 
     (* TODO: implicit in java - insert automatically *)
     let function z2i (x: jbool) : jint = if x then 1 else 0
     let function i2z (x: jint) : jbool = x <> 0
 
+    val function ifnull (x: Ptr.t) : jbool
+        ensures { result <-> x = Ptr.null }
+
+    val function ifnotnull (x: Ptr.t) : jbool
+        ensures { result <-> x <> Ptr.null }
+
  (*
     dcmp<op>
     fcmp<op>
-    iadd
-    iand
-    idiv
     if_acmp<cond>
     if_icmp<cond>
     if<cond>
-    ifnonnull
-    ifnull
-    imul
-    ineg
-    ior
-    irem
-    ishl
-    ishr
-    isub
     iushr
-    ixor
-    ladd
-    land
     lcmp
-    ldiv
-    lmul
-    lneg
-    lor
-    lrem
-    lshl
-    lshr
-    lsub
     lushr
-    lxor*)
+    *)
 end

@@ -5,4 +5,7 @@ public interface WhyPtrType extends WhyType {
 	default String getWhyType() {
 		return WhyJVMType.PTR.getWhyType();
 	}
+
+	@Override
+	default WhyJVMType jvm() { return WhyJVMType.PTR; }
 }

@@ -26,9 +26,7 @@ public interface WhyType {
 
 	String getWhyType();
 
-	default WhyJVMType jvm() {
-		return WhyJVMType.PTR;
-	}
+	WhyJVMType jvm();
 
 	String getPreludeType();
 

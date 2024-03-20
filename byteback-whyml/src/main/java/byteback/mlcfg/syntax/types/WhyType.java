@@ -19,7 +19,7 @@ public interface WhyType {
 			return true;
 		}
 		if (lValue instanceof WhyArrayType && rValue instanceof WhyArrayType) {
-			return compatible(((WhyArrayType) lValue).getBaseType(), ((WhyArrayType) rValue).getBaseType());
+			return compatible(((WhyArrayType) lValue).baseType(), ((WhyArrayType) rValue).baseType());
 		}
 		return false;
 	}

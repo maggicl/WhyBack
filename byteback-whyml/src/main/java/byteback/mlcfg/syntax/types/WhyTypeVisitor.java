@@ -12,6 +12,6 @@ public interface WhyTypeVisitor {
 
 	default void visitArray(WhyArrayType t) {
 		// recurse on element type of arrays
-		t.getBaseType().accept(this);
+		t.baseType().accept(this);
 	}
 }

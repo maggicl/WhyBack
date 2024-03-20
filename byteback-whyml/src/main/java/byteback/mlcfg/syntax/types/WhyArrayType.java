@@ -2,19 +2,11 @@ package byteback.mlcfg.syntax.types;
 
 import java.util.Objects;
 
-public class WhyArrayType implements WhyPtrType {
-	public WhyType getBaseType() {
-		return baseType;
-	}
-
-	private final WhyType baseType;
-
-	public WhyArrayType(WhyType baseType) {
+public record WhyArrayType(WhyType baseType) implements WhyPtrType {
+	public WhyArrayType {
 		if (baseType == WhyJVMType.PTR) {
 			throw new IllegalArgumentException("base type of array cannot be generic reference JVM type");
 		}
-
-		this.baseType = baseType;
 	}
 
 	@Override
@@ -53,10 +45,5 @@ public class WhyArrayType implements WhyPtrType {
 		if (o == null || getClass() != o.getClass()) return false;
 		WhyArrayType that = (WhyArrayType) o;
 		return Objects.equals(baseType, that.baseType);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(baseType);
 	}
 }

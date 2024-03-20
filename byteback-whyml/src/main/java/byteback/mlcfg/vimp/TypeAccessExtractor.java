@@ -3,7 +3,7 @@ package byteback.mlcfg.vimp;
 import byteback.analysis.TypeSwitch;
 import byteback.mlcfg.identifiers.FQDNEscaper;
 import byteback.mlcfg.syntax.types.WhyArrayType;
-import byteback.mlcfg.syntax.types.WhyPrimitive;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyReference;
 import byteback.mlcfg.syntax.types.WhyType;
 import soot.ArrayType;
@@ -22,62 +22,72 @@ public class TypeAccessExtractor extends TypeSwitch<WhyType> {
 	private final FQDNEscaper fqdnEscaper;
 
 	private WhyType type;
+	private final boolean resolveRefType;
 
-	public TypeAccessExtractor(FQDNEscaper fqdnEscaper) {
+	public TypeAccessExtractor(FQDNEscaper fqdnEscaper, boolean resolveRefType) {
 		this.fqdnEscaper = fqdnEscaper;
+		this.resolveRefType = resolveRefType;
 	}
 
 	@Override
 	public void caseByteType(final ByteType byteType) {
-		type = WhyPrimitive.BYTE;
+		type = WhyJVMType.BYTE;
 	}
 
 	@Override
 	public void caseShortType(final ShortType shortType) {
-		type = WhyPrimitive.SHORT;
+		type = WhyJVMType.SHORT;
 	}
 
 	@Override
 	public void caseIntType(final IntType integerType) {
-		type = WhyPrimitive.INT;
+		type = WhyJVMType.INT;
 	}
 
 	@Override
 	public void caseCharType(final CharType charType) {
-		type = WhyPrimitive.CHAR;
+		type = WhyJVMType.CHAR;
 	}
 
 	@Override
 	public void caseLongType(final LongType longType) {
-		type = WhyPrimitive.LONG;
+		type = WhyJVMType.LONG;
 	}
 
 	@Override
 	public void caseDoubleType(final DoubleType doubleType) {
-		type = WhyPrimitive.DOUBLE;
+		type = WhyJVMType.DOUBLE;
 	}
 
 	@Override
 	public void caseFloatType(final FloatType floatType) {
-		type = WhyPrimitive.FLOAT;
+		type = WhyJVMType.FLOAT;
 	}
 
 	@Override
 	public void caseBooleanType(final BooleanType booleanType) {
-		type = WhyPrimitive.BOOL;
+		type = WhyJVMType.BOOL;
 	}
 
 	@Override
 	public void caseRefType(final RefType referenceType) {
-		type = new WhyReference(fqdnEscaper.escape(referenceType.getClassName(), referenceType.getSootClass().getPackageName().isEmpty()));
+		if (resolveRefType) {
+			type = new WhyReference(fqdnEscaper.escape(referenceType.getClassName(), referenceType.getSootClass().getPackageName().isEmpty()));
+		} else {
+			type = WhyJVMType.PTR;
+		}
 	}
 
 	@Override
 	public void caseArrayType(final ArrayType arrayType) {
-		// TODO: consider rewriting this
-		final TypeAccessExtractor e = new TypeAccessExtractor(fqdnEscaper);
-		e.visit(arrayType.getElementType());
-		type = new WhyArrayType(e.result());
+		if (resolveRefType) {
+			// TODO: consider rewriting this
+			final TypeAccessExtractor e = new TypeAccessExtractor(fqdnEscaper, true);
+			e.visit(arrayType.getElementType());
+			type = new WhyArrayType(e.result());
+		} else {
+			type = WhyJVMType.PTR;
+		}
 	}
 
 	@Override

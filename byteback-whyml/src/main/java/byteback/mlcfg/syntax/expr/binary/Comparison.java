@@ -1,42 +1,34 @@
 package byteback.mlcfg.syntax.expr.binary;
 
-import byteback.mlcfg.syntax.types.WhyPrimitive;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyReference;
 import byteback.mlcfg.syntax.types.WhyType;
 import java.util.Objects;
 
 public final class Comparison implements BinaryOperator {
-	private final WhyPrimitive type;
+	private final WhyJVMType type;
 	private final Kind kind;
 
-	private Comparison(WhyPrimitive type, Kind kind) {
-		this.type = type;
-		this.kind = kind;
-	}
-
-	public static Comparison ofPrimitive(WhyPrimitive type, Kind kind) {
-		return new Comparison(Objects.requireNonNull(type), Objects.requireNonNull(kind));
-	}
-
-	public static Comparison ofObject(Kind kind) {
-		if (kind != Kind.EQ && kind != Kind.NE) {
+	public Comparison(WhyJVMType type, Kind kind) {
+		if (type == WhyJVMType.PTR && (kind != Kind.EQ && kind != Kind.NE)) {
 			throw new IllegalArgumentException("object comparison does not have operator " + kind);
 		}
 
-		return new Comparison(null, Objects.requireNonNull(kind));
+		this.type = Objects.requireNonNull(type);
+		this.kind = Objects.requireNonNull(kind);
 	}
 
 	@Override
 	public String opName() {
 		return "%sCMP.%s".formatted(
-				type == null ? "L" : type.getWhyAccessorScope(),
+				type.getWhyAccessorScope(),
 				kind.operator
 		);
 	}
 
 	@Override
 	public WhyType firstOpType() {
-		return type == null ? WhyReference.OBJECT : type;
+		return type == WhyJVMType.PTR ? WhyReference.OBJECT : type;
 	}
 
 	@Override
@@ -45,8 +37,8 @@ public final class Comparison implements BinaryOperator {
 	}
 
 	@Override
-	public WhyPrimitive returnType() {
-		return WhyPrimitive.BOOL;
+	public WhyJVMType returnType() {
+		return WhyJVMType.BOOL;
 	}
 
 	@Override

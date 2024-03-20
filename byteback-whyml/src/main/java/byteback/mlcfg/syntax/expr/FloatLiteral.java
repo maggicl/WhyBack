@@ -1,6 +1,6 @@
 package byteback.mlcfg.syntax.expr;
 
-import byteback.mlcfg.syntax.types.WhyPrimitive;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
 public final class FloatLiteral implements Expression {
@@ -34,7 +34,7 @@ public final class FloatLiteral implements Expression {
 	}
 
 	@Override
-	public WhyType type() {
-		return WhyPrimitive.FLOAT;
+	public WhyJVMType type() {
+		return WhyJVMType.FLOAT;
 	}
 }

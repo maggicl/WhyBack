@@ -1,6 +1,6 @@
 package byteback.mlcfg.syntax.expr.binary;
 
-import byteback.mlcfg.syntax.types.WhyPrimitive;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
 public interface BinaryOperator {
@@ -10,7 +10,7 @@ public interface BinaryOperator {
 
 	WhyType secondOpType();
 
-	WhyPrimitive returnType();
+	WhyJVMType returnType();
 
 	boolean isInfix();
 }

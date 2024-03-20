@@ -50,8 +50,8 @@ module Operators
   let function dmul (x y: jdouble) : jdouble = Float64.(.*) x y
   let function ddiv (x y: jdouble) : jdouble = Float64.(./) x y
   let function drem (x y: jdouble) : jdouble = Float64Support.remainder x y
-  let function cond_dcmpl (x y: jdouble) : jint = Float64Support.cmpl x y
-  let function cond_dcmpg (x y: jdouble) : jint = Float64Support.cmpg x y
+  let function dcmpl (x y: jdouble) : jint = Float64Support.cmpl x y
+  let function dcmpg (x y: jdouble) : jint = Float64Support.cmpg x y
 
   let function f2d (x: jfloat) : jdouble = float32_to_float64_java x
   let function f2i (x: jfloat) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (Float32Support.to_int_java x))
@@ -62,8 +62,8 @@ module Operators
   let function fmul (x y: jfloat) : jfloat = Float32.(.*) x y
   let function fdiv (x y: jfloat) : jfloat = Float32.(./) x y
   let function frem (x y: jfloat) : jfloat = Float32Support.remainder x y
-  let function cond_fcmpl (x y: jfloat) : jint = Float32Support.cmpl x y
-  let function cond_fcmpg (x y: jfloat) : jint = Float32Support.cmpg x y
+  let function fcmpl (x y: jfloat) : jint = Float32Support.cmpl x y
+  let function fcmpg (x y: jfloat) : jint = Float32Support.cmpg x y
 
   let function i2b (x: jint) : jbyte = Int8.of_int (int_to_bounds min_int8 max_int8 (Int32.to_int x))
   let function i2c (x: jint) : jchar = UInt16.of_int (int_to_bounds 0 max_uint16 (Int32.to_int x))
@@ -118,7 +118,6 @@ module Operators
     if Int64.(>=) x 0
     then ishr x 0
     else Int64.(+) (ishr x 0) (BV64.jsr (Int64BV.to_bv (2:jint)) (31 - (jint_to_ishift y))) 
-
   let function lcmp (x y: jlong) : jint = if Int64.(=) x y then (0:jint) else if Int64.(<) x y then (-1:jint) else (1:jint)
 
   clone prelude.primitive.support.Logic as BCMP with

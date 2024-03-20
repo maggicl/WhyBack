@@ -6,13 +6,13 @@ import byteback.mlcfg.syntax.expr.binary.BinaryExpression;
 import byteback.mlcfg.syntax.expr.binary.BinaryOperator;
 import byteback.mlcfg.syntax.expr.binary.Comparison;
 import byteback.mlcfg.syntax.expr.binary.LogicConnector;
-import byteback.mlcfg.syntax.types.WhyPrimitive;
-import byteback.mlcfg.syntax.types.WhyType;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import java.util.List;
 import soot.SootMethod;
 
 public final class PreludeFunctionParser {
-	private PreludeFunctionParser() {}
+	private PreludeFunctionParser() {
+	}
 
 	public static Expression parse(final SootMethod method, final List<Expression> arguments) {
 		return switch (method.getName()) {
@@ -38,19 +38,15 @@ public final class PreludeFunctionParser {
 					kind, arguments.size()));
 		}
 
-		final WhyType firstArgType = arguments.get(0).type();
-		final WhyType secondArgType = arguments.get(1).type();
+		final WhyJVMType firstArgType = arguments.get(0).type().jvm();
+		final WhyJVMType secondArgType = arguments.get(1).type().jvm();
 
-		if (!firstArgType.equals(secondArgType)) {
+		if (firstArgType != secondArgType) {
 			throw new IllegalArgumentException("the comparison operator %s is called with non homogeneous arguments: %s and %s"
 					.formatted(kind, firstArgType, secondArgType));
 		}
 
-		final Comparison comparison = firstArgType instanceof WhyPrimitive
-				? Comparison.ofPrimitive((WhyPrimitive) firstArgType, kind)
-				: Comparison.ofObject(kind);
-
-		return new BinaryExpression(comparison, arguments.get(0), arguments.get(1));
+		return new BinaryExpression(new Comparison(firstArgType, kind), arguments.get(0), arguments.get(1));
 	}
 
 	private static BinaryExpression buildBinaryExpr(BinaryOperator op, List<Expression> arguments) {

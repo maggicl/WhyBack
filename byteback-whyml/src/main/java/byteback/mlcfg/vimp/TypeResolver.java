@@ -1,6 +1,7 @@
 package byteback.mlcfg.vimp;
 
 import byteback.mlcfg.identifiers.FQDNEscaper;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 import soot.Type;
 
@@ -13,8 +14,14 @@ public class TypeResolver {
 	}
 
 	public WhyType resolveType(Type sootType) {
-		final TypeAccessExtractor e = new TypeAccessExtractor(escaper);
+		final TypeAccessExtractor e = new TypeAccessExtractor(escaper, true);
 		e.visit(sootType);
 		return e.result();
+	}
+
+	public WhyJVMType resolveJVMType(Type sootType) {
+		final TypeAccessExtractor e = new TypeAccessExtractor(escaper, false);
+		e.visit(sootType);
+		return (WhyJVMType) e.result(); // will never fail if resolveRefType is set to false
 	}
 }

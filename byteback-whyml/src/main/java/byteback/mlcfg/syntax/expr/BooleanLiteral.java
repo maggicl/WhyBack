@@ -1,6 +1,6 @@
 package byteback.mlcfg.syntax.expr;
 
-import byteback.mlcfg.syntax.types.WhyPrimitive;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
 public final class BooleanLiteral implements Expression {
@@ -16,7 +16,7 @@ public final class BooleanLiteral implements Expression {
 	}
 
 	@Override
-	public WhyType type() {
-		return WhyPrimitive.BOOL;
+	public WhyJVMType type() {
+		return WhyJVMType.BOOL;
 	}
 }

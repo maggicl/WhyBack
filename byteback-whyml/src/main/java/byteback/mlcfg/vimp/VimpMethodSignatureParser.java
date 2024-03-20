@@ -7,7 +7,7 @@ import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.WhyFunctionKind;
-import byteback.mlcfg.syntax.types.WhyPrimitive;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.syntax.types.WhyUnitType;
 import java.util.List;
@@ -54,7 +54,7 @@ public class VimpMethodSignatureParser {
 					? WhyUnitType.INSTANCE
 					: typeResolver.resolveType(sootReturnType);
 
-			if (whyFunctionKind == WhyFunctionKind.PREDICATE && returnType != WhyPrimitive.BOOL) {
+			if (whyFunctionKind == WhyFunctionKind.PREDICATE && returnType != WhyJVMType.BOOL) {
 				throw new IllegalStateException("return type of a predicate must be a boolean");
 			}
 

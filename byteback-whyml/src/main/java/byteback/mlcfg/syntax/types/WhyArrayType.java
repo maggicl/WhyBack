@@ -1,6 +1,5 @@
 package byteback.mlcfg.syntax.types;
 
-import byteback.mlcfg.identifiers.Identifier;
 import java.util.Objects;
 
 public class WhyArrayType implements WhyPtrType {
@@ -11,13 +10,17 @@ public class WhyArrayType implements WhyPtrType {
 	private final WhyType baseType;
 
 	public WhyArrayType(WhyType baseType) {
+		if (baseType == WhyJVMType.PTR) {
+			throw new IllegalArgumentException("base type of array cannot be generic reference JVM type");
+		}
+
 		this.baseType = baseType;
 	}
 
 	@Override
 	public String getPreludeType() {
-		if (baseType instanceof WhyPrimitive) {
-			return switch ((WhyPrimitive) baseType) {
+		if (baseType instanceof WhyJVMType) {
+			return switch ((WhyJVMType) baseType) {
 				case BOOL -> "BoolArray";
 				case BYTE -> "ByteArray";
 				case CHAR -> "CharArray";
@@ -26,6 +29,7 @@ public class WhyArrayType implements WhyPtrType {
 				case LONG -> "LongArray";
 				case FLOAT -> "FloatArray";
 				case DOUBLE -> "DoubleArray";
+				case PTR -> throw new IllegalStateException("unreachable");
 			};
 		} else {
 			final WhyPtrType ptrType = (WhyPtrType) baseType;
@@ -40,9 +44,7 @@ public class WhyArrayType implements WhyPtrType {
 
 	@Override
 	public String getWhyAccessorScope() {
-		return baseType instanceof WhyPrimitive
-				? "R%s".formatted(baseType.getWhyAccessorScope())
-				: "RL";
+		return "R%s".formatted(baseType.jvm().getWhyAccessorScope());
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import byteback.analysis.Namespace;
 import byteback.analysis.util.SootHosts;
 import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.expr.FunctionCall;
+import byteback.mlcfg.syntax.expr.UnaryExpression;
 import byteback.mlcfg.syntax.expr.binary.BinaryExpression;
 import byteback.mlcfg.syntax.expr.binary.BinaryOperator;
 import byteback.mlcfg.vimp.VimpMethodSignatureParser;
@@ -15,6 +16,7 @@ import soot.Value;
 import soot.jimple.BinopExpr;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InterfaceInvokeExpr;
+import soot.jimple.UnopExpr;
 import soot.jimple.VirtualInvokeExpr;
 
 public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expression> {
@@ -32,6 +34,10 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 
 	protected void setBinaryExpression(final BinopExpr source, final BinaryOperator operator) {
 		setExpression(new BinaryExpression(operator, visit(source.getOp1()), visit(source.getOp2())));
+	}
+
+	protected void setUnaryExpression(final UnopExpr source, final UnaryExpression.Operator operator) {
+		setExpression(new UnaryExpression(operator, visit(source.getOp())));
 	}
 
 	protected void setFunctionReference(final SootMethod method, final Iterable<Value> arguments) {

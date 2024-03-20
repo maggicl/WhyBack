@@ -2,6 +2,7 @@ package byteback.mlcfg.syntax.expr;
 
 import byteback.mlcfg.syntax.WhyFunctionParam;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class FunctionCall implements Expression {
 	}
 
 	@Override
-	public WhyType type() {
-		return function.returnType();
+	public WhyJVMType type() {
+		return function.returnType().jvm();
 	}
 }

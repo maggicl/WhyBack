@@ -2,47 +2,25 @@ package byteback.mlcfg.vimp.expr;
 
 import byteback.analysis.Namespace;
 import byteback.analysis.QuantifierExpr;
-import byteback.analysis.TypeSwitch;
 import byteback.analysis.vimp.LogicConstant;
 import byteback.analysis.vimp.LogicExistsExpr;
 import byteback.analysis.vimp.LogicForallExpr;
 import byteback.analysis.vimp.OldExpr;
 import byteback.analysis.vimp.VoidConstant;
-import byteback.frontend.boogie.ast.AdditionOperation;
-import byteback.frontend.boogie.ast.AndOperation;
-import byteback.frontend.boogie.ast.BooleanLiteral;
-import byteback.frontend.boogie.ast.EqualsOperation;
-import byteback.frontend.boogie.ast.ExistentialQuantifier;
-import byteback.frontend.boogie.ast.Expression;
-import byteback.frontend.boogie.ast.FunctionReference;
-import byteback.frontend.boogie.ast.GreaterThanEqualsOperation;
-import byteback.frontend.boogie.ast.GreaterThanOperation;
-import byteback.frontend.boogie.ast.IntegerDivisionOperation;
-import byteback.frontend.boogie.ast.LessThanEqualsOperation;
-import byteback.frontend.boogie.ast.LessThanOperation;
-import byteback.frontend.boogie.ast.MinusOperation;
-import byteback.frontend.boogie.ast.ModuloOperation;
-import byteback.frontend.boogie.ast.MultiplicationOperation;
-import byteback.frontend.boogie.ast.NegationOperation;
-import byteback.frontend.boogie.ast.NotEqualsOperation;
-import byteback.frontend.boogie.ast.NumberLiteral;
-import byteback.frontend.boogie.ast.OldReference;
-import byteback.frontend.boogie.ast.OrOperation;
-import byteback.frontend.boogie.ast.QuantifierExpression;
-import byteback.frontend.boogie.ast.RealDivisionOperation;
-import byteback.frontend.boogie.ast.RealLiteral;
-import byteback.frontend.boogie.ast.SubtractionOperation;
-import byteback.frontend.boogie.ast.SymbolicReference;
-import byteback.frontend.boogie.ast.TypeAccess;
-import byteback.frontend.boogie.ast.UniversalQuantifier;
-import byteback.frontend.boogie.ast.ValueReference;
+import byteback.mlcfg.syntax.expr.BooleanLiteral;
+import byteback.mlcfg.syntax.expr.DoubleLiteral;
+import byteback.mlcfg.syntax.expr.FloatLiteral;
+import byteback.mlcfg.syntax.expr.NullLiteral;
+import byteback.mlcfg.syntax.expr.NumericLiteral;
 import byteback.mlcfg.syntax.expr.UnaryExpression;
+import byteback.mlcfg.syntax.expr.binary.BinaryOperator;
+import byteback.mlcfg.syntax.expr.binary.Comparison;
+import byteback.mlcfg.syntax.expr.binary.LogicConnector;
 import byteback.mlcfg.syntax.expr.binary.PrefixOperator;
+import byteback.mlcfg.syntax.types.WhyJVMType;
+import byteback.mlcfg.vimp.TypeResolver;
 import byteback.mlcfg.vimp.VimpMethodSignatureParser;
-import java.util.function.Function;
 import java.util.stream.Stream;
-import soot.BooleanType;
-import soot.IntType;
 import soot.Local;
 import soot.SootClass;
 import soot.SootField;
@@ -52,12 +30,12 @@ import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.ArrayRef;
-import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
 import soot.jimple.ClassConstant;
 import soot.jimple.CmpExpr;
 import soot.jimple.CmpgExpr;
 import soot.jimple.CmplExpr;
+import soot.jimple.ConditionExpr;
 import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
 import soot.jimple.EqExpr;
@@ -88,19 +66,11 @@ import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 
 public class PureExpressionExtractor extends BaseExpressionExtractor {
+	private final TypeResolver typeResolver;
 
-	public static final String LOCAL_PREFIX = "_";
-
-	protected PureExpressionExtractor(VimpMethodSignatureParser methodSignatureParser) {
+	public PureExpressionExtractor(VimpMethodSignatureParser methodSignatureParser, TypeResolver typeResolver) {
 		super(methodSignatureParser);
-	}
-
-	public static String sanitizeName(final String name) {
-		return name.replace("<", "#lt#").replace(">", "#gt#").replace("-", "#m#");
-	}
-
-	public static String localName(final Local local) {
-		return LOCAL_PREFIX + sanitizeName(local.getName());
+		this.typeResolver = typeResolver;
 	}
 
 	@Override
@@ -120,182 +90,245 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseAddExpr(final AddExpr v) {
-		Type.toMachineType(v.getType()).apply(new TypeSwitch<>() {
-			@Override
-			public void caseIntType(final IntType $) {
-				setBinaryExpression(v, new IntegerDivisionOperation());
-			}
-
-			@Override
-			public void caseDefault(final Type $) {
-				setBinaryExpression(v, new RealDivisionOperation());
-			}
-
-		});
-
-		setBinaryExpression(v, PrefixOperator.ADD);
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case INT -> PrefixOperator.IADD;
+			case LONG -> PrefixOperator.LADD;
+			case FLOAT -> PrefixOperator.FADD;
+			case DOUBLE -> PrefixOperator.DADD;
+			default -> throw new IllegalArgumentException("add operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseSubExpr(final SubExpr v) {
-		setBinaryExpression(v, new SubtractionOperation());
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case INT -> PrefixOperator.ISUB;
+			case LONG -> PrefixOperator.LSUB;
+			case FLOAT -> PrefixOperator.FSUB;
+			case DOUBLE -> PrefixOperator.DSUB;
+			default -> throw new IllegalArgumentException("sub operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseDivExpr(final DivExpr v) {
-		Type.toMachineType(v.getType()).apply(new TypeSwitch<>() {
-
-			@Override
-			public void caseIntType(final IntType $) {
-				setBinaryExpression(v, new IntegerDivisionOperation());
-			}
-
-			@Override
-			public void caseDefault(final Type $) {
-				setBinaryExpression(v, new RealDivisionOperation());
-			}
-
-		});
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case INT -> PrefixOperator.IDIV;
+			case LONG -> PrefixOperator.LDIV;
+			case FLOAT -> PrefixOperator.FDIV;
+			case DOUBLE -> PrefixOperator.DDIV;
+			default -> throw new IllegalArgumentException("div operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseMulExpr(final MulExpr v) {
-		setBinaryExpression(v, new MultiplicationOperation());
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case INT -> PrefixOperator.IMUL;
+			case LONG -> PrefixOperator.LMUL;
+			case FLOAT -> PrefixOperator.FMUL;
+			case DOUBLE -> PrefixOperator.DMUL;
+			default -> throw new IllegalArgumentException("mul operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseRemExpr(final RemExpr v) {
-		setBinaryExpression(v, new ModuloOperation());
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case INT -> PrefixOperator.IREM;
+			case LONG -> PrefixOperator.LREM;
+			case FLOAT -> PrefixOperator.FREM;
+			case DOUBLE -> PrefixOperator.DREM;
+			default -> throw new IllegalArgumentException("rem operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseNegExpr(final NegExpr v) {
-		final Value operand = v.getOp();
-		final Expression expression = visit(operand);
-		v.getType().apply(new TypeSwitch<>() {
-
-			@Override
-			public void caseBooleanType(final BooleanType $) {
-				setExpression(new NegationOperation(expression));
-			}
-
-			@Override
-			public void caseDefault(final Type $) {
-				setExpression(new MinusOperation(expression));
-			}
-
-		});
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final UnaryExpression.Operator op = switch (opType) {
+			case INT -> UnaryExpression.Operator.INEG;
+			case LONG -> UnaryExpression.Operator.LNEG;
+			case FLOAT -> UnaryExpression.Operator.FNEG;
+			case DOUBLE -> UnaryExpression.Operator.DNEG;
+			default -> throw new IllegalArgumentException("add operation not supported on type " + opType);
+		};
+		setUnaryExpression(v, op);
 	}
 
 	@Override
 	public void caseOrExpr(final OrExpr v) {
-		v.getType().apply(new TypeSwitch<>() {
-
-			@Override
-			public void caseBooleanType(final BooleanType $) {
-				setBinaryExpression(v, new OrOperation());
-			}
-
-			@Override
-			public void caseDefault(final Type type) {
-				throw new ExpressionConversionException(v, "Bitwise OR is currently not supported for type " + type);
-			}
-
-		});
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case BOOL -> LogicConnector.OR; // logical or
+			case INT -> PrefixOperator.IOR; // bitwise int or
+			case LONG -> PrefixOperator.LOR; // bitwise long or
+			default -> throw new IllegalArgumentException("or operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseAndExpr(final AndExpr v) {
-		v.getType().apply(new TypeSwitch<>() {
-
-			@Override
-			public void caseBooleanType(final BooleanType $) {
-				setBinaryExpression(v, new AndOperation());
-			}
-
-			@Override
-			public void caseIntType(final IntType $) {
-				throw new ExpressionConversionException(v, "Bitwise AND is currently not supported");
-			}
-
-		});
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case BOOL -> LogicConnector.AND; // logical and
+			case INT -> PrefixOperator.IAND; // bitwise int and
+			case LONG -> PrefixOperator.LAND; // bitwise long and
+			default -> throw new IllegalArgumentException("and operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseXorExpr(final XorExpr v) {
-		v.getType().apply(new TypeSwitch<>() {
-
-			@Override
-			public void caseBooleanType(final BooleanType $) {
-				setBinaryExpression(v, new NotEqualsOperation());
-			}
-
-			@Override
-			public void caseIntType(final IntType $) {
-				throw new ExpressionConversionException(v, "Bitwise XOR is currently not supported");
-			}
-
-		});
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case BOOL -> new Comparison(WhyJVMType.BOOL, Comparison.Kind.NE); // logical xor
+			case INT -> PrefixOperator.IXOR; // bitwise int xor
+			case LONG -> PrefixOperator.LXOR; // bitwise long xor
+			default -> throw new IllegalArgumentException("xor operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseCmplExpr(final CmplExpr v) {
-		pushCmpExpression(v);
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case FLOAT -> PrefixOperator.FCMPL;
+			case DOUBLE -> PrefixOperator.DCMPL;
+			default -> throw new IllegalArgumentException("cmpl operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseCmpgExpr(final CmpgExpr v) {
-		pushCmpExpression(v);
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case FLOAT -> PrefixOperator.FCMPG;
+			case DOUBLE -> PrefixOperator.DCMPG;
+			default -> throw new IllegalArgumentException("cmpg operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseCmpExpr(final CmpExpr v) {
-		pushCmpExpression(v);
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		if (opType != WhyJVMType.LONG) {
+			throw new IllegalArgumentException("cmp operation not supported on type " + opType);
+		}
+		setBinaryExpression(v, PrefixOperator.LCMP);
+	}
+
+	private void setConditionExpr(final ConditionExpr expr, final Comparison.Kind kind) {
+		final WhyJVMType opType = typeResolver.resolveJVMType(expr.getType());
+		setBinaryExpression(expr, new Comparison(opType, kind));
 	}
 
 	@Override
 	public void caseEqExpr(final EqExpr v) {
-		setBinaryExpression(v, new EqualsOperation());
+		setConditionExpr(v, Comparison.Kind.EQ);
 	}
 
 	@Override
 	public void caseNeExpr(final NeExpr v) {
-		setBinaryExpression(v, new NotEqualsOperation());
+		setConditionExpr(v, Comparison.Kind.NE);
 	}
 
 	@Override
 	public void caseGtExpr(final GtExpr v) {
-		setBinaryExpression(v, new GreaterThanOperation());
+		setConditionExpr(v, Comparison.Kind.GT);
 	}
 
 	@Override
 	public void caseGeExpr(final GeExpr v) {
-		setBinaryExpression(v, new GreaterThanEqualsOperation());
+		setConditionExpr(v, Comparison.Kind.GE);
 	}
 
 	@Override
 	public void caseLtExpr(final LtExpr v) {
-		setBinaryExpression(v, new LessThanOperation());
+		setConditionExpr(v, Comparison.Kind.LT);
 	}
 
 	@Override
 	public void caseLeExpr(final LeExpr v) {
-		setBinaryExpression(v, new LessThanEqualsOperation());
+		setConditionExpr(v, Comparison.Kind.LE);
 	}
 
 	@Override
 	public void caseShlExpr(final ShlExpr v) {
-		setSpecialBinaryExpression(v, Prelude.v().getShlFunction().makeFunctionReference());
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case INT -> PrefixOperator.ISHL;
+			case LONG -> PrefixOperator.LSHL;
+			default -> throw new IllegalArgumentException("shl operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseShrExpr(final ShrExpr v) {
-		setSpecialBinaryExpression(v, Prelude.v().getShrFunction().makeFunctionReference());
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case INT -> PrefixOperator.ISHR;
+			case LONG -> PrefixOperator.LSHR;
+			default -> throw new IllegalArgumentException("shr operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
 	}
 
 	@Override
 	public void caseUshrExpr(final UshrExpr v) {
-		setSpecialBinaryExpression(v, Prelude.v().getShrFunction().makeFunctionReference());
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final BinaryOperator op = switch (opType) {
+			case INT -> PrefixOperator.IUSHR;
+			case LONG -> PrefixOperator.LUSHR;
+			default -> throw new IllegalArgumentException("ushr operation not supported on type " + opType);
+		};
+		setBinaryExpression(v, op);
+	}
+
+	@Override
+	public void caseIntConstant(final IntConstant v) {
+		setExpression(new NumericLiteral(WhyJVMType.INT, v.value));
+	}
+
+	@Override
+	public void caseLogicConstant(final LogicConstant v) {
+		setExpression(new BooleanLiteral(v.value));
+	}
+
+	@Override
+	public void caseLongConstant(final LongConstant v) {
+		setExpression(new NumericLiteral(WhyJVMType.LONG, v.value));
+	}
+
+	@Override
+	public void caseDoubleConstant(final DoubleConstant v) {
+		setExpression(new DoubleLiteral(v.value));
+	}
+
+	@Override
+	public void caseFloatConstant(final FloatConstant v) {
+		setExpression(new FloatLiteral(v.value));
+	}
+
+	@Override
+	public void caseNullConstant(final NullConstant v) {
+		setExpression(NullLiteral.INSTANCE);
 	}
 
 	@Override
@@ -306,40 +339,6 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 		final Function<Expression, Expression> caster = new CasterProvider(toType).visit(fromType);
 
 		setExpression(caster.apply(visit(operand)));
-	}
-
-	@Override
-	public void caseIntConstant(final IntConstant v) {
-		setExpression(new NumberLiteral(v.toString()));
-	}
-
-	@Override
-	public void caseLogicConstant(final LogicConstant v) {
-		setExpression(v.getValue() ? BooleanLiteral.makeTrue() : BooleanLiteral.makeFalse());
-	}
-
-	@Override
-	public void caseLongConstant(final LongConstant v) {
-		final String literal = v.toString();
-		final String strippedLiteral = literal.substring(0, literal.length() - 1);
-		setExpression(new NumberLiteral(strippedLiteral));
-	}
-
-	@Override
-	public void caseDoubleConstant(final DoubleConstant v) {
-		setExpression(new RealLiteral(v.toString()));
-	}
-
-	@Override
-	public void caseFloatConstant(final FloatConstant v) {
-		final String literal = v.toString();
-		final String strippedLiteral = literal.substring(0, literal.length() - 1);
-		setExpression(new RealLiteral(strippedLiteral));
-	}
-
-	@Override
-	public void caseNullConstant(final NullConstant v) {
-		setExpression(Prelude.v().getNullConstant().makeValueReference());
 	}
 
 	@Override
@@ -443,7 +442,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseDefault(final Value v) {
-		throw new ExpressionConversionException(v, "Unable to convert expression of type " + v.getClass().getName());
+		throw new IllegalArgumentException("Unable to convert expression of type " + v.getClass().getName());
 	}
 
 }

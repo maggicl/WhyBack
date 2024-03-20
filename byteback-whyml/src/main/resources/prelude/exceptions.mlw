@@ -11,7 +11,8 @@ module Exceptions
       NullPointer |
       ArrayIndexOutOfBounds |
       NegativeArraySize |
-      ArrayStore
+      ArrayStore |
+      ClassCast
 
     exception E t
 

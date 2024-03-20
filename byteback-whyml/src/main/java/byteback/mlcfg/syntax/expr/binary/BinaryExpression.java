@@ -1,8 +1,7 @@
 package byteback.mlcfg.syntax.expr.binary;
 
 import byteback.mlcfg.syntax.expr.Expression;
-import byteback.mlcfg.syntax.types.WhyPrimitive;
-import byteback.mlcfg.syntax.types.WhyReference;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
 public final class BinaryExpression implements Expression {
@@ -11,19 +10,12 @@ public final class BinaryExpression implements Expression {
 	private final Expression secondOperand;
 
 	public BinaryExpression(BinaryOperator operator, Expression firstOperand, Expression secondOperand) {
-		checkCompatibleType(firstOperand, operator.firstOpType(), "1st");
-		checkCompatibleType(secondOperand, operator.secondOpType(), "2nd");
+		Expression.checkCompatibleType("1st", firstOperand, operator.firstOpType());
+		Expression.checkCompatibleType("2nd", secondOperand, operator.secondOpType());
 
 		this.operator = operator;
 		this.firstOperand = firstOperand;
 		this.secondOperand = secondOperand;
-	}
-
-	private static void checkCompatibleType(Expression operand, WhyType type, String operandPos) {
-		if (type == WhyReference.OBJECT && !(operand.type() instanceof WhyReference) ||
-				type instanceof WhyPrimitive && (operand.type() != type)) {
-			throw new IllegalStateException(operandPos + " operand does not have required type " + type.getWhyType());
-		}
 	}
 
 	@Override
@@ -36,8 +28,7 @@ public final class BinaryExpression implements Expression {
 	}
 
 	@Override
-	public WhyType type() {
+	public WhyJVMType type() {
 		return this.operator.returnType();
 	}
-
 }

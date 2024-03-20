@@ -5,7 +5,7 @@ import static byteback.mlcfg.printer.Statement.block;
 import static byteback.mlcfg.printer.Statement.indent;
 import static byteback.mlcfg.printer.Statement.line;
 import byteback.mlcfg.syntax.WhyField;
-import byteback.mlcfg.syntax.types.WhyPrimitive;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.vimp.WhyResolver;
 
@@ -15,7 +15,7 @@ public class WhyFieldPrinter {
 		final WhyType fieldType = field.type();
 		final String preludeType = fieldType.getPreludeType();
 
-		if (fieldType instanceof WhyPrimitive) {
+		if (fieldType instanceof WhyJVMType) {
 			return block(
 					line("clone prelude.heap.Field as %s with val f = %s, axiom of".formatted(name, preludeType))
 			);

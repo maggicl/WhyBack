@@ -266,6 +266,12 @@ module Heap
   predicate hastype (heap: t) (p: Ptr.t) (typ: Type.t) =
     p = Ptr.null || instanceof heap p typ
 
+  val checkcast (ghost heap: t) (p: Ptr.t) (t: Type.t) : Ptr.t
+    reads { heap }
+    ensures { result = p }
+    ensures { hastype heap result t }
+    raises { VM.e -> not (hastype heap result t) && e = ClassCast }
+
   clone HeapOp as Z with type op_ft = jbool, val ft_marker = Bool, val ctor = ABool
   clone HeapOp as B with type op_ft = jbyte, val ft_marker = Byte, val ctor = AByte
   clone HeapOp as S with type op_ft = jshort, val ft_marker = Short, val ctor = AShort

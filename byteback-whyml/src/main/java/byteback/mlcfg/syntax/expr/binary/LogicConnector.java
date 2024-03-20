@@ -1,14 +1,13 @@
 package byteback.mlcfg.syntax.expr.binary;
 
-import byteback.mlcfg.syntax.types.WhyPrimitive;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
-import java.util.Optional;
 
 public enum LogicConnector implements BinaryOperator {
 	IFF("<->"),
 	IMPLIES("->"),
-	AND("&&"),
-	OR("||");
+	AND("/\\"), // do not use short-circuited variant here to preserve behaviour of program code
+	OR("\\/");
 
 	private final String opName;
 
@@ -23,17 +22,17 @@ public enum LogicConnector implements BinaryOperator {
 
 	@Override
 	public WhyType firstOpType() {
-		return WhyPrimitive.BOOL;
+		return WhyJVMType.BOOL;
 	}
 
 	@Override
 	public WhyType secondOpType() {
-		return WhyPrimitive.BOOL;
+		return WhyJVMType.BOOL;
 	}
 
 	@Override
-	public WhyPrimitive returnType() {
-		return WhyPrimitive.BOOL;
+	public WhyJVMType returnType() {
+		return WhyJVMType.BOOL;
 	}
 
 	@Override

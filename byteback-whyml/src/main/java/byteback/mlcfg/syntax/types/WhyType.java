@@ -13,7 +13,7 @@ public interface WhyType {
 	 * @return true if compatible, false if not
 	 */
 	static boolean compatible(WhyType lValue, WhyType rValue) {
-		if (lValue instanceof WhyPrimitive && rValue instanceof WhyPrimitive) {
+		if (lValue instanceof WhyJVMType && rValue instanceof WhyJVMType) {
 			return lValue == rValue;
 		} else if (lValue instanceof WhyReference) {
 			return true;
@@ -25,6 +25,10 @@ public interface WhyType {
 	}
 
 	String getWhyType();
+
+	default WhyJVMType jvm() {
+		return WhyJVMType.PTR;
+	}
 
 	String getPreludeType();
 

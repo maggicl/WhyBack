@@ -1,7 +1,6 @@
 (** {Models the bootstrap java classes} *)
 module Bootstrap
   use export prelude.exceptions.Exceptions
-  use export prelude.primitive.Primitive
   use prelude.ptr.Ptr
   use prelude.typing.Type
   use prelude.heap.HeapDef

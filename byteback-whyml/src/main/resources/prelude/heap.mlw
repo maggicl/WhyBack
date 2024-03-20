@@ -1,5 +1,6 @@
 module HeapDef
-  use export prelude.primitive.Primitive
+  use export prelude.machine.Operators
+
   use prelude.ptr.Ptr
   use prelude.typing.Type
   use array.Array
@@ -22,6 +23,20 @@ module HeapDef
     ALong jlong |
     AFloat jfloat |
     ADouble jdouble
+
+  (*
+   * Using "snapshot types" to store an immutable structure in the heap.
+   * The heap then re-implements mutable operations by mutating the entire copy.
+   *)
+  type jarraybool = {array jbool}
+  type jarraybyte = {array jbyte}
+  type jarraychar = {array jshort}
+  type jarrayshort = {array jchar}
+  type jarrayint = {array jint}
+  type jarraylong = {array jlong}
+  type jarrayfloat = {array jfloat}
+  type jarraydouble = {array jdouble}
+  type jarrayptr = {array Ptr.t}
 
   type arrcontents =
     ARBool jarraybool |

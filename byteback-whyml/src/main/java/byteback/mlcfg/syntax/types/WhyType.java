@@ -1,9 +1,29 @@
 package byteback.mlcfg.syntax.types;
 
-import byteback.mlcfg.identifiers.Identifier;
 import java.util.Optional;
 
 public interface WhyType {
+
+	/**
+	 * Checks if a variable of type lValue can hold a value of type rValue. Does not check class hierarchy, only primitive
+	 * and array compatibility
+	 *
+	 * @param lValue type of the l-value
+	 * @param rValue type of the r-value
+	 * @return true if compatible, false if not
+	 */
+	static boolean compatible(WhyType lValue, WhyType rValue) {
+		if (lValue instanceof WhyPrimitive && rValue instanceof WhyPrimitive) {
+			return lValue == rValue;
+		} else if (lValue instanceof WhyReference) {
+			return true;
+		}
+		if (lValue instanceof WhyArrayType && rValue instanceof WhyArrayType) {
+			return compatible(((WhyArrayType) lValue).getBaseType(), ((WhyArrayType) rValue).getBaseType());
+		}
+		return false;
+	}
+
 	String getWhyType();
 
 	String getPreludeType();

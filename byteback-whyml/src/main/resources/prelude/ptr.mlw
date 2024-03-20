@@ -3,3 +3,15 @@ module Ptr
   
   val constant null: t
 end
+
+module Operators
+  val function cond_ifnull (x: Ptr.t) : jbool ensures { result <-> x = Ptr.null }
+  val function cond_ifnotnull (x: Ptr.t) : jbool ensures { result <-> x <> Ptr.null }
+  val function cond_acmpeq (x y: Ptr.t) : jbool ensures { result <-> x = y }
+  val function cond_acmpne (x y: Ptr.t) : jbool ensures { result <-> x <> y }
+
+  scope LCMP
+    predicate eq (x y: Ptr.t) = (x = y)
+    predicate ne (x y: Ptr.t) = not (eq x y)
+  end
+end

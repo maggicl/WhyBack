@@ -1,8 +1,6 @@
 package byteback.mlcfg;
 
-import byteback.analysis.Namespace;
 import byteback.analysis.RootResolver;
-import byteback.analysis.util.SootHosts;
 import byteback.mlcfg.printer.Statement;
 import static byteback.mlcfg.printer.Statement.block;
 import static byteback.mlcfg.printer.Statement.line;
@@ -10,29 +8,26 @@ import static byteback.mlcfg.printer.Statement.many;
 import byteback.mlcfg.printer.WhyClassDeclaration;
 import byteback.mlcfg.printer.WhyClassPrinter;
 import byteback.mlcfg.printer.WhyFunctionPrinter;
-import byteback.mlcfg.syntax.WhyFunctionKind;
 import byteback.mlcfg.syntax.WhyProgram;
 import byteback.mlcfg.vimp.VimpClassParser;
-import byteback.mlcfg.vimp.VimpMethodParser;
+import byteback.mlcfg.vimp.VimpMethodSignatureParser;
 import byteback.mlcfg.vimp.WhyResolver;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.SootMethod;
 
 public class ProgramConverter {
 	public static Logger log = LoggerFactory.getLogger(ProgramConverter.class);
 	private final VimpClassParser classParser;
 
-	private final VimpMethodParser methodParser;
+	private final VimpMethodSignatureParser methodParser;
 	private final WhyClassPrinter whyClassPrinter;
 
 	private final WhyFunctionPrinter whyFunctionPrinter;
 
-	public ProgramConverter(VimpClassParser classParser, VimpMethodParser methodParser, WhyClassPrinter whyClassPrinter, WhyFunctionPrinter whyFunctionPrinter) {
+	public ProgramConverter(VimpClassParser classParser, VimpMethodSignatureParser methodParser, WhyClassPrinter whyClassPrinter, WhyFunctionPrinter whyFunctionPrinter) {
 		this.classParser = classParser;
 		this.methodParser = methodParser;
 		this.whyClassPrinter = whyClassPrinter;

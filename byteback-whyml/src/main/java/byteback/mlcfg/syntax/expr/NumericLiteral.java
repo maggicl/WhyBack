@@ -4,7 +4,7 @@ import byteback.mlcfg.syntax.types.WhyPrimitive;
 import byteback.mlcfg.syntax.types.WhyType;
 import java.util.EnumSet;
 
-public final class NumericLiteral extends Expression {
+public final class NumericLiteral implements Expression {
 	private static final EnumSet<WhyPrimitive> NUMERICS =
 			EnumSet.complementOf(EnumSet.of(WhyPrimitive.BOOL, WhyPrimitive.FLOAT, WhyPrimitive.DOUBLE));
 

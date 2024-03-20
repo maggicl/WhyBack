@@ -1,0 +1,215 @@
+module Int16
+  use int.Int
+
+  type int16 = < range -0x8000 0x7fff >
+
+  let constant min_int16 : int = - 0x8000
+  let constant max_int16 : int =   0x7fff
+  function to_int (x : int16) : int = int16'int x
+
+  clone export mach.int.Bounded_int with
+    type t = int16,
+    constant min = int16'minInt,
+    constant max = int16'maxInt,
+    function to_int = int16'int,
+    lemma to_int_in_bounds,
+    lemma extensionality
+end
+
+module Int8
+  use int.Int
+
+  type int8 = < range -0x80 0x7f >
+
+  let constant min_int8 : int = - 0x80
+  let constant max_int8 : int =   0x7f
+  function to_int (x : int8) : int = int8'int x
+
+  clone export mach.int.Bounded_int with
+    type t = int8,
+    constant min = int8'minInt,
+    constant max = int8'maxInt,
+    function to_int = int8'int,
+    lemma to_int_in_bounds,
+    lemma extensionality
+end
+
+module UInt16Gen
+  use int.Int
+
+  type uint16 = < range 0 0xffff >
+
+  let constant max_uint16 : int = 0xffff
+  let constant length : int = 16
+  let constant radix : int = max_uint16 + 1
+  function to_int (x : uint16) : int = uint16'int x
+end
+
+module UInt16
+  use export UInt16Gen
+
+  clone export mach.int.Unsigned with
+    type t = uint16,
+    constant max = uint16'maxInt,
+    constant radix = radix,
+    goal radix_def,
+    function to_int = uint16'int,
+    lemma zero_unsigned_is_zero,
+    lemma to_int_in_bounds,
+    lemma extensionality
+end
+
+module Int64BV
+  use export mach.int.Int64
+
+  use bv.BV64 as BV64
+
+  val to_bv (x: int64) : BV64.t
+    ensures { BV64.to_int result = to_int x }
+  val of_bv (x: BV64.t) : int64
+    ensures { to_int result = BV64.to_int x }
+end
+
+module FloatSupport
+  use mach.int.Int32
+  use int.Int
+  use ieee_float.RoundingMode
+
+  type t
+
+  function of_int (m:mode) (x:int) : t
+  function to_int (m:mode) (x:t) : int
+
+  predicate is_infinite (x: t)
+  predicate is_nan (x: t)
+  predicate is_zero (x: t)
+  predicate is_positive (x: t)
+  predicate is_negative (x: t)
+  predicate le (x y: t)
+  predicate eq (x y: t)
+
+  function div (x y: t) : t
+  function mul (x y: t) : t
+  function minus (x y: t) : t
+
+  predicate is_finite (x: t) = (not is_nan x) && (not is_infinite x)
+  predicate is_non_zero_finite (x: t) = (is_finite x) && (not is_zero x)
+
+  val constant inf: t
+  val constant minf: t
+  val constant nan: t
+
+  axiom is_inf: is_infinite inf && is_positive inf
+  axiom is_minf: is_infinite minf && is_negative minf
+  axiom is_nan: is_nan nan
+
+  val function cmpl (x y: t) : int32
+    ensures { result = if is_nan x || is_nan y then (-1:int32)
+                       else if eq x y then (0:int32)
+                       else if le x y then (-1:int32)
+                       else (1:int32) }
+
+  val function cmpg (x y: t) : int32
+    ensures { result = if is_nan x || is_nan y then (1:int32)
+                       else if eq x y then (0:int32)
+                       else if le x y then (-1:int32)
+                       else (1:int32) }
+
+  val function to_int_java (x: t) : int
+    ensures { is_nan x -> result = 0 }
+    ensures { not is_nan x -> result = to_int RoundingMode.RTZ x }
+
+  val function of_int_java (x: int) : t
+    ensures { result = of_int RoundingMode.RTZ x }
+
+  (* follows the drem / frem JVM spec: https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.drem *)
+  val function remainder (f1 f2: t) : t
+    ensures { (is_nan f1 || is_nan f2) -> is_nan result }
+    ensures { (not is_nan f1 && not is_nan f2 && not is_nan result) ->
+              ((is_positive result <-> is_positive f1) &&
+               (is_negative result <-> is_negative f1)) }
+    ensures { (is_infinite f1 || is_zero f2) -> is_nan result }
+    ensures { (is_finite f1 && is_infinite f2) -> result = f1 }
+    ensures { (is_zero f1 && is_finite f2 && not is_zero f2) -> result = f1 }
+    (* TODO: this clause is buggy: floatTest.mlw makes it fail with goal Calc2 *)
+    ensures { let true_quotient = (div f1 f2) in
+              (is_non_zero_finite f1 && is_non_zero_finite f2) -> (exists q:int.
+                let qf = (of_int_java q) in
+                (result = minus f1 (mul f2 qf)) &&
+                (is_positive qf <-> is_positive true_quotient) &&
+                (is_negative qf <-> is_negative true_quotient) &&
+                (forall r:int. let rf = (of_int_java r) in (le rf true_quotient) -> (le rf qf))) }
+end
+
+module MachineSupport
+  use ieee_float.Float32
+  use ieee_float.Float64
+  use ieee_float.FloatConverter
+  use ieee_float.RoundingMode
+  use int.Int
+  use int.MinMax
+  use mach.int.Int32
+  use mach.int.Int32BV
+  use mach.bv.BVCheck32
+
+  val function int_to_bounds (a b x: int) : int
+    ensures { result = min (max a x) b }
+
+  let function jint_to_ishift (x: int32) (n: int) : int =
+    let bv = Int32BV.to_bv x in
+    if nth bv 4 then 16 else 0 +
+    if nth bv 3 then 8 else 0 +
+    if nth bv 2 then 4 else 0 +
+    if nth bv 1 then 2 else 0 +
+    if nth bv 0 then 1 else 0
+
+  let function jint_to_lshift (x: int32) (n: int) : int =
+    let bv = Int32BV.to_bv x in
+    if nth bv 5 then 32 else 0 +
+    if nth bv 4 then 16 else 0 +
+    if nth bv 3 then 8 else 0 +
+    if nth bv 2 then 4 else 0 +
+    if nth bv 1 then 2 else 0 +
+    if nth bv 0 then 1 else 0
+
+  (* in the JVM, float-to-float operations are round to nearest even for floats and round to zero for float-to-int
+     source: https://stackoverflow.com/a/38247753 *)
+
+  val function float64_to_float32_java (x: Float64.t) : Float32.t
+    ensures { result = FloatConverter.to_float32 RoundingMode.RNE x }
+
+  val function float32_to_float64_java (x: Float32.t) : Float64.t
+    ensures { result = FloatConverter.to_float64 RoundingMode.RNE x }
+
+  clone FloatSupport as Float64Support with
+    type t = Float64.t,
+    predicate is_infinite = Float64.is_infinite,
+    predicate is_nan = Float64.is_nan,
+    predicate is_zero = Float64.is_zero,
+    predicate is_positive = Float64.is_positive,
+    predicate is_negative = Float64.is_negative,
+    predicate le = Float64.(.<=),
+    predicate eq = Float64.(.=),
+    function div = Float64.(./),
+    function mul = Float64.(.*),
+    function minus = Float64.(.-),
+    function to_int = Float64.to_int,
+    function of_int = Float64.of_int,
+    axiom .
+
+  clone FloatSupport as Float32Support with
+    type t = Float32.t,
+    predicate is_infinite = Float32.is_infinite,
+    predicate is_nan = Float32.is_nan,
+    predicate is_zero = Float32.is_zero,
+    predicate is_positive = Float32.is_positive,
+    predicate is_negative = Float32.is_negative,
+    predicate le = Float32.(.<=),
+    predicate eq = Float32.(.=),
+    function div = Float32.(./),
+    function mul = Float32.(.*),
+    function minus = Float32.(.-),
+    function to_int = Float32.to_int,
+    function of_int = Float32.of_int,
+    axiom .
+end

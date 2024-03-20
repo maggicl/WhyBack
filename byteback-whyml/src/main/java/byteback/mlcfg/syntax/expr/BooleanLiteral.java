@@ -3,7 +3,7 @@ package byteback.mlcfg.syntax.expr;
 import byteback.mlcfg.syntax.types.WhyPrimitive;
 import byteback.mlcfg.syntax.types.WhyType;
 
-public final class BooleanLiteral extends Expression {
+public final class BooleanLiteral implements Expression {
 	private final boolean value;
 
 	public BooleanLiteral(boolean value) {

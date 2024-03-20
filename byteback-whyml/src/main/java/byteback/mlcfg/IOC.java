@@ -8,7 +8,7 @@ import byteback.mlcfg.printer.WhyFieldPrinter;
 import byteback.mlcfg.printer.WhyFunctionPrinter;
 import byteback.mlcfg.vimp.TypeResolver;
 import byteback.mlcfg.vimp.VimpClassParser;
-import byteback.mlcfg.vimp.VimpMethodParser;
+import byteback.mlcfg.vimp.VimpMethodSignatureParser;
 
 public final class IOC {
 	public static final CaseInverter CASE_INVERTER = new CaseInverter();
@@ -16,7 +16,7 @@ public final class IOC {
 	public static final FQDNEscaper FQDN_ESCAPER = new FQDNEscaper(IDENTIFIER_ESCAPER, CASE_INVERTER);
 	public static final TypeResolver TYPE_RESOLVER = new TypeResolver(FQDN_ESCAPER);
 	public static final VimpClassParser CLASS_PARSER = new VimpClassParser(FQDN_ESCAPER, IDENTIFIER_ESCAPER, TYPE_RESOLVER);
-	public static final VimpMethodParser METHOD_PARSER = new VimpMethodParser(IDENTIFIER_ESCAPER, FQDN_ESCAPER, TYPE_RESOLVER);
+	public static final VimpMethodSignatureParser METHOD_PARSER = new VimpMethodSignatureParser(IDENTIFIER_ESCAPER, FQDN_ESCAPER, TYPE_RESOLVER);
 	public static final WhyFieldPrinter WHY_FIELD_PRINTER = new WhyFieldPrinter();
 	public static final WhyClassPrinter WHY_CLASS_PRINTER = new WhyClassPrinter(WHY_FIELD_PRINTER);
 	public static final WhyFunctionPrinter WHY_METHOD_PRINTER = new WhyFunctionPrinter();

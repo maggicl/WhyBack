@@ -2,7 +2,7 @@ package byteback.mlcfg.vimp;
 
 import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.syntax.WhyClass;
-import byteback.mlcfg.syntax.WhyFunction;
+import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.types.ReferenceVisitor;
 import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.vimp.order.ReversePostOrder;
@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 public class WhyResolver {
 	private final Map<Identifier.FQDN, WhyClass> classes = new HashMap<>();
-	private final Map<Identifier.FQDN, List<WhyFunction>> methods = new HashMap<>();
+	private final Map<Identifier.FQDN, List<WhyFunctionSignature>> methods = new HashMap<>();
 
 	public Set<WhyClass> getAllSuper(WhyClass from) {
 		final Deque<Identifier.FQDN> toProcess = from.superNames().collect(Collectors.toCollection(ArrayDeque::new));
@@ -46,7 +46,7 @@ public class WhyResolver {
 		classes.put(classDeclaration.type().fqdn(), classDeclaration);
 	}
 
-	public void addMethod(final WhyFunction methodDeclaration) {
+	public void addMethod(final WhyFunctionSignature methodDeclaration) {
 		final Identifier.FQDN declaringClass = methodDeclaration.declaringClass();
 		methods.computeIfAbsent(declaringClass, k -> new ArrayList<>()).add(methodDeclaration);
 	}
@@ -70,7 +70,7 @@ public class WhyResolver {
 		return rpo.stream();
 	}
 
-	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunction>>> methods() {
+	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunctionSignature>>> methods() {
 		return methods.entrySet().stream();
 	}
 }

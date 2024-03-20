@@ -5,7 +5,7 @@ import static byteback.mlcfg.printer.Statement.block;
 import static byteback.mlcfg.printer.Statement.indent;
 import static byteback.mlcfg.printer.Statement.line;
 import static byteback.mlcfg.printer.Statement.many;
-import byteback.mlcfg.syntax.WhyFunction;
+import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.WhyFunctionKind;
 import byteback.mlcfg.syntax.WhyFunctionParam;
 import byteback.mlcfg.syntax.types.WhyReference;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class WhyFunctionPrinter {
 
-	public Statement methodToWhy(WhyFunction m) {
+	public Statement methodToWhy(WhyFunctionSignature m) {
 		final List<WhyFunctionParam> paramsList = m.params().toList();
 
 		final String params = paramsList.stream()
@@ -26,22 +26,19 @@ public class WhyFunctionPrinter {
 				.filter(e -> e.type() instanceof WhyReference)
 				.map(e -> line("requires { %s }".formatted(e.condition()))));
 
-		final Statement resultPostcondition = many(m.returnType().stream()
-				.filter(e -> e instanceof WhyReference)
-				.map(e -> line("ensures { %s }".formatted(
-						new WhyFunctionParam(Identifier.Special.RESULT, e, false)
-								.condition()))));
-
-
+		final Statement resultPostcondition = m.returnType() instanceof WhyReference
+				? line("ensures { %s }".formatted(
+						new WhyFunctionParam(Identifier.Special.RESULT, m.returnType(), false).condition()))
+				: many();
 
 		return block(
 				line("%s %s (ghost heap: Heap.t) %s%s".formatted(
 						m.kind().getWhyDeclaration(),
 						m.name(),
 						params,
-						m.kind() == WhyFunctionKind.PREDICATE ? "" : " : %s".formatted(
-								m.returnType().map(WhyType::getWhyType).orElse("unit")
-						)
+						m.kind() == WhyFunctionKind.PREDICATE ?
+								"" :
+								" : %s".formatted(m.returnType().getWhyType())
 				)),
 				indent(
 						paramPreconditions,
@@ -50,7 +47,7 @@ public class WhyFunctionPrinter {
 		);
 	}
 
-	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunction> methods) {
+	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunctionSignature> methods) {
 		final WhyClassScope scope = new WhyClassScope(declaringClass);
 		return scope.with(block(methods.stream().map(this::methodToWhy)));
 	}

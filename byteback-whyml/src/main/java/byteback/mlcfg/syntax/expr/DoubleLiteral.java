@@ -3,7 +3,7 @@ package byteback.mlcfg.syntax.expr;
 import byteback.mlcfg.syntax.types.WhyPrimitive;
 import byteback.mlcfg.syntax.types.WhyType;
 
-public final class DoubleLiteral extends Expression {
+public final class DoubleLiteral implements Expression {
 	private final double value;
 
 	public DoubleLiteral(double value) {

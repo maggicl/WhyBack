@@ -3,7 +3,7 @@ package byteback.mlcfg.syntax.expr;
 import byteback.mlcfg.syntax.types.WhyPrimitive;
 import byteback.mlcfg.syntax.types.WhyType;
 
-public final class FloatLiteral extends Expression {
+public final class FloatLiteral implements Expression {
 	private final float value;
 
 	public FloatLiteral(float value) {

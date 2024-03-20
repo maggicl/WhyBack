@@ -1,15 +1,7 @@
   (* prelude import *)
   use prelude.ptr.Ptr
   use prelude.typing.Type
-  use prelude.heap.HeapDef
   use prelude.heap.Heap
   use export prelude.bootstrap.Bootstrap
-
-  (* primitive types *)
-  use prelude.primitive.Int8
-  use prelude.primitive.Int16
-  use prelude.primitive.UInt16
-  use mach.int.Int32
-  use mach.int.Int64
-  use ieee_float.Float32
-  use ieee_float.Float64
+  use export prelude.machine.Operations
+  use export prelude.ptr.Operations

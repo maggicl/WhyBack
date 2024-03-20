@@ -1,0 +1,9 @@
+module Logic
+  type t
+  predicate eq (x y: t) : bool
+  predicate neq (x y: t) : bool = not (eq x y)
+  predicate gt (x y: t) : bool
+  predicate gte (x y: t) : bool
+  predicate lt (x y: t) : bool
+  predicate lte (x y: y) : bool
+end

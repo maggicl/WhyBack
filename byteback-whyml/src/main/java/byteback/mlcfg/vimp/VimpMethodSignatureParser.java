@@ -5,10 +5,11 @@ import byteback.analysis.util.SootHosts;
 import byteback.mlcfg.identifiers.FQDNEscaper;
 import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
-import byteback.mlcfg.syntax.WhyFunction;
+import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.WhyFunctionKind;
 import byteback.mlcfg.syntax.types.WhyPrimitive;
 import byteback.mlcfg.syntax.types.WhyType;
+import byteback.mlcfg.syntax.types.WhyUnitType;
 import java.util.List;
 import java.util.Optional;
 import soot.AbstractJasminClass;
@@ -16,12 +17,12 @@ import soot.SootMethod;
 import soot.Type;
 import soot.VoidType;
 
-public class VimpMethodParser {
+public class VimpMethodSignatureParser {
 	private final IdentifierEscaper identifierEscaper;
 	private final FQDNEscaper fqdnEscaper;
 	private final TypeResolver typeResolver;
 
-	public VimpMethodParser(IdentifierEscaper identifierEscaper, FQDNEscaper fqdnEscaper, TypeResolver typeResolver) {
+	public VimpMethodSignatureParser(IdentifierEscaper identifierEscaper, FQDNEscaper fqdnEscaper, TypeResolver typeResolver) {
 		this.identifierEscaper = identifierEscaper;
 		this.fqdnEscaper = fqdnEscaper;
 		this.typeResolver = typeResolver;
@@ -41,7 +42,7 @@ public class VimpMethodParser {
 		}
 	}
 
-	public Optional<WhyFunction> parse(SootMethod method) {
+	public Optional<WhyFunctionSignature> parse(SootMethod method) {
 		return whyFunctionKind(method).map(whyFunctionKind -> {
 			final String name = method.getName();
 			final String descriptor = AbstractJasminClass.jasminDescriptorOf(method.makeRef());
@@ -49,15 +50,15 @@ public class VimpMethodParser {
 
 			final Identifier.L identifier = identifierEscaper.escapeL(name + descriptor);
 			final List<WhyType> parameterTypes = method.getParameterTypes().stream().map(typeResolver::resolveType).toList();
-			final Optional<WhyType> returnType = sootReturnType.equals(VoidType.v())
-					? Optional.empty()
-					: Optional.of(typeResolver.resolveType(sootReturnType));
+			final WhyType returnType = sootReturnType.equals(VoidType.v())
+					? WhyUnitType.INSTANCE
+					: typeResolver.resolveType(sootReturnType);
 
-			if (whyFunctionKind == WhyFunctionKind.PREDICATE && returnType.filter(e -> e == WhyPrimitive.BOOL).isEmpty()) {
+			if (whyFunctionKind == WhyFunctionKind.PREDICATE && returnType != WhyPrimitive.BOOL) {
 				throw new IllegalStateException("return type of a predicate must be a boolean");
 			}
 
-			return new WhyFunction(
+			return new WhyFunctionSignature(
 					identifier,
 					fqdnEscaper.escape(method.getDeclaringClass().getName(), method.getDeclaringClass().getPackageName().isEmpty()),
 					whyFunctionKind,

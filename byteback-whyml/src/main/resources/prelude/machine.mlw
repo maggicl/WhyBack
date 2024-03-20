@@ -1,0 +1,172 @@
+module Operators
+  (* importing machine types *)
+  use prelude.primitive.machine.Int8
+  use prelude.primitive.machine.Int16
+  use prelude.primitive.machine.UInt16
+  use mach.int.Int32
+  use mach.int.Int32BV
+  use mach.int.Int64
+  use prelude.primitive.machine.Int64BV
+  use ieee_float.Float32
+  use ieee_float.Float64
+
+  (* importing custom machine type operations *)
+  use export prelude.primitive.machine.MachineSupport
+
+  type jbool = bool
+  type jbyte = Int8.int8
+  type jchar = UInt16.uint16
+  type jshort = Int16.int16
+  type jint = Int32.int32
+  type jlong = Int64.int64
+  type jfloat = Float32.t
+  type jdouble = Float64.t
+
+  scope Default
+    let constant z: jbool = false
+    let constant b: jbyte = 0
+    let constant s: jshort = 0
+    let constant c: jchar = 0
+    let constant i: jint = 0
+    let constant j: jlong = 0
+    let constant f: jfloat = (0.0:jfloat)
+    let constant d: jdouble = (0.0:jdouble) 
+  end
+
+  let constant jfloat_inf: jfloat = Float32Support.inf
+  let constant jfloat_minf: jfloat = Float32Support.minf
+  let constant jfloat_nan: jfloat = Float32Support.nan
+
+  let constant jdouble_inf: jdouble = Float64Support.inf
+  let constant jdouble_minf: jdouble = Float64Support.minf
+  let constant jdouble_nan: jdouble = Float64Support.nan
+
+  let function d2f (x: jdouble) : jfloat = float64_to_float32_java x
+  let function d2i (x: jdouble) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (Float64Support.to_int_java x))
+  let function d2l (x: jdouble) : jlong = Int64.of_int (int_to_bounds min_int64 max_int64 (Float64Support.to_int_java x))
+  let function dneg (x: jdouble) : jdouble = Float64.neg x
+  let function dadd (x y: jdouble) : jdouble = Float64.(.+) x y
+  let function dsub (x y: jdouble) : jdouble = Float64.(.-) x y
+  let function dmul (x y: jdouble) : jdouble = Float64.(.*) x y
+  let function ddiv (x y: jdouble) : jdouble = Float64.(./) x y
+  let function drem (x y: jdouble) : jdouble = Float64Support.remainder x y
+  let function cond_dcmpl (x y: jdouble) : jint = Float64Support.cmpl x y
+  let function cond_dcmpg (x y: jdouble) : jint = Float64Support.cmpg x y
+
+  let function f2d (x: jfloat) : jdouble = float32_to_float64_java x
+  let function f2i (x: jfloat) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (Float32Support.to_int_java x))
+  let function f2l (x: jfloat) : jlong = Int64.of_int (int_to_bounds min_int64 max_int64 (Float32Support.to_int_java x))
+  let function fneg (x: jfloat) : jfloat = Float32.neg x
+  let function fadd (x y: jfloat) : jfloat = Float32.(.+) x y
+  let function fsub (x y: jfloat) : jfloat = Float32.(.-) x y
+  let function fmul (x y: jfloat) : jfloat = Float32.(.*) x y
+  let function fdiv (x y: jfloat) : jfloat = Float32.(./) x y
+  let function frem (x y: jfloat) : jfloat = Float32Support.remainder x y
+  let function cond_fcmpl (x y: jfloat) : jint = Float32Support.cmpl x y
+  let function cond_fcmpg (x y: jfloat) : jint = Float32Support.cmpg x y
+
+  let function i2b (x: jint) : jbyte = Int8.of_int (int_to_bounds min_int8 max_int8 (Int32.to_int x))
+  let function i2c (x: jint) : jchar = UInt16.of_int (int_to_bounds 0 max_uint16 (Int32.to_int x))
+  let function i2s (x: jint) : jshort = Int16.of_int (int_to_bounds min_int16 max_int16 (Int32.to_int x))
+  let function i2l (x: jint) : jlong = Int64.of_int (Int32.to_int x)
+  let function i2f (x: jint) : jfloat = Float32Support.of_int_java (Int32.to_int x)
+  let function i2d (x: jint) : jdouble = Float64Support.of_int_java (Int32.to_int x)
+  let function ineg (x: jint) : jint = Int32.(-_) x
+  let function iadd (x y: jint) : jint = Int32.(+) x y
+  let function isub (x y: jint) : jint = Int32.(-) x y
+  let function imul (x y: jint) : jint = Int32.(*) x y
+  let function idiv (x y: jint) : jint = Int32.(/) x y
+  let function irem (x y: jint) : jint = Int32.(%) x y
+  let function iand (x y: jint) : jint = Int32BV.of_bv (BV32.bw_and (Int32BV.to_bv x) (Int32BV.to_bv y))
+  let function ior (x y: jint) : jint = Int32BV.of_bv (BV32.bw_or (Int32BV.to_bv x) (Int32BV.to_bv y))
+  let function ixor (x y: jint) : jint = Int32BV.of_bv (BV32.bw_xor (Int32BV.to_bv x) (Int32BV.to_bv y))
+  let function ishl (x y: jint) : jint = Int32BV.of_bv (BV32.lsl (Int32BV.to_bv x) (jint_to_ishift y))
+  let function ishr (x y: jint) : jint = Int32BV.of_bv (BV32.lsr (Int32BV.to_bv x) (jint_to_ishift y))
+  let function iushr (x y: jint) : jint =
+    if Int32.(>=) x 0
+    then ishr x 0
+    else Int32.(+) (ishr x 0) (BV32.jsr (Int32BV.to_bv (2:jint)) (31 - (jint_to_ishift y))) 
+
+  let function cond_icmpeq (x y: jint) : jbool = Int32.(=) x y
+  let function cond_icmpne (x y: jint) : jbool = not (Int32.(=) x y)
+  let function cond_icmplt (x y: jint) : jbool = Int32.(<) x y
+  let function cond_icmpgt (x y: jint) : jbool = Int32.(>) x y
+  let function cond_icmple (x y: jint) : jbool = Int32.(<=) x y
+  let function cond_icmpge (x y: jint) : jbool = Int32.(>=) x y
+  let function cond_eq (x: jint) : jbool = Int32.(=) x Default.i
+  let function cond_ne (x: jint) : jbool = not (Int32.(=) x Default.i)
+  let function cond_lt (x: jint) : jbool = Int32.(<) x Default.i
+  let function cond_gt (x: jint) : jbool = Int32.(>) x Default.i
+  let function cond_le (x: jint) : jbool = Int32.(<=) x Default.i
+  let function cond_ge (x: jint) : jbool = Int32.(>=) x Default.i
+
+  let function l2i (x: jlong) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (Int64.to_int x))
+  let function l2f (x: jlong) : jfloat = Float32Support.of_int_java (Int64.to_int x)
+  let function l2d (x: jlong) : jdouble = Float64Support.of_int_java (Int64.to_int x)
+  let function lneg (x: jlong) : jlong = Int64.(-_) x
+  let function ladd (x y: jlong) : jlong = Int64.(+) x y
+  let function lsub (x y: jlong) : jlong = Int64.(-) x y
+  let function lmul (x y: jlong) : jlong = Int64.(*) x y
+  let function ldiv (x y: jlong) : jlong = Int64.(/) x y
+  let function lrem (x y: jlong) : jlong = Int64.(%) x y
+  let function land (x y: jlong) : jlong = Int64BV.of_bv (BV64.bw_and (Int64BV.to_bv x) (Int64BV.to_bv y))
+  let function lor (x y: jlong) : jlong = Int64BV.of_bv (BV64.bw_or (Int64BV.to_bv x) (Int64BV.to_bv y))
+  let function lxor (x y: jlong) : jlong = Int64BV.of_bv (BV64.bw_xor (Int64BV.to_bv x) (Int64BV.to_bv y))
+  let function lshl (x: jlong) (y: jint) : jlong = Int64BV.of_bv (BV64.lsl (Int64BV.to_bv x) (jint_to_lshift y))
+  let function lshr (x: jlong) (y: jint) : jlong = Int64BV.of_bv (BV64.lsr (Int64BV.to_bv x) (jint_to_lshift y))
+  let function iushr (x y: jlong) : jlong =
+    if Int64.(>=) x 0
+    then ishr x 0
+    else Int64.(+) (ishr x 0) (BV64.jsr (Int64BV.to_bv (2:jint)) (31 - (jint_to_ishift y))) 
+
+  let function lcmp (x y: jlong) : jint = if Int64.(=) x y then (0:jint) else if Int64.(<) x y then (-1:jint) else (1:jint)
+
+  clone prelude.primitive.support.Logic as BCMP with
+    predicate eq = Int8.(=)
+    predicate lt = Int8.(<)
+    predicate gt = Int8.(>)
+    predicate le = Int8.(<=)
+    predicate ge = Int8.(>=)
+
+  clone prelude.primitive.support.Logic as SCMP with
+    predicate eq = Int16.(=)
+    predicate lt = Int16.(<)
+    predicate gt = Int16.(>)
+    predicate le = Int16.(<=)
+    predicate ge = Int16.(>=)
+
+  clone prelude.primitive.support.Logic as CCMP with
+    predicate eq = UInt16.(=)
+    predicate lt = UInt16.(<)
+    predicate gt = UInt16.(>)
+    predicate le = UInt16.(<=)
+    predicate ge = UInt16.(>=)
+
+  clone prelude.primitive.support.Logic as ICMP with
+    predicate eq = Int32.(=)
+    predicate lt = Int32.(<)
+    predicate gt = Int32.(>)
+    predicate le = Int32.(<=)
+    predicate ge = Int32.(>=)
+
+  clone prelude.primitive.support.Logic as JCMP with
+    predicate eq = Int64.(=)
+    predicate lt = Int64.(<)
+    predicate gt = Int64.(>)
+    predicate le = Int64.(<=)
+    predicate ge = Int64.(>=)
+
+  clone prelude.primitive.support.Logic as FCMP with
+    predicate eq = Float32.(=)
+    predicate lt = Float32.(<)
+    predicate gt = Float32.(>)
+    predicate le = Float32.(<=)
+    predicate ge = Float32.(>=)
+
+  clone prelude.primitive.support.Logic as DCMP with
+    predicate eq = Float64.(=)
+    predicate lt = Float64.(<)
+    predicate gt = Float64.(>)
+    predicate le = Float64.(<=)
+    predicate ge = Float64.(>=)
+end

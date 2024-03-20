@@ -8,12 +8,12 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public record WhyFunction(
+public record WhyFunctionSignature(
 		Identifier.L name,
 		Identifier.FQDN declaringClass,
 		WhyFunctionKind kind,
 		List<WhyType> paramTypes,
-		Optional<WhyType> returnType) {
+		WhyType returnType) {
 
 	public Stream<WhyFunctionParam> params() {
 		final Optional<WhyFunctionParam> thisParam;
@@ -31,5 +31,9 @@ public record WhyFunction(
 						false));
 
 		return Stream.concat(thisParam.stream(), params);
+	}
+
+	public String identifier() {
+		return "%s.%s".formatted(declaringClass, name);
 	}
 }

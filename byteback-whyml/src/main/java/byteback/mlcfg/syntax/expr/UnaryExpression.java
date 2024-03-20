@@ -4,7 +4,8 @@ import byteback.mlcfg.syntax.types.WhyPrimitive;
 import byteback.mlcfg.syntax.types.WhyReference;
 import byteback.mlcfg.syntax.types.WhyType;
 
-public final class UnaryExpression extends Expression {
+public final class UnaryExpression implements Expression {
+
 	private final Operator operator;
 	private final Expression operand;
 
@@ -59,7 +60,10 @@ public final class UnaryExpression extends Expression {
 		L2D("l2d", WhyPrimitive.LONG, WhyPrimitive.DOUBLE),
 		LNEG("lneg", WhyPrimitive.LONG, WhyPrimitive.LONG),
 		Z2I("z2i", WhyPrimitive.BOOL, WhyPrimitive.INT),
-		I2Z("i2z", WhyPrimitive.INT, WhyPrimitive.BOOL);
+		I2Z("i2z", WhyPrimitive.INT, WhyPrimitive.BOOL),
+
+		// Logic operation
+		NOT("not", WhyPrimitive.BOOL, WhyPrimitive.BOOL);
 
 		private final String opName;
 		private final WhyType opType;

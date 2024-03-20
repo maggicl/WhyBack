@@ -50,9 +50,7 @@ public class VimpMethodSignatureParser {
 
 			final Identifier.L identifier = identifierEscaper.escapeL(name + descriptor);
 			final List<WhyType> parameterTypes = method.getParameterTypes().stream().map(typeResolver::resolveType).toList();
-			final WhyType returnType = sootReturnType.equals(VoidType.v())
-					? WhyUnitType.INSTANCE
-					: typeResolver.resolveType(sootReturnType);
+			final WhyType returnType = typeResolver.resolveType(sootReturnType);
 
 			if (whyFunctionKind == WhyFunctionKind.PREDICATE && returnType != WhyJVMType.BOOL) {
 				throw new IllegalStateException("return type of a predicate must be a boolean");

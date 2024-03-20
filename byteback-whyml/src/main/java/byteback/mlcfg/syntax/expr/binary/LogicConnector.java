@@ -21,12 +21,12 @@ public enum LogicConnector implements BinaryOperator {
 	}
 
 	@Override
-	public WhyType firstOpType() {
+	public WhyJVMType firstOpType() {
 		return WhyJVMType.BOOL;
 	}
 
 	@Override
-	public WhyType secondOpType() {
+	public WhyJVMType secondOpType() {
 		return WhyJVMType.BOOL;
 	}
 

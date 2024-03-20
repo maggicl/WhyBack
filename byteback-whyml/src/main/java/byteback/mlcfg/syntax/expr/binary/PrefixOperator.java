@@ -1,8 +1,6 @@
 package byteback.mlcfg.syntax.expr.binary;
 
 import byteback.mlcfg.syntax.types.WhyJVMType;
-import byteback.mlcfg.syntax.types.WhyReference;
-import byteback.mlcfg.syntax.types.WhyType;
 
 public enum PrefixOperator implements BinaryOperator {
 	DADD("dadd", WhyJVMType.DOUBLE, WhyJVMType.DOUBLE, WhyJVMType.DOUBLE),
@@ -48,15 +46,15 @@ public enum PrefixOperator implements BinaryOperator {
 	LSHR("lshr", WhyJVMType.LONG, WhyJVMType.INT, WhyJVMType.LONG),
 	LUSHR("lushr", WhyJVMType.LONG, WhyJVMType.LONG, WhyJVMType.LONG),
 	LCMP("lcmp", WhyJVMType.LONG, WhyJVMType.LONG, WhyJVMType.INT),
-	COND_ACMPEQ("cond_acmpeq", WhyReference.OBJECT, WhyReference.OBJECT, WhyJVMType.INT),
-	COND_ACMPNE("cond_acmpne", WhyReference.OBJECT, WhyReference.OBJECT, WhyJVMType.INT);
+	COND_ACMPEQ("cond_acmpeq", WhyJVMType.PTR, WhyJVMType.PTR, WhyJVMType.INT),
+	COND_ACMPNE("cond_acmpne", WhyJVMType.PTR, WhyJVMType.PTR, WhyJVMType.INT);
 
 	private final String opName;
-	private final WhyType firstOpType;
-	private final WhyType secondOpType;
+	private final WhyJVMType firstOpType;
+	private final WhyJVMType secondOpType;
 	private final WhyJVMType returnType;
 
-	PrefixOperator(String opName, WhyType firstOpType, WhyType secondOpType, WhyJVMType returnType) {
+	PrefixOperator(String opName, WhyJVMType firstOpType, WhyJVMType secondOpType, WhyJVMType returnType) {
 		this.opName = opName;
 		this.firstOpType = firstOpType;
 		this.secondOpType = secondOpType;
@@ -69,12 +67,12 @@ public enum PrefixOperator implements BinaryOperator {
 	}
 
 	@Override
-	public WhyType firstOpType() {
+	public WhyJVMType firstOpType() {
 		return firstOpType;
 	}
 
 	@Override
-	public WhyType secondOpType() {
+	public WhyJVMType secondOpType() {
 		return secondOpType;
 	}
 

@@ -17,6 +17,7 @@ import soot.LongType;
 import soot.RefType;
 import soot.ShortType;
 import soot.Type;
+import soot.VoidType;
 
 public class TypeAccessExtractor extends TypeSwitch<WhyType> {
 	private final FQDNEscaper fqdnEscaper;
@@ -88,6 +89,11 @@ public class TypeAccessExtractor extends TypeSwitch<WhyType> {
 		} else {
 			type = WhyJVMType.PTR;
 		}
+	}
+
+	@Override
+	public void caseVoidType(VoidType t) {
+		type = WhyJVMType.UNIT;
 	}
 
 	@Override

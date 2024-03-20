@@ -4,7 +4,8 @@ import java.util.Objects;
 
 public record WhyArrayType(WhyType baseType) implements WhyPtrType {
 	public WhyArrayType {
-		if (baseType == WhyJVMType.PTR) {
+		// noinspection SuspiciousMethodCalls
+		if (WhyJVMType.META_TYPES.contains(baseType)) {
 			throw new IllegalArgumentException("base type of array cannot be generic reference JVM type");
 		}
 	}
@@ -21,7 +22,7 @@ public record WhyArrayType(WhyType baseType) implements WhyPtrType {
 				case LONG -> "LongArray";
 				case FLOAT -> "FloatArray";
 				case DOUBLE -> "DoubleArray";
-				case PTR -> throw new IllegalStateException("unreachable");
+				default -> throw new IllegalStateException("unreachable");
 			};
 		} else {
 			final WhyPtrType ptrType = (WhyPtrType) baseType;

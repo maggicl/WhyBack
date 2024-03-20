@@ -12,7 +12,9 @@ import byteback.mlcfg.syntax.expr.DoubleLiteral;
 import byteback.mlcfg.syntax.expr.FloatLiteral;
 import byteback.mlcfg.syntax.expr.NullLiteral;
 import byteback.mlcfg.syntax.expr.NumericLiteral;
+import byteback.mlcfg.syntax.expr.OldReference;
 import byteback.mlcfg.syntax.expr.UnaryExpression;
+import byteback.mlcfg.syntax.expr.UnitLiteral;
 import byteback.mlcfg.syntax.expr.binary.BinaryOperator;
 import byteback.mlcfg.syntax.expr.binary.Comparison;
 import byteback.mlcfg.syntax.expr.binary.LogicConnector;
@@ -343,7 +345,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseVoidConstant(final VoidConstant v) {
-		setExpression(Prelude.v().getVoidConstant().makeValueReference());
+		setExpression(UnitLiteral.INSTANCE);
 	}
 
 	@Override
@@ -435,14 +437,11 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseOldExpr(final OldExpr v) {
-		final Expression operand = makeExpressionExtractor().visit(v.getOp());
-		final Expression oldReference = new OldReference(operand);
-		setExpression(oldReference);
+		setExpression(new OldReference(visit(v.getOp())));
 	}
 
 	@Override
 	public void caseDefault(final Value v) {
 		throw new IllegalArgumentException("Unable to convert expression of type " + v.getClass().getName());
 	}
-
 }

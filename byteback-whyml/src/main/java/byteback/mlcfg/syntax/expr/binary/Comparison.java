@@ -1,8 +1,6 @@
 package byteback.mlcfg.syntax.expr.binary;
 
 import byteback.mlcfg.syntax.types.WhyJVMType;
-import byteback.mlcfg.syntax.types.WhyReference;
-import byteback.mlcfg.syntax.types.WhyType;
 import java.util.Objects;
 
 public final class Comparison implements BinaryOperator {
@@ -12,6 +10,10 @@ public final class Comparison implements BinaryOperator {
 	public Comparison(WhyJVMType type, Kind kind) {
 		if (type == WhyJVMType.PTR && (kind != Kind.EQ && kind != Kind.NE)) {
 			throw new IllegalArgumentException("object comparison does not have operator " + kind);
+		}
+
+		if (type == WhyJVMType.UNIT) {
+			throw new IllegalArgumentException("cannot use unit type in comparison");
 		}
 
 		this.type = Objects.requireNonNull(type);
@@ -27,12 +29,12 @@ public final class Comparison implements BinaryOperator {
 	}
 
 	@Override
-	public WhyType firstOpType() {
-		return type == WhyJVMType.PTR ? WhyReference.OBJECT : type;
+	public WhyJVMType firstOpType() {
+		return type;
 	}
 
 	@Override
-	public WhyType secondOpType() {
+	public WhyJVMType secondOpType() {
 		return firstOpType();
 	}
 
@@ -45,6 +47,7 @@ public final class Comparison implements BinaryOperator {
 	public boolean isInfix() {
 		return false;
 	}
+
 	public enum Kind {
 		EQ("eq"),
 		NE("ne"),

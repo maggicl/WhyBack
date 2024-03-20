@@ -6,9 +6,9 @@ import byteback.mlcfg.syntax.types.WhyType;
 public interface BinaryOperator {
 	String opName();
 
-	WhyType firstOpType();
+	WhyJVMType firstOpType();
 
-	WhyType secondOpType();
+	WhyJVMType secondOpType();
 
 	WhyJVMType returnType();
 

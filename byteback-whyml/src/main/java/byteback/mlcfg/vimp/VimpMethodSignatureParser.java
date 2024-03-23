@@ -9,7 +9,6 @@ import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.WhyFunctionKind;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
-import byteback.mlcfg.syntax.types.WhyUnitType;
 import java.util.List;
 import java.util.Optional;
 import soot.AbstractJasminClass;
@@ -19,12 +18,13 @@ import soot.VoidType;
 
 public class VimpMethodSignatureParser {
 	private final IdentifierEscaper identifierEscaper;
-	private final FQDNEscaper fqdnEscaper;
+	private final VimpClassNameParser classNameParser;
 	private final TypeResolver typeResolver;
 
-	public VimpMethodSignatureParser(IdentifierEscaper identifierEscaper, FQDNEscaper fqdnEscaper, TypeResolver typeResolver) {
+	public VimpMethodSignatureParser(IdentifierEscaper identifierEscaper, VimpClassNameParser classNameParser,
+									 TypeResolver typeResolver) {
 		this.identifierEscaper = identifierEscaper;
-		this.fqdnEscaper = fqdnEscaper;
+		this.classNameParser = classNameParser;
 		this.typeResolver = typeResolver;
 	}
 
@@ -58,7 +58,7 @@ public class VimpMethodSignatureParser {
 
 			return new WhyFunctionSignature(
 					identifier,
-					fqdnEscaper.escape(method.getDeclaringClass().getName(), method.getDeclaringClass().getPackageName().isEmpty()),
+					classNameParser.parse(method.getDeclaringClass()),
 					whyFunctionKind,
 					parameterTypes,
 					returnType);

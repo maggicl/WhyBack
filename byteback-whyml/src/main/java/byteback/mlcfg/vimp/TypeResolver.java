@@ -7,9 +7,9 @@ import soot.Type;
 
 public class TypeResolver {
 
-	private final FQDNEscaper escaper;
+	private final VimpClassNameParser escaper;
 
-	public TypeResolver(FQDNEscaper escaper) {
+	public TypeResolver(VimpClassNameParser escaper) {
 		this.escaper = escaper;
 	}
 

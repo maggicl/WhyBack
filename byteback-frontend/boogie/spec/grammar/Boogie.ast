@@ -171,14 +171,14 @@ MapUpdateOperation : MapAccessOperation ::= Update:Expression;
 
 MapSelect ::= Expression*;
 
-// Symbolic reference
+// Symbolic access
 abstract SymbolicReference : Expression ::= Accessor;
 
 ValueReference : SymbolicReference;
 
 FunctionReference : SymbolicReference ::= Argument:Expression*;
 
-// Old reference
+// Old access
 OldReference : Expression ::= Argument:Expression;
 
 // Casting references

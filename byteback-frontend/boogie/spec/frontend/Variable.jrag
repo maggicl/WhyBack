@@ -173,7 +173,7 @@ aspect Variable {
   eq Binding.getVariable().getTypeAccess() = getTypeAccess();
 
   /**
-   * Get reference to variable.
+   * Get access to variable.
    */
   syn ValueReference Variable.makeValueReference();
 
@@ -206,7 +206,7 @@ aspect Variable {
 	eq ValueReference.getVariable() = getAccessor().lookupRemoteVariable().get();
 
   /**
-   * Create variable declaration from reference.
+   * Create variable declaration from access.
    */
   syn VariableDeclaration ValueReference.makeVariableDeclaration(TypeAccess typeAccess);
 
@@ -215,7 +215,7 @@ aspect Variable {
       typeAccess, new List<>(getAccessor().makeDeclarator()), new Opt<>())));
 
   /**
-   * Create assignee from reference.
+   * Create assignee from access.
    */
   syn Assignee ValueReference.makeAssignee();
 

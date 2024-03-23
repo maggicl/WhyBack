@@ -1,53 +1,39 @@
 package byteback.mlcfg.vimp;
 
-import byteback.mlcfg.identifiers.FQDNEscaper;
 import byteback.mlcfg.identifiers.Identifier;
-import byteback.mlcfg.identifiers.IdentifierEscaper;
 import byteback.mlcfg.syntax.WhyClass;
 import byteback.mlcfg.syntax.WhyField;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import soot.SootClass;
-import soot.SootField;
 
 public class VimpClassParser {
 
-	private final FQDNEscaper fqdnEscaper;
-	private final IdentifierEscaper identifierEscaper;
-	private final TypeResolver typeResolver;
+	private final VimpClassNameParser classNameParser;
+	private final VimpFieldParser fieldParser;
 
-	public VimpClassParser(FQDNEscaper fqdnEscaper, IdentifierEscaper identifierEscaper, TypeResolver typeResolver) {
-		this.fqdnEscaper = fqdnEscaper;
-		this.identifierEscaper = identifierEscaper;
-		this.typeResolver = typeResolver;
-	}
-
-	private List<WhyField> toFieldDeclarationList(Stream<SootField> fields) {
-		return fields.map(f -> new WhyField(
-						identifierEscaper.escapeU(f.getName()),
-						typeResolver.resolveType(f.getType()), f.isStatic()))
-				.toList();
+	public VimpClassParser(VimpClassNameParser classNameParser, VimpFieldParser fieldParser) {
+		this.classNameParser = classNameParser;
+		this.fieldParser = fieldParser;
 	}
 
 	public WhyClass parse(SootClass clazz) {
-		final String className = clazz.getName();
 		final Optional<Identifier.FQDN> superclass = clazz.hasSuperclass()
-				? Optional.of(fqdnEscaper.escape(clazz.getSuperclass().getName(), clazz.getSuperclass().getPackageName().isEmpty()))
+				? Optional.of(classNameParser.parse(clazz.getSuperclass()))
 				: Optional.empty();
 
 		final Set<Identifier.FQDN> interfaces = clazz.getInterfaces().stream()
-				.map(e -> fqdnEscaper.escape(e.getName(), e.getPackageName().isEmpty()))
+				.map(classNameParser::parse)
 				.collect(Collectors.toSet());
 
-		final List<WhyField> fields = toFieldDeclarationList(clazz.getFields().stream());
+		final Identifier.FQDN clazzFqdn = classNameParser.parse(clazz);
 
-		return new WhyClass(
-				fqdnEscaper.escape(className, clazz.getPackageName().isEmpty()),
-				superclass,
-				interfaces,
-				fields);
+		final List<WhyField> fields = clazz.getFields().stream()
+				.map(fieldParser::parse)
+				.toList();
+
+		return new WhyClass(clazzFqdn, superclass, interfaces, fields);
 	}
 }

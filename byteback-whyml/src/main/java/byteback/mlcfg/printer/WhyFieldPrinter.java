@@ -11,8 +11,8 @@ import byteback.mlcfg.vimp.WhyResolver;
 
 public class WhyFieldPrinter {
 	public Statement toWhy(WhyField field, WhyResolver resolver) {
-		final Identifier.U name = field.name();
-		final WhyType fieldType = field.type();
+		final Identifier.U name = field.getName();
+		final WhyType fieldType = field.getType();
 		final String preludeType = fieldType.getPreludeType();
 
 		if (fieldType instanceof WhyJVMType) {
@@ -20,7 +20,7 @@ public class WhyFieldPrinter {
 					line("clone prelude.heap.Field as %s with val f = %s, axiom of".formatted(name, preludeType))
 			);
 		} else {
-			final String resolvedType = resolver.isResolved(field.type())
+			final String resolvedType = resolver.isResolved(field.getType())
 					? preludeType
 					: "Type.unknown (* %s *)".formatted(preludeType);
 

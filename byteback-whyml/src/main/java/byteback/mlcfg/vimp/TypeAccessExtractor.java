@@ -1,7 +1,6 @@
 package byteback.mlcfg.vimp;
 
 import byteback.analysis.TypeSwitch;
-import byteback.mlcfg.identifiers.FQDNEscaper;
 import byteback.mlcfg.syntax.types.WhyArrayType;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyReference;
@@ -20,13 +19,12 @@ import soot.Type;
 import soot.VoidType;
 
 public class TypeAccessExtractor extends TypeSwitch<WhyType> {
-	private final FQDNEscaper fqdnEscaper;
-
-	private WhyType type;
+	private final VimpClassNameParser classNameParser;
 	private final boolean resolveRefType;
+	private WhyType type;
 
-	public TypeAccessExtractor(FQDNEscaper fqdnEscaper, boolean resolveRefType) {
-		this.fqdnEscaper = fqdnEscaper;
+	public TypeAccessExtractor(VimpClassNameParser classNameParser, boolean resolveRefType) {
+		this.classNameParser = classNameParser;
 		this.resolveRefType = resolveRefType;
 	}
 
@@ -72,18 +70,16 @@ public class TypeAccessExtractor extends TypeSwitch<WhyType> {
 
 	@Override
 	public void caseRefType(final RefType referenceType) {
-		if (resolveRefType) {
-			type = new WhyReference(fqdnEscaper.escape(referenceType.getClassName(), referenceType.getSootClass().getPackageName().isEmpty()));
-		} else {
-			type = WhyJVMType.PTR;
-		}
+		type = resolveRefType
+				? new WhyReference(classNameParser.parse(referenceType.getSootClass()))
+				: WhyJVMType.PTR;
 	}
 
 	@Override
 	public void caseArrayType(final ArrayType arrayType) {
 		if (resolveRefType) {
 			// TODO: consider rewriting this
-			final TypeAccessExtractor e = new TypeAccessExtractor(fqdnEscaper, true);
+			final TypeAccessExtractor e = new TypeAccessExtractor(classNameParser, true);
 			e.visit(arrayType.getElementType());
 			type = new WhyArrayType(e.result());
 		} else {

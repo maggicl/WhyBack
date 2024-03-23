@@ -7,9 +7,15 @@ import byteback.analysis.vimp.LogicExistsExpr;
 import byteback.analysis.vimp.LogicForallExpr;
 import byteback.analysis.vimp.OldExpr;
 import byteback.analysis.vimp.VoidConstant;
+import byteback.mlcfg.identifiers.IdentifierEscaper;
+import byteback.mlcfg.syntax.WhyField;
+import byteback.mlcfg.syntax.WhyInstanceField;
+import byteback.mlcfg.syntax.WhyStaticField;
 import byteback.mlcfg.syntax.expr.BooleanLiteral;
 import byteback.mlcfg.syntax.expr.DoubleLiteral;
+import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.expr.FloatLiteral;
+import byteback.mlcfg.syntax.expr.LocalVariableExpression;
 import byteback.mlcfg.syntax.expr.NullLiteral;
 import byteback.mlcfg.syntax.expr.NumericLiteral;
 import byteback.mlcfg.syntax.expr.OldReference;
@@ -19,13 +25,19 @@ import byteback.mlcfg.syntax.expr.binary.BinaryOperator;
 import byteback.mlcfg.syntax.expr.binary.Comparison;
 import byteback.mlcfg.syntax.expr.binary.LogicConnector;
 import byteback.mlcfg.syntax.expr.binary.PrefixOperator;
+import byteback.mlcfg.syntax.expr.field.Access;
+import byteback.mlcfg.syntax.expr.field.ArrayExpression;
+import byteback.mlcfg.syntax.expr.field.ArrayOperation;
+import byteback.mlcfg.syntax.expr.field.FieldExpression;
+import byteback.mlcfg.syntax.expr.field.Operation;
+import byteback.mlcfg.syntax.types.WhyArrayType;
 import byteback.mlcfg.syntax.types.WhyJVMType;
+import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.vimp.TypeResolver;
+import byteback.mlcfg.vimp.VimpFieldParser;
 import byteback.mlcfg.vimp.VimpMethodSignatureParser;
 import java.util.stream.Stream;
 import soot.Local;
-import soot.SootClass;
-import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
 import soot.Value;
@@ -69,10 +81,15 @@ import soot.jimple.XorExpr;
 
 public class PureExpressionExtractor extends BaseExpressionExtractor {
 	private final TypeResolver typeResolver;
+	private final VimpFieldParser fieldParser;
+	private final IdentifierEscaper identifierEscaper;
 
-	public PureExpressionExtractor(VimpMethodSignatureParser methodSignatureParser, TypeResolver typeResolver) {
+	public PureExpressionExtractor(VimpMethodSignatureParser methodSignatureParser, TypeResolver typeResolver,
+								   VimpFieldParser fieldParser, IdentifierEscaper identifierEscaper) {
 		super(methodSignatureParser);
 		this.typeResolver = typeResolver;
+		this.fieldParser = fieldParser;
+		this.identifierEscaper = identifierEscaper;
 	}
 
 	@Override
@@ -365,41 +382,58 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseLocal(final Local v) {
-		setExpression(ValueReference.of(localName(v)));
+		setExpression(new LocalVariableExpression(
+				identifierEscaper.escapeL("lv_" + v.getName()),
+				typeResolver.resolveJVMType(v.getType())
+		));
 	}
 
 	@Override
 	public void caseInstanceFieldRef(final InstanceFieldRef v) {
-		final SootField field = v.getField();
-		final Value base = v.getBase();
-		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
-		final Expression heapAccess = Prelude.v().makeHeapAccessExpression(visit(base), reference);
-		setExpression(heapAccess);
+		final WhyField field = fieldParser.parse(v.getField());
+		if (!(field instanceof WhyInstanceField)) {
+			throw new IllegalStateException("InstanceFieldRef has a non-instance field");
+		}
+
+		final Expression base = visit(v.getBase());
+		setExpression(new FieldExpression(Operation.get(), Access.instance(base, (WhyInstanceField) field)));
 	}
 
 	@Override
 	public void caseStaticFieldRef(final StaticFieldRef v) {
-		final SootField field = v.getField();
-		final SootClass base = field.getDeclaringClass();
-		final Expression reference = ValueReference.of(FieldConverter.fieldName(field));
-		final Expression heapAccess = Prelude.v()
-				.makeStaticAccessExpression(ValueReference.of(ReferenceTypeConverter.typeName(base)), reference);
-		setExpression(heapAccess);
+		final WhyField field = fieldParser.parse(v.getField());
+		if (!(field instanceof WhyStaticField)) {
+			throw new IllegalStateException("InstanceFieldRef has a non-instance field");
+		}
+
+		setExpression(new FieldExpression(Operation.get(), Access.staticAccess((WhyStaticField) field)));
 	}
 
 	@Override
 	public void caseArrayRef(final ArrayRef v) {
-		final Value base = v.getBase();
-		final Type type = v.getType();
-		final var index = v.getIndex();
-		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
-		setExpression(Prelude.v().makeArrayAccessExpression(typeAccess, visit(base), visit(index)));
+		final WhyType type = typeResolver.resolveType(v.getType());
+		if (!(type instanceof WhyArrayType)) {
+			throw new IllegalStateException("type of array ref expression is not array type");
+		}
+
+		final WhyJVMType elemType = ((WhyArrayType) type).baseType().jvm();
+		final Expression base = visit(v.getBase());
+		final Expression index = visit(v.getIndex());
+
+		setExpression(new ArrayExpression(base, elemType, ArrayOperation.load(index)));
 	}
 
 	@Override
 	public void caseLengthExpr(final LengthExpr v) {
-		final Value operand = v.getOp();
-		setExpression(Prelude.v().getLengthAccessExpression(visit(operand)));
+		final WhyType type = typeResolver.resolveType(v.getType());
+		if (!(type instanceof WhyArrayType)) {
+			throw new IllegalStateException("type of array ref expression is not array type");
+		}
+
+		final WhyJVMType elemType = ((WhyArrayType) type).baseType().jvm();
+		final Expression base = visit(v.getOp());
+
+		setExpression(new ArrayExpression(base, elemType, ArrayOperation.length()));
 	}
 
 	@Override

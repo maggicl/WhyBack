@@ -23,7 +23,7 @@ laptop with a CPU i7-7600U 4x 3.9Ghz and 8GB of RAM.  With the default
 settings the replication of all the experiments (task `results`)
 completed in 43 minutes.
 
-For reference, running the same experiments in the same virtual
+For access, running the same experiments in the same virtual
 machine on better hardware (CPU i9-12950HX 24x 4.9Ghz, 64 GB of RAM)
 took 24 minutes.
 

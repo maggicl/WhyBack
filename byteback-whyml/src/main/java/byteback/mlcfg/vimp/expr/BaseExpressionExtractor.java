@@ -8,7 +8,7 @@ import byteback.mlcfg.syntax.expr.FunctionCall;
 import byteback.mlcfg.syntax.expr.UnaryExpression;
 import byteback.mlcfg.syntax.expr.binary.BinaryExpression;
 import byteback.mlcfg.syntax.expr.binary.BinaryOperator;
-import byteback.mlcfg.vimp.VimpMethodSignatureParser;
+import byteback.mlcfg.vimp.VimpMethodParser;
 import java.util.List;
 import java.util.stream.StreamSupport;
 import soot.SootMethod;
@@ -20,11 +20,11 @@ import soot.jimple.UnopExpr;
 import soot.jimple.VirtualInvokeExpr;
 
 public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expression> {
-	private final VimpMethodSignatureParser methodSignatureParser;
+	private final VimpMethodParser methodSignatureParser;
 
 	protected Expression expression;
 
-	protected BaseExpressionExtractor(VimpMethodSignatureParser methodSignatureParser) {
+	protected BaseExpressionExtractor(VimpMethodParser methodSignatureParser) {
 		this.methodSignatureParser = methodSignatureParser;
 	}
 
@@ -48,7 +48,7 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 		if (SootHosts.hasAnnotation(method, Namespace.PRIMITIVE_ANNOTATION)) {
 			setExpression(PreludeFunctionParser.parse(method, argExpressions));
 		} else {
-			methodSignatureParser.parse(method).ifPresent(e -> setExpression(new FunctionCall(e, argExpressions)));
+			methodSignatureParser.parseSignature(method).ifPresent(e -> setExpression(new FunctionCall(e, argExpressions)));
 		}
 
 	}

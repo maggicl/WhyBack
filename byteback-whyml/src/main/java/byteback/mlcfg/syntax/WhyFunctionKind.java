@@ -15,4 +15,8 @@ public enum WhyFunctionKind {
 	public String getWhyDeclaration() {
 		return whyDeclaration;
 	}
+
+	public boolean isSpec() {
+		return this == WhyFunctionKind.PURE_FUNCTION || this == WhyFunctionKind.PREDICATE;
+	}
 }

@@ -2,56 +2,24 @@ package byteback.mlcfg.printer;
 
 import byteback.mlcfg.identifiers.Identifier;
 import static byteback.mlcfg.printer.Statement.block;
-import static byteback.mlcfg.printer.Statement.indent;
 import static byteback.mlcfg.printer.Statement.line;
 import static byteback.mlcfg.printer.Statement.many;
-import byteback.mlcfg.syntax.WhyFunctionKind;
-import byteback.mlcfg.syntax.WhyFunctionParam;
-import byteback.mlcfg.syntax.WhyFunctionSignature;
+import byteback.mlcfg.syntax.expr.WhyFunction;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class WhyFunctionPrinter {
+	private final WhyFunctionSignaturePrinter signaturePrinter;
 
-	public Statement methodToWhy(WhyFunctionSignature m) {
-		final List<WhyFunctionParam> paramsList = m.params().toList();
-
-		final String params = paramsList.stream()
-				.map(e -> "(%s: %s)".formatted(e.name(), e.type().getWhyType()))
-				.collect(Collectors.joining(" "));
-
-		final Statement paramPreconditions = many(paramsList.stream()
-				.map(WhyFunctionParam::condition)
-				.flatMap(Optional::stream)
-				.map(e -> line("requires { %s }".formatted(e))));
-
-		final Statement resultPostcondition = many(
-				new WhyFunctionParam(Identifier.Special.RESULT, m.returnType(), false)
-						.condition()
-						.map("ensures { %s }"::formatted)
-						.map(Statement::line)
-						.stream());
-
-
-		return block(
-				line("%s %s (ghost heap: Heap.t) %s%s".formatted(
-						m.kind().getWhyDeclaration(),
-						m.name(),
-						params,
-						m.kind() == WhyFunctionKind.PREDICATE ?
-								"" :
-								" : %s".formatted(m.returnType().getWhyType())
-				)),
-				indent(
-						paramPreconditions,
-						resultPostcondition
-				)
-		);
+	public WhyFunctionPrinter(WhyFunctionSignaturePrinter signaturePrinter) {
+		this.signaturePrinter = signaturePrinter;
 	}
 
-	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunctionSignature> methods) {
+	public Statement toWhy(WhyFunction f) {
+		return many(signaturePrinter.toWhy(f.getSignature()), line("="), line(f.getBody().toWhy()));
+	}
+
+	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunction> functions) {
 		final WhyClassScope scope = new WhyClassScope(declaringClass);
-		return scope.with(block(methods.stream().map(this::methodToWhy)));
+		return scope.with(block(functions.stream().map(this::toWhy)));
 	}
 }

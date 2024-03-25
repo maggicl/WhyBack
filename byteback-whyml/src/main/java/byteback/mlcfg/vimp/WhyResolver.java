@@ -2,7 +2,9 @@ package byteback.mlcfg.vimp;
 
 import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.syntax.WhyClass;
+import byteback.mlcfg.syntax.WhyFunctionKind;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
+import byteback.mlcfg.syntax.expr.WhyFunction;
 import byteback.mlcfg.syntax.types.ReferenceVisitor;
 import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.vimp.order.ReversePostOrder;
@@ -22,6 +24,7 @@ import java.util.stream.Stream;
 public class WhyResolver {
 	private final Map<Identifier.FQDN, WhyClass> classes = new HashMap<>();
 	private final Map<Identifier.FQDN, List<WhyFunctionSignature>> methods = new HashMap<>();
+	private final Map<Identifier.FQDN, List<WhyFunction>> functions = new HashMap<>();
 
 	public Set<WhyClass> getAllSuper(WhyClass from) {
 		final Deque<Identifier.FQDN> toProcess = from.superNames().collect(Collectors.toCollection(ArrayDeque::new));
@@ -46,9 +49,18 @@ public class WhyResolver {
 		classes.put(classDeclaration.type().fqdn(), classDeclaration);
 	}
 
-	public void addMethod(final WhyFunctionSignature methodDeclaration) {
-		final Identifier.FQDN declaringClass = methodDeclaration.declaringClass();
-		methods.computeIfAbsent(declaringClass, k -> new ArrayList<>()).add(methodDeclaration);
+	public void addMethod(final WhyFunctionSignature m) {
+		if (m.kind().isSpec()) {
+			throw new IllegalArgumentException("spec function must be added as WhyFunction");
+		}
+
+		final Identifier.FQDN declaringClass = m.declaringClass();
+		methods.computeIfAbsent(declaringClass, k -> new ArrayList<>()).add(m);
+	}
+
+	public void addFunction(final WhyFunction f) {
+		final Identifier.FQDN declaringClass = f.getSignature().declaringClass();
+		functions.computeIfAbsent(declaringClass, k -> new ArrayList<>()).add(f);
 	}
 
 	public boolean isResolved(WhyType t) {
@@ -72,5 +84,9 @@ public class WhyResolver {
 
 	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunctionSignature>>> methods() {
 		return methods.entrySet().stream();
+	}
+
+	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunction>>> functions() {
+		return functions.entrySet().stream();
 	}
 }

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public record WhyProgram(Statement program) implements Printable {
-	public static final String INDENT = "  ";
 	private static final String IMPORT_FRAGMENT_PATH = "fragment/import.mlw";
 
 	private static Statement getImports() {

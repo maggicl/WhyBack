@@ -39,7 +39,7 @@ import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.vimp.TypeResolver;
 import byteback.mlcfg.vimp.VimpFieldParser;
-import byteback.mlcfg.vimp.VimpMethodSignatureParser;
+import byteback.mlcfg.vimp.VimpMethodParser;
 import java.util.List;
 import java.util.stream.Stream;
 import soot.Local;
@@ -88,7 +88,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	private final VimpFieldParser fieldParser;
 	private final IdentifierEscaper identifierEscaper;
 
-	public PureExpressionExtractor(VimpMethodSignatureParser methodSignatureParser, TypeResolver typeResolver,
+	public PureExpressionExtractor(VimpMethodParser methodSignatureParser, TypeResolver typeResolver,
 								   VimpFieldParser fieldParser, IdentifierEscaper identifierEscaper) {
 		super(methodSignatureParser);
 		this.typeResolver = typeResolver;

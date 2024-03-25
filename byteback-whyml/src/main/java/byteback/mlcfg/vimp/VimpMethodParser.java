@@ -6,21 +6,24 @@ import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
 import byteback.mlcfg.syntax.WhyFunctionKind;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
+import byteback.mlcfg.syntax.expr.Expression;
+import byteback.mlcfg.syntax.expr.WhyFunction;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
+import byteback.mlcfg.vimp.expr.FunctionBodyExtractor;
 import java.util.List;
 import java.util.Optional;
 import soot.AbstractJasminClass;
 import soot.SootMethod;
 import soot.Type;
 
-public class VimpMethodSignatureParser {
+public class VimpMethodParser {
 	private final IdentifierEscaper identifierEscaper;
 	private final VimpClassNameParser classNameParser;
 	private final TypeResolver typeResolver;
 
-	public VimpMethodSignatureParser(IdentifierEscaper identifierEscaper, VimpClassNameParser classNameParser,
-									 TypeResolver typeResolver) {
+	public VimpMethodParser(IdentifierEscaper identifierEscaper, VimpClassNameParser classNameParser,
+							TypeResolver typeResolver) {
 		this.identifierEscaper = identifierEscaper;
 		this.classNameParser = classNameParser;
 		this.typeResolver = typeResolver;
@@ -40,7 +43,7 @@ public class VimpMethodSignatureParser {
 		}
 	}
 
-	public Optional<WhyFunctionSignature> parse(SootMethod method) {
+	public Optional<WhyFunctionSignature> parseSignature(SootMethod method) {
 		return whyFunctionKind(method).map(whyFunctionKind -> {
 			final String name = method.getName();
 			final String descriptor = AbstractJasminClass.jasminDescriptorOf(method.makeRef());

@@ -1,13 +1,13 @@
-TypeAccess type
+TypeAccess kind
     = type_atom
     | map_type
     | unknown_type
     ;
 
 List type_comma_list
-    = type.t
+    = kind.t
     {: return new List(t); :}
-    | type_comma_list.tl COMMA type.t
+    | type_comma_list.tl COMMA kind.t
     {: return tl.add(t); :}
     ;
 
@@ -20,12 +20,12 @@ TypeAccess type_atom
     {: return new RealTypeAccess(); :}
     | BVTYPE.n
     {: return new BitvectorTypeAccess(n); :}
-    | LPAREN type.t RPAREN
+    | LPAREN kind.t RPAREN
     {: return t; :}
     ;
 
 MapTypeAccess map_type
-    = type_parameter_block_list.tdl? LBRACKET type_comma_list.tl RBRACKET type.t
+    = type_parameter_block_list.tdl? LBRACKET type_comma_list.tl RBRACKET kind.t
     {: return new MapTypeAccess(tdl, tl, t); :}
     ;
 
@@ -61,6 +61,6 @@ UnknownTypeAccess unknown_type
 List type_constructor_list
     = type_atom.t type_constructor_list.tl
     {: return tl.add(t); :}
-    | type.t
+    | kind.t
     {: return new List(t); :}
     ;

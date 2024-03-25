@@ -5,12 +5,11 @@ import static byteback.mlcfg.printer.Statement.block;
 import static byteback.mlcfg.printer.Statement.indent;
 import static byteback.mlcfg.printer.Statement.line;
 import static byteback.mlcfg.printer.Statement.many;
-import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.WhyFunctionKind;
 import byteback.mlcfg.syntax.WhyFunctionParam;
-import byteback.mlcfg.syntax.types.WhyReference;
-import byteback.mlcfg.syntax.types.WhyType;
+import byteback.mlcfg.syntax.WhyFunctionSignature;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WhyFunctionPrinter {
@@ -23,13 +22,17 @@ public class WhyFunctionPrinter {
 				.collect(Collectors.joining(" "));
 
 		final Statement paramPreconditions = many(paramsList.stream()
-				.filter(e -> e.type() instanceof WhyReference)
-				.map(e -> line("requires { %s }".formatted(e.condition()))));
+				.map(WhyFunctionParam::condition)
+				.flatMap(Optional::stream)
+				.map(e -> line("requires { %s }".formatted(e))));
 
-		final Statement resultPostcondition = m.returnType() instanceof WhyReference
-				? line("ensures { %s }".formatted(
-						new WhyFunctionParam(Identifier.Special.RESULT, m.returnType(), false).condition()))
-				: many();
+		final Statement resultPostcondition = many(
+				new WhyFunctionParam(Identifier.Special.RESULT, m.returnType(), false)
+						.condition()
+						.map("ensures { %s }"::formatted)
+						.map(Statement::line)
+						.stream());
+
 
 		return block(
 				line("%s %s (ghost heap: Heap.t) %s%s".formatted(

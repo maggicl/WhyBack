@@ -21,7 +21,7 @@ import beaver.Scanner;
 %extends Scanner
 %unicode
 %function nextToken
-%type Symbol
+%kind Symbol
 %yylexthrow Scanner.Exception
 %line
 %column
@@ -62,7 +62,7 @@ BvType = "bv" {DecIntegerLiteral}
 %%
 
 <YYINITIAL>  {
-    "type" { return symbol(Terminals.TYPE); }
+    "kind" { return symbol(Terminals.TYPE); }
     "const" { return symbol(Terminals.CONST); }
     "function" { return symbol(Terminals.FUNCTION); }
     "axiom" { return symbol(Terminals.AXIOM); }

@@ -1,4 +1,4 @@
-type Reference;
+kind Reference;
 
 const unique ~null : Reference;
 
@@ -6,9 +6,9 @@ const unique ~void : Reference;
 
 function ~isvoid(r : Reference) returns (bool) { (r == ~void) }
 
-type Field a;
+kind Field a;
 
-type Store  = [Reference]<a>[Field (a)]a;
+kind Store  = [Reference]<a>[Field (a)]a;
 
 function {:inline } ~heap.read<a>(h : Store, r : Reference, f : Field (a)) returns (a) { h[r][f] }
 
@@ -36,7 +36,7 @@ procedure ~new(t : Type) returns (~ret : Reference, ~exc : Reference);
   ensures ~allocated(~heap, ~ret);
   ensures (~exc == ~void);
 
-type Type;
+kind Type;
 
 const unique ~Object.Type : Field (Type);
 
@@ -48,13 +48,13 @@ function ~instanceof(h : Store, r : Reference, t : Type) returns (bool) { (~heap
 
 axiom (forall h : Store, t : Type :: !~instanceof(h, ~void, t));
 
-function ~type.access(Type) returns (Reference);
+function ~kind.access(Type) returns (Reference);
 
-function ~type.reference_inverse(Reference) returns (Type);
+function ~kind.reference_inverse(Reference) returns (Type);
 
-axiom (forall t : Type :: {~type.access(t)} (~type.reference_inverse(~type.access(t)) == t));
+axiom (forall t : Type :: {~kind.access(t)} (~kind.reference_inverse(~kind.access(t)) == t));
 
-type Box;
+kind Box;
 
 function ~box<a>(a) returns (Box);
 
@@ -74,11 +74,11 @@ axiom (forall r : Reference :: (~lengthof(r) >= 0));
 
 axiom (forall h1 : Store, h2 : Store, r : Reference, i : int :: ((~heap.succ(h1, h2) && ((0 <= i) && (i < ~lengthof(r)))) ==> (~heap.read(h1, r, ~element(i)) == ~heap.read(h2, r, ~element(i)))));
 
-function ~array.type(Type) returns (Type);
+function ~array.kind(Type) returns (Type);
 
 function ~array.type_inverse(Type) returns (Type);
 
-axiom (forall t : Type :: {~array.type(t)} (~array.type_inverse(~array.type(t)) == t));
+axiom (forall t : Type :: {~array.kind(t)} (~array.type_inverse(~array.kind(t)) == t));
 
 function {:inline } ~array.read<b>(h : Store, a : Reference, i : int) returns (b) { (~unbox(~heap.read(h, a, ~element(i))) : b) }
 
@@ -86,7 +86,7 @@ function {:inline } ~array.update<b>(h : Store, a : Reference, i : int, v : b) r
 
 procedure ~array(t : Type, l : int) returns (~ret : Reference, ~exc : Reference);
   ensures (~ret != ~null);
-  ensures (~typeof(~heap, ~ret) == ~array.type(t));
+  ensures (~typeof(~heap, ~ret) == ~array.kind(t));
   ensures ~allocated(~heap, ~ret);
   ensures ((~lengthof(~ret) == l) && (~lengthof(~ret) >= 0));
   ensures (~exc == ~void);

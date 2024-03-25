@@ -166,7 +166,7 @@ aspect Variable {
   eq Accessor.lookupRemoteVariable() = lookupRemoteVariable(getName());
 
   /**
-   * Get type access used in variable.
+   * Get kind access used in variable.
    */
   inh lazy TypeAccess Variable.getTypeAccess();
 

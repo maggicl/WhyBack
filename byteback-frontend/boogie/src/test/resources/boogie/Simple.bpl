@@ -1,4 +1,4 @@
-type Unit;
+kind Unit;
 
 const unique unit : Unit;
 

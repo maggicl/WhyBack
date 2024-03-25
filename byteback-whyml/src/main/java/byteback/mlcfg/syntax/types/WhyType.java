@@ -39,8 +39,4 @@ public interface WhyType {
 	 * @return A WhyML scope
 	 */
 	String getWhyAccessorScope();
-
-	default Optional<String> getPrecondition() {
-		return Optional.empty();
-	}
 }

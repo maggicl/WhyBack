@@ -13,6 +13,7 @@ module Bootstrap
   scope Java
   scope Lang
   scope String
+    (* FIXME: same literals should map to the same ptr *)
     val literal'8 (ghost heap: Heap.t) (s: string) : Ptr.t
       ensures { result <> Ptr.null && Heap.instanceof heap result (Class Type.string) }
       ensures { heap.strings[result] = s }

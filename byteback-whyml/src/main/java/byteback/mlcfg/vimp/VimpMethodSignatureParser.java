@@ -2,11 +2,10 @@ package byteback.mlcfg.vimp;
 
 import byteback.analysis.Namespace;
 import byteback.analysis.util.SootHosts;
-import byteback.mlcfg.identifiers.FQDNEscaper;
 import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
-import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.WhyFunctionKind;
+import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.Optional;
 import soot.AbstractJasminClass;
 import soot.SootMethod;
 import soot.Type;
-import soot.VoidType;
 
 public class VimpMethodSignatureParser {
 	private final IdentifierEscaper identifierEscaper;

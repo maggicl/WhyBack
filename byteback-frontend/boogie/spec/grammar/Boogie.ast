@@ -11,7 +11,7 @@ Accessor ::= <Name:String>;
 
 // Binding
 //
-// A binding can be used to declare a variable of a specific type.
+// A binding can be used to declare a variable of a specific kind.
 abstract Binding ::= TypeAccess /Variable*/;
 
 SetBinding : Binding ::= Declarator*;

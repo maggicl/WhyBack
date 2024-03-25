@@ -1,6 +1,5 @@
 package byteback.mlcfg.vimp.expr;
 
-import byteback.analysis.Namespace;
 import byteback.analysis.QuantifierExpr;
 import byteback.analysis.vimp.LogicConstant;
 import byteback.analysis.vimp.LogicExistsExpr;
@@ -9,16 +8,21 @@ import byteback.analysis.vimp.OldExpr;
 import byteback.analysis.vimp.VoidConstant;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
 import byteback.mlcfg.syntax.WhyField;
+import byteback.mlcfg.syntax.WhyFunctionParam;
 import byteback.mlcfg.syntax.WhyInstanceField;
 import byteback.mlcfg.syntax.WhyStaticField;
 import byteback.mlcfg.syntax.expr.BooleanLiteral;
+import byteback.mlcfg.syntax.expr.ClassCastExpression;
 import byteback.mlcfg.syntax.expr.DoubleLiteral;
 import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.expr.FloatLiteral;
+import byteback.mlcfg.syntax.expr.InstanceOfExpression;
 import byteback.mlcfg.syntax.expr.LocalVariableExpression;
 import byteback.mlcfg.syntax.expr.NullLiteral;
 import byteback.mlcfg.syntax.expr.NumericLiteral;
 import byteback.mlcfg.syntax.expr.OldReference;
+import byteback.mlcfg.syntax.expr.QuantifierExpression;
+import byteback.mlcfg.syntax.expr.StringLiteralExpression;
 import byteback.mlcfg.syntax.expr.UnaryExpression;
 import byteback.mlcfg.syntax.expr.UnitLiteral;
 import byteback.mlcfg.syntax.expr.binary.BinaryOperator;
@@ -36,10 +40,10 @@ import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.vimp.TypeResolver;
 import byteback.mlcfg.vimp.VimpFieldParser;
 import byteback.mlcfg.vimp.VimpMethodSignatureParser;
+import java.util.List;
 import java.util.stream.Stream;
 import soot.Local;
 import soot.SootMethod;
-import soot.Type;
 import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -351,33 +355,41 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	}
 
 	@Override
-	public void caseCastExpr(final CastExpr v) {
-		final Value operand = v.getOp();
-		final Type toType = v.getCastType();
-		final Type fromType = operand.getType();
-		final Function<Expression, Expression> caster = new CasterProvider(toType).visit(fromType);
-
-		setExpression(caster.apply(visit(operand)));
-	}
-
-	@Override
 	public void caseVoidConstant(final VoidConstant v) {
 		setExpression(UnitLiteral.INSTANCE);
 	}
 
 	@Override
+	public void caseCastExpr(final CastExpr v) {
+		setExpression(new ClassCastExpression(
+				visit(v.getOp()),
+				typeResolver.resolveType(v.getCastType())
+		));
+	}
+
+	@Override
 	public void caseStringConstant(final StringConstant v) {
-		final int code = v.value.hashCode();
-		setExpression(Prelude.v().makeStringConstExpression(new NumberLiteral(Integer.toString(code))));
+		setExpression(new StringLiteralExpression(v.value));
 	}
 
 	@Override
 	public void caseClassConstant(final ClassConstant classConstant) {
-		final String className = Namespace.stripConstantDescriptor(classConstant.getValue());
-		final ValueReference valueReference = ValueReference.of(ReferenceTypeConverter.typeName(className));
-		final FunctionReference typeReference = Prelude.v().getTypeReferenceFunction().makeFunctionReference();
-		typeReference.addArgument(valueReference);
-		setExpression(typeReference);
+		// FIXME: find what this does
+		throw new UnsupportedOperationException("not implemented");
+
+//		final String className = Namespace.stripConstantDescriptor(classConstant.getValue());
+//		final ValueReference valueReference = ValueReference.of(ReferenceTypeConverter.typeName(className));
+//		final FunctionReference typeReference = Prelude.v().getTypeReferenceFunction().makeFunctionReference();
+//		typeReference.addArgument(valueReference);
+//		setExpression(typeReference);
+	}
+
+	@Override
+	public void caseInstanceOfExpr(final InstanceOfExpr v) {
+		setExpression(new InstanceOfExpression(
+				visit(v.getOp()),
+				typeResolver.resolveType(v.getCheckType())
+		));
 	}
 
 	@Override
@@ -436,37 +448,25 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 		setExpression(new ArrayExpression(base, elemType, ArrayOperation.length()));
 	}
 
-	@Override
-	public void caseInstanceOfExpr(final InstanceOfExpr v) {
-		final Value left = v.getOp();
-		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(v.getCheckType());
-		setExpression(Prelude.v().makeTypeCheckExpression(PureExpressionExtractor.this.visit(left), typeReference));
-	}
+	public QuantifierExpression quantifierExpression(final QuantifierExpression.Kind kind, final QuantifierExpr v) {
+		final List<WhyFunctionParam> variables = v.getFreeLocals().stream()
+				.map(e -> new WhyFunctionParam(
+						identifierEscaper.escapeL(e.getName()),
+						typeResolver.resolveType(e.getType()),
+						false))
+				.toList();
 
-	public QuantifierExpression makeQuantifierExpression(final QuantifierExpr v) {
-		final var quantifierExpression = new QuantifierExpression();
-
-		for (Local local : v.getFreeLocals()) {
-			quantifierExpression.addBinding(FunctionExpressionExtractor.makeQuantifierBinding(local));
-		}
-
-		quantifierExpression.setOperand(visit(v.getValue()));
-
-		return quantifierExpression;
+		return new QuantifierExpression(kind, variables, visit(v.getValue()));
 	}
 
 	@Override
 	public void caseLogicForallExpr(final LogicForallExpr v) {
-		final var quantifierExpression = makeQuantifierExpression(v);
-		quantifierExpression.setQuantifier(new UniversalQuantifier());
-		setExpression(quantifierExpression);
+		setExpression(quantifierExpression(QuantifierExpression.Kind.FORALL, v));
 	}
 
 	@Override
 	public void caseLogicExistsExpr(final LogicExistsExpr v) {
-		final var quantifierExpression = makeQuantifierExpression(v);
-		quantifierExpression.setQuantifier(new ExistentialQuantifier());
-		setExpression(quantifierExpression);
+		setExpression(quantifierExpression(QuantifierExpression.Kind.EXISTS, v));
 	}
 
 	@Override

@@ -19,10 +19,10 @@ aspect Type {
   syn nta TypeDefinition TypeDeclaration.getTypeDefinition();
 
   eq TypeDeclaration.getTypeDefinition() {
-    final DefinedType type = new DefinedType();
+    final DefinedType kind = new DefinedType();
     final TypeDefinition typeDefinition = new TypeDefinition();
     typeDefinition.setDeclarator(getDeclarator());
-    typeDefinition.setDefinedType(type);
+    typeDefinition.setDefinedType(kind);
 
     return typeDefinition;
   }
@@ -35,7 +35,7 @@ aspect Type {
   }
 
   /**
-   * Lookup type definition in program.
+   * Lookup kind definition in program.
    */
   syn lazy Optional<TypeDefinition> Program.lookupTypeDefinition(String name);
 
@@ -51,9 +51,9 @@ aspect Type {
    * @return The {@link TypeDefinition} corresponding to this {@link
    * Accessor}.
    */
-  syn lazy Optional<TypeDefinition> Accessor.type();
+  syn lazy Optional<TypeDefinition> Accessor.kind();
 
-  eq Accessor.type() = lookupTypeDefinition(getName());
+  eq Accessor.kind() = lookupTypeDefinition(getName());
 
   /**
    * NTA definition of the {@link DefinedType} attribute.
@@ -63,9 +63,9 @@ aspect Type {
   eq TypeDefinition.getType() = new DefinedType();
 
   /**
-   * Creates a new type access.
+   * Creates a new kind access.
    *
-   * @return A {@link TypeAccess} for this type.
+   * @return A {@link TypeAccess} for this kind.
    */
   syn TypeAccess Type.makeTypeAccess();
 
@@ -84,7 +84,7 @@ aspect Type {
   eq DefinedType.makeTypeAccess() = new UnknownTypeAccess(makeAccessor(), new List<>());
 
   /**
-   * Create a new {@link Accessor} for this defined type. 
+   * Create a new {@link Accessor} for this defined kind.
    *
    * @return The new {@link Accessor} instance.
    */
@@ -93,7 +93,7 @@ aspect Type {
   eq TypeDeclaration.getChild().makeAccessor() = new Accessor(getDeclarator().getName());
 
   /**
-   * Creates an identifier from this type access.
+   * Creates an identifier from this kind access.
    *
    * @return The String identifier for this {@link TypeAccess}.
    */

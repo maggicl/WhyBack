@@ -361,10 +361,56 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseCastExpr(final CastExpr v) {
-		setExpression(new ClassCastExpression(
-				visit(v.getOp()),
-				typeResolver.resolveType(v.getCastType())
-		));
+		final Expression op = visit(v.getOp());
+		final WhyJVMType opType = op.type().jvm();
+
+		final WhyType target = typeResolver.resolveType(v.getCastType());
+		final WhyJVMType targetType = target.jvm();
+
+		if (opType == WhyJVMType.BOOL) {
+			if (targetType != WhyJVMType.INT) {
+				throw new IllegalArgumentException("from-int cast operation not supported on type " + targetType);
+			}
+
+			setExpression(new UnaryExpression(UnaryExpression.Operator.Z2I, op));
+		} else if (opType != WhyJVMType.PTR) {
+			// FIXME: backward "extension" casts should be included too (e.g. short to int)
+			final UnaryExpression.Operator castOp = switch (opType) {
+				case INT -> switch (targetType) {
+					case BOOL -> UnaryExpression.Operator.I2Z;
+					case BYTE -> UnaryExpression.Operator.I2B;
+					case SHORT -> UnaryExpression.Operator.I2S;
+					case CHAR -> UnaryExpression.Operator.I2C;
+					case LONG -> UnaryExpression.Operator.I2L;
+					case FLOAT -> UnaryExpression.Operator.I2F;
+					case DOUBLE -> UnaryExpression.Operator.I2D;
+					default -> throw new IllegalArgumentException("from-int cast operation not supported on type " + opType);
+				};
+				case LONG -> switch (targetType) {
+					case INT -> UnaryExpression.Operator.L2I;
+					case FLOAT -> UnaryExpression.Operator.L2F;
+					case DOUBLE -> UnaryExpression.Operator.L2D;
+					default -> throw new IllegalArgumentException("from-long cast operation not supported on type " + targetType);
+				};
+				case FLOAT -> switch (targetType) {
+					case INT -> UnaryExpression.Operator.F2I;
+					case LONG -> UnaryExpression.Operator.F2L;
+					case DOUBLE -> UnaryExpression.Operator.F2D;
+					default -> throw new IllegalArgumentException("from-double cast operation not supported on type " + targetType);
+				};
+				case DOUBLE -> switch (targetType) {
+					case INT -> UnaryExpression.Operator.D2I;
+					case LONG -> UnaryExpression.Operator.D2L;
+					case FLOAT -> UnaryExpression.Operator.D2F;
+					default -> throw new IllegalArgumentException("from-int cast operation not supported on type " + targetType);
+				};
+				default -> throw new IllegalArgumentException("cast operation not supported from type " + opType);
+			};
+
+			setExpression(new UnaryExpression(castOp, op));
+		} else {
+			setExpression(new ClassCastExpression(op, target));
+		}
 	}
 
 	@Override

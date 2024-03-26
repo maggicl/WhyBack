@@ -15,7 +15,7 @@ public class WhyFunctionPrinter {
 	}
 
 	public Statement toWhy(WhyFunction f) {
-		return block(signaturePrinter.toWhy(f.getSignature()), line("="), line(f.getBody().toWhy()));
+		return block(signaturePrinter.toWhy(f.getSignature()), line("="), f.getBody().toWhy().statement());
 	}
 
 	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunction> functions) {

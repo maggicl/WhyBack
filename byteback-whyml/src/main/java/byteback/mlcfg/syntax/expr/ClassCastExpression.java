@@ -1,5 +1,8 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.prefix;
+import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
@@ -21,10 +24,12 @@ public class ClassCastExpression implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
-		return "(checkcast heap (%s) (%s))".formatted(
+	public SExpr toWhy() {
+		return prefix(
+				"checkcast",
+				terminal("heap"),
 				reference.toWhy(),
-				type.getPreludeType()
+				terminal(type.getPreludeType())
 		);
 	}
 

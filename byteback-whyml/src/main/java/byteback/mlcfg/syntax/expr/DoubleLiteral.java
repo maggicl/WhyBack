@@ -1,5 +1,7 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
@@ -11,9 +13,9 @@ public final class DoubleLiteral implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
-		if (Double.isNaN(value)) return "jdouble_nan";
-		else if (Double.isInfinite(value)) return value > 0 ? "jdouble_inf" : "jdouble_minf";
+	public SExpr toWhy() {
+		if (Double.isNaN(value)) return terminal("jdouble_nan");
+		else if (Double.isInfinite(value)) return terminal(value > 0 ? "jdouble_inf" : "jdouble_minf");
 		else {
 			final long bits = Double.doubleToLongBits(value);
 
@@ -23,13 +25,13 @@ public final class DoubleLiteral implements Expression {
 			long mantissa = bits & 0x000fffffffffffffL;
 
 			// 13 * 4 = 52 => 13 hex digits needed to print the mantissa
-			return "(0x%s%d.%013X%s:jdouble) (* %s *)".formatted(
+			return terminal("(0x%s%d.%013X%s:jdouble) (* %s *)".formatted(
 					positive ? "" : "-",
 					normalized ? 1 : 0,
 					mantissa,
 					normalized ? ("p" + exponent) : "",
 					Double.toString(value)
-			);
+			));
 		}
 	}
 

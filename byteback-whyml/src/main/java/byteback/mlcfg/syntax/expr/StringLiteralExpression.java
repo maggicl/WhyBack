@@ -1,5 +1,8 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.prefix;
+import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import com.google.common.base.Charsets;
 
@@ -29,15 +32,16 @@ public class StringLiteralExpression implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
+	public SExpr toWhy() {
 		final StringBuilder sb = new StringBuilder("\"");
 		for (final byte b : str.getBytes(Charsets.UTF_8)) {
 			sb.append(mapChar(b));
 		}
 		sb.append("\"");
 
-		final String literal = sb.toString();
-		return "(java.lang.String.literal'8 heap %s)".formatted(literal);
+		return prefix("java.lang.String.literal'8",
+				terminal("heap"),
+				terminal(sb.toString()));
 	}
 
 	@Override

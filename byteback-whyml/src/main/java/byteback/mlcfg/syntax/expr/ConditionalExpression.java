@@ -1,5 +1,6 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
 public class ConditionalExpression implements Expression {
@@ -25,10 +26,9 @@ public class ConditionalExpression implements Expression {
 		this.elseExpr = elseExpr;
 	}
 
-
 	@Override
-	public String toWhy() {
-		return "(if (%s) then (%s) else (%s))".formatted(conditional.toWhy(), thenExpr.toWhy(), elseExpr.toWhy());
+	public SExpr toWhy() {
+		return SExpr.conditional(conditional.toWhy(), thenExpr.toWhy(), elseExpr.toWhy());
 	}
 
 	@Override

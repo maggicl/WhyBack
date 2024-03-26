@@ -1,5 +1,8 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.infix;
+import static byteback.mlcfg.printer.SExpr.prefix;
 import byteback.mlcfg.syntax.WhyFunctionParam;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import java.util.List;
@@ -22,30 +25,21 @@ public class QuantifierExpression implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
+	public SExpr toWhy() {
 		final String whyVarList = variableList.stream()
 				.map(e -> "%s: %s".formatted(e.name(), e.type().getWhyType()))
 				.collect(Collectors.joining(", "));
 
-		final String conditionList = variableList.stream()
+		final Optional<SExpr> conditionList = variableList.stream()
 				.map(WhyFunctionParam::condition)
 				.flatMap(Optional::stream)
-				.collect(Collectors.joining(" && "));
+				.map(SExpr::terminal)
+				.reduce((a, b) -> infix("&&", a, b));
 
-		if (conditionList.isEmpty()) {
-			return "(%s %s. (%s))".formatted(
-					kind.symbol,
-					whyVarList,
-					inner.toWhy()
-			);
-		} else {
-			return "(%s %s. (%s) -> (%s))".formatted(
-					kind.symbol,
-					whyVarList,
-					conditionList,
-					inner.toWhy()
-			);
-		}
+		// TODO: consider splitting the binding variables in the quantifiers in terminals to make the line shorter
+		final String bindings = "%s %s.".formatted(kind.symbol, whyVarList);
+
+		return prefix(bindings, conditionList.map(sExpr -> infix("->", sExpr, inner.toWhy())).orElseGet(inner::toWhy));
 	}
 
 	@Override

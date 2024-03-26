@@ -1,10 +1,11 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
 public interface Expression {
-	String toWhy();
+	SExpr toWhy();
 
 	WhyJVMType type();
 

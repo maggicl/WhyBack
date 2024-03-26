@@ -1,5 +1,7 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.prefix;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import java.util.Locale;
 
@@ -25,20 +27,15 @@ public class PrimitiveCastExpression implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
+	public SExpr toWhy() {
 		final WhyJVMType sourceType = op.type();
 		if (sourceType.isWholeNumber() || targetType.isWholeNumber()) {
-			return "(int2%s (%s2int (%s)))".formatted(
-					getCastTypeName(targetType),
-					getCastTypeName(sourceType),
-					op.toWhy()
+			return prefix("int2" + getCastTypeName(targetType),
+					prefix(getCastTypeName(sourceType) + "2int",
+							op.toWhy())
 			);
 		} else {
-			return "(%s2%s (%s))".formatted(
-					getCastTypeName(sourceType),
-					getCastTypeName(targetType),
-					op.toWhy()
-			);
+			return prefix("%s2%s".formatted(getCastTypeName(sourceType), getCastTypeName(targetType)), op.toWhy());
 		}
 	}
 

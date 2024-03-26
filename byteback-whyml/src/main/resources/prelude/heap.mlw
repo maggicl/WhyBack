@@ -30,8 +30,8 @@ module HeapDef
    *)
   type jarraybool = {array jbool}
   type jarraybyte = {array jbyte}
-  type jarraychar = {array jshort}
-  type jarrayshort = {array jchar}
+  type jarrayshort = {array jshort}
+  type jarraychar = {array jchar}
   type jarrayint = {array jint}
   type jarraylong = {array jlong}
   type jarrayfloat = {array jfloat}
@@ -157,7 +157,7 @@ end
 
 module HeapArrayOpRead
   use export prelude.exceptions.Exceptions
-  use export prelude.primitive.Primitive
+  use export prelude.machine.Operators
   use prelude.ptr.Ptr
   use array.Array
   use map.Map
@@ -196,7 +196,7 @@ end
 
 module HeapArrayOp
   use export prelude.exceptions.Exceptions
-  use export prelude.primitive.Primitive
+  use export prelude.machine.Operators
   use prelude.ptr.Ptr
   use prelude.typing.Type
   use export HeapDef
@@ -243,7 +243,8 @@ end
 module Heap
   use HeapDef
   use prelude.typing.Type
-  use export prelude.primitive.Primitive
+  use export prelude.exceptions.Exceptions
+  use export prelude.machine.Operators
   use prelude.ptr.Ptr
   use array.Array
   use map.Map
@@ -270,7 +271,7 @@ module Heap
     reads { heap }
     ensures { result = p }
     ensures { hastype heap result t }
-    raises { VM.e -> not (hastype heap result t) && e = ClassCast }
+    raises { VM.E e -> not (hastype heap p t) && e = VM.ClassCast }
 
   clone HeapOp as Z with type op_ft = jbool, val ft_marker = Bool, val ctor = ABool
   clone HeapOp as B with type op_ft = jbyte, val ft_marker = Byte, val ctor = AByte

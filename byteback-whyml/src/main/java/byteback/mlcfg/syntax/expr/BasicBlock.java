@@ -18,9 +18,9 @@ public class BasicBlock {
 	public Statement toWhy() {
 		final List<Statement> lines = new ArrayList<>();
 		for (int i = 0; i < expressionList.size() - 1; i++) {
-			lines.add(line(expressionList.get(i).toWhy() + ";"));
+			lines.add(expressionList.get(i).toWhy().statement("", ";"));
 		}
-		lines.add(line(expressionList.get(expressionList.size() - 1).toWhy()));
+		lines.add(expressionList.get(expressionList.size() - 1).toWhy().statement());
 
 		return block(lines.stream());
 	}

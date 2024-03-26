@@ -1,5 +1,7 @@
 package byteback.mlcfg.syntax.expr.field;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.WhyField;
 import byteback.mlcfg.syntax.WhyInstanceField;
 import byteback.mlcfg.syntax.WhyStaticField;
@@ -18,7 +20,7 @@ public sealed abstract class Access {
 
 	public abstract WhyField getField();
 
-	public abstract String referenceToWhy();
+	public abstract SExpr referenceToWhy();
 
 	public static final class Instance extends Access {
 		private final Expression base;
@@ -39,7 +41,7 @@ public sealed abstract class Access {
 		}
 
 		@Override
-		public String referenceToWhy() {
+		public SExpr referenceToWhy() {
 			return base.toWhy();
 		}
 	}
@@ -57,8 +59,8 @@ public sealed abstract class Access {
 		}
 
 		@Override
-		public String referenceToWhy() {
-			return field.getClazz().toString() + ".class";
+		public SExpr referenceToWhy() {
+			return terminal(field.getClazz().toString() + ".class");
 		}
 	}
 }

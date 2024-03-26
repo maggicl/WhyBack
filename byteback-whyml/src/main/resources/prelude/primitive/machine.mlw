@@ -155,7 +155,7 @@ module MachineSupport
   val function int_to_bounds (a b x: int) : int
     ensures { result = min (max a x) b }
 
-  let function jint_to_ishift (x: int32) (n: int) : int =
+  let function jint_to_ishift (x: int32) : int =
     let bv = Int32BV.to_bv x in
     if nth bv 4 then 16 else 0 +
     if nth bv 3 then 8 else 0 +
@@ -163,7 +163,7 @@ module MachineSupport
     if nth bv 1 then 2 else 0 +
     if nth bv 0 then 1 else 0
 
-  let function jint_to_lshift (x: int32) (n: int) : int =
+  let function jint_to_lshift (x: int32) : int =
     let bv = Int32BV.to_bv x in
     if nth bv 5 then 32 else 0 +
     if nth bv 4 then 16 else 0 +

@@ -1,5 +1,7 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
 public final class WholeNumberLiteral implements Expression {
@@ -17,8 +19,8 @@ public final class WholeNumberLiteral implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
-		return "(%d:%s)".formatted(value, type.getWhyType());
+	public SExpr toWhy() {
+		return terminal("(%d:%s)".formatted(value, type.getWhyType()));
 	}
 
 	@Override

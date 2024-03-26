@@ -1,5 +1,9 @@
 package byteback.mlcfg.syntax.expr.binary;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.infix;
+import static byteback.mlcfg.printer.SExpr.prefix;
+import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
@@ -19,11 +23,19 @@ public final class BinaryExpression implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
+	public SExpr toWhy() {
 		if (operator.isInfix()) {
-			return "(%s %s %s)".formatted(firstOperand.toWhy(), operator.opName(), secondOperand.toWhy());
+			return infix(
+					operator.opName(),
+					firstOperand.toWhy(),
+					secondOperand.toWhy()
+			);
 		} else {
-			return "(%s %s %s)".formatted(operator.opName(), firstOperand.toWhy(), secondOperand.toWhy());
+			return prefix(
+					operator.opName(),
+					firstOperand.toWhy(),
+					secondOperand.toWhy()
+			);
 		}
 	}
 

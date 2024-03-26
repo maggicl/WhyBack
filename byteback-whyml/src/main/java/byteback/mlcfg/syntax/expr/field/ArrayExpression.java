@@ -1,5 +1,8 @@
 package byteback.mlcfg.syntax.expr.field;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.prefix;
+import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
@@ -30,25 +33,28 @@ public class ArrayExpression implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
+	public SExpr toWhy() {
 		final String accessor = "R" + elementType.getWhyAccessorScope();
 
 		if (operation instanceof ArrayOperation.Store store) {
-			return "(%s.store heap %s %s %s)".formatted(
-					accessor,
+			return prefix(
+					accessor + ".store",
+					terminal("heap"),
 					base.toWhy(),
 					store.getIndex().toWhy(),
 					store.getValue().toWhy()
 			);
 		} else if (operation instanceof ArrayOperation.Load load) {
-			return "(%s.load heap %s %s)".formatted(
-					accessor,
+			return prefix(
+					accessor + ".load",
+					terminal("heap"),
 					base.toWhy(),
 					load.getIndex().toWhy()
 			);
 		} else {
-			return "(%s.arraylength heap %s)".formatted(
-					accessor,
+			return prefix(
+					accessor + "arraylength",
+					terminal("heap"),
 					base.toWhy()
 			);
 		}

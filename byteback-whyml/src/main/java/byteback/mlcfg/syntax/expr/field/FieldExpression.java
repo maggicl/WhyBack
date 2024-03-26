@@ -1,5 +1,8 @@
 package byteback.mlcfg.syntax.expr.field;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.prefix;
+import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
@@ -23,24 +26,24 @@ public class FieldExpression implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
+	public SExpr toWhy() {
 		final String accessor = access.getField().getType().jvm().getWhyAccessorScope();
 		final String instanceOrStatic = access instanceof Access.Instance ? "f" : "s";
 
 		if (operation instanceof Operation.Put put) {
-			return "(%s.put%s heap %s %s.v %s)".formatted(
-					accessor,
-					instanceOrStatic,
+			return prefix(
+					"%s.put%s".formatted(accessor, instanceOrStatic),
+					terminal("heap"),
 					access.referenceToWhy(),
-					access.getField().getName(),
+					terminal(access.getField().getName() + ".v"),
 					put.getValue().toWhy()
 			);
 		} else {
-			return "(%s.get%s heap %s %s.v)".formatted(
-					accessor,
-					instanceOrStatic,
+			return prefix(
+					"%s.get%s".formatted(accessor, instanceOrStatic),
+					terminal("heap"),
 					access.referenceToWhy(),
-					access.getField().getName()
+					terminal(access.getField().getName() + ".v")
 			);
 		}
 	}

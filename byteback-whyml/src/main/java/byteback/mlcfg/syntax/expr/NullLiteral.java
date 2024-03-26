@@ -1,5 +1,7 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
 public final class NullLiteral implements Expression {
@@ -9,8 +11,8 @@ public final class NullLiteral implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
-		return "Ptr.null";
+	public SExpr toWhy() {
+		return terminal("Ptr.null");
 	}
 
 	@Override

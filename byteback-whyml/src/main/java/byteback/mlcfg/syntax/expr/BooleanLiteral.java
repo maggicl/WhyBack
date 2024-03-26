@@ -1,5 +1,7 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
@@ -11,8 +13,8 @@ public final class BooleanLiteral implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
-		return value ? "true" : "false";
+	public SExpr toWhy() {
+		return terminal(value ? "true" : "false");
 	}
 
 	@Override

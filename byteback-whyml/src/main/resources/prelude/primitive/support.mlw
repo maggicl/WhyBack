@@ -1,9 +1,15 @@
 module Logic
   type t
-  predicate eq (x y: t) : bool
-  predicate neq (x y: t) : bool = not (eq x y)
-  predicate gt (x y: t) : bool
-  predicate gte (x y: t) : bool
-  predicate lt (x y: t) : bool
-  predicate lte (x y: y) : bool
+  val feq (x y: t) : bool
+  val fgt (x y: t) : bool
+  val fge (x y: t) : bool
+  val flt (x y: t) : bool
+  val fle (x y: t) : bool
+ 
+  let function eq (x y: t) : bool = feq x y 
+  let function neq (x y: t) : bool = not (feq x y)
+  let function gt (x y: t) : bool = fgt x y 
+  let function ge (x y: t) : bool = fge x y 
+  let function lt (x y: t) : bool = flt x y 
+  let function le (x y: t) : bool = fle x y 
 end

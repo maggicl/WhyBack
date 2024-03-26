@@ -1,5 +1,7 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.prefix;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
 public class OldReference implements Expression {
@@ -10,8 +12,8 @@ public class OldReference implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
-		return "(old %s)".formatted(inner.toWhy());
+	public SExpr toWhy() {
+		return prefix("old", inner.toWhy());
 	}
 
 	@Override

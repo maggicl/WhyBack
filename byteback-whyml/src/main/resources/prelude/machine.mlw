@@ -43,13 +43,13 @@ module Operators
 
   (* casting operators *)
   let function z2int (x: jbool) : int = if x then 1 else 0
-  let function int2z (x: int) : jbool = if x = 0 then false else true
+  let function int2z (x: int) : jbool = if Int.(=) x 0 then false else true
   let function b2int (x: jbyte) : int = Int8.to_int x
   let function int2b (x: int) : jbyte = Int8.of_int (int_to_bounds min_int8 max_int8 x)
   let function s2int (x: jshort) : int = Int16.to_int x
   let function int2s (x: int) : jshort = Int16.of_int (int_to_bounds min_int16 max_int16 x)
   let function c2int (x: jchar) : int = UInt16.to_int x
-  let function int2c (x: int) : jchar = Uint16.of_int (int_to_bounds 0 max_uint16 x)
+  let function int2c (x: int) : jchar = UInt16.of_int (int_to_bounds 0 max_uint16 x)
   let function i2int (x: jint) : int = Int32.to_int x
   let function int2i (x: int) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 x)
   let function j2int (x: jlong) : int = Int64.to_int x
@@ -93,7 +93,7 @@ module Operators
   let function iushr (x y: jint) : jint =
     if Int32.(>=) x 0
     then ishr x 0
-    else Int32.(+) (ishr x 0) (BV32.jsr (Int32BV.to_bv (2:jint)) (31 - (jint_to_ishift y))) 
+    else Int32.(+) (ishr x 0) (Int32BV.of_bv (BV32.lsr (Int32BV.to_bv (2:jint)) (Int.(-) 31 (jint_to_ishift y))))
 
   let function cond_icmpeq (x y: jint) : jbool = Int32.(=) x y
   let function cond_icmpne (x y: jint) : jbool = not (Int32.(=) x y)
@@ -122,58 +122,65 @@ module Operators
   let function lxor (x y: jlong) : jlong = Int64BV.of_bv (BV64.bw_xor (Int64BV.to_bv x) (Int64BV.to_bv y))
   let function lshl (x: jlong) (y: jint) : jlong = Int64BV.of_bv (BV64.lsl (Int64BV.to_bv x) (jint_to_lshift y))
   let function lshr (x: jlong) (y: jint) : jlong = Int64BV.of_bv (BV64.lsr (Int64BV.to_bv x) (jint_to_lshift y))
-  let function iushr (x y: jlong) : jlong =
+  let function lushr (x: jlong) (y: jint) : jlong =
     if Int64.(>=) x 0
-    then ishr x 0
-    else Int64.(+) (ishr x 0) (BV64.jsr (Int64BV.to_bv (2:jint)) (31 - (jint_to_ishift y))) 
+    then lshr x 0
+    else Int64.(+) (lshr x 0) (Int64BV.of_bv (BV64.lsr (Int64BV.to_bv (2:jlong)) (Int.(-) 31 (jint_to_ishift y)))) 
   let function lcmp (x y: jlong) : jint = if Int64.(=) x y then (0:jint) else if Int64.(<) x y then (-1:jint) else (1:jint)
 
   clone prelude.primitive.support.Logic as BCMP with
-    predicate eq = Int8.(=)
-    predicate lt = Int8.(<)
-    predicate gt = Int8.(>)
-    predicate le = Int8.(<=)
-    predicate ge = Int8.(>=)
+    type t = jbyte,
+    val feq = Int8.(=),
+    val flt = Int8.(<),
+    val fgt = Int8.(>),
+    val fle = Int8.(<=),
+    val fge = Int8.(>=)
 
   clone prelude.primitive.support.Logic as SCMP with
-    predicate eq = Int16.(=)
-    predicate lt = Int16.(<)
-    predicate gt = Int16.(>)
-    predicate le = Int16.(<=)
-    predicate ge = Int16.(>=)
+    type t = jshort,
+    val feq = Int16.(=),
+    val flt = Int16.(<),
+    val fgt = Int16.(>),
+    val fle = Int16.(<=),
+    val fge = Int16.(>=)
 
   clone prelude.primitive.support.Logic as CCMP with
-    predicate eq = UInt16.(=)
-    predicate lt = UInt16.(<)
-    predicate gt = UInt16.(>)
-    predicate le = UInt16.(<=)
-    predicate ge = UInt16.(>=)
+    type t = jchar,
+    val feq = UInt16.(=),
+    val flt = UInt16.(<),
+    val fgt = UInt16.(>),
+    val fle = UInt16.(<=),
+    val fge = UInt16.(>=)
 
   clone prelude.primitive.support.Logic as ICMP with
-    predicate eq = Int32.(=)
-    predicate lt = Int32.(<)
-    predicate gt = Int32.(>)
-    predicate le = Int32.(<=)
-    predicate ge = Int32.(>=)
+    type t = jint,
+    val feq = Int32.(=),
+    val flt = Int32.(<),
+    val fgt = Int32.(>),
+    val fle = Int32.(<=),
+    val fge = Int32.(>=)
 
   clone prelude.primitive.support.Logic as JCMP with
-    predicate eq = Int64.(=)
-    predicate lt = Int64.(<)
-    predicate gt = Int64.(>)
-    predicate le = Int64.(<=)
-    predicate ge = Int64.(>=)
+    type t = jlong,
+    val feq = Int64.(=),
+    val flt = Int64.(<),
+    val fgt = Int64.(>),
+    val fle = Int64.(<=),
+    val fge = Int64.(>=)
 
   clone prelude.primitive.support.Logic as FCMP with
-    predicate eq = Float32.(=)
-    predicate lt = Float32.(<)
-    predicate gt = Float32.(>)
-    predicate le = Float32.(<=)
-    predicate ge = Float32.(>=)
+    type t = jfloat,
+    val feq = Float32.(.=),
+    val flt = Float32.(.<),
+    val fgt = Float32.(.>),
+    val fle = Float32.(.<=),
+    val fge = Float32.(.>=)
 
   clone prelude.primitive.support.Logic as DCMP with
-    predicate eq = Float64.(=)
-    predicate lt = Float64.(<)
-    predicate gt = Float64.(>)
-    predicate le = Float64.(<=)
-    predicate ge = Float64.(>=)
+    type t = jdouble,
+    val feq = Float64.(.=),
+    val flt = Float64.(.<),
+    val fgt = Float64.(.>),
+    val fle = Float64.(.<=),
+    val fge = Float64.(.>=)
 end

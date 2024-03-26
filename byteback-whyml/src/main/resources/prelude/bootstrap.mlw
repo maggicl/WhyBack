@@ -6,6 +6,7 @@ module Bootstrap
   use prelude.heap.HeapDef
   use prelude.heap.Heap
   use string.String
+  use map.Map
 
   predicate other_same_strings (heap: Heap.t) (old_heap: t) (p: Ptr.t) =
       forall p'. p <> p' -> heap.strings[p'] = old_heap.strings[p']
@@ -15,9 +16,10 @@ module Bootstrap
   scope String
     (* FIXME: same literals should map to the same ptr *)
     val literal'8 (ghost heap: Heap.t) (s: string) : Ptr.t
+      writes { heap.strings }
       ensures { result <> Ptr.null && Heap.instanceof heap result (Class Type.string) }
       ensures { heap.strings[result] = s }
-      ensures { other_same_strings heap (old_heap) result }
+      ensures { other_same_strings heap (old heap) result }
   end
   end
   end

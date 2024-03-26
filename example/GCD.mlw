@@ -4,8 +4,8 @@ module Program
   use prelude.typing.Type
   use prelude.heap.Heap
   use export prelude.bootstrap.Bootstrap
-  use export prelude.machine.Operations
-  use export prelude.ptr.Operations
+  use export prelude.machine.Operators
+  use export prelude.ptr.Operators
 
   (* class type hierarchy declaration *)
 
@@ -120,31 +120,21 @@ module Program
   end
 
   scope Java
-  scope Io
-  scope FilterOutputStream
-    val constant class: Type.class
-
-    axiom hierarchy'8: (Class class :> Class Java.Io.OutputStream.class)
-  end
-  end
-  end
-
-  scope Java
-  scope Io
-  scope PrintStream
-    val constant class: Type.class
-
-    axiom hierarchy'8: (Class class :> Class Java.Io.FilterOutputStream.class) && (Class class :> Class Java.Lang.Appendable.class) && (Class class :> Class Java.Io.Closeable.class)
-  end
-  end
-  end
-
-  scope Java
   scope Lang
   scope Comparable
     val constant class: Type.class
 
     axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope FilterOutputStream
+    val constant class: Type.class
+
+    axiom hierarchy'8: (Class class :> Class Java.Io.OutputStream.class)
   end
   end
   end
@@ -171,16 +161,6 @@ module Program
 
   scope Java
   scope Lang
-  scope String
-    let constant class: Type.class = Type.string
-
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class) && (Class class :> Class Java.Lang.Comparable.class) && (Class class :> Class Java.Lang.Constant.ConstantDesc.class) && (Class class :> Class Java.Lang.Constant.Constable.class) && (Class class :> Class Java.Lang.CharSequence.class) && (Class class :> Class Java.Io.Serializable.class)
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
   scope Exception
     val constant class: Type.class
 
@@ -201,10 +181,30 @@ module Program
 
   scope Java
   scope Lang
+  scope String
+    let constant class: Type.class = Type.string
+
+    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class) && (Class class :> Class Java.Lang.Comparable.class) && (Class class :> Class Java.Lang.Constant.ConstantDesc.class) && (Class class :> Class Java.Lang.Constant.Constable.class) && (Class class :> Class Java.Lang.CharSequence.class) && (Class class :> Class Java.Io.Serializable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
   scope IllegalArgumentException
     val constant class: Type.class
 
     axiom hierarchy'8: (Class class :> Class Java.Lang.RuntimeException.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope PrintStream
+    val constant class: Type.class
+
+    axiom hierarchy'8: (Class class :> Class Java.Io.FilterOutputStream.class) && (Class class :> Class Java.Lang.Appendable.class) && (Class class :> Class Java.Io.Closeable.class)
   end
   end
   end
@@ -287,33 +287,6 @@ module Program
   end
 
   scope Java
-  scope Io
-  scope PrintStream
-    clone prelude.heap.Field as AutoFlush with val f = HeapDef.Int, axiom of
-
-    clone prelude.heap.Field as Trouble with val f = HeapDef.Int, axiom of
-
-    scope Formatter
-      let constant f: Type.t = Type.unknown (* Class Java.Util.Formatter.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope TextOut
-      let constant f: Type.t = Type.unknown (* Class Java.Io.BufferedWriter.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope CharOut
-      let constant f: Type.t = Type.unknown (* Class Java.Io.OutputStreamWriter.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    clone prelude.heap.Field as Closing with val f = HeapDef.Int, axiom of
-  end
-  end
-  end
-
-  scope Java
   scope Lang
   scope Throwable
     clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
@@ -387,6 +360,22 @@ module Program
 
   scope Java
   scope Lang
+  scope Exception
+    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope RuntimeException
+    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
   scope String
     scope Value
       let constant f: Type.t = ByteArray
@@ -424,24 +413,35 @@ module Program
 
   scope Java
   scope Lang
-  scope Exception
-    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope RuntimeException
-    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
   scope IllegalArgumentException
     clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope PrintStream
+    clone prelude.heap.Field as AutoFlush with val f = HeapDef.Int, axiom of
+
+    clone prelude.heap.Field as Trouble with val f = HeapDef.Int, axiom of
+
+    scope Formatter
+      let constant f: Type.t = Type.unknown (* Class Java.Util.Formatter.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope TextOut
+      let constant f: Type.t = Type.unknown (* Class Java.Io.BufferedWriter.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope CharOut
+      let constant f: Type.t = Type.unknown (* Class Java.Io.OutputStreamWriter.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as Closing with val f = HeapDef.Int, axiom of
   end
   end
   end
@@ -452,19 +452,29 @@ module Program
   scope GCD
     let predicate result_is_gcd'028SSS'029Z (ghost heap: Heap.t) (l1: jshort) (l2: jshort) (l3: jshort)
     =
-    ((not (Default'8.GCD.arguments_are_negative'028SS'029Z lv_l0 lv_l1)) -> (ICMP.eq lv_l2 (Default'8.GCD.gcd_recursive'028SS'029S lv_l0 lv_l1)))
+    ((not (Default'8.GCD.arguments_are_negative'028SS'029Z lv_l0 lv_l1))
+    ->
+    (ICMP.eq lv_l2 (Default'8.GCD.gcd_recursive'028SS'029S lv_l0 lv_l1)))
 
     let predicate arguments_are_positive'028SS'029Z (ghost heap: Heap.t) (l1: jshort) (l2: jshort)
     =
-    ((ICMP.le (int2i (i2int (lv_l0))) (0:jint)) /\ (ICMP.le (int2i (i2int (lv_l1))) (0:jint)))
+    ((ICMP.le (int2i (i2int lv_l0)) (0:jint)) /\ (ICMP.le (int2i (i2int lv_l1)) (0:jint)))
 
     let function gcd_recursive'028SS'029S (ghost heap: Heap.t) (l1: jshort) (l2: jshort) : jshort
     =
-    (Byteback.Annotations.Special.conditional'028ZSS'029S (ICMP.eq lv_l0 lv_l1) lv_l0 (Byteback.Annotations.Special.conditional'028ZSS'029S (ICMP.gt lv_l0 lv_l1) (Default'8.GCD.gcd_recursive'028SS'029S (int2i (i2int ((isub (int2i (i2int (lv_l0))) (int2i (i2int (lv_l1))))))) lv_l1) (Default'8.GCD.gcd_recursive'028SS'029S lv_l0 (int2i (i2int ((isub (int2i (i2int (lv_l1))) (int2i (i2int (lv_l0))))))))))
+    if (ICMP.eq lv_l0 lv_l1) then
+    lv_l0
+    else if (ICMP.gt lv_l0 lv_l1) then
+    (Default'8.GCD.gcd_recursive'028SS'029S
+      (int2i (i2int (isub (int2i (i2int lv_l0)) (int2i (i2int lv_l1)))))
+      lv_l1)
+    else (Default'8.GCD.gcd_recursive'028SS'029S
+      lv_l0
+      (int2i (i2int (isub (int2i (i2int lv_l1)) (int2i (i2int lv_l0))))))
 
     let predicate arguments_are_negative'028SS'029Z (ghost heap: Heap.t) (l1: jshort) (l2: jshort)
     =
-    ((ICMP.le (int2i (i2int (lv_l0))) (0:jint)) \/ (ICMP.le (int2i (i2int (lv_l1))) (0:jint)))
+    ((ICMP.le (int2i (i2int lv_l0)) (0:jint)) \/ (ICMP.le (int2i (i2int lv_l1)) (0:jint)))
   end
   end
 

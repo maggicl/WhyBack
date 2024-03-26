@@ -1,5 +1,7 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.prefix;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
@@ -16,8 +18,8 @@ public final class UnaryExpression implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
-		return "(%s %s)".formatted(operator.opName, operand.toWhy());
+	public SExpr toWhy() {
+		return prefix(operator.opName, operand.toWhy());
 	}
 
 	@Override

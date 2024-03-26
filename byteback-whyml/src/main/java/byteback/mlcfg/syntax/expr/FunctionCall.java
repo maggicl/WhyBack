@@ -1,12 +1,12 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.printer.SExpr;
+import static byteback.mlcfg.printer.SExpr.prefix;
 import byteback.mlcfg.syntax.WhyFunctionParam;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FunctionCall implements Expression {
 	private final WhyFunctionSignature function;
@@ -35,9 +35,8 @@ public class FunctionCall implements Expression {
 	}
 
 	@Override
-	public String toWhy() {
-		return Stream.concat(Stream.of(function.identifier()), params.stream().map(Expression::toWhy))
-				.collect(Collectors.joining(" ", "(", ")"));
+	public SExpr toWhy() {
+		return prefix(function.identifier(), params.stream().map(Expression::toWhy));
 	}
 
 	@Override

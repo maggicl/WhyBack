@@ -2,11 +2,13 @@ package byteback.mlcfg.syntax.expr;
 
 import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.prefix;
+import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.WhyFunctionParam;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class FunctionCall implements Expression {
 	private final WhyFunctionSignature function;
@@ -36,7 +38,10 @@ public class FunctionCall implements Expression {
 
 	@Override
 	public SExpr toWhy() {
-		return prefix(function.identifier(), params.stream().map(Expression::toWhy));
+		// FIXME: function call identifier must not be FQDN if in same class (check with forward reference sorting tho)
+		return prefix(function.identifier(), Stream.concat(
+				Stream.of(terminal("heap")),
+				params.stream().map(Expression::toWhy)));
 	}
 
 	@Override

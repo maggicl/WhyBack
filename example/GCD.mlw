@@ -450,31 +450,33 @@ module Program
 
   scope Default'8
   scope GCD
-    let predicate result_is_gcd'028SSS'029Z (ghost heap: Heap.t) (l1: jshort) (l2: jshort) (l3: jshort)
+    predicate result_is_gcd'028SSS'029Z (heap: Heap.t) (l0: jshort) (l1: jshort) (l2: jshort)
     =
-    ((not (Default'8.GCD.arguments_are_negative'028SS'029Z lv_l0 lv_l1))
+    ((not (Default'8.GCD.arguments_are_negative'028SS'029Z heap l0 l1))
     ->
-    (ICMP.eq lv_l2 (Default'8.GCD.gcd_recursive'028SS'029S lv_l0 lv_l1)))
+    (SCMP.eq l2 (Default'8.GCD.gcd_recursive'028SS'029S heap l0 l1)))
 
-    let predicate arguments_are_positive'028SS'029Z (ghost heap: Heap.t) (l1: jshort) (l2: jshort)
+    predicate arguments_are_positive'028SS'029Z (heap: Heap.t) (l0: jshort) (l1: jshort)
     =
-    ((ICMP.le (int2i (i2int lv_l0)) (0:jint)) /\ (ICMP.le (int2i (i2int lv_l1)) (0:jint)))
+    ((ICMP.le (int2i (s2int l0)) (0:jint)) /\ (ICMP.le (int2i (s2int l1)) (0:jint)))
 
-    let function gcd_recursive'028SS'029S (ghost heap: Heap.t) (l1: jshort) (l2: jshort) : jshort
+    function gcd_recursive'028SS'029S (heap: Heap.t) (l0: jshort) (l1: jshort) : jshort
     =
-    if (ICMP.eq lv_l0 lv_l1) then
-    lv_l0
-    else if (ICMP.gt lv_l0 lv_l1) then
-    (Default'8.GCD.gcd_recursive'028SS'029S
-      (int2i (i2int (isub (int2i (i2int lv_l0)) (int2i (i2int lv_l1)))))
-      lv_l1)
-    else (Default'8.GCD.gcd_recursive'028SS'029S
-      lv_l0
-      (int2i (i2int (isub (int2i (i2int lv_l1)) (int2i (i2int lv_l0))))))
+    if (SCMP.eq l0 l1) then
+      l0
+      else if (SCMP.gt l0 l1) then
+        (Default'8.GCD.gcd_recursive'028SS'029S
+          heap
+          (int2s (i2int (isub (int2i (s2int l0)) (int2i (s2int l1)))))
+          l1)
+        else (Default'8.GCD.gcd_recursive'028SS'029S
+          heap
+          l0
+          (int2s (i2int (isub (int2i (s2int l1)) (int2i (s2int l0))))))
 
-    let predicate arguments_are_negative'028SS'029Z (ghost heap: Heap.t) (l1: jshort) (l2: jshort)
+    predicate arguments_are_negative'028SS'029Z (heap: Heap.t) (l0: jshort) (l1: jshort)
     =
-    ((ICMP.le (int2i (i2int lv_l0)) (0:jint)) \/ (ICMP.le (int2i (i2int lv_l1)) (0:jint)))
+    ((ICMP.le (int2i (s2int l0)) (0:jint)) \/ (ICMP.le (int2i (s2int l1)) (0:jint)))
   end
   end
 
@@ -483,16 +485,16 @@ module Program
     val i'2'03Cinit'03E'028'029V (ghost heap: Heap.t) (this: Ptr.t) : unit
       requires { this <> Ptr.null && Heap.instanceof heap this (Class Default'8.GCD.class) }
 
-    val gcd'028SS'029S (ghost heap: Heap.t) (l1: jshort) (l2: jshort) : jshort
+    val gcd'028SS'029S (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jshort
   end
   end
 
   scope Java
   scope Io
   scope PrintStream
-    val println'028Ljava'02Flang'02FString'03B'029V (ghost heap: Heap.t) (this: Ptr.t) (l1: Ptr.t) : unit
+    val println'028Ljava'02Flang'02FString'03B'029V (ghost heap: Heap.t) (this: Ptr.t) (l0: Ptr.t) : unit
       requires { this <> Ptr.null && Heap.instanceof heap this (Class Java.Io.PrintStream.class) }
-      requires { Heap.instanceof heap l1 (Class Java.Lang.String.class) }
+      requires { Heap.instanceof heap l0 (Class Java.Lang.String.class) }
   end
   end
   end
@@ -509,9 +511,9 @@ module Program
   scope Java
   scope Lang
   scope IllegalArgumentException
-    val i'2'03Cinit'03E'028Ljava'02Flang'02FString'03B'029V (ghost heap: Heap.t) (this: Ptr.t) (l1: Ptr.t) : unit
+    val i'2'03Cinit'03E'028Ljava'02Flang'02FString'03B'029V (ghost heap: Heap.t) (this: Ptr.t) (l0: Ptr.t) : unit
       requires { this <> Ptr.null && Heap.instanceof heap this (Class Java.Lang.IllegalArgumentException.class) }
-      requires { Heap.instanceof heap l1 (Class Java.Lang.String.class) }
+      requires { Heap.instanceof heap l0 (Class Java.Lang.String.class) }
   end
   end
   end

@@ -26,7 +26,7 @@ public record WhyFunctionSignature(
 
 		final Stream<WhyFunctionParam> params = IntStream.range(0, paramTypes.size())
 				.mapToObj(i -> new WhyFunctionParam(
-						Identifier.Special.methodParam(i + 1),
+						Identifier.Special.methodParam(i),
 						paramTypes.get(i),
 						false));
 

@@ -162,8 +162,8 @@ public sealed abstract class SExpr {
 		@Override
 		protected Statement withParens(String prefix, String postfix) {
 			return many(conditional.statement(prefix + "if ", " then"),
-					thenBranch.statement("", ""),
-					elseBranch.statement("else ", postfix)
+					indent(thenBranch.statement("", ""),
+							elseBranch.statement("else ", postfix))
 			);
 		}
 

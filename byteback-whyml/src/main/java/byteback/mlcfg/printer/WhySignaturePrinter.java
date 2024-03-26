@@ -35,9 +35,10 @@ public class WhySignaturePrinter {
 
 
 		return many(
-				line("%s %s (ghost heap: Heap.t) %s%s".formatted(
+				line("%s %s (%sheap: Heap.t) %s%s".formatted(
 						m.kind().getWhyDeclaration(),
 						m.name(),
+						m.kind().isSpec() ? "" : "ghost ",
 						params,
 						m.kind() == WhyFunctionKind.PREDICATE ?
 								"" :

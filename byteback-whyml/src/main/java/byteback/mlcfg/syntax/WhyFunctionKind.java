@@ -3,8 +3,8 @@ package byteback.mlcfg.syntax;
 public enum WhyFunctionKind {
 	INSTANCE_METHOD("val"),
 	STATIC_METHOD("val"),
-	PURE_FUNCTION("let function"),
-	PREDICATE("let predicate");
+	PURE_FUNCTION("function"),
+	PREDICATE("predicate");
 
 	private final String whyDeclaration;
 

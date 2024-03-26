@@ -6,7 +6,7 @@ import byteback.mlcfg.syntax.types.WhyType;
 public enum LogicConnector implements BinaryOperator {
 	IFF("<->"),
 	IMPLIES("->"),
-	AND("/\\"), // do not use short-circuited variant here to preserve behaviour of program code
+	AND("/\\"), // FIXME: check semantics for bitwise bool operations (non-short-circuited)
 	OR("\\/");
 
 	private final String opName;

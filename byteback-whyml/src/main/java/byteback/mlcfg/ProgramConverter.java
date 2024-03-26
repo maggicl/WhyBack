@@ -92,7 +92,7 @@ public class ProgramConverter {
 				block(line("(* class field declaration *)")),
 				block(decls.stream().map(WhyClassDeclaration::fieldDeclaration).flatMap(Optional::stream)),
 				block(line("(* methods declaration *)")),
-				block(functionDecls.stream()),
+				block(functionDecls.stream()), // FIXME: spec declarations do not allow forward references
 				block(methodDecls.stream())
 		));
 	}

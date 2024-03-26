@@ -4,7 +4,7 @@ public enum WhyJVMType implements WhyType {
 	BOOL("jbool", "Z", "HeapDef.Int", true),
 	BYTE("jbyte", "B", "HeapDef.Byte", true),
 	CHAR("jchar", "C", "HeapDef.Char", true),
-	SHORT("jshort", "I", "HeapDef.Short", true),
+	SHORT("jshort", "S", "HeapDef.Short", true),
 	INT("jint", "I", "HeapDef.Int", true),
 	LONG("jlong", "J", "HeapDef.Long", true),
 	FLOAT("jfloat", "F", "HeapDef.Float", false),

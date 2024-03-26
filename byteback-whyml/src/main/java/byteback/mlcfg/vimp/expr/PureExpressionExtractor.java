@@ -405,7 +405,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	@Override
 	public void caseLocal(final Local v) {
 		setExpression(new LocalVariableExpression(
-				identifierEscaper.escapeL("lv_" + v.getName()),
+				identifierEscaper.escapeL(v.getName()),
 				typeResolver.resolveJVMType(v.getType())
 		));
 	}

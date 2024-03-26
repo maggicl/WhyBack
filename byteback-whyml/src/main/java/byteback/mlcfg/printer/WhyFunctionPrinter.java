@@ -8,14 +8,14 @@ import byteback.mlcfg.syntax.expr.WhyFunction;
 import java.util.List;
 
 public class WhyFunctionPrinter {
-	private final WhyFunctionSignaturePrinter signaturePrinter;
+	private final WhySignaturePrinter signaturePrinter;
 
-	public WhyFunctionPrinter(WhyFunctionSignaturePrinter signaturePrinter) {
+	public WhyFunctionPrinter(WhySignaturePrinter signaturePrinter) {
 		this.signaturePrinter = signaturePrinter;
 	}
 
 	public Statement toWhy(WhyFunction f) {
-		return many(signaturePrinter.toWhy(f.getSignature()), line("="), line(f.getBody().toWhy()));
+		return block(signaturePrinter.toWhy(f.getSignature()), line("="), line(f.getBody().toWhy()));
 	}
 
 	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunction> functions) {

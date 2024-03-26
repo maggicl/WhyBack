@@ -8,7 +8,7 @@ import static byteback.mlcfg.printer.Statement.many;
 import byteback.mlcfg.printer.WhyClassDeclaration;
 import byteback.mlcfg.printer.WhyClassPrinter;
 import byteback.mlcfg.printer.WhyFunctionPrinter;
-import byteback.mlcfg.printer.WhyFunctionSignaturePrinter;
+import byteback.mlcfg.printer.WhySignaturePrinter;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.WhyProgram;
 import byteback.mlcfg.vimp.VimpClassParser;
@@ -31,18 +31,18 @@ public class ProgramConverter {
 	private final VimpMethodBodyParser methodBodyParser;
 	private final WhyClassPrinter whyClassPrinter;
 
-	private final WhyFunctionSignaturePrinter whyFunctionSignaturePrinter;
+	private final WhySignaturePrinter whySignaturePrinter;
 	private final WhyFunctionPrinter whyFunctionPrinter;
 
 	public ProgramConverter(VimpClassParser classParser, VimpMethodParser methodParser,
 							VimpMethodBodyParser methodBodyParser, WhyClassPrinter whyClassPrinter,
-							WhyFunctionSignaturePrinter whyFunctionSignaturePrinter,
+							WhySignaturePrinter whySignaturePrinter,
 							WhyFunctionPrinter whyFunctionPrinter) {
 		this.classParser = classParser;
 		this.methodParser = methodParser;
 		this.methodBodyParser = methodBodyParser;
 		this.whyClassPrinter = whyClassPrinter;
-		this.whyFunctionSignaturePrinter = whyFunctionSignaturePrinter;
+		this.whySignaturePrinter = whySignaturePrinter;
 		this.whyFunctionPrinter = whyFunctionPrinter;
 	}
 
@@ -83,7 +83,7 @@ public class ProgramConverter {
 				.toList();
 
 		final List<Statement> methodDecls = whyResolver.methods()
-				.map(e -> whyFunctionSignaturePrinter.toWhy(e.getKey(), e.getValue()))
+				.map(e -> whySignaturePrinter.toWhy(e.getKey(), e.getValue()))
 				.toList();
 
 		return new WhyProgram(many(

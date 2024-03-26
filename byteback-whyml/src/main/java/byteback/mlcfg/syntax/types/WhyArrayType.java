@@ -4,9 +4,8 @@ import java.util.Objects;
 
 public record WhyArrayType(WhyType baseType) implements WhyPtrType {
 	public WhyArrayType {
-		// noinspection SuspiciousMethodCalls
-		if (WhyJVMType.META_TYPES.contains(baseType)) {
-			throw new IllegalArgumentException("base type of array cannot be generic reference JVM type");
+		if (baseType instanceof WhyJVMType && ((WhyJVMType) baseType).isMeta()) {
+			throw new IllegalArgumentException("base type of array cannot be a meta type");
 		}
 	}
 

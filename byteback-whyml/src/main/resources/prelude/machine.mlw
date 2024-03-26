@@ -41,9 +41,26 @@ module Operators
   let constant jdouble_minf: jdouble = Float64Support.minf
   let constant jdouble_nan: jdouble = Float64Support.nan
 
+  (* casting operators *)
+  let function z2int (x: jbool) : int = if x then 1 else 0
+  let function int2z (x: int) : jbool = if x = 0 then false else true
+  let function b2int (x: jbyte) : int = Int8.to_int x
+  let function int2b (x: int) : jbyte = Int8.of_int (int_to_bounds min_int8 max_int8 x)
+  let function s2int (x: jshort) : int = Int16.to_int x
+  let function int2s (x: int) : jshort = Int16.of_int (int_to_bounds min_int16 max_int16 x)
+  let function c2int (x: jchar) : int = UInt16.to_int x
+  let function int2c (x: int) : jchar = Uint16.of_int (int_to_bounds 0 max_uint16 x)
+  let function i2int (x: jint) : int = Int32.to_int x
+  let function int2i (x: int) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 x)
+  let function j2int (x: jlong) : int = Int64.to_int x
+  let function int2j (x: int) : jlong = Int64.of_int (int_to_bounds min_int64 max_int64 x)
+  let function f2d (x: jfloat) : jdouble = float32_to_float64_java x
+  let function f2int (x: jfloat) : int = Float32Support.to_int_java x
+  let function int2f (x: int) : jfloat = Float32Support.of_int_java x
   let function d2f (x: jdouble) : jfloat = float64_to_float32_java x
-  let function d2i (x: jdouble) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (Float64Support.to_int_java x))
-  let function d2l (x: jdouble) : jlong = Int64.of_int (int_to_bounds min_int64 max_int64 (Float64Support.to_int_java x))
+  let function d2int (x: jdouble) : int = Float64Support.to_int_java x
+  let function int2d (x: int) : jdouble = Float64Support.of_int_java x
+  
   let function dneg (x: jdouble) : jdouble = Float64.neg x
   let function dadd (x y: jdouble) : jdouble = Float64.(.+) x y
   let function dsub (x y: jdouble) : jdouble = Float64.(.-) x y
@@ -53,9 +70,6 @@ module Operators
   let function dcmpl (x y: jdouble) : jint = Float64Support.cmpl x y
   let function dcmpg (x y: jdouble) : jint = Float64Support.cmpg x y
 
-  let function f2d (x: jfloat) : jdouble = float32_to_float64_java x
-  let function f2i (x: jfloat) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (Float32Support.to_int_java x))
-  let function f2l (x: jfloat) : jlong = Int64.of_int (int_to_bounds min_int64 max_int64 (Float32Support.to_int_java x))
   let function fneg (x: jfloat) : jfloat = Float32.neg x
   let function fadd (x y: jfloat) : jfloat = Float32.(.+) x y
   let function fsub (x y: jfloat) : jfloat = Float32.(.-) x y
@@ -65,12 +79,6 @@ module Operators
   let function fcmpl (x y: jfloat) : jint = Float32Support.cmpl x y
   let function fcmpg (x y: jfloat) : jint = Float32Support.cmpg x y
 
-  let function i2b (x: jint) : jbyte = Int8.of_int (int_to_bounds min_int8 max_int8 (Int32.to_int x))
-  let function i2c (x: jint) : jchar = UInt16.of_int (int_to_bounds 0 max_uint16 (Int32.to_int x))
-  let function i2s (x: jint) : jshort = Int16.of_int (int_to_bounds min_int16 max_int16 (Int32.to_int x))
-  let function i2l (x: jint) : jlong = Int64.of_int (Int32.to_int x)
-  let function i2f (x: jint) : jfloat = Float32Support.of_int_java (Int32.to_int x)
-  let function i2d (x: jint) : jdouble = Float64Support.of_int_java (Int32.to_int x)
   let function ineg (x: jint) : jint = Int32.(-_) x
   let function iadd (x y: jint) : jint = Int32.(+) x y
   let function isub (x y: jint) : jint = Int32.(-) x y

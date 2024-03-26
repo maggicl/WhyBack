@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class WhyFunctionSignaturePrinter {
+public class WhySignaturePrinter {
 
 	public Statement toWhy(WhyFunctionSignature m) {
 		final List<WhyFunctionParam> paramsList = m.params().toList();
@@ -34,7 +34,7 @@ public class WhyFunctionSignaturePrinter {
 						.stream());
 
 
-		return block(
+		return many(
 				line("%s %s (ghost heap: Heap.t) %s%s".formatted(
 						m.kind().getWhyDeclaration(),
 						m.name(),
@@ -52,6 +52,6 @@ public class WhyFunctionSignaturePrinter {
 
 	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunctionSignature> methods) {
 		final WhyClassScope scope = new WhyClassScope(declaringClass);
-		return scope.with(block(methods.stream().map(this::toWhy)));
+		return scope.with(block(methods.stream().map(this::toWhy).map(Statement::block)));
 	}
 }

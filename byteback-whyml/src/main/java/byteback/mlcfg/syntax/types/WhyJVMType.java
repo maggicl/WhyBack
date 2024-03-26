@@ -1,29 +1,37 @@
 package byteback.mlcfg.syntax.types;
 
-import java.util.EnumSet;
-
 public enum WhyJVMType implements WhyType {
-	BOOL("jbool", "Z", "HeapDef.Int"),
-	BYTE("jbyte", "B", "HeapDef.Byte"),
-	CHAR("jchar", "C", "HeapDef.Char"),
-	SHORT("jshort", "I", "HeapDef.Short"),
-	INT("jint", "I", "HeapDef.Int"),
-	PTR("Ptr.t", "L", null),
-	UNIT("unit", null, null), // TODO: consider removing. Introduced for exceptions
-	LONG("jlong", "J", "HeapDef.Long"),
-	FLOAT("jfloat", "F", "HeapDef.Float"),
-	DOUBLE("jdouble", "D", "HeapDef.Double");
+	BOOL("jbool", "Z", "HeapDef.Int", true),
+	BYTE("jbyte", "B", "HeapDef.Byte", true),
+	CHAR("jchar", "C", "HeapDef.Char", true),
+	SHORT("jshort", "I", "HeapDef.Short", true),
+	INT("jint", "I", "HeapDef.Int", true),
+	LONG("jlong", "J", "HeapDef.Long", true),
+	FLOAT("jfloat", "F", "HeapDef.Float", false),
+	DOUBLE("jdouble", "D", "HeapDef.Double", false),
 
-	public static final EnumSet<WhyJVMType> META_TYPES = EnumSet.of(UNIT, PTR);
+	PTR("Ptr.t", "L", null, false),
+	// TODO: consider removing. Introduced for exceptions
+	UNIT("unit", null, null, false);
 
 	private final String label;
 	private final String preludeType;
 	private final String accessorScope;
+	private final boolean isWholeNumber;
 
-	WhyJVMType(String typeLabel, String accessorScope, String preludeType) {
+	WhyJVMType(String typeLabel, String accessorScope, String preludeType, boolean isWholeNumber) {
 		this.label = typeLabel;
 		this.accessorScope = accessorScope;
 		this.preludeType = preludeType;
+		this.isWholeNumber = isWholeNumber;
+	}
+
+	public boolean isMeta() {
+		return preludeType == null;
+	}
+
+	public boolean isWholeNumber() {
+		return this.isWholeNumber;
 	}
 
 	@Override

@@ -1,18 +1,14 @@
 package byteback.mlcfg.syntax.expr;
 
 import byteback.mlcfg.syntax.types.WhyJVMType;
-import byteback.mlcfg.syntax.types.WhyType;
-import java.util.EnumSet;
 
-public final class NumericLiteral implements Expression {
-	private static final EnumSet<WhyJVMType> NUMERICS =
-			EnumSet.complementOf(EnumSet.of(WhyJVMType.INT, WhyJVMType.LONG));
+public final class WholeNumberLiteral implements Expression {
 
 	private final WhyJVMType type;
 	private final long value;
 
-	public NumericLiteral(WhyJVMType type, long value) {
-		if (!NUMERICS.contains(type)) {
+	public WholeNumberLiteral(WhyJVMType type, long value) {
+		if (!type.isWholeNumber()) {
 			throw new IllegalArgumentException("literal has not valid numeric type: " + type);
 		}
 

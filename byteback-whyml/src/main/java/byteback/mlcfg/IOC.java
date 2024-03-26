@@ -6,7 +6,7 @@ import byteback.mlcfg.identifiers.IdentifierEscaper;
 import byteback.mlcfg.printer.WhyClassPrinter;
 import byteback.mlcfg.printer.WhyFieldPrinter;
 import byteback.mlcfg.printer.WhyFunctionPrinter;
-import byteback.mlcfg.printer.WhyFunctionSignaturePrinter;
+import byteback.mlcfg.printer.WhySignaturePrinter;
 import byteback.mlcfg.vimp.TypeResolver;
 import byteback.mlcfg.vimp.VimpClassNameParser;
 import byteback.mlcfg.vimp.VimpClassParser;
@@ -30,7 +30,7 @@ public final class IOC {
 	public static final VimpMethodBodyParser METHOD_BODY_PARSER = new VimpMethodBodyParser(FUNCTION_BODY_EXTRACTOR);
 	public static final WhyFieldPrinter WHY_FIELD_PRINTER = new WhyFieldPrinter();
 	public static final WhyClassPrinter WHY_CLASS_PRINTER = new WhyClassPrinter(WHY_FIELD_PRINTER);
-	public static final WhyFunctionSignaturePrinter WHY_METHOD_PRINTER = new WhyFunctionSignaturePrinter();
+	public static final WhySignaturePrinter WHY_METHOD_PRINTER = new WhySignaturePrinter();
 	public static final WhyFunctionPrinter WHY_FUNCTION_PRINTER = new WhyFunctionPrinter(WHY_METHOD_PRINTER);
 	public static final ProgramConverter PROGRAM_CONVERTER = new ProgramConverter(CLASS_PARSER, METHOD_PARSER, METHOD_BODY_PARSER, WHY_CLASS_PRINTER, WHY_METHOD_PRINTER, WHY_FUNCTION_PRINTER);
 

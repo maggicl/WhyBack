@@ -2,6 +2,7 @@ package byteback.mlcfg.syntax.expr;
 
 import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.terminal;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
@@ -38,5 +39,10 @@ public final class DoubleLiteral implements Expression {
 	@Override
 	public WhyJVMType type() {
 		return WhyJVMType.DOUBLE;
+	}
+
+	@Override
+	public Expression visit(ExpressionTransformer transformer) {
+		return transformer.transformDoubleLiteral(this);
 	}
 }

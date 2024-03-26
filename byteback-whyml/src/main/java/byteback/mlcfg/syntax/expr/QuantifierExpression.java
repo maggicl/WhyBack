@@ -4,7 +4,9 @@ import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.infix;
 import static byteback.mlcfg.printer.SExpr.prefix;
 import byteback.mlcfg.syntax.WhyFunctionParam;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +24,18 @@ public class QuantifierExpression implements Expression {
 		this.kind = kind;
 		this.variableList = variableList;
 		this.inner = inner;
+	}
+
+	public Kind getKind() {
+		return kind;
+	}
+
+	public List<WhyFunctionParam> getVariableList() {
+		return Collections.unmodifiableList(variableList);
+	}
+
+	public Expression getInner() {
+		return inner;
 	}
 
 	@Override
@@ -45,6 +59,11 @@ public class QuantifierExpression implements Expression {
 	@Override
 	public WhyJVMType type() {
 		return WhyJVMType.BOOL;
+	}
+
+	@Override
+	public Expression visit(ExpressionTransformer transformer) {
+		return transformer.transformQuantifierExpression(this);
 	}
 
 	public enum Kind {

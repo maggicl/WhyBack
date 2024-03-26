@@ -1,6 +1,7 @@
 package byteback.mlcfg.syntax.expr;
 
 import byteback.mlcfg.printer.SExpr;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
 public class ConditionalExpression implements Expression {
@@ -26,6 +27,18 @@ public class ConditionalExpression implements Expression {
 		this.elseExpr = elseExpr;
 	}
 
+	public Expression getConditional() {
+		return conditional;
+	}
+
+	public Expression getThenExpr() {
+		return thenExpr;
+	}
+
+	public Expression getElseExpr() {
+		return elseExpr;
+	}
+
 	@Override
 	public SExpr toWhy() {
 		return SExpr.conditional(conditional.toWhy(), thenExpr.toWhy(), elseExpr.toWhy());
@@ -34,5 +47,10 @@ public class ConditionalExpression implements Expression {
 	@Override
 	public WhyJVMType type() {
 		return thenExpr.type();
+	}
+
+	@Override
+	public Expression visit(ExpressionTransformer transformer) {
+		return transformer.transformConditionalExpression(this);
 	}
 }

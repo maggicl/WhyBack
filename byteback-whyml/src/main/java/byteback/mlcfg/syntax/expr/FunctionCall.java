@@ -5,8 +5,10 @@ import static byteback.mlcfg.printer.SExpr.prefix;
 import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.WhyFunctionParam;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -36,6 +38,14 @@ public class FunctionCall implements Expression {
 		}
 	}
 
+	public WhyFunctionSignature getFunction() {
+		return function;
+	}
+
+	public List<Expression> getParams() {
+		return Collections.unmodifiableList(params);
+	}
+
 	@Override
 	public SExpr toWhy() {
 		// FIXME: function call identifier must not be FQDN if in same class (check with forward reference sorting tho)
@@ -47,5 +57,10 @@ public class FunctionCall implements Expression {
 	@Override
 	public WhyJVMType type() {
 		return function.returnType().jvm();
+	}
+
+	@Override
+	public Expression visit(ExpressionTransformer transformer) {
+		return transformer.transformFunctionCall(this);
 	}
 }

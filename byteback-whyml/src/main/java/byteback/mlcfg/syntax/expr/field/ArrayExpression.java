@@ -4,11 +4,11 @@ import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.prefix;
 import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.expr.Expression;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
 public class ArrayExpression implements Expression {
 	private final Expression base;
-
 	// We need to know the element type of the array as the array expression only has a JVM type of "ref" no matter what
 	private final WhyJVMType elementType;
 	private final ArrayOperation operation;
@@ -32,6 +32,18 @@ public class ArrayExpression implements Expression {
 		this.operation = operation;
 	}
 
+	public Expression getBase() {
+		return base;
+	}
+
+	public WhyJVMType getElementType() {
+		return elementType;
+	}
+
+	public ArrayOperation getOperation() {
+		return operation;
+	}
+
 	@Override
 	public SExpr toWhy() {
 		final String accessor = "R" + elementType.getWhyAccessorScope();
@@ -53,7 +65,7 @@ public class ArrayExpression implements Expression {
 			);
 		} else {
 			return prefix(
-					accessor + "arraylength",
+					accessor + ".arraylength",
 					terminal("heap"),
 					base.toWhy()
 			);
@@ -63,5 +75,10 @@ public class ArrayExpression implements Expression {
 	@Override
 	public WhyJVMType type() {
 		return operation.fixedReturnType().orElse(elementType);
+	}
+
+	@Override
+	public Expression visit(ExpressionTransformer transformer) {
+		return transformer.transformArrayExpression(this);
 	}
 }

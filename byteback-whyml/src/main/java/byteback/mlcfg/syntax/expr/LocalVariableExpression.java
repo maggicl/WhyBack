@@ -3,6 +3,7 @@ package byteback.mlcfg.syntax.expr;
 import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.terminal;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
 public class LocalVariableExpression implements Expression {
@@ -22,5 +23,10 @@ public class LocalVariableExpression implements Expression {
 	@Override
 	public WhyJVMType type() {
 		return type;
+	}
+
+	@Override
+	public Expression visit(ExpressionTransformer transformer) {
+		return transformer.transformLocalVariableExpression(this);
 	}
 }

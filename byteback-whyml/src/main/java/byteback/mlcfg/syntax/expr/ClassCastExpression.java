@@ -3,6 +3,7 @@ package byteback.mlcfg.syntax.expr;
 import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.prefix;
 import static byteback.mlcfg.printer.SExpr.terminal;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
@@ -23,6 +24,14 @@ public class ClassCastExpression implements Expression {
 		this.type = type;
 	}
 
+	public Expression getReference() {
+		return reference;
+	}
+
+	public WhyType getType() {
+		return type;
+	}
+
 	@Override
 	public SExpr toWhy() {
 		return prefix(
@@ -36,5 +45,10 @@ public class ClassCastExpression implements Expression {
 	@Override
 	public WhyJVMType type() {
 		return WhyJVMType.BOOL;
+	}
+
+	@Override
+	public Expression visit(ExpressionTransformer transformer) {
+		return transformer.transformClassCastExpression(this);
 	}
 }

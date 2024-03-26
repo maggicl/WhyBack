@@ -2,6 +2,7 @@ package byteback.mlcfg.syntax.expr;
 
 import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.prefix;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
@@ -17,6 +18,14 @@ public final class UnaryExpression implements Expression {
 		this.operand = operand;
 	}
 
+	public Operator getOperator() {
+		return operator;
+	}
+
+	public Expression getOperand() {
+		return operand;
+	}
+
 	@Override
 	public SExpr toWhy() {
 		return prefix(operator.opName, operand.toWhy());
@@ -25,6 +34,11 @@ public final class UnaryExpression implements Expression {
 	@Override
 	public WhyJVMType type() {
 		return this.operator.returnType;
+	}
+
+	@Override
+	public Expression visit(ExpressionTransformer transformer) {
+		return transformer.transformUnaryExpression(this);
 	}
 
 	public enum Operator {

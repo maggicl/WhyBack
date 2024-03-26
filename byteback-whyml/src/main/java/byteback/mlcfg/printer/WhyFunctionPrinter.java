@@ -4,7 +4,7 @@ import byteback.mlcfg.identifiers.Identifier;
 import static byteback.mlcfg.printer.Statement.block;
 import static byteback.mlcfg.printer.Statement.line;
 import static byteback.mlcfg.printer.Statement.many;
-import byteback.mlcfg.syntax.expr.WhyFunction;
+import byteback.mlcfg.syntax.WhyFunction;
 import java.util.List;
 
 public class WhyFunctionPrinter {

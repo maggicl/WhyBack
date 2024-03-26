@@ -4,6 +4,7 @@ import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.prefix;
 import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.expr.Expression;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
 public class FieldExpression implements Expression {
@@ -23,6 +24,14 @@ public class FieldExpression implements Expression {
 
 		this.operation = operation;
 		this.access = access;
+	}
+
+	public Operation getOperation() {
+		return operation;
+	}
+
+	public Access getAccess() {
+		return access;
 	}
 
 	@Override
@@ -51,5 +60,10 @@ public class FieldExpression implements Expression {
 	@Override
 	public WhyJVMType type() {
 		return operation.fixedReturnType().orElseGet(() -> access.getField().getType().jvm());
+	}
+
+	@Override
+	public Expression visit(ExpressionTransformer transformer) {
+		return transformer.transformFieldExpression(this);
 	}
 }

@@ -2,15 +2,24 @@ package byteback.mlcfg.syntax.expr;
 
 import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.prefix;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import java.util.Locale;
 
 public class PrimitiveCastExpression implements Expression {
-	private final Expression op;
+	public Expression getInner() {
+		return inner;
+	}
+
+	public WhyJVMType getTargetType() {
+		return targetType;
+	}
+
+	private final Expression inner;
 	private final WhyJVMType targetType;
 
-	public PrimitiveCastExpression(Expression op, WhyJVMType type) {
-		if (op.type().isMeta()) {
+	public PrimitiveCastExpression(Expression inner, WhyJVMType type) {
+		if (inner.type().isMeta()) {
 			throw new IllegalArgumentException("inner expression of primitive cast operation must have primitive type");
 		}
 
@@ -18,7 +27,7 @@ public class PrimitiveCastExpression implements Expression {
 			throw new IllegalArgumentException("target type of primitive cast operation must be primitive");
 		}
 
-		this.op = op;
+		this.inner = inner;
 		this.targetType = type;
 	}
 
@@ -28,19 +37,24 @@ public class PrimitiveCastExpression implements Expression {
 
 	@Override
 	public SExpr toWhy() {
-		final WhyJVMType sourceType = op.type();
+		final WhyJVMType sourceType = inner.type();
 		if (sourceType.isWholeNumber() || targetType.isWholeNumber()) {
 			return prefix("int2" + getCastTypeName(targetType),
 					prefix(getCastTypeName(sourceType) + "2int",
-							op.toWhy())
+							inner.toWhy())
 			);
 		} else {
-			return prefix("%s2%s".formatted(getCastTypeName(sourceType), getCastTypeName(targetType)), op.toWhy());
+			return prefix("%s2%s".formatted(getCastTypeName(sourceType), getCastTypeName(targetType)), inner.toWhy());
 		}
 	}
 
 	@Override
 	public WhyJVMType type() {
 		return targetType;
+	}
+
+	@Override
+	public Expression visit(ExpressionTransformer transformer) {
+		return transformer.transformPrimitiveCastExpression(this);
 	}
 }

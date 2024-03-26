@@ -3,6 +3,7 @@ package byteback.mlcfg.syntax.expr;
 import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.prefix;
 import static byteback.mlcfg.printer.SExpr.terminal;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import com.google.common.base.Charsets;
 
@@ -47,5 +48,10 @@ public class StringLiteralExpression implements Expression {
 	@Override
 	public WhyJVMType type() {
 		return WhyJVMType.PTR;
+	}
+
+	@Override
+	public Expression visit(ExpressionTransformer transformer) {
+		return transformer.transformStringLiteralExpression(this);
 	}
 }

@@ -1,6 +1,7 @@
-package byteback.mlcfg.syntax.expr;
+package byteback.mlcfg.syntax;
 
 import byteback.mlcfg.syntax.WhyFunctionSignature;
+import byteback.mlcfg.syntax.expr.Expression;
 
 public class WhyFunction {
 	private final WhyFunctionSignature signature;

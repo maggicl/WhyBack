@@ -1,6 +1,7 @@
 package byteback.mlcfg.syntax.expr;
 
 import byteback.mlcfg.printer.SExpr;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
@@ -8,6 +9,8 @@ public interface Expression {
 	SExpr toWhy();
 
 	WhyJVMType type();
+
+	Expression visit(ExpressionTransformer transformer);
 
 	static void checkCompatibleType(String operandPos, Expression operand, WhyType type) {
 		if (operand.type() != type.jvm()) {

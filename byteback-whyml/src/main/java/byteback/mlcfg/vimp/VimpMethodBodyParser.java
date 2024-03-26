@@ -2,7 +2,7 @@ package byteback.mlcfg.vimp;
 
 import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.expr.Expression;
-import byteback.mlcfg.syntax.expr.WhyFunction;
+import byteback.mlcfg.syntax.WhyFunction;
 import byteback.mlcfg.vimp.expr.FunctionBodyExtractor;
 import soot.SootMethod;
 

@@ -2,9 +2,8 @@ package byteback.mlcfg.vimp;
 
 import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.syntax.WhyClass;
-import byteback.mlcfg.syntax.WhyFunctionKind;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
-import byteback.mlcfg.syntax.expr.WhyFunction;
+import byteback.mlcfg.syntax.WhyFunction;
 import byteback.mlcfg.syntax.types.ReferenceVisitor;
 import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.vimp.order.ReversePostOrder;

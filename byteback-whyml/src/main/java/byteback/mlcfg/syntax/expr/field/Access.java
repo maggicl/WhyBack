@@ -25,7 +25,6 @@ public sealed abstract class Access {
 	public static final class Instance extends Access {
 		private final Expression base;
 		private final WhyInstanceField field;
-
 		private Instance(Expression base, WhyInstanceField field) {
 			if (base.type() != WhyJVMType.PTR) {
 				throw new IllegalArgumentException("base expression must be a reference");
@@ -35,8 +34,12 @@ public sealed abstract class Access {
 			this.field = field;
 		}
 
+		public Expression getBase() {
+			return base;
+		}
+
 		@Override
-		public WhyField getField() {
+		public WhyInstanceField getField() {
 			return field;
 		}
 
@@ -54,7 +57,7 @@ public sealed abstract class Access {
 		}
 
 		@Override
-		public WhyField getField() {
+		public WhyStaticField getField() {
 			return field;
 		}
 

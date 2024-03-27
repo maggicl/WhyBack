@@ -3,6 +3,7 @@ package byteback.mlcfg.syntax.expr;
 import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionVisitor;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
 public final class WholeNumberLiteral implements Expression {
@@ -30,7 +31,12 @@ public final class WholeNumberLiteral implements Expression {
 	}
 
 	@Override
-	public Expression visit(ExpressionTransformer transformer) {
+	public Expression accept(ExpressionTransformer transformer) {
 		return transformer.transformWholeNumberLiteral(this);
+	}
+
+	@Override
+	public void accept(ExpressionVisitor visitor) {
+		visitor.visitWholeNumberLiteral(this);
 	}
 }

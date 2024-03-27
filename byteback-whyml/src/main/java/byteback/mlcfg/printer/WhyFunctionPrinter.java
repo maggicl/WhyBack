@@ -5,6 +5,7 @@ import static byteback.mlcfg.printer.Statement.block;
 import static byteback.mlcfg.printer.Statement.line;
 import static byteback.mlcfg.printer.Statement.many;
 import byteback.mlcfg.syntax.WhyFunction;
+import java.util.Collection;
 import java.util.List;
 
 public class WhyFunctionPrinter {
@@ -18,7 +19,7 @@ public class WhyFunctionPrinter {
 		return block(signaturePrinter.toWhy(f.getSignature()), line("="), f.getBody().toWhy().statement());
 	}
 
-	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunction> functions) {
+	public Statement toWhy(Identifier.FQDN declaringClass, Collection<WhyFunction> functions) {
 		final WhyClassScope scope = new WhyClassScope(declaringClass);
 		return scope.with(block(functions.stream().map(this::toWhy)));
 	}

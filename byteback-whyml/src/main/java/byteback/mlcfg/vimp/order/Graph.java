@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public final class ReversePostOrder {
-	private ReversePostOrder() {
+public final class Graph {
+	private Graph() {
 	}
 
 	public static <T> Map<T, Set<T>> reverseAdjacencyMap(final Map<T, Set<T>> reverseAdjacencyMap) {
@@ -24,11 +24,13 @@ public final class ReversePostOrder {
 		return result;
 	}
 
+	public static
+
 	/**
 	 * Given an adjacency map, sorts the elements in the map in reverse post order
 	 * From: <a href="https://eli.thegreenplace.net/2015/directed-graph-traversal-orderings-and-applications-to-data-flow-analysis/">...</a>
 	 */
-	public static <T> List<T> sort(final Map<T, Set<T>> adjacencyMap, final T start) {
+	public static <T> List<T> reversePostOrder(final Map<T, Set<T>> adjacencyMap, final T start) {
 		final Set<T> visited = new HashSet<>();
 		final List<T> order = new ArrayList<>();
 		final Deque<T> visitStack = new ArrayDeque<>();

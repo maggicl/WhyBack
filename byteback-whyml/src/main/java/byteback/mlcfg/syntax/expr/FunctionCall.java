@@ -1,15 +1,20 @@
 package byteback.mlcfg.syntax.expr;
 
+import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.prefix;
 import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.WhyFunctionParam;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionVisitor;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class FunctionCall implements Expression {
@@ -46,6 +51,14 @@ public class FunctionCall implements Expression {
 		return Collections.unmodifiableList(params);
 	}
 
+	public Map<Identifier.L, Expression> argumentMap() {
+		final List<Identifier.L> names = function.params().map(WhyFunctionParam::name).toList();
+
+		return IntStream.range(0, names.size())
+				.boxed()
+				.collect(Collectors.toMap(names::get, params::get));
+	}
+
 	@Override
 	public SExpr toWhy() {
 		// FIXME: function call identifier must not be FQDN if in same class (check with forward reference sorting tho)
@@ -60,7 +73,12 @@ public class FunctionCall implements Expression {
 	}
 
 	@Override
-	public Expression visit(ExpressionTransformer transformer) {
+	public Expression accept(ExpressionTransformer transformer) {
 		return transformer.transformFunctionCall(this);
+	}
+
+	@Override
+	public void accept(ExpressionVisitor visitor) {
+		visitor.visitFunctionCall(this);
 	}
 }

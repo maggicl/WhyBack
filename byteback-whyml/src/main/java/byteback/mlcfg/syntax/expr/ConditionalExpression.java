@@ -2,6 +2,7 @@ package byteback.mlcfg.syntax.expr;
 
 import byteback.mlcfg.printer.SExpr;
 import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionVisitor;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
 public class ConditionalExpression implements Expression {
@@ -50,7 +51,13 @@ public class ConditionalExpression implements Expression {
 	}
 
 	@Override
-	public Expression visit(ExpressionTransformer transformer) {
+	public Expression accept(ExpressionTransformer transformer) {
 		return transformer.transformConditionalExpression(this);
+	}
+
+
+	@Override
+	public void accept(ExpressionVisitor visitor) {
+		visitor.visitConditionalExpression(this);
 	}
 }

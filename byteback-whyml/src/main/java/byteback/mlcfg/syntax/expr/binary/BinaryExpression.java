@@ -3,11 +3,10 @@ package byteback.mlcfg.syntax.expr.binary;
 import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.infix;
 import static byteback.mlcfg.printer.SExpr.prefix;
-import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionVisitor;
 import byteback.mlcfg.syntax.types.WhyJVMType;
-import byteback.mlcfg.syntax.types.WhyType;
 
 public final class BinaryExpression implements Expression {
 	public BinaryOperator getOperator() {
@@ -58,7 +57,12 @@ public final class BinaryExpression implements Expression {
 	}
 
 	@Override
-	public Expression visit(ExpressionTransformer transformer) {
+	public Expression accept(ExpressionTransformer transformer) {
 		return transformer.transformBinaryExpression(this);
+	}
+
+	@Override
+	public void accept(ExpressionVisitor visitor) {
+		visitor.visitBinaryExpression(this);
 	}
 }

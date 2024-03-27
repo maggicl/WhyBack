@@ -6,9 +6,10 @@ import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.WhyFunction;
 import byteback.mlcfg.syntax.types.ReferenceVisitor;
 import byteback.mlcfg.syntax.types.WhyType;
-import byteback.mlcfg.vimp.order.ReversePostOrder;
+import byteback.mlcfg.vimp.order.Graph;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +24,7 @@ import java.util.stream.Stream;
 public class WhyResolver {
 	private final Map<Identifier.FQDN, WhyClass> classes = new HashMap<>();
 	private final Map<Identifier.FQDN, List<WhyFunctionSignature>> methods = new HashMap<>();
-	private final Map<Identifier.FQDN, List<WhyFunction>> functions = new HashMap<>();
+	private final Map<Identifier.FQDN, Map<WhyFunctionSignature, WhyFunction>> functions = new HashMap<>();
 
 	public Set<WhyClass> getAllSuper(WhyClass from) {
 		final Deque<Identifier.FQDN> toProcess = from.superNames().collect(Collectors.toCollection(ArrayDeque::new));
@@ -59,7 +60,7 @@ public class WhyResolver {
 
 	public void addFunction(final WhyFunction f) {
 		final Identifier.FQDN declaringClass = f.getSignature().declaringClass();
-		functions.computeIfAbsent(declaringClass, k -> new ArrayList<>()).add(f);
+		functions.computeIfAbsent(declaringClass, k -> new HashMap<>()).put(f.getSignature(), f);
 	}
 
 	public boolean isResolved(WhyType t) {
@@ -76,7 +77,7 @@ public class WhyResolver {
 				.collect(Collectors.toMap(Function.identity(), this::getAllSuper));
 
 		final WhyClass object = Objects.requireNonNull(classes.get(Identifier.Special.OBJECT));
-		final List<WhyClass> rpo = ReversePostOrder.sort(ReversePostOrder.reverseAdjacencyMap(superAdjMap), object);
+		final List<WhyClass> rpo = Graph.reversePostOrder(Graph.reverseAdjacencyMap(superAdjMap), object);
 
 		return rpo.stream();
 	}
@@ -85,7 +86,11 @@ public class WhyResolver {
 		return methods.entrySet().stream();
 	}
 
-	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunction>>> functions() {
-		return functions.entrySet().stream();
+	public Stream<Map.Entry<Identifier.FQDN, Collection<WhyFunction>>> functions() {
+		return functions.entrySet().stream().map(e -> Map.entry(e.getKey(), e.getValue().values()));
+	}
+
+	public WhyFunction getFunction(WhyFunctionSignature function) {
+		return functions.get(function.declaringClass()).get(function);
 	}
 }

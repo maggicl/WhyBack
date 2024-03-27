@@ -4,6 +4,7 @@ import byteback.mlcfg.printer.SExpr;
 import static byteback.mlcfg.printer.SExpr.prefix;
 import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionVisitor;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import com.google.common.base.Charsets;
 
@@ -51,7 +52,12 @@ public class StringLiteralExpression implements Expression {
 	}
 
 	@Override
-	public Expression visit(ExpressionTransformer transformer) {
+	public Expression accept(ExpressionTransformer transformer) {
 		return transformer.transformStringLiteralExpression(this);
+	}
+
+	@Override
+	public void accept(ExpressionVisitor visitor) {
+		visitor.visitStringLiteralExpression(this);
 	}
 }

@@ -5,6 +5,7 @@ import static byteback.mlcfg.printer.SExpr.prefix;
 import static byteback.mlcfg.printer.SExpr.terminal;
 import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionVisitor;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
 public class ArrayExpression implements Expression {
@@ -78,7 +79,12 @@ public class ArrayExpression implements Expression {
 	}
 
 	@Override
-	public Expression visit(ExpressionTransformer transformer) {
+	public Expression accept(ExpressionTransformer transformer) {
 		return transformer.transformArrayExpression(this);
+	}
+
+	@Override
+	public void accept(ExpressionVisitor visitor) {
+		visitor.visitArrayExpression(this);
 	}
 }

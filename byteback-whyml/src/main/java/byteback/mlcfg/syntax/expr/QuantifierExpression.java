@@ -5,6 +5,7 @@ import static byteback.mlcfg.printer.SExpr.infix;
 import static byteback.mlcfg.printer.SExpr.prefix;
 import byteback.mlcfg.syntax.WhyFunctionParam;
 import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
+import byteback.mlcfg.syntax.expr.transformer.ExpressionVisitor;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 import java.util.Collections;
 import java.util.List;
@@ -62,8 +63,13 @@ public class QuantifierExpression implements Expression {
 	}
 
 	@Override
-	public Expression visit(ExpressionTransformer transformer) {
+	public Expression accept(ExpressionTransformer transformer) {
 		return transformer.transformQuantifierExpression(this);
+	}
+
+	@Override
+	public void accept(ExpressionVisitor visitor) {
+		visitor.visitQuantifierExpression(this);
 	}
 
 	public enum Kind {

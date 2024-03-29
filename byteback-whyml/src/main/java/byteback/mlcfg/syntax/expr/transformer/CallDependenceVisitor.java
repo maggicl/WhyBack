@@ -19,7 +19,7 @@ public class CallDependenceVisitor extends ExpressionVisitor {
 
 	@Override
 	public void visitFunctionCall(FunctionCall source) {
-		calls.add(source.getFunction());
+		calls.add(source.function());
 		super.visitFunctionCall(source);
 	}
 }

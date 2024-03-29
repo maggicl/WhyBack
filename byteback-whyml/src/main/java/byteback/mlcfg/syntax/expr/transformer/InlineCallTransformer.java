@@ -19,11 +19,11 @@ public class InlineCallTransformer extends ExpressionTransformer {
 
 	@Override
 	public Expression transformFunctionCall(FunctionCall source) {
-		if (!toInline.contains(source.getFunction())) {
+		if (!toInline.contains(source.function())) {
 			return super.transformFunctionCall(source);
 		}
 
-		final Expression calleeBody = resolver.getFunction(source.getFunction()).getBody();
+		final Expression calleeBody = resolver.getFunction(source.function()).getBody();
 
 		// replace in callee body all the formal parameters with the actual parameters
 		return ParamActualizationTransformer.transform(source.argumentMap(), calleeBody);

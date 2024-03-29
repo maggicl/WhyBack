@@ -1,6 +1,7 @@
 package byteback.mlcfg.printer;
 
 import byteback.mlcfg.identifiers.Identifier;
+import byteback.mlcfg.identifiers.IdentifierEscaper;
 import static byteback.mlcfg.printer.Statement.block;
 import static byteback.mlcfg.printer.Statement.indent;
 import static byteback.mlcfg.printer.Statement.line;
@@ -14,7 +15,17 @@ import java.util.stream.Collectors;
 
 public class WhySignaturePrinter {
 
-	public Statement toWhy(WhyFunctionSignature m) {
+	private final IdentifierEscaper identifierEscaper;
+
+	public WhySignaturePrinter(IdentifierEscaper identifierEscaper) {
+		this.identifierEscaper = identifierEscaper;
+	}
+
+	public Statement toWhy(WhyFunctionSignature m, boolean forScc, boolean withWith) {
+		if (forScc && !m.kind().isSpec()) {
+			throw new IllegalArgumentException("SCC signature mode supported only for spec functionList");
+		}
+
 		final List<WhyFunctionParam> paramsList = m.params().toList();
 
 		final String params = paramsList.stream()
@@ -33,22 +44,29 @@ public class WhySignaturePrinter {
 						.map(Statement::line)
 						.stream());
 
-
 		return many(
 				line("%s %s (%sheap: Heap.t) %s%s".formatted(
-						m.kind().getWhyDeclaration(),
-						m.name(),
+						withWith
+								? "with"
+								: forScc
+								? WhyFunctionKind.PURE_FUNCTION.getWhyDeclaration()
+								: m.kind().getWhyDeclaration(),
+						forScc ? m.specName() : m.name(),
 						m.kind().isSpec() ? "" : "ghost ",
 						params,
-						m.kind() == WhyFunctionKind.PREDICATE ?
-								"" :
-								" : %s".formatted(m.returnType().getWhyType())
+						m.kind() != WhyFunctionKind.PREDICATE || forScc
+								? " : %s".formatted(m.returnType().getWhyType())
+								: ""
 				)),
 				indent(
 						paramPreconditions,
 						resultPostcondition
 				)
 		);
+	}
+
+	public Statement toWhy(WhyFunctionSignature m) {
+		return toWhy(m, false, false);
 	}
 
 	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunctionSignature> methods) {

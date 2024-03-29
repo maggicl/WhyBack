@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 public record WhyFunctionSignature(
 		Identifier.L name,
 		Identifier.FQDN declaringClass,
+		Identifier.L specName,
 		WhyFunctionKind kind,
 		List<WhyType> paramTypes,
 		WhyType returnType) {

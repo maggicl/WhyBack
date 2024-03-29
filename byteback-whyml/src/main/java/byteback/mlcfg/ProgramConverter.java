@@ -74,12 +74,12 @@ public class ProgramConverter {
 	public WhyProgram convert(final RootResolver resolver) {
 		final WhyResolver whyResolver = resolve(resolver);
 
-		final List<WhyClassDeclaration> decls = whyResolver.classes()
+		final List<WhyClassDeclaration> decls = whyResolver.classes().stream()
 				.map(e -> whyClassPrinter.toWhy(e, whyResolver))
 				.toList();
 
-		final List<Statement> functionDecls = whyResolver.functions()
-				.map(e -> whyFunctionPrinter.toWhy(e.getKey(), e.getValue()))
+		final List<Statement> functionDecls = whyResolver.functions().stream()
+				.map(whyFunctionPrinter::toWhy)
 				.toList();
 
 		final List<Statement> methodDecls = whyResolver.methods()

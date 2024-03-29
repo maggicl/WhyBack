@@ -17,9 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class FunctionCall implements Expression {
-	private final WhyFunctionSignature function;
-	private final List<Expression> params;
+public record FunctionCall(WhyFunctionSignature function, List<Expression> params) implements Expression {
 
 	public FunctionCall(WhyFunctionSignature function, List<Expression> params) {
 		this.function = function;
@@ -43,11 +41,9 @@ public class FunctionCall implements Expression {
 		}
 	}
 
-	public WhyFunctionSignature getFunction() {
-		return function;
-	}
 
-	public List<Expression> getParams() {
+	@Override
+	public List<Expression> params() {
 		return Collections.unmodifiableList(params);
 	}
 
@@ -61,8 +57,7 @@ public class FunctionCall implements Expression {
 
 	@Override
 	public SExpr toWhy() {
-		// FIXME: function call identifier must not be FQDN if in same class (check with forward reference sorting tho)
-		return prefix(function.identifier(), Stream.concat(
+		return prefix(function.specName().toString(), Stream.concat(
 				Stream.of(terminal("heap")),
 				params.stream().map(Expression::toWhy)));
 	}

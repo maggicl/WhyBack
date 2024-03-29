@@ -1,13 +1,20 @@
 package byteback.mlcfg.identifiers;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Converts JVM identifiers in the restricted WhyML identifier space
  */
 public class IdentifierEscaper {
 
+	/**
+	 * Used by the prelude to use a separate identifier class for reserved variables (e.g. heap)
+	 * TODO: check if a constant is needed
+	 */
+	public static final String PRELUDE_RESERVED = "'8";
 	/**
 	 * escapes non-alphanumerics with codepoint <= 255
 	 */
@@ -28,12 +35,10 @@ public class IdentifierEscaper {
 	 * Added at the end of the identifier if the identifier matches with one of the reserved identifiers
 	 */
 	private static final String RESERVED = "'3";
-
 	/**
-	 * Used by the prelude to use a separate identifier class for reserved variables (e.g. heap)
-	 * TODO: check if a constant is needed
+	 * Separates class and function name in a spec function
 	 */
-	public static final String PRELUDE_RESERVED = "'8";
+	private static final String CLASS_FUNC_SEPARATOR = "'4";
 	/**
 	 * Denotes a prime
 	 */
@@ -97,6 +102,22 @@ public class IdentifierEscaper {
 	public Identifier.L escapeL(String input) {
 		final String identifier = escape(input, IdentifierClass.LIDENT);
 		return new Identifier.L(RESERVED_L_KEYWORDS.contains(identifier.toLowerCase()) ? identifier + RESERVED : identifier);
+	}
+
+	public Identifier.L specFunction(Identifier.FQDN clazz, Identifier.L function) {
+		final List<Identifier.U> ids = clazz.getIdentifiers();
+		final int last = ids.size() - 1;
+
+		String classPrefix = Stream.concat(
+						ids.stream()
+								.limit(last)
+								.map(Identifier.U::toString)
+								.map(caseInverter::invertCase),
+						Stream.of(ids.get(last).toString()))
+				.collect(Collectors.joining("_"));
+
+		// no need to check if reserved or note as it contains CLASS_FUNC_SEPARATOR
+		return new Identifier.L(classPrefix + CLASS_FUNC_SEPARATOR + function.toString());
 	}
 
 	public Identifier.U escapeU(String input) {

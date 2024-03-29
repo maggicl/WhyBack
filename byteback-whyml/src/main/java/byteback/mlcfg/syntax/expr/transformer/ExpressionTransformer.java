@@ -91,8 +91,8 @@ public class ExpressionTransformer {
 
 	public Expression transformFunctionCall(FunctionCall source) {
 		return new FunctionCall(
-				source.getFunction(),
-				source.getParams().stream()
+				source.function(),
+				source.params().stream()
 						.map(e -> e.accept(this))
 						.toList());
 	}

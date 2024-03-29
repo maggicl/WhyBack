@@ -54,9 +54,12 @@ public class VimpMethodParser {
 				throw new IllegalStateException("return type of a predicate must be a boolean");
 			}
 
+			final Identifier.FQDN clazz = classNameParser.parse(method.getDeclaringClass());
+
 			return new WhyFunctionSignature(
 					identifier,
-					classNameParser.parse(method.getDeclaringClass()),
+					clazz,
+					identifierEscaper.specFunction(clazz, identifier),
 					whyFunctionKind,
 					parameterTypes,
 					returnType);

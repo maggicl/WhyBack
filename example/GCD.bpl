@@ -301,7 +301,10 @@ label4:
   return;
 }
 
-function GCD.gcd_recursive#int#int#int##(~heap : Store, _l0 : int, _l1 : int) returns (int) { if ~eq(_l0, _l1) then _l0 else if ~int.gt(_l0, _l1) then GCD.gcd_recursive#int#int#int##(~heap, (_l0 - _l1), _l1) else GCD.gcd_recursive#int#int#int##(~heap, _l0, (_l1 - _l0)) }
+function GCD.gcd_recursive#int#int#int##(~heap : Store, _l0 : int, _l1 : int) returns (int) {
+if ~eq(_l0, _l1) then _l0
+else if ~int.gt(_l0, _l1) then GCD.gcd_recursive#int#int#int##(~heap, (_l0 - _l1), _l1)
+else GCD.gcd_recursive#int#int#int##(~heap, _l0, (_l1 - _l0)) }
 
 procedure java.lang.Object.$init$#void##(?this : Reference where ~instanceof(~heap, ?this, $java.lang.Object)) returns (~exc : Reference);
   ensures (true ==> (~exc == ~void));

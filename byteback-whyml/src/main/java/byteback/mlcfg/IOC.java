@@ -28,7 +28,7 @@ public final class IOC {
 	public static final PureExpressionExtractor PURE_EXPRESSION_EXTRACTOR = new PureExpressionExtractor(METHOD_PARSER, TYPE_RESOLVER, VIMP_FIELD_PARSER, IDENTIFIER_ESCAPER);
 	public static final FunctionBodyExtractor FUNCTION_BODY_EXTRACTOR = new FunctionBodyExtractor(PURE_EXPRESSION_EXTRACTOR);
 	public static final VimpMethodBodyParser METHOD_BODY_PARSER = new VimpMethodBodyParser(FUNCTION_BODY_EXTRACTOR);
-	public static final WhySignaturePrinter WHY_METHOD_PRINTER = new WhySignaturePrinter(IDENTIFIER_ESCAPER);
+	public static final WhySignaturePrinter WHY_METHOD_PRINTER = new WhySignaturePrinter();
 	public static final WhyFunctionPrinter WHY_FUNCTION_PRINTER = new WhyFunctionPrinter(WHY_METHOD_PRINTER);
 	public static final WhyFieldPrinter WHY_FIELD_PRINTER = new WhyFieldPrinter();
 	public static final WhyClassPrinter WHY_CLASS_PRINTER = new WhyClassPrinter(WHY_FIELD_PRINTER);

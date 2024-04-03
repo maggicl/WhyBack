@@ -19,13 +19,13 @@ public class WhyFunctionPrinter {
 
 		final Statement[] statements = new Statement[f.size()];
 
-		statements[0] = block(
+		statements[0] = many(
 				signaturePrinter.toWhy(f.get(0).getSignature(), true, false),
 				f.get(0).getBody().toWhy().statement("= ", "")
 		);
 
 		for (int i = 1; i < statements.length; i++) {
-			statements[i] = block(
+			statements[i] = many(
 					signaturePrinter.toWhy(f.get(i).getSignature(), true, true),
 					f.get(i).getBody().toWhy().statement("= ", "")
 			);

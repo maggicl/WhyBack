@@ -15,10 +15,7 @@ import java.util.stream.Collectors;
 
 public class WhySignaturePrinter {
 
-	private final IdentifierEscaper identifierEscaper;
-
-	public WhySignaturePrinter(IdentifierEscaper identifierEscaper) {
-		this.identifierEscaper = identifierEscaper;
+	public WhySignaturePrinter() {
 	}
 
 	public Statement toWhy(WhyFunctionSignature m, boolean forScc, boolean withWith) {
@@ -44,6 +41,9 @@ public class WhySignaturePrinter {
 						.map(Statement::line)
 						.stream());
 
+		// TODO: capture variants
+		final Statement variant = forScc ? line("variant { 0 }") : many();
+
 		return many(
 				line("%s %s (%sheap: Heap.t) %s%s".formatted(
 						withWith
@@ -60,7 +60,8 @@ public class WhySignaturePrinter {
 				)),
 				indent(
 						paramPreconditions,
-						resultPostcondition
+						resultPostcondition,
+						variant
 				)
 		);
 	}

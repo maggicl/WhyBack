@@ -1,0 +1,17 @@
+(* hack to enable logic connectors in program functions *)
+(* note the use of '.' to differentiate with the default operators. As '.' has priority 4, it does not affect the
+   operator precedence *)
+
+module Operators
+  val function (->.) (a: bool) (b: bool) : bool
+    ensures { result = a -> b }
+
+  val function (<->.) (a: bool) (b: bool) : bool
+    ensures { result = a <-> b }
+
+  val function (/\.) (a: bool) (b: bool) : bool
+    ensures { result = a /\ b }
+
+  val function (\/.) (a: bool) (b: bool) : bool
+    ensures { result = a \/ b }
+end

@@ -11,6 +11,11 @@ public interface Expression {
 
 	WhyJVMType type();
 
+	default Expression asType(WhyJVMType type) {
+		if (type == type()) return this;
+		else throw new UnsupportedOperationException("type reinterpretation not supported");
+	}
+
 	Expression accept(ExpressionTransformer transformer);
 
 	void accept(ExpressionVisitor visitor);

@@ -3,5 +3,6 @@
   use prelude.typing.Type
   use prelude.heap.Heap
   use export prelude.bootstrap.Bootstrap
+  use export prelude.logic.Operators
   use export prelude.machine.Operators
   use export prelude.ptr.Operators

@@ -1,0 +1,13 @@
+module Program
+  use int.Int
+  use int.Abs
+  use int.MinMax
+
+  let rec function gcd_recursive (l0: int) (l1: int) : int
+    variant { abs (min l0 l1) }
+  =
+    if l0 = l1 then l0
+    else if l0 > l1 then (gcd_recursive (l0 - l1) l1)
+    else (gcd_recursive l0 (l1 - l0))
+
+end

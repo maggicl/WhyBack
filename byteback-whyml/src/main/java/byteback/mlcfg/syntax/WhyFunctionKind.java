@@ -3,8 +3,8 @@ package byteback.mlcfg.syntax;
 public enum WhyFunctionKind {
 	INSTANCE_METHOD("val"),
 	STATIC_METHOD("val"),
-	PURE_FUNCTION("function"),
-	PREDICATE("predicate");
+	PURE_FUNCTION("let rec function"), // forcing 'rec' here has it has no effect on non-recursive functions
+	PREDICATE("let rec predicate");
 
 	private final String whyDeclaration;
 

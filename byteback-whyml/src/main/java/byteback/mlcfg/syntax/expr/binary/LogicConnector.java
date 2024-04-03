@@ -4,10 +4,10 @@ import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.syntax.types.WhyType;
 
 public enum LogicConnector implements BinaryOperator {
-	IFF("<->"),
-	IMPLIES("->"),
-	AND("/\\"), // FIXME: check semantics for bitwise bool operations (non-short-circuited)
-	OR("\\/");
+	IFF("<->."),
+	IMPLIES("->."),
+	AND("/\\."), // FIXME: check semantics for bitwise bool operations (non-short-circuited)
+	OR("\\/.");
 
 	private final String opName;
 

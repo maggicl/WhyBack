@@ -8,9 +8,12 @@ import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.expr.FunctionCall;
 import byteback.mlcfg.syntax.expr.OldReference;
 import byteback.mlcfg.syntax.expr.UnaryExpression;
+import byteback.mlcfg.syntax.expr.WholeNumberLiteral;
 import byteback.mlcfg.syntax.expr.binary.BinaryExpression;
 import byteback.mlcfg.syntax.expr.binary.BinaryOperator;
+import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.vimp.VimpMethodParser;
+import fj.P;
 import java.util.List;
 import java.util.stream.StreamSupport;
 import soot.SootMethod;
@@ -35,7 +38,9 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 	}
 
 	protected void setBinaryExpression(final BinopExpr source, final BinaryOperator operator) {
-		setExpression(new BinaryExpression(operator, visit(source.getOp1()), visit(source.getOp2())));
+		final Expression v1 = visit(source.getOp1());
+		final Expression v2 = visit(source.getOp2());
+		setExpression(new BinaryExpression(operator, v1, v2));
 	}
 
 	protected void setUnaryExpression(final UnopExpr source, final UnaryExpression.Operator operator) {

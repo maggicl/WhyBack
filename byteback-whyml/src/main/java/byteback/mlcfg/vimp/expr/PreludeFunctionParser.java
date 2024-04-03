@@ -6,7 +6,8 @@ import byteback.mlcfg.syntax.expr.binary.BinaryExpression;
 import byteback.mlcfg.syntax.expr.binary.BinaryOperator;
 import byteback.mlcfg.syntax.expr.binary.Comparison;
 import byteback.mlcfg.syntax.expr.binary.LogicConnector;
-import byteback.mlcfg.syntax.types.WhyJVMType;
+import byteback.mlcfg.syntax.expr.harmonization.BinaryOpTypeHarmonizer;
+import byteback.mlcfg.syntax.expr.harmonization.HarmonizationResult;
 import java.util.List;
 import soot.SootMethod;
 
@@ -38,15 +39,8 @@ public final class PreludeFunctionParser {
 					kind, arguments.size()));
 		}
 
-		final WhyJVMType firstArgType = arguments.get(0).type().jvm();
-		final WhyJVMType secondArgType = arguments.get(1).type().jvm();
-
-		if (firstArgType != secondArgType) {
-			throw new IllegalArgumentException("the comparison operator %s is called with non homogeneous arguments: %s and %s"
-					.formatted(kind, firstArgType, secondArgType));
-		}
-
-		return new BinaryExpression(new Comparison(firstArgType, kind), arguments.get(0), arguments.get(1));
+		final HarmonizationResult hr = BinaryOpTypeHarmonizer.harmonize(arguments.get(0), arguments.get(1));
+		return new BinaryExpression(new Comparison(hr.getType(), kind), hr.getFirstOp(), hr.getSecondOp());
 	}
 
 	private static BinaryExpression buildBinaryExpr(BinaryOperator op, List<Expression> arguments) {

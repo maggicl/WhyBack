@@ -10,9 +10,18 @@ public class GCD {
 
 	@Pure
 	public static short gcd_recursive(short a, short b) {
-		return conditional(eq(a, b), a, conditional(gt(a, b), gcd_recursive((short) (a - b), b), gcd_recursive(a, (short) (b - a))));
+		return conditional(eq(a, b), a, conditional(gt(a, b), gcd_recursive2((short) (a - b), b), gcd_recursive2(a, (short) (b - a))));
 	}
 
+	@Pure
+	public static short test(short a) {
+		return conditional(lte(a, (short) 0), (short) 0, test((short)(a - 1)));
+	}
+
+	@Pure
+	public static short gcd_recursive2(short a, short b) {
+		return conditional(eq(a, b), a, conditional(gt(a, b), gcd_recursive((short) (a - b), b), gcd_recursive(a, (short) (b - a))));
+	}
 	@Predicate
 	public static boolean result_is_gcd(short a, short b, short r) {
 		return implies(not(arguments_are_negative(a, b)), eq(r, gcd_recursive(a, b)));

@@ -1,6 +1,8 @@
 package byteback.mlcfg.syntax.expr;
 
 import byteback.mlcfg.printer.SExpr;
+import byteback.mlcfg.syntax.expr.harmonization.BinaryOpTypeHarmonizer;
+import byteback.mlcfg.syntax.expr.harmonization.HarmonizationResult;
 import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.expr.transformer.ExpressionVisitor;
 import byteback.mlcfg.syntax.types.WhyJVMType;
@@ -15,17 +17,10 @@ public class ConditionalExpression implements Expression {
 			throw new IllegalArgumentException("conditional in conditional expression should have BOOL type");
 		}
 
-		if (thenExpr.type() != elseExpr.type()) {
-			throw new IllegalArgumentException(
-					"then and else branch in conditional expression should have same type, given %s and %s".formatted(
-							thenExpr.type(),
-							elseExpr.type()
-					));
-		}
-
+		final HarmonizationResult hr = BinaryOpTypeHarmonizer.harmonize(thenExpr, elseExpr);
 		this.conditional = conditional;
-		this.thenExpr = thenExpr;
-		this.elseExpr = elseExpr;
+		this.thenExpr = hr.getFirstOp();
+		this.elseExpr = hr.getSecondOp();
 	}
 
 	public Expression getConditional() {

@@ -4,11 +4,14 @@ import byteback.mlcfg.Utils;
 import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
 import static byteback.mlcfg.printer.Statement.block;
+import static byteback.mlcfg.printer.Statement.indent;
 import static byteback.mlcfg.printer.Statement.line;
+import static byteback.mlcfg.printer.Statement.lines;
 import static byteback.mlcfg.printer.Statement.many;
 import byteback.mlcfg.syntax.WhyClass;
 import byteback.mlcfg.syntax.types.WhyReference;
 import byteback.mlcfg.vimp.WhyResolver;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,13 +30,18 @@ public class WhyClassPrinter {
 	}
 
 	public WhyClassDeclaration toWhy(final WhyClass clazz, final WhyResolver resolver) {
-		final String hierarchyStatement = clazz.superNames()
-				.filter(e -> resolver.isResolved(new WhyReference(e)))
+		final String[] hierarchyStatements = clazz.superNames()
+				.filter(e -> resolver.isResolved(new WhyReference(e)) && !e.equals(Identifier.Special.OBJECT))
 				.map("(Class class :> Class %s.class)"::formatted)
-				.collect(Collectors.joining(" && "));
+				.collect(Collectors.joining(" &&\n"))
+				.split("\n");
 
-		final Stream<Statement> hierarchy = Stream.ofNullable(Utils.trimToNull(hierarchyStatement))
-				.map(e -> line("axiom hierarchy%s: %s".formatted(IdentifierEscaper.PRELUDE_RESERVED, e)));
+		final Statement hierarchy = hierarchyStatements.length == 0
+				? many()
+				: many(
+						line("axiom hierarchy" + IdentifierEscaper.PRELUDE_RESERVED + ":"),
+						indent(lines(Arrays.stream(hierarchyStatements)))
+		);
 
 		final WhyClassScope scope = new WhyClassScope(clazz.name());
 
@@ -44,7 +52,7 @@ public class WhyClassPrinter {
 		return new WhyClassDeclaration(
 				scope.with(
 						block(line(classConstantStatement)),
-						many(hierarchy)
+						hierarchy
 				),
 				clazz.fields().isEmpty() ? Optional.empty() : Optional.of(scope.with(
 						many(clazz.fields().stream().map(e -> printer.toWhy(e, resolver)))

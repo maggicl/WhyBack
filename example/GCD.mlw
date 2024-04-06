@@ -14,6 +14,8 @@ module Program
   scope Lang
   scope Object
     let constant class: Type.class = Type.root
+
+    axiom hierarchy'8:
   end
   end
   end
@@ -23,7 +25,7 @@ module Program
   scope System
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class)
+    axiom hierarchy'8:
   end
   end
   end
@@ -33,7 +35,7 @@ module Program
   scope Serializable
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class)
+    axiom hierarchy'8:
   end
   end
   end
@@ -43,7 +45,8 @@ module Program
   scope Throwable
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class) && (Class class :> Class Java.Io.Serializable.class)
+    axiom hierarchy'8:
+      (Class class :> Class Java.Io.Serializable.class)
   end
   end
   end
@@ -53,7 +56,8 @@ module Program
   scope Exception
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Throwable.class)
+    axiom hierarchy'8:
+      (Class class :> Class Java.Lang.Throwable.class)
   end
   end
   end
@@ -63,7 +67,7 @@ module Program
   scope Comparable
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class)
+    axiom hierarchy'8:
   end
   end
   end
@@ -73,7 +77,7 @@ module Program
   scope AutoCloseable
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class)
+    axiom hierarchy'8:
   end
   end
   end
@@ -83,7 +87,8 @@ module Program
   scope Closeable
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class) && (Class class :> Class Java.Lang.AutoCloseable.class)
+    axiom hierarchy'8:
+      (Class class :> Class Java.Lang.AutoCloseable.class)
   end
   end
   end
@@ -93,7 +98,7 @@ module Program
   scope Appendable
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class)
+    axiom hierarchy'8:
   end
   end
   end
@@ -103,7 +108,7 @@ module Program
   scope Flushable
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class)
+    axiom hierarchy'8:
   end
   end
   end
@@ -113,7 +118,9 @@ module Program
   scope OutputStream
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class) && (Class class :> Class Java.Io.Closeable.class) && (Class class :> Class Java.Io.Flushable.class)
+    axiom hierarchy'8:
+      (Class class :> Class Java.Io.Closeable.class) &&
+      (Class class :> Class Java.Io.Flushable.class)
   end
   end
   end
@@ -123,7 +130,8 @@ module Program
   scope FilterOutputStream
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Io.OutputStream.class)
+    axiom hierarchy'8:
+      (Class class :> Class Java.Io.OutputStream.class)
   end
   end
   end
@@ -133,7 +141,10 @@ module Program
   scope PrintStream
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Io.FilterOutputStream.class) && (Class class :> Class Java.Lang.Appendable.class) && (Class class :> Class Java.Io.Closeable.class)
+    axiom hierarchy'8:
+      (Class class :> Class Java.Io.FilterOutputStream.class) &&
+      (Class class :> Class Java.Lang.Appendable.class) &&
+      (Class class :> Class Java.Io.Closeable.class)
   end
   end
   end
@@ -143,7 +154,8 @@ module Program
   scope RuntimeException
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Exception.class)
+    axiom hierarchy'8:
+      (Class class :> Class Java.Lang.Exception.class)
   end
   end
   end
@@ -154,7 +166,7 @@ module Program
   scope Constable
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class)
+    axiom hierarchy'8:
   end
   end
   end
@@ -164,7 +176,7 @@ module Program
   scope GCD
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class)
+    axiom hierarchy'8:
   end
   end
 
@@ -174,7 +186,7 @@ module Program
   scope ConstantDesc
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class)
+    axiom hierarchy'8:
   end
   end
   end
@@ -185,7 +197,7 @@ module Program
   scope CharSequence
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class)
+    axiom hierarchy'8:
   end
   end
   end
@@ -195,7 +207,8 @@ module Program
   scope IllegalArgumentException
     val constant class: Type.class
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.RuntimeException.class)
+    axiom hierarchy'8:
+      (Class class :> Class Java.Lang.RuntimeException.class)
   end
   end
   end
@@ -205,7 +218,12 @@ module Program
   scope String
     let constant class: Type.class = Type.string
 
-    axiom hierarchy'8: (Class class :> Class Java.Lang.Object.class) && (Class class :> Class Java.Lang.Comparable.class) && (Class class :> Class Java.Lang.Constant.ConstantDesc.class) && (Class class :> Class Java.Lang.Constant.Constable.class) && (Class class :> Class Java.Lang.CharSequence.class) && (Class class :> Class Java.Io.Serializable.class)
+    axiom hierarchy'8:
+      (Class class :> Class Java.Lang.Comparable.class) &&
+      (Class class :> Class Java.Lang.Constant.ConstantDesc.class) &&
+      (Class class :> Class Java.Lang.Constant.Constable.class) &&
+      (Class class :> Class Java.Lang.CharSequence.class) &&
+      (Class class :> Class Java.Io.Serializable.class)
   end
   end
   end
@@ -449,7 +467,7 @@ module Program
 
   (* methods declaration *)
 
-  let rec function default'8_GCD'4gcd_recursive'028SS'029S (heap: Heap.t) (l0: jshort) (l1: jshort) : jshort
+  let rec function default'8_GCD'4gcd_recursive'028SS'029S (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jshort
     variant { 0 }
   = if (SCMP.eq l0 l1) then
     l0
@@ -462,7 +480,7 @@ module Program
         heap
         l0
         (int2s (i2int (isub (int2i (s2int l1)) (int2i (s2int l0))))))
-  with default'8_GCD'4gcd_recursive2'028SS'029S (heap: Heap.t) (l0: jshort) (l1: jshort) : jshort
+  with default'8_GCD'4gcd_recursive2'028SS'029S (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jshort
     variant { 0 }
   = if (SCMP.eq l0 l1) then
     l0
@@ -476,24 +494,21 @@ module Program
         l0
         (int2s (i2int (isub (int2i (s2int l1)) (int2i (s2int l0))))))
 
-  let rec function default'8_GCD'4arguments_are_negative'028SS'029Z (heap: Heap.t) (l0: jshort) (l1: jshort) : jbool
-    variant { 0 }
+  let function default'8_GCD'4arguments_are_negative'028SS'029Z (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jbool
   = ((ICMP.le (int2i (s2int l0)) (0:jint)) \/. (ICMP.le (int2i (s2int l1)) (0:jint)))
 
-  let rec function default'8_GCD'4result_is_gcd'028SSS'029Z (heap: Heap.t) (l0: jshort) (l1: jshort) (l2: jshort) : jbool
-    variant { 0 }
+  let function default'8_GCD'4result_is_gcd'028SSS'029Z (ghost heap: Heap.t) (l0: jshort) (l1: jshort) (l2: jshort) : jbool
   = ((not (default'8_GCD'4arguments_are_negative'028SS'029Z heap l0 l1))
   ->.
   (SCMP.eq l2 (default'8_GCD'4gcd_recursive'028SS'029S heap l0 l1)))
 
-  let rec function default'8_GCD'4test'028S'029S (heap: Heap.t) (l0: jshort) : jshort
+  let rec function default'8_GCD'4test'028S'029S (ghost heap: Heap.t) (l0: jshort) : jshort
     variant { 0 }
   = if (SCMP.le l0 (0:jshort)) then
     (0:jshort)
     else (default'8_GCD'4test'028S'029S heap (int2s (i2int (isub (int2i (s2int l0)) (1:jint)))))
 
-  let rec function default'8_GCD'4arguments_are_positive'028SS'029Z (heap: Heap.t) (l0: jshort) (l1: jshort) : jbool
-    variant { 0 }
+  let function default'8_GCD'4arguments_are_positive'028SS'029Z (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jbool
   = ((ICMP.le (int2i (s2int l0)) (0:jint)) /\. (ICMP.le (int2i (s2int l1)) (0:jint)))
 
   scope Default'8

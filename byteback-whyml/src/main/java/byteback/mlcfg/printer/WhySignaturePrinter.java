@@ -1,7 +1,6 @@
 package byteback.mlcfg.printer;
 
 import byteback.mlcfg.identifiers.Identifier;
-import byteback.mlcfg.identifiers.IdentifierEscaper;
 import static byteback.mlcfg.printer.Statement.block;
 import static byteback.mlcfg.printer.Statement.indent;
 import static byteback.mlcfg.printer.Statement.line;
@@ -18,7 +17,7 @@ public class WhySignaturePrinter {
 	public WhySignaturePrinter() {
 	}
 
-	public Statement toWhy(WhyFunctionSignature m, boolean forScc, boolean withWith) {
+	public Statement toWhy(WhyFunctionSignature m, boolean forScc, boolean withWith, boolean recursive) {
 		if (forScc && !m.kind().isSpec()) {
 			throw new IllegalArgumentException("SCC signature mode supported only for spec functionList");
 		}
@@ -42,21 +41,29 @@ public class WhySignaturePrinter {
 						.stream());
 
 		// TODO: capture variants
-		final Statement variant = forScc ? line("variant { 0 }") : many();
+		final Statement variant = forScc && recursive ? line("variant { 0 }") : many();
+
+		final String declaration;
+
+		if (withWith) {
+			declaration = "with";
+		} else {
+			final WhyFunctionKind kindToUse = forScc ? WhyFunctionKind.PURE_FUNCTION : m.kind();
+			declaration = recursive
+					? kindToUse.getWhyRecDeclaration()
+					: kindToUse.getWhyDeclaration();
+		}
+
+		final String returnType = m.kind() != WhyFunctionKind.PREDICATE || forScc
+				? " : %s".formatted(m.returnType().getWhyType())
+				: "";
 
 		return many(
-				line("%s %s (%sheap: Heap.t) %s%s".formatted(
-						withWith
-								? "with"
-								: forScc
-								? WhyFunctionKind.PURE_FUNCTION.getWhyDeclaration()
-								: m.kind().getWhyDeclaration(),
+				line("%s %s (ghost heap: Heap.t) %s%s".formatted(
+						declaration,
 						forScc ? m.specName() : m.name(),
-						m.kind().isSpec() ? "" : "ghost ",
 						params,
-						m.kind() != WhyFunctionKind.PREDICATE || forScc
-								? " : %s".formatted(m.returnType().getWhyType())
-								: ""
+						returnType
 				)),
 				indent(
 						paramPreconditions,
@@ -67,7 +74,7 @@ public class WhySignaturePrinter {
 	}
 
 	public Statement toWhy(WhyFunctionSignature m) {
-		return toWhy(m, false, false);
+		return toWhy(m, false, false, false);
 	}
 
 	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunctionSignature> methods) {

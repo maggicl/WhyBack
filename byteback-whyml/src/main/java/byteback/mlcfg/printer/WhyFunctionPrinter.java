@@ -18,19 +18,21 @@ public class WhyFunctionPrinter {
 		if (f.isEmpty()) return many();
 
 		final Statement[] statements = new Statement[f.size()];
+		final boolean recursive = scc.isRecursive();
 
-		statements[0] = many(
-				signaturePrinter.toWhy(f.get(0).getSignature(), true, false),
-				f.get(0).getBody().toWhy().statement("= ", "")
-		);
+		statements[0] = defineFunction(f.get(0), false, recursive);
 
 		for (int i = 1; i < statements.length; i++) {
-			statements[i] = many(
-					signaturePrinter.toWhy(f.get(i).getSignature(), true, true),
-					f.get(i).getBody().toWhy().statement("= ", "")
-			);
+			statements[i] = defineFunction(f.get(i), true, recursive);
 		}
 
 		return block(statements);
+	}
+
+	private Statement defineFunction(WhyFunction f, boolean withWith, boolean recursive) {
+		return many(
+				signaturePrinter.toWhy(f.getSignature(), true, withWith, recursive),
+				f.getBody().toWhy().statement("= ", "")
+		);
 	}
 }

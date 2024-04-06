@@ -1,15 +1,17 @@
 package byteback.mlcfg.syntax;
 
 public enum WhyFunctionKind {
-	INSTANCE_METHOD("val"),
-	STATIC_METHOD("val"),
-	PURE_FUNCTION("let rec function"), // forcing 'rec' here has it has no effect on non-recursive functions
-	PREDICATE("let rec predicate");
+	INSTANCE_METHOD("val", "let rec"), // TODO: change
+	STATIC_METHOD("val", "let rec"),
+	PURE_FUNCTION("let function", "let rec function"),
+	PREDICATE("let predicate", "let rec predicate");
 
 	private final String whyDeclaration;
+	private final String recursiveDeclaration;
 
-	WhyFunctionKind(String whyDeclaration) {
+	WhyFunctionKind(String whyDeclaration, String recursiveDeclaration) {
 		this.whyDeclaration = whyDeclaration;
+		this.recursiveDeclaration = recursiveDeclaration;
 	}
 
 	public String getWhyDeclaration() {
@@ -18,5 +20,9 @@ public enum WhyFunctionKind {
 
 	public boolean isSpec() {
 		return this == WhyFunctionKind.PURE_FUNCTION || this == WhyFunctionKind.PREDICATE;
+	}
+
+	public String getWhyRecDeclaration() {
+		return recursiveDeclaration;
 	}
 }

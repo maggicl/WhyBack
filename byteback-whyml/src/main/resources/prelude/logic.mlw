@@ -3,6 +3,9 @@
    operator precedence *)
 
 module Operators
+  use prelude.ptr.Ptr
+  use prelude.machine.Operators
+
   val function (->.) (a: bool) (b: bool) : bool
     ensures { result = a -> b }
 
@@ -14,4 +17,10 @@ module Operators
 
   val function (\/.) (a: bool) (b: bool) : bool
     ensures { result = a \/ b }
+
+  val function q_forall (clause: 'a -> bool) : bool
+    ensures { result = forall x. (clause x) }
+
+  val function q_exists (clause: 'a -> bool) : bool
+    ensures { result = exists x. (clause x) }
 end

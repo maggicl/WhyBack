@@ -8,13 +8,20 @@ module Operators
   use Ptr
   use prelude.machine.Operators
 
-  val function cond_ifnull (x: Ptr.t) : jbool ensures { result <-> x = Ptr.null }
-  val function cond_ifnotnull (x: Ptr.t) : jbool ensures { result <-> x <> Ptr.null }
-  val function acmpeq (x y: Ptr.t) : jbool ensures { result <-> x = y }
-  val function acmpne (x y: Ptr.t) : jbool ensures { result <-> x <> y }
+  val function cond_ifnull (x: Ptr.t) : jbool
+    ensures { result <-> x = Ptr.null }
+
+  let function cond_ifnotnull [@inline:trivial] (x: Ptr.t) : jbool = not (cond_ifnull x)
+
+  val function acmpeq (x y: Ptr.t) : jbool
+    ensures { result <-> x = y }
+
+  let function acmpne [@inline:trivial] (x y: Ptr.t) : jbool = not (acmpeq x y)
 
   scope LCMP
-    val predicate eq (x y: Ptr.t) ensures { result <-> x = y }
-    let predicate ne (x y: Ptr.t) = not (eq x y)
+    val predicate eq (x y: Ptr.t)
+      ensures { result <-> x = y }
+
+    let predicate ne [@inline:trivial] (x y: Ptr.t) = not (eq x y)
   end
 end

@@ -466,7 +466,11 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 						false))
 				.toList();
 
-		return new QuantifierExpression(kind, variables, visit(v.getValue()));
+		if (variables.size() != 1) {
+			throw new IllegalArgumentException("a quantifier expression must have exactly one free variable");
+		}
+
+		return new QuantifierExpression(kind, variables.get(0), visit(v.getValue()));
 	}
 
 	@Override

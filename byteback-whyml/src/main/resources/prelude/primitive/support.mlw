@@ -5,11 +5,11 @@ module Logic
   val fge (x y: t) : bool
   val flt (x y: t) : bool
   val fle (x y: t) : bool
- 
-  let function eq (x y: t) : bool = feq x y 
-  let function neq (x y: t) : bool = not (feq x y)
-  let function gt (x y: t) : bool = fgt x y 
-  let function ge (x y: t) : bool = fge x y 
-  let function lt (x y: t) : bool = flt x y 
-  let function le (x y: t) : bool = fle x y 
+
+  let function eq [@inline:trivial] (x y: t) : bool = feq x y
+  let function neq [@inline:trivial] (x y: t) : bool = not (feq x y)
+  let function gt [@inline:trivial] (x y: t) : bool = fgt x y
+  let function ge [@inline:trivial] (x y: t) : bool = fge x y
+  let function lt [@inline:trivial] (x y: t) : bool = flt x y
+  let function le [@inline:trivial] (x y: t) : bool = fle x y
 end

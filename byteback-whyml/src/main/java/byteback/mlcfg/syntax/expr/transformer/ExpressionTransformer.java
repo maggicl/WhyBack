@@ -65,7 +65,7 @@ public class ExpressionTransformer {
 
 	public Expression transformQuantifierExpression(QuantifierExpression source) {
 		return new QuantifierExpression(source.getKind(),
-				source.getVariableList(),
+				source.getVariable(),
 				source.getInner().accept(this));
 	}
 

@@ -6,6 +6,7 @@ import byteback.mlcfg.syntax.expr.transformer.ExpressionTransformer;
 import byteback.mlcfg.syntax.expr.transformer.ExpressionVisitor;
 import byteback.mlcfg.syntax.types.WhyJVMType;
 
+// FIXME: old references might possibly be forbidden in spec functions, consider passing parameter copy of old values to fun
 public class OldReference implements Expression {
 	public Expression getInner() {
 		return inner;

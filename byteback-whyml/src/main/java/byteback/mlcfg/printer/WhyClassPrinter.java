@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jf.util.StringUtils;
 
 public class WhyClassPrinter {
 	public static final Map<Identifier.FQDN, String> SPECIAL_TYPES = Map.of(
@@ -30,17 +31,16 @@ public class WhyClassPrinter {
 	}
 
 	public WhyClassDeclaration toWhy(final WhyClass clazz, final WhyResolver resolver) {
-		final String[] hierarchyStatements = clazz.superNames()
+		final String hierarchyStatements = Utils.trimToNull(clazz.superNames()
 				.filter(e -> resolver.isResolved(new WhyReference(e)) && !e.equals(Identifier.Special.OBJECT))
 				.map("(Class class :> Class %s.class)"::formatted)
-				.collect(Collectors.joining(" &&\n"))
-				.split("\n");
+				.collect(Collectors.joining(" &&\n")));
 
-		final Statement hierarchy = hierarchyStatements.length == 0
+		final Statement hierarchy = hierarchyStatements == null
 				? many()
 				: many(
 						line("axiom hierarchy" + IdentifierEscaper.PRELUDE_RESERVED + ":"),
-						indent(lines(Arrays.stream(hierarchyStatements)))
+						indent(lines(Arrays.stream(hierarchyStatements.split("\n"))))
 		);
 
 		final WhyClassScope scope = new WhyClassScope(clazz.name());

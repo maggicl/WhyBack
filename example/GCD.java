@@ -5,6 +5,8 @@
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
 import static byteback.annotations.Special.*;
+import static byteback.annotations.Quantifier.*;
+import byteback.annotations.Binding;
 
 public class GCD {
 
@@ -17,6 +19,17 @@ public class GCD {
 	public static short test(short a) {
 		return conditional(lte(a, (short) 0), (short) 0, test((short)(a - 1)));
 	}
+
+	@Pure
+	public static boolean test2() {
+		int i = Binding.integer();
+		return forall(i, lte(i, 0));
+	}
+
+	//@Pure
+	//public static String test3() {
+	//	return "luciano malusa :)\n"; // new object created -> not pure
+	//}
 
 	@Pure
 	public static short gcd_recursive2(short a, short b) {

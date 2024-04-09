@@ -27,7 +27,7 @@ public record FunctionCall(WhyFunctionSignature function, List<Expression> param
 
 		if (paramTypes.size() != params.size()) {
 			throw new IllegalArgumentException("expected %d arguments for %s, found %d".formatted(
-					paramTypes.size(), function.name(), params.size()));
+					paramTypes.size(), function.reference().methodName(), params.size()));
 		}
 
 		for (int i = 0; i < params.size(); i++) {

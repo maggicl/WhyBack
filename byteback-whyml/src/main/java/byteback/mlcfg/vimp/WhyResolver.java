@@ -3,7 +3,9 @@ package byteback.mlcfg.vimp;
 import byteback.mlcfg.WhyFunctionSCC;
 import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.syntax.WhyClass;
+import byteback.mlcfg.syntax.WhyCondition;
 import byteback.mlcfg.syntax.WhyFunction;
+import byteback.mlcfg.syntax.WhyFunctionKind;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.expr.transformer.CallDependenceVisitor;
@@ -46,6 +48,16 @@ public class WhyResolver {
 		}
 
 		return result;
+	}
+
+	public Expression resolveCondition(VimpFunctionReference scope, String conditionValue) {
+		final VimpFunctionReference conditionRef = new VimpFunctionReference(
+				scope.className(),
+				conditionValue,
+				scope.descriptor(),
+				WhyFunctionKind.PREDICATE);
+
+		return Objects.requireNonNull(specBodies.get(conditionRef));
 	}
 
 	public void addClass(final WhyClass classDeclaration) {

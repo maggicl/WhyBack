@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import soot.SootMethod;
 
 public class ProgramConverter {
-	public static Logger log = LoggerFactory.getLogger(ProgramConverter.class);
 	private final VimpClassParser classParser;
 	private final VimpMethodParser methodParser;
 	private final VimpMethodBodyParser methodBodyParser;
@@ -74,11 +73,11 @@ public class ProgramConverter {
 				.toList();
 
 		final List<Statement> functionDecls = whyResolver.functions().stream()
-				.map(whyFunctionPrinter::toWhy)
+				.map(e -> whyFunctionPrinter.toWhy(e, whyResolver))
 				.toList();
 
 		final List<Statement> methodDecls = whyResolver.methodDeclarations()
-				.map(e -> whySignaturePrinter.toWhy(e.getKey(), e.getValue()))
+				.map(e -> whySignaturePrinter.toWhy(e.getKey(), e.getValue(), whyResolver))
 				.toList();
 
 		return new WhyProgram(many(

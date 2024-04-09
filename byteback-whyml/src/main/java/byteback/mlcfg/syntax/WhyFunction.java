@@ -27,9 +27,7 @@ public class WhyFunction {
 
 	@Override
 	public String toString() {
-		return "WhyFunction{" +
-				"signature=" + signature.identifier() +
-				'}';
+		return "WhyFunction{signature=%s}".formatted(signature);
 	}
 
 	@Override

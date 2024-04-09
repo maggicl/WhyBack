@@ -69,7 +69,9 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 					setExpression(new ConditionalExpression(conditional1, thenExpr1, elseExpr1));
 					break;
 				default:
-					throw new IllegalStateException("unknown static method %s in class %s".formatted(method.getName(), specialClassName));
+					throw new IllegalStateException("unknown static method %s in class %s".formatted(
+							method.getName(),
+							specialClassName));
 			}
 		} else if (SootHosts.hasAnnotation(method, Namespace.PRIMITIVE_ANNOTATION)) {
 			setExpression(PreludeFunctionParser.parse(method, argExpressions));

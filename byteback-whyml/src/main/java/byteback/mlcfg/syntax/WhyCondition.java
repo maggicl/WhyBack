@@ -1,10 +1,23 @@
 package byteback.mlcfg.syntax;
 
-import byteback.mlcfg.syntax.expr.BooleanLiteral;
-import byteback.mlcfg.syntax.expr.Expression;
 import java.util.Optional;
 
 public sealed abstract class WhyCondition {
+	public abstract <T> T transform(Transformer<T> transformer);
+
+	public interface Transformer<T> {
+		default T transform(WhyCondition cond) {
+			return cond.transform(this);
+		}
+
+		T transformRequires(Requires r);
+
+		T transformEnsures(Ensures r);
+
+		T transformReturns(Returns r);
+
+		T transformRaises(Raises r);
+	}
 
 	public static final class Requires extends WhyCondition {
 		private final String value;
@@ -15,6 +28,11 @@ public sealed abstract class WhyCondition {
 
 		public String getValue() {
 			return value;
+		}
+
+		@Override
+		public <T> T transform(Transformer<T> transformer) {
+			return transformer.transformRequires(this);
 		}
 	}
 
@@ -28,6 +46,11 @@ public sealed abstract class WhyCondition {
 		public String getValue() {
 			return value;
 		}
+
+		@Override
+		public <T> T transform(Transformer<T> transformer) {
+			return transformer.transformEnsures(this);
+		}
 	}
 
 	public static final class Returns extends WhyCondition {
@@ -40,11 +63,17 @@ public sealed abstract class WhyCondition {
 		public Optional<String> getWhen() {
 			return when;
 		}
+
+		@Override
+		public <T> T transform(Transformer<T> transformer) {
+			return transformer.transformReturns(this);
+		}
 	}
 
 	public static final class Raises extends WhyCondition {
 		private final Optional<String> when;
 		private final String exception;
+
 		public Raises(Optional<String> when, String exception) {
 			this.when = when;
 			this.exception = exception;
@@ -56,6 +85,11 @@ public sealed abstract class WhyCondition {
 
 		public String getException() {
 			return exception;
+		}
+
+		@Override
+		public <T> T transform(Transformer<T> transformer) {
+			return transformer.transformRaises(this);
 		}
 	}
 }

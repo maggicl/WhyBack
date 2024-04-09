@@ -8,11 +8,14 @@ import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.identifiers.IdentifierEscaper;
 import byteback.mlcfg.syntax.WhyCondition;
 import byteback.mlcfg.syntax.WhyFunctionKind;
+import byteback.mlcfg.syntax.WhyFunctionParam;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.types.WhyJVMType;
+import byteback.mlcfg.syntax.types.WhyReference;
 import byteback.mlcfg.syntax.types.WhyType;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import soot.AbstractJasminClass;
 import soot.SootMethod;
 import soot.Type;
@@ -93,7 +96,6 @@ public class VimpMethodParser {
 
 		final Type sootReturnType = method.getReturnType();
 
-		final Identifier.L identifier = identifierEscaper.escapeL(ref.methodName() + ref.descriptor());
 		final List<WhyType> parameterTypes = method.getParameterTypes().stream().map(typeResolver::resolveType).toList();
 		final WhyType returnType = typeResolver.resolveType(sootReturnType);
 
@@ -101,19 +103,26 @@ public class VimpMethodParser {
 			throw new IllegalStateException("return type of a predicate must be a boolean");
 		}
 
+		final Optional<WhyFunctionParam> thisParam = ref.kind() != WhyFunctionKind.INSTANCE_METHOD
+				? Optional.empty()
+				: Optional.of(new WhyFunctionParam(
+				Identifier.Special.THIS,
+				new WhyReference(ref.className()),
+				true));
+
+		final List<WhyFunctionParam> paramsList = IntStream.range(0, parameterTypes.size())
+				.mapToObj(i -> new WhyFunctionParam(
+						Identifier.Special.methodParam(i),
+						parameterTypes.get(i),
+						false))
+				.toList();
+
 		final var annotations = SootHosts.getAnnotations(method)
 				.flatMap(SootAnnotations::getAnnotations)
 				.map(VimpMethodParser::getCondition)
 				.flatMap(Optional::stream)
 				.toList();
 
-		return Optional.of(new WhyFunctionSignature(
-				identifier,
-				ref.className(),
-				identifierEscaper.specFunction(ref.className(), identifier),
-				ref.kind(),
-				parameterTypes,
-				returnType,
-				annotations));
+		return Optional.of(new WhyFunctionSignature(ref, thisParam, paramsList, returnType, annotations));
 	}
 }

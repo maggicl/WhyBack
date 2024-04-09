@@ -2,7 +2,7 @@ package byteback.cli;
 
 import byteback.analysis.RootResolver;
 import byteback.frontend.boogie.ast.Printable;
-import byteback.mlcfg.IOC;
+import byteback.whyml.IOC;
 
 public class MLCFGConversionTask implements ConversionTask {
 

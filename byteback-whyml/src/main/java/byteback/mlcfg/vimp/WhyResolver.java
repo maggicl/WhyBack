@@ -5,18 +5,19 @@ import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.syntax.WhyClass;
 import byteback.mlcfg.syntax.WhyFunction;
 import byteback.mlcfg.syntax.WhyFunctionSignature;
+import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.expr.transformer.CallDependenceVisitor;
 import byteback.mlcfg.syntax.types.ReferenceVisitor;
 import byteback.mlcfg.syntax.types.WhyType;
 import byteback.mlcfg.vimp.graph.PostOrder;
 import byteback.mlcfg.vimp.graph.Tarjan;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,8 +25,9 @@ import java.util.stream.Stream;
 
 public class WhyResolver {
 	private final Map<Identifier.FQDN, WhyClass> classes = new HashMap<>();
-	private final Map<Identifier.FQDN, List<WhyFunctionSignature>> methods = new HashMap<>();
-	private final Map<Identifier.FQDN, Map<WhyFunctionSignature, WhyFunction>> functions = new HashMap<>();
+	private final Map<Identifier.FQDN, Set<VimpFunctionReference>> refsByClass = new HashMap<>();
+	private final Map<VimpFunctionReference, WhyFunctionSignature> specSignatures = new HashMap<>();
+	private final Map<VimpFunctionReference, Expression> specBodies = new HashMap<>();
 
 	public Set<WhyClass> getAllSuper(WhyClass from) {
 		final Deque<Identifier.FQDN> toProcess = from.superNames().collect(Collectors.toCollection(ArrayDeque::new));
@@ -50,18 +52,14 @@ public class WhyResolver {
 		classes.put(classDeclaration.type().fqdn(), classDeclaration);
 	}
 
-	public void addMethod(final WhyFunctionSignature m) {
-		if (m.kind().isSpec()) {
-			throw new IllegalArgumentException("spec function must be added as WhyFunction");
-		}
-
-		final Identifier.FQDN declaringClass = m.declaringClass();
-		methods.computeIfAbsent(declaringClass, k -> new ArrayList<>()).add(m);
+	public void addSpecSignature(final VimpFunctionReference r, final WhyFunctionSignature sig) {
+		refsByClass.computeIfAbsent(r.className(), (k) -> new HashSet<>()).add(r);
+		specSignatures.put(r, sig);
 	}
 
-	public void addFunction(final WhyFunction f) {
-		final Identifier.FQDN declaringClass = f.getSignature().declaringClass();
-		functions.computeIfAbsent(declaringClass, k -> new HashMap<>()).put(f.getSignature(), f);
+	public void addSpecBody(final VimpFunctionReference r, final Expression body) {
+		refsByClass.computeIfAbsent(r.className(), (k) -> new HashSet<>()).add(r);
+		specBodies.put(r, body);
 	}
 
 	public boolean isResolved(WhyType t) {
@@ -81,7 +79,11 @@ public class WhyResolver {
 	}
 
 	public List<WhyFunctionSCC> functions() {
-		final List<WhyFunction> functions = this.functions.values().stream().flatMap(e -> e.values().stream()).toList();
+		final List<WhyFunction> functions = specSignatures.keySet()
+				.stream()
+				.filter(e -> e.kind().isSpec())
+				.map(e -> new WhyFunction(specSignatures.get(e), specBodies.get(e)))
+				.toList();
 
 		final Map<WhyFunctionSignature, WhyFunction> bySignature = functions.stream()
 				.collect(Collectors.toMap(WhyFunction::getSignature, Function.identity()));
@@ -102,11 +104,14 @@ public class WhyResolver {
 		return PostOrder.compute(sccAdjMap);
 	}
 
-	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunctionSignature>>> methods() {
-		return methods.entrySet().stream();
-	}
-
-	public WhyFunction getFunction(WhyFunctionSignature function) {
-		return functions.get(function.declaringClass()).get(function);
+	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunctionSignature>>> methodDeclarations() {
+		return refsByClass.entrySet()
+				.stream()
+				.map(e -> Map.entry(e.getKey(), e.getValue().stream()
+						.filter(f -> !f.kind().isSpec())
+						.map(specSignatures::get)
+						.filter(Objects::nonNull)
+						.toList()))
+				.filter(e -> !e.getValue().isEmpty());
 	}
 }

@@ -48,13 +48,13 @@ public class WhySignaturePrinter {
 		if (withWith) {
 			declaration = "with";
 		} else {
-			final WhyFunctionKind kindToUse = forScc ? WhyFunctionKind.PURE_FUNCTION : m.kind();
+			final WhyFunctionKind kindToUse = forScc ? WhyFunctionKind.PURE : m.kind();
 			declaration = recursive
 					? kindToUse.getWhyRecDeclaration()
 					: kindToUse.getWhyDeclaration();
 		}
 
-		final String returnType = m.kind() != WhyFunctionKind.PREDICATE || forScc
+		final String returnType = m.kind() != WhyFunctionKind.PURE_PREDICATE || forScc
 				? " : %s".formatted(m.returnType().getWhyType())
 				: "";
 

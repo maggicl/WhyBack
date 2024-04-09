@@ -3,17 +3,15 @@ package byteback.mlcfg.vimp.expr;
 import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Namespace;
 import byteback.analysis.util.SootHosts;
+import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.expr.ConditionalExpression;
 import byteback.mlcfg.syntax.expr.Expression;
 import byteback.mlcfg.syntax.expr.FunctionCall;
 import byteback.mlcfg.syntax.expr.OldReference;
 import byteback.mlcfg.syntax.expr.UnaryExpression;
-import byteback.mlcfg.syntax.expr.WholeNumberLiteral;
 import byteback.mlcfg.syntax.expr.binary.BinaryExpression;
 import byteback.mlcfg.syntax.expr.binary.BinaryOperator;
-import byteback.mlcfg.syntax.types.WhyJVMType;
 import byteback.mlcfg.vimp.VimpMethodParser;
-import fj.P;
 import java.util.List;
 import java.util.stream.StreamSupport;
 import soot.SootMethod;
@@ -76,7 +74,12 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 		} else if (SootHosts.hasAnnotation(method, Namespace.PRIMITIVE_ANNOTATION)) {
 			setExpression(PreludeFunctionParser.parse(method, argExpressions));
 		} else {
-			methodSignatureParser.parseSignature(method).ifPresent(e -> setExpression(new FunctionCall(e, argExpressions)));
+			// FIXME: do not recompute signature
+			final WhyFunctionSignature sig = methodSignatureParser.reference(method)
+					.flatMap(e -> methodSignatureParser.signature(e, method))
+					.orElseThrow(() -> new IllegalStateException("method " + method + " is not callable"));
+
+			setExpression(new FunctionCall(sig, argExpressions));
 		}
 
 	}

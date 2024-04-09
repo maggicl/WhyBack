@@ -3,7 +3,9 @@ package byteback.mlcfg.syntax;
 import byteback.mlcfg.identifiers.Identifier;
 import byteback.mlcfg.syntax.types.WhyReference;
 import byteback.mlcfg.syntax.types.WhyType;
+import byteback.mlcfg.vimp.VimpFunctionReference;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -14,7 +16,8 @@ public record WhyFunctionSignature(
 		Identifier.L specName,
 		WhyFunctionKind kind,
 		List<WhyType> paramTypes,
-		WhyType returnType) {
+		WhyType returnType,
+		List<WhyCondition> conditions) {
 
 	public Stream<WhyFunctionParam> params() {
 		final Optional<WhyFunctionParam> thisParam;

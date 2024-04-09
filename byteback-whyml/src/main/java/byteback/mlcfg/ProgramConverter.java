@@ -9,14 +9,13 @@ import byteback.mlcfg.printer.WhyClassDeclaration;
 import byteback.mlcfg.printer.WhyClassPrinter;
 import byteback.mlcfg.printer.WhyFunctionPrinter;
 import byteback.mlcfg.printer.WhySignaturePrinter;
-import byteback.mlcfg.syntax.WhyFunctionSignature;
 import byteback.mlcfg.syntax.WhyProgram;
 import byteback.mlcfg.vimp.VimpClassParser;
+import byteback.mlcfg.vimp.VimpFunctionReference;
 import byteback.mlcfg.vimp.VimpMethodBodyParser;
 import byteback.mlcfg.vimp.VimpMethodParser;
 import byteback.mlcfg.vimp.WhyResolver;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
@@ -26,11 +25,9 @@ import soot.SootMethod;
 public class ProgramConverter {
 	public static Logger log = LoggerFactory.getLogger(ProgramConverter.class);
 	private final VimpClassParser classParser;
-
 	private final VimpMethodParser methodParser;
 	private final VimpMethodBodyParser methodBodyParser;
 	private final WhyClassPrinter whyClassPrinter;
-
 	private final WhySignaturePrinter whySignaturePrinter;
 	private final WhyFunctionPrinter whyFunctionPrinter;
 
@@ -53,20 +50,18 @@ public class ProgramConverter {
 				.map(classParser::parse)
 				.forEach(whyResolver::addClass);
 
-		final List<Map.Entry<WhyFunctionSignature, SootMethod>> sigs =
-				StreamSupport.stream(resolver.getUsedMethods().spliterator(), false)
-						.flatMap(e -> methodParser.parseSignature(e).stream().map(sig -> Map.entry(sig, e)))
-						.toList();
+		for (final SootMethod m : resolver.getUsedMethods()) {
+			final Optional<VimpFunctionReference> refOpt = methodParser.reference(m);
+			if (refOpt.isEmpty()) continue;
 
-		sigs.stream()
-				.filter(s -> s.getKey().kind().isSpec())
-				.map(s -> methodBodyParser.parse(s.getKey(), s.getValue()))
-				.forEach(whyResolver::addFunction);
+			final VimpFunctionReference ref = refOpt.get();
 
-		sigs.stream()
-				.filter(s -> !s.getKey().kind().isSpec())
-				.map(Map.Entry::getKey)
-				.forEach(whyResolver::addMethod);
+			methodParser.signature(ref, m).ifPresent(e -> whyResolver.addSpecSignature(ref, e));
+
+			if (ref.kind().isSpec()) {
+				whyResolver.addSpecBody(ref, methodBodyParser.parse(m));
+			}
+		}
 
 		return whyResolver;
 	}
@@ -82,7 +77,7 @@ public class ProgramConverter {
 				.map(whyFunctionPrinter::toWhy)
 				.toList();
 
-		final List<Statement> methodDecls = whyResolver.methods()
+		final List<Statement> methodDecls = whyResolver.methodDeclarations()
 				.map(e -> whySignaturePrinter.toWhy(e.getKey(), e.getValue()))
 				.toList();
 
@@ -91,9 +86,12 @@ public class ProgramConverter {
 				block(decls.stream().map(WhyClassDeclaration::typeDeclaration)),
 				block(line("(* class field declaration *)")),
 				block(decls.stream().map(WhyClassDeclaration::fieldDeclaration).flatMap(Optional::stream)),
-				block(line("(* methods declaration *)")),
-				block(functionDecls.stream()), // FIXME: spec declarations do not allow forward references
-				block(methodDecls.stream())
+				block(line("(* spec declaration *)")),
+				block(functionDecls.stream()),
+				block(line("(* method signature declaration *)")),
+				block(methodDecls.stream()),
+				block(line("(* method bodies declaration *)")),
+				block(line("(* TODO *)"))
 		));
 	}
 }

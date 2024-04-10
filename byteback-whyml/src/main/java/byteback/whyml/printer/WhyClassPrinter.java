@@ -12,14 +12,24 @@ import byteback.whyml.syntax.WhyClass;
 import byteback.whyml.syntax.type.WhyReference;
 import byteback.whyml.vimp.WhyResolver;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class WhyClassPrinter {
-	public static final Map<Identifier.FQDN, String> SPECIAL_TYPES = Map.of(
-			Identifier.Special.OBJECT, "Type.root",
-			Identifier.Special.STRING, "Type.string"
+
+	/**
+	 * Set of types for which the `class` constant declaration is responsibility of the WhyML prelude. This is done as
+	 * these types are used in prelude primitives
+	 */
+	public static final Set<Identifier.FQDN> BOOTSTRAP_TYPES = Set.of(
+			Identifier.Special.OBJECT,
+			Identifier.Special.STRING,
+			Identifier.Special.NULL_POINTER_EXCEPTION,
+			Identifier.Special.CLASS_CAST_EXCEPTION,
+			Identifier.Special.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION,
+			Identifier.Special.NEGATIVE_ARRAY_SIZE_EXCEPTION,
+			Identifier.Special.ARRAY_STORE_EXCEPTION
 	);
 
 	private final WhyFieldPrinter printer;
@@ -37,21 +47,18 @@ public class WhyClassPrinter {
 		final Statement hierarchy = hierarchyStatements == null
 				? many()
 				: many(
-						line("axiom hierarchy" + IdentifierEscaper.PRELUDE_RESERVED + ":"),
-						indent(lines(Arrays.stream(hierarchyStatements.split("\n"))))
+				line("axiom hierarchy" + IdentifierEscaper.PRELUDE_RESERVED + ":"),
+				indent(lines(Arrays.stream(hierarchyStatements.split("\n"))))
 		);
 
 		final WhyClassScope scope = new WhyClassScope(clazz.name());
-
-		final String classConstantStatement = Optional.ofNullable(SPECIAL_TYPES.get(clazz.name()))
-				.map("let constant class: Type.class = %s"::formatted)
-				.orElse("val constant class: Type.class");
+		final boolean isBootstrap = BOOTSTRAP_TYPES.contains(clazz.name());
 
 		return new WhyClassDeclaration(
-				scope.with(
-						block(line(classConstantStatement)),
-						hierarchy
-				),
+				// make sure we don't open a scope if we have no type information to put in
+				isBootstrap && hierarchyStatements == null
+						? many()
+						: scope.with(isBootstrap ? many() : block(line("val constant class: Type.class")), hierarchy),
 				clazz.fields().isEmpty() ? Optional.empty() : Optional.of(scope.with(
 						many(clazz.fields().stream().map(e -> printer.toWhy(e, resolver)))
 				))

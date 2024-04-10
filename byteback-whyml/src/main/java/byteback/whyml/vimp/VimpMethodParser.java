@@ -54,7 +54,10 @@ public class VimpMethodParser {
 					.map(new AnnotationElems.StringElemExtractor()::visit);
 
 			final AnnotationElem exceptionElem = SootAnnotations.getElem(tag, "exception").orElseThrow();
-			final String exception = new AnnotationElems.ClassElemExtractor().visit(exceptionElem);
+			final String exception = new AnnotationElems.ClassElemExtractor().visit(exceptionElem)
+					.replaceAll("^L", "") // normalize from JVM name to Java name
+					.replaceAll(";$", "")
+					.replace('/', '.');
 
 			return Optional.of(new VimpCondition.Raises(when, exception));
 		}

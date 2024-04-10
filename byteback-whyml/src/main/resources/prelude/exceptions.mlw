@@ -3,19 +3,34 @@
 (* This module is factored out from the bootstrap module to allow
    prelude.heap to depend on it *)
 module Exceptions
+  use prelude.typing.Type
   use prelude.ptr.Ptr
 
-  scope VM
-    (* note: exception are types. Consider adding fields to them *)
-    type t =
-      NullPointer |
-      ArrayIndexOutOfBounds |
-      NegativeArraySize |
-      ArrayStore |
-      ClassCast
+  exception JException Type.class
 
-    exception E t
-
-    predicate npe_if_null (e: t) (p: Ptr.t) = p = Ptr.null && e = NullPointer
+  scope Java
+  scope Lang
+  scope NullPointerException
+    val constant class: class
   end
+  
+  scope ArrayIndexOutOfBoundsException
+    val constant class: class
+  end
+
+  scope ArrayStoreException
+    val constant class: class
+  end
+
+  scope NegativeArraySizeException
+    val constant class: class
+  end
+
+  scope ClassCastException
+    val constant class: class
+  end
+  end
+  end
+
+  predicate npe_if_null (e: Type.class) (p: Ptr.t) = p = Ptr.null && e = Java.Lang.NullPointerException.class
 end

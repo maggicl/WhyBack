@@ -21,9 +21,6 @@ module Type
   (* the "root" class. This value is used for java.lang.Object prelude *)
   val constant root: class
 
-  (* the String class. This value is used for java.lang.String *)
-  val constant string: class
-
   (* used when the type is unknown, matches object *)
   let constant unknown: t = Class root
 

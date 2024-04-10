@@ -1,5 +1,6 @@
 package byteback.whyml.printer;
 
+import byteback.whyml.identifiers.FQDNEscaper;
 import byteback.whyml.identifiers.Identifier;
 import static byteback.whyml.printer.Statement.block;
 import static byteback.whyml.printer.Statement.indent;
@@ -19,10 +20,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WhySignaturePrinter {
+	private final FQDNEscaper fqdnEscaper;
 
 	private final VimpMethodNameParser vimpMethodNameParser;
 
-	public WhySignaturePrinter(VimpMethodNameParser vimpMethodNameParser) {
+	public WhySignaturePrinter(FQDNEscaper fqdnEscaper, VimpMethodNameParser vimpMethodNameParser) {
+		this.fqdnEscaper = fqdnEscaper;
 		this.vimpMethodNameParser = vimpMethodNameParser;
 	}
 
@@ -62,16 +65,18 @@ public class WhySignaturePrinter {
 								resolver.resolveCondition(m.vimp(), when, false)))
 						.orElseGet(() -> new BooleanLiteral(true))
 						.toWhy()
-						.statement("raises { ", " }");
+						.statement("raises { JException _ -> ", " }");
 			}
 
 			@Override
 			public Statement transformRaises(VimpCondition.Raises r) {
-				// TODO: fix exception identifier
 				return r.getWhen().map(when -> resolver.resolveCondition(m.vimp(), when, false))
 						.orElseGet(() -> new BooleanLiteral(true))
 						.toWhy()
-						.statement("raises { " + r.getException() + " -> ", " }");
+						.statement(
+								"raises { JException e -> e = %s.class && ".formatted(
+										fqdnEscaper.escape(r.getException(), !r.getException().contains("."))),
+								" }");
 			}
 		};
 

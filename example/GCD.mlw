@@ -11,14 +11,6 @@ module Program
   (* class type hierarchy declaration *)
 
   scope Java
-  scope Lang
-  scope Object
-    let constant class: Type.class = Type.root
-  end
-  end
-  end
-
-  scope Java
   scope Io
   scope Serializable
     val constant class: Type.class
@@ -167,8 +159,6 @@ module Program
   scope Java
   scope Lang
   scope String
-    let constant class: Type.class = Type.string
-
     axiom hierarchy'8:
       (Class class :> Class Java.Lang.Comparable.class) &&
       (Class class :> Class Java.Lang.Constant.ConstantDesc.class) &&
@@ -492,7 +482,7 @@ module Program
   scope Default'8
   scope GCD
     val gcd'028SS'029S (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jshort
-      raises { Ljava/lang/IllegalArgumentException; -> ((ICMP.le (int2i (s2int l0)) (0:jint)) \/. (ICMP.le (int2i (s2int l1)) (0:jint))) }
+      raises { JException e -> e = Java.Lang.IllegalArgumentException.class && ((ICMP.le (int2i (s2int l0)) (0:jint)) \/. (ICMP.le (int2i (s2int l1)) (0:jint))) }
       ensures {((not (default'8_GCD'4arguments_are_negative'028SS'029Z heap l0 l1))
       ->.
       (SCMP.eq l2 (default'8_GCD'4gcd_recursive'028SS'029S heap l0 l1)))}
@@ -517,7 +507,7 @@ module Program
   scope Object
     val i'2'03Cinit'03E'028'029V (ghost heap: Heap.t) (this: Ptr.t) : unit
       requires { this <> Ptr.null && Heap.instanceof heap this (Class Java.Lang.Object.class) }
-      raises { true }
+      raises { JException _ -> true }
   end
   end
   end
@@ -528,7 +518,7 @@ module Program
     val i'2'03Cinit'03E'028Ljava'02Flang'02FString'03B'029V (ghost heap: Heap.t) (this: Ptr.t) (l0: Ptr.t) : unit
       requires { this <> Ptr.null && Heap.instanceof heap this (Class Java.Lang.IllegalArgumentException.class) }
       requires { Heap.instanceof heap l0 (Class Java.Lang.String.class) }
-      raises { true }
+      raises { JException _ -> true }
   end
   end
   end

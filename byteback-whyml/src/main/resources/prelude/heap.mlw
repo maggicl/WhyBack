@@ -136,12 +136,12 @@ module HeapOp
 
   val getf (ghost heap: t) (p: Ptr.t) (f: field) : op_ft
     requires { f.ftype = ft_marker }
-    raises { VM.E e -> VM.npe_if_null e p }
+    raises { JException e -> npe_if_null e p }
     ensures { ctor result = heap.inst[(p, f)] }
 
   val putf (ghost heap: t) (p: Ptr.t) (f: field) (c: op_ft) : unit
     writes { heap.inst }
-    raises { VM.E e -> VM.npe_if_null e p }
+    raises { JException e -> npe_if_null e p }
     ensures { heap.inst[(p, f)] = ctor c }
     ensures { other_same_inst heap (old heap) p f }
 
@@ -187,11 +187,12 @@ module HeapArrayOpRead
     ensures { result.length = arraylength heap p }
     ensures { result.elts = Map.set (is heap p).elts i v }
 
-  predicate out_of_bounds (e: VM.t) (heap: t) (p: Ptr.t) (i: jint) =
-    p <> Ptr.null && (i < 0 || i >= arraylength heap p) && e = VM.ArrayIndexOutOfBounds
+  predicate out_of_bounds (e: Type.class) (heap: t) (p: Ptr.t) (i: jint) =
+    p <> Ptr.null && (i < 0 || i >= arraylength heap p) &&
+      e = Java.Lang.ArrayIndexOutOfBoundsException.class
 
-  predicate negative_size (e: VM.t) (len: jint) =
-    len < 0 && e = VM.NegativeArraySize
+  predicate negative_size (e: Type.class) (len: jint) =
+    len < 0 && e = Java.Lang.NegativeArraySizeException.class
 end
 
 module HeapArrayOp
@@ -217,13 +218,13 @@ module HeapArrayOp
 
   val load (ghost heap: t) (p: Ptr.t) (i: jint) : elem_t
     requires { valid_type heap p }
-    raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e heap p i }
+    raises { JException e -> npe_if_null e p || out_of_bounds e heap p i }
     ensures { result = (is heap p).elts i }
 
   val store (ghost heap: t) (p: Ptr.t) (i: jint) (c: elem_t) : unit
     writes { heap.arr }
     requires { valid_type heap p }
-    raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e heap p i }
+    raises { JException e -> npe_if_null e p || out_of_bounds e heap p i }
     ensures { is heap p = set (old heap) p i c }
     ensures { other_same_arr heap (old heap) p }
 
@@ -231,7 +232,7 @@ module HeapArrayOp
     writes { heap.ptrs }
     writes { heap.arr }
     writes { heap.typeof }
-    raises { VM.E e -> negative_size e len }
+    raises { JException e -> negative_size e len }
     ensures { result <> Ptr.null && heap.ptrs[result] && not (old heap).ptrs[result] }
     ensures { valid_type heap result }
     ensures { heap.typeof[result] = typ }
@@ -271,7 +272,7 @@ module Heap
     reads { heap }
     ensures { result = p }
     ensures { hastype heap result t }
-    raises { VM.E e -> not (hastype heap p t) && e = VM.ClassCast }
+    raises { JException e -> not (hastype heap p t) && e = Java.Lang.ClassCastException.class }
 
   clone HeapOp as Z with type op_ft = jbool, val ft_marker = Bool, val ctor = ABool
   clone HeapOp as B with type op_ft = jbyte, val ft_marker = Byte, val ctor = AByte
@@ -296,14 +297,14 @@ module Heap
 
     val getf (ghost heap: t) (p: Ptr.t) (f: ptrfield) : Ptr.t
       reads { heap }
-      raises { VM.E e -> VM.npe_if_null e p }
+      raises { JException e -> npe_if_null e p }
       ensures { result = heap.instptr[(p,f)] }
       ensures { hastype heap result f.fptype }
 
     val putf (ghost heap: t) (p: Ptr.t) (f: ptrfield) (c: Ptr.t) : unit
       writes { heap.instptr }
       requires { hastype heap c f.fptype }
-      raises { VM.E e -> VM.npe_if_null e p }
+      raises { JException e -> npe_if_null e p }
       ensures { heap.instptr[(p,f)] = c }
       ensures { other_same_instptr heap (old heap) p f }
 
@@ -359,19 +360,19 @@ module Heap
     predicate valid_elem (heap: t) (p: Ptr.t) (e: Ptr.t) =
       e = Ptr.null || heap.typeof[e] :> (elem_type heap p)
 
-    predicate invalid_store (e: VM.t) (heap: t) (p: Ptr.t) (z: Ptr.t) =
-      not valid_elem heap p z && e = VM.ArrayStore
+    predicate invalid_store (e: Type.class) (heap: t) (p: Ptr.t) (z: Ptr.t) =
+      not valid_elem heap p z && e = Java.Lang.ArrayStoreException.class
 
     val load (ghost heap: t) (p: Ptr.t) (i: jint) : Ptr.t
       requires { valid_type heap p }
-      raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e heap p i }
+      raises { JException e -> npe_if_null e p || out_of_bounds e heap p i }
       ensures { result = (is heap p).elts i }
       ensures { valid_elem heap p result }
 
     val store (ghost heap: t) (p: Ptr.t) (i: jint) (c: Ptr.t) : unit
       writes { heap.arr }
       requires { valid_type heap p }
-      raises { VM.E e -> VM.npe_if_null e p || out_of_bounds e (old heap) p i || invalid_store e (old heap) p c }
+      raises { JException e -> npe_if_null e p || out_of_bounds e (old heap) p i || invalid_store e (old heap) p c }
       ensures { is heap p = set (old heap) p i c }
       ensures { other_same_arr heap (old heap) p }
 
@@ -379,7 +380,7 @@ module Heap
       writes { heap.ptrs }
       writes { heap.arr }
       writes { heap.typeof }
-      raises { VM.E e -> negative_size e len }
+      raises { JException e -> negative_size e len }
       ensures { result <> Ptr.null && heap.ptrs[result] && not (old heap).ptrs[result] }
       ensures { heap.typeof[result] = ArrayOf typ }
       ensures { is heap result = Array.make len init_val }

@@ -33,6 +33,11 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 	public final static class Special {
 		public static final FQDN OBJECT = FQDN.special("Java", "Lang", "Object");
 		public static final FQDN STRING = FQDN.special("Java", "Lang", "String");
+		public static final FQDN NULL_POINTER_EXCEPTION = FQDN.special("Java", "Lang", "NullPointerException");
+		public static final FQDN ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION = FQDN.special("Java", "Lang", "ArrayIndexOutOfBoundsException");
+		public static final FQDN ARRAY_STORE_EXCEPTION = FQDN.special("Java", "Lang", "ArrayStoreException");
+		public static final FQDN NEGATIVE_ARRAY_SIZE_EXCEPTION = FQDN.special("Java", "Lang", "NegativeArraySizeException");
+		public static final FQDN CLASS_CAST_EXCEPTION = FQDN.special("Java", "Lang", "ClassCastException");
 		public static final Identifier.U DEFAULT_PACKAGE = new U("Default" + IdentifierEscaper.PRELUDE_RESERVED);
 		public static final Identifier.L THIS = new L("this");
 		public static final Identifier.L RESULT = new L("result");

@@ -13,11 +13,22 @@ module Bootstrap
 
   scope Java
   scope Lang
+  scope Object
+    val constant class: Type.class = Type.root
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
   scope String
+    (* the String class. This value is used for java.lang.String *)
+    val constant class: Type.class
+  
     (* FIXME: same literals should map to the same ptr *)
     val literal'8 (ghost heap: Heap.t) (s: string) : Ptr.t
       writes { heap.strings }
-      ensures { result <> Ptr.null && Heap.instanceof heap result (Class Type.string) }
+      ensures { result <> Ptr.null && Heap.instanceof heap result (Class class) }
       ensures { heap.strings[result] = s }
       ensures { other_same_strings heap (old heap) result }
   end

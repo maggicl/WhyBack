@@ -25,7 +25,7 @@ public final class IOC {
 	public static final TypeResolver TYPE_RESOLVER = new TypeResolver(CLASS_NAME_PARSER);
 	public static final VimpFieldParser VIMP_FIELD_PARSER = new VimpFieldParser(CLASS_NAME_PARSER, IDENTIFIER_ESCAPER, TYPE_RESOLVER);
 	public static final VimpClassParser CLASS_PARSER = new VimpClassParser(CLASS_NAME_PARSER, VIMP_FIELD_PARSER);
-	public static final VimpMethodParser METHOD_PARSER = new VimpMethodParser(IDENTIFIER_ESCAPER, CLASS_NAME_PARSER, TYPE_RESOLVER);
+	public static final VimpMethodParser METHOD_PARSER = new VimpMethodParser(CLASS_NAME_PARSER, TYPE_RESOLVER);
 	public static final VimpMethodNameParser METHOD_NAME_PARSER = new VimpMethodNameParser(IDENTIFIER_ESCAPER);
 	public static final PureExpressionExtractor PURE_EXPRESSION_EXTRACTOR = new PureExpressionExtractor(METHOD_PARSER, METHOD_NAME_PARSER, TYPE_RESOLVER, VIMP_FIELD_PARSER, IDENTIFIER_ESCAPER);
 	public static final FunctionBodyExtractor FUNCTION_BODY_EXTRACTOR = new FunctionBodyExtractor(PURE_EXPRESSION_EXTRACTOR);

@@ -44,7 +44,7 @@ public sealed abstract class SExpr {
 	}
 
 	public final Statement statement(String prefix, String postfix) {
-		if (opLength() <= MAX_LENGTH) {
+		if (prefix.length() + opLength() + postfix.length() <= MAX_LENGTH) {
 			return line(prefix + toLine() + postfix);
 		} else {
 			return withParens(prefix, postfix);
@@ -106,7 +106,7 @@ public sealed abstract class SExpr {
 
 		@Override
 		protected int opLength() {
-			return op.length() + exprs.stream().mapToInt(SExpr::opLength).sum();
+			return op.length() + exprs.stream().mapToInt(SExpr::opLength).sum() + "( )".length();
 		}
 	}
 
@@ -131,14 +131,13 @@ public sealed abstract class SExpr {
 		protected Statement withParens(String prefix, String postfix) {
 			return many(
 					left.statement(prefix + "(", ""),
-					line(op),
-					right.statement("", ")" + postfix)
+					right.statement(op + " ", ")" + postfix)
 			);
 		}
 
 		@Override
 		protected int opLength() {
-			return op.length() + left.opLength() + right.opLength();
+			return op.length() + left.opLength() + right.opLength() + "( )".length();
 		}
 	}
 
@@ -169,7 +168,7 @@ public sealed abstract class SExpr {
 
 		@Override
 		protected int opLength() {
-			return conditional.opLength() + thenBranch.opLength() + elseBranch.opLength();
+			return conditional.opLength() + thenBranch.opLength() + elseBranch.opLength() + "if then else ".length();
 		}
 	}
 }

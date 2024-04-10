@@ -110,6 +110,14 @@ module Program
   end
 
   scope Java
+  scope Lang
+  scope Appendable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
   scope Io
   scope FilterOutputStream
     val constant class: Type.class
@@ -121,8 +129,21 @@ module Program
   end
 
   scope Java
+  scope Io
+  scope PrintStream
+    val constant class: Type.class
+
+    axiom hierarchy'8:
+      (Class class :> Class Java.Io.FilterOutputStream.class) &&
+      (Class class :> Class Java.Lang.Appendable.class) &&
+      (Class class :> Class Java.Io.Closeable.class)
+  end
+  end
+  end
+
+  scope Java
   scope Lang
-  scope Appendable
+  scope System
     val constant class: Type.class
   end
   end
@@ -135,6 +156,12 @@ module Program
     val constant class: Type.class
   end
   end
+  end
+  end
+
+  scope Default'8
+  scope GCD
+    val constant class: Type.class
   end
   end
 
@@ -160,38 +187,11 @@ module Program
   scope Lang
   scope String
     axiom hierarchy'8:
-      (Class class :> Class Java.Lang.Comparable.class) &&
-      (Class class :> Class Java.Lang.Constant.ConstantDesc.class) &&
-      (Class class :> Class Java.Lang.Constant.Constable.class) &&
-      (Class class :> Class Java.Lang.CharSequence.class) &&
-      (Class class :> Class Java.Io.Serializable.class)
-  end
-  end
-  end
-
-  scope Default'8
-  scope GCD
-    val constant class: Type.class
-  end
-  end
-
-  scope Java
-  scope Io
-  scope PrintStream
-    val constant class: Type.class
-
-    axiom hierarchy'8:
-      (Class class :> Class Java.Io.FilterOutputStream.class) &&
-      (Class class :> Class Java.Lang.Appendable.class) &&
-      (Class class :> Class Java.Io.Closeable.class)
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope System
-    val constant class: Type.class
+      (Class Java.Lang.String.class :> Class Java.Lang.Comparable.class) &&
+      (Class Java.Lang.String.class :> Class Java.Lang.Constant.ConstantDesc.class) &&
+      (Class Java.Lang.String.class :> Class Java.Lang.Constant.Constable.class) &&
+      (Class Java.Lang.String.class :> Class Java.Lang.CharSequence.class) &&
+      (Class Java.Lang.String.class :> Class Java.Io.Serializable.class)
   end
   end
   end
@@ -313,43 +313,6 @@ module Program
   end
 
   scope Java
-  scope Lang
-  scope String
-    scope Value
-      let constant f: Type.t = ByteArray
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    clone prelude.heap.Field as Coder with val f = HeapDef.Byte, axiom of
-
-    clone prelude.heap.Field as Hash with val f = HeapDef.Int, axiom of
-
-    clone prelude.heap.Field as HashIsZero with val f = HeapDef.Int, axiom of
-
-    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
-
-    clone prelude.heap.Field as I'2COMPACT_STRINGS with val f = HeapDef.Int, axiom of
-
-    scope SerialPersistentFields
-      let constant f: Type.t = Type.unknown (* Type.ArrayOf (Class Java.Io.ObjectStreamField.class) *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    clone prelude.heap.Field as I'2REPL with val f = HeapDef.Char, axiom of
-
-    scope I'2CASE_INSENSITIVE_ORDER
-      let constant f: Type.t = Type.unknown (* Class Java.Util.Comparator.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    clone prelude.heap.Field as I'2LATIN1 with val f = HeapDef.Byte, axiom of
-
-    clone prelude.heap.Field as I'2UTF16 with val f = HeapDef.Byte, axiom of
-  end
-  end
-  end
-
-  scope Java
   scope Io
   scope PrintStream
     clone prelude.heap.Field as AutoFlush with val f = HeapDef.Int, axiom of
@@ -433,13 +396,58 @@ module Program
   end
   end
 
+  scope Java
+  scope Lang
+  scope String
+    scope Value
+      let constant f: Type.t = ByteArray
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as Coder with val f = HeapDef.Byte, axiom of
+
+    clone prelude.heap.Field as Hash with val f = HeapDef.Int, axiom of
+
+    clone prelude.heap.Field as HashIsZero with val f = HeapDef.Int, axiom of
+
+    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
+
+    clone prelude.heap.Field as I'2COMPACT_STRINGS with val f = HeapDef.Int, axiom of
+
+    scope SerialPersistentFields
+      let constant f: Type.t = Type.unknown (* Type.ArrayOf (Class Java.Io.ObjectStreamField.class) *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as I'2REPL with val f = HeapDef.Char, axiom of
+
+    scope I'2CASE_INSENSITIVE_ORDER
+      let constant f: Type.t = Type.unknown (* Class Java.Util.Comparator.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as I'2LATIN1 with val f = HeapDef.Byte, axiom of
+
+    clone prelude.heap.Field as I'2UTF16 with val f = HeapDef.Byte, axiom of
+  end
+  end
+  end
+
   (* spec declaration *)
 
-  let function default'8_GCD'4test2'028'029Z (ghost heap: Heap.t)  : jbool
-  = (q_forall (fun (i'2'024stack1: jint) -> (ICMP.le i'2'024stack1 (0:jint))))
+  let rec function default'8_GCD'4test'028S'029S (ghost heap: Heap.t) (l0: jshort) : jshort
+    variant { 0 }
+  = if (SCMP.le l0 (0:jshort)) then
+    (0:jshort)
+    else (default'8_GCD'4test'028S'029S
+      heap
+      (int2s (i2int (isub (int2i (s2int l0)) (1:jint)))))
 
   let function default'8_GCD'4arguments_are_positive'028SS'029Z (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jbool
   = ((ICMP.le (int2i (s2int l0)) (0:jint)) /\. (ICMP.le (int2i (s2int l1)) (0:jint)))
+
+  let function default'8_GCD'4arguments_are_negative'028SS'029Z (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jbool
+  = ((ICMP.le (int2i (s2int l0)) (0:jint)) \/. (ICMP.le (int2i (s2int l1)) (0:jint)))
 
   let rec function default'8_GCD'4gcd_recursive'028SS'029S (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jshort
     variant { 0 }
@@ -468,36 +476,32 @@ module Program
         l0
         (int2s (i2int (isub (int2i (s2int l1)) (int2i (s2int l0))))))
 
-  let function default'8_GCD'4arguments_are_negative'028SS'029Z (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jbool
-  = ((ICMP.le (int2i (s2int l0)) (0:jint)) \/. (ICMP.le (int2i (s2int l1)) (0:jint)))
-
-  let rec function default'8_GCD'4test'028S'029S (ghost heap: Heap.t) (l0: jshort) : jshort
-    variant { 0 }
-  = if (SCMP.le l0 (0:jshort)) then
-    (0:jshort)
-    else (default'8_GCD'4test'028S'029S heap (int2s (i2int (isub (int2i (s2int l0)) (1:jint)))))
+  let function default'8_GCD'4test2'028'029Z (ghost heap: Heap.t)  : jbool
+  = (q_forall (fun (i'2'024stack1: jint) -> (ICMP.le i'2'024stack1 (0:jint))))
 
   (* method signature declaration *)
 
   scope Default'8
   scope GCD
-    val gcd'028SS'029S (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jshort
-      raises { JException e -> e = Java.Lang.IllegalArgumentException.class && ((ICMP.le (int2i (s2int l0)) (0:jint)) \/. (ICMP.le (int2i (s2int l1)) (0:jint))) }
-      ensures {((not (default'8_GCD'4arguments_are_negative'028SS'029Z heap l0 l1))
-      ->.
-      (SCMP.eq l2 (default'8_GCD'4gcd_recursive'028SS'029S heap l0 l1)))}
+    val i'2'03Cinit'03E'028'029V (ghost heap: Heap.t) (l0: Ptr.t) : unit
+      requires { l0 <> Ptr.null && Heap.instanceof heap l0 (Class Default'8.GCD.class) }
 
-    val i'2'03Cinit'03E'028'029V (ghost heap: Heap.t) (this: Ptr.t) : unit
-      requires { this <> Ptr.null && Heap.instanceof heap this (Class Default'8.GCD.class) }
+    val gcd'028SS'029S (ghost heap: Heap.t) (l0: jshort) (l1: jshort) : jshort
+      raises { JException e -> e = Java.Lang.IllegalArgumentException.class && ((ICMP.le
+        (int2i (s2int l0))
+        (0:jint))
+      \/. (ICMP.le (int2i (s2int l1)) (0:jint))) }
+      ensures { ((not (default'8_GCD'4arguments_are_negative'028SS'029Z heap l0 l1))
+      ->. (SCMP.eq result (default'8_GCD'4gcd_recursive'028SS'029S heap l0 l1))) }
   end
   end
 
   scope Java
   scope Io
   scope PrintStream
-    val println'028Ljava'02Flang'02FString'03B'029V (ghost heap: Heap.t) (this: Ptr.t) (l0: Ptr.t) : unit
-      requires { this <> Ptr.null && Heap.instanceof heap this (Class Java.Io.PrintStream.class) }
-      requires { Heap.instanceof heap l0 (Class Java.Lang.String.class) }
+    val println'028Ljava'02Flang'02FString'03B'029V (ghost heap: Heap.t) (l0: Ptr.t) (l1: Ptr.t) : unit
+      requires { l0 <> Ptr.null && Heap.instanceof heap l0 (Class Java.Io.PrintStream.class) }
+      requires { Heap.instanceof heap l1 (Class Java.Lang.String.class) }
   end
   end
   end
@@ -505,8 +509,8 @@ module Program
   scope Java
   scope Lang
   scope Object
-    val i'2'03Cinit'03E'028'029V (ghost heap: Heap.t) (this: Ptr.t) : unit
-      requires { this <> Ptr.null && Heap.instanceof heap this (Class Java.Lang.Object.class) }
+    val i'2'03Cinit'03E'028'029V (ghost heap: Heap.t) (l0: Ptr.t) : unit
+      requires { l0 <> Ptr.null && Heap.instanceof heap l0 (Class Java.Lang.Object.class) }
       raises { JException _ -> true }
   end
   end
@@ -515,9 +519,9 @@ module Program
   scope Java
   scope Lang
   scope IllegalArgumentException
-    val i'2'03Cinit'03E'028Ljava'02Flang'02FString'03B'029V (ghost heap: Heap.t) (this: Ptr.t) (l0: Ptr.t) : unit
-      requires { this <> Ptr.null && Heap.instanceof heap this (Class Java.Lang.IllegalArgumentException.class) }
-      requires { Heap.instanceof heap l0 (Class Java.Lang.String.class) }
+    val i'2'03Cinit'03E'028Ljava'02Flang'02FString'03B'029V (ghost heap: Heap.t) (l0: Ptr.t) (l1: Ptr.t) : unit
+      requires { l0 <> Ptr.null && Heap.instanceof heap l0 (Class Java.Lang.IllegalArgumentException.class) }
+      requires { Heap.instanceof heap l1 (Class Java.Lang.String.class) }
       raises { JException _ -> true }
   end
   end
@@ -526,8 +530,8 @@ module Program
   scope Java
   scope Lang
   scope String
-    val length'028'029I (ghost heap: Heap.t) (this: Ptr.t) : jint
-      requires { this <> Ptr.null && Heap.instanceof heap this (Class Java.Lang.String.class) }
+    val length'028'029I (ghost heap: Heap.t) (l0: Ptr.t) : jint
+      requires { l0 <> Ptr.null && Heap.instanceof heap l0 (Class Java.Lang.String.class) }
   end
   end
   end

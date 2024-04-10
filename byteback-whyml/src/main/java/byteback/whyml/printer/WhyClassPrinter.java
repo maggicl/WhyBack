@@ -39,9 +39,13 @@ public class WhyClassPrinter {
 	}
 
 	public WhyClassDeclaration toWhy(final WhyClass clazz, final WhyResolver resolver) {
+		final boolean typeDeclared = BOOTSTRAP_TYPES.contains(clazz.name());
+
+		final String classReference = "Class %sclass".formatted(typeDeclared ? (clazz.name() + ".") : "");
+
 		final String hierarchyStatements = Utils.trimToNull(clazz.superNames()
 				.filter(e -> resolver.isResolved(new WhyReference(e)) && !e.equals(Identifier.Special.OBJECT))
-				.map("(Class class :> Class %s.class)"::formatted)
+				.map(e -> "(%s :> Class %s.class)".formatted(classReference, e))
 				.collect(Collectors.joining(" &&\n")));
 
 		final Statement hierarchy = hierarchyStatements == null
@@ -52,13 +56,12 @@ public class WhyClassPrinter {
 		);
 
 		final WhyClassScope scope = new WhyClassScope(clazz.name());
-		final boolean isBootstrap = BOOTSTRAP_TYPES.contains(clazz.name());
 
 		return new WhyClassDeclaration(
 				// make sure we don't open a scope if we have no type information to put in
-				isBootstrap && hierarchyStatements == null
+				typeDeclared && hierarchyStatements == null
 						? many()
-						: scope.with(isBootstrap ? many() : block(line("val constant class: Type.class")), hierarchy),
+						: scope.with(typeDeclared ? many() : block(line("val constant class: Type.class")), hierarchy),
 				clazz.fields().isEmpty() ? Optional.empty() : Optional.of(scope.with(
 						many(clazz.fields().stream().map(e -> printer.toWhy(e, resolver)))
 				))

@@ -6,9 +6,6 @@ import static byteback.whyml.printer.Statement.block;
 import static byteback.whyml.printer.Statement.indent;
 import static byteback.whyml.printer.Statement.line;
 import static byteback.whyml.printer.Statement.many;
-import byteback.whyml.syntax.expr.BooleanLiteral;
-import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.UnaryExpression;
 import byteback.whyml.syntax.function.VimpCondition;
 import byteback.whyml.syntax.function.WhyFunctionKind;
 import byteback.whyml.syntax.function.WhyFunctionParam;
@@ -45,40 +42,7 @@ public class WhySignaturePrinter {
 				.flatMap(Optional::stream)
 				.map(e -> line("requires { %s }".formatted(e))));
 
-		final VimpCondition.Transformer<Statement> toStatement = new VimpCondition.Transformer<>() {
-			@Override
-			public Statement transformRequires(VimpCondition.Requires r) {
-				return resolver.resolveCondition(m.vimp(), r.getValue(), false).toWhy()
-						.statement("requires {", "}");
-			}
-
-			@Override
-			public Statement transformEnsures(VimpCondition.Ensures r) {
-				return resolver.resolveCondition(m.vimp(), r.getValue(), true).toWhy()
-						.statement("ensures {", "}");
-			}
-
-			@Override
-			public Statement transformReturns(VimpCondition.Returns r) {
-				return r.getWhen().map(when -> (Expression) new UnaryExpression(
-								UnaryExpression.Operator.NOT,
-								resolver.resolveCondition(m.vimp(), when, false)))
-						.orElseGet(() -> new BooleanLiteral(true))
-						.toWhy()
-						.statement("raises { JException _ -> ", " }");
-			}
-
-			@Override
-			public Statement transformRaises(VimpCondition.Raises r) {
-				return r.getWhen().map(when -> resolver.resolveCondition(m.vimp(), when, false))
-						.orElseGet(() -> new BooleanLiteral(true))
-						.toWhy()
-						.statement(
-								"raises { JException e -> e = %s.class && ".formatted(
-										fqdnEscaper.escape(r.getException(), !r.getException().contains("."))),
-								" }");
-			}
-		};
+		final VimpCondition.Transformer<Statement> toStatement = new StatementTransformer(fqdnEscaper, resolver, m);
 
 		final Statement conditions = many(m.conditions().stream().map(toStatement::transform));
 

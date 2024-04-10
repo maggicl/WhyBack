@@ -14,7 +14,7 @@ module Bootstrap
   scope Java
   scope Lang
   scope Object
-    val constant class: Type.class = Type.root
+    let constant class: Type.class = Type.root
   end
   end
   end

@@ -5,7 +5,6 @@ import byteback.analysis.util.AnnotationElems;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootHosts;
 import byteback.whyml.identifiers.Identifier;
-import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.function.VimpCondition;
 import byteback.whyml.syntax.function.VimpMethod;
 import byteback.whyml.syntax.function.WhyFunctionKind;
@@ -17,20 +16,16 @@ import byteback.whyml.syntax.type.WhyType;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
-import soot.AbstractJasminClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 
 public class VimpMethodParser {
-	private final IdentifierEscaper identifierEscaper;
 	private final VimpClassNameParser classNameParser;
 	private final TypeResolver typeResolver;
 
-	public VimpMethodParser(IdentifierEscaper identifierEscaper, VimpClassNameParser classNameParser,
-							TypeResolver typeResolver) {
-		this.identifierEscaper = identifierEscaper;
+	public VimpMethodParser(VimpClassNameParser classNameParser, TypeResolver typeResolver) {
 		this.classNameParser = classNameParser;
 		this.typeResolver = typeResolver;
 	}
@@ -88,7 +83,11 @@ public class VimpMethodParser {
 				new VimpMethod(
 						clazz,
 						method.getName(),
-						AbstractJasminClass.jasminDescriptorOf(method.makeRef()),
+						method.isStatic()
+								? Optional.empty()
+								: Optional.of(method.getDeclaringClass().getType()),
+						method.getParameterTypes(),
+						method.getReturnType(),
 						k)
 		);
 	}
@@ -98,25 +97,26 @@ public class VimpMethodParser {
 			return Optional.empty();
 		}
 
-		final Type sootReturnType = method.getReturnType();
+		final Type sootReturnType = ref.returnType();
 
-		final List<WhyType> parameterTypes = method.getParameterTypes().stream().map(typeResolver::resolveType).toList();
+		final List<WhyType> parameterTypes = ref.parameterTypes().stream().map(typeResolver::resolveType).toList();
 		final WhyType returnType = typeResolver.resolveType(sootReturnType);
 
 		if (ref.kind() == WhyFunctionKind.PURE_PREDICATE && returnType != WhyJVMType.BOOL) {
 			throw new IllegalStateException("return type of a predicate must be a boolean");
 		}
 
-		final Optional<WhyFunctionParam> thisParam = ref.kind() != WhyFunctionKind.INSTANCE_METHOD
-				? Optional.empty()
-				: Optional.of(new WhyFunctionParam(
-				Identifier.Special.THIS,
-				new WhyReference(ref.className()),
-				true));
+		boolean hasThis = ref.kind() == WhyFunctionKind.INSTANCE_METHOD;
+
+		final Optional<WhyFunctionParam> thisParam = ref.thisType().map(e ->
+				new WhyFunctionParam(
+						Identifier.Special.methodParam(0),
+						new WhyReference(ref.className()),
+						true));
 
 		final List<WhyFunctionParam> paramsList = IntStream.range(0, parameterTypes.size())
 				.mapToObj(i -> new WhyFunctionParam(
-						Identifier.Special.methodParam(i),
+						Identifier.Special.methodParam(i + (hasThis ? 1 : 0)),
 						parameterTypes.get(i),
 						false))
 				.toList();

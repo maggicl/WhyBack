@@ -2,13 +2,13 @@ package byteback.whyml.vimp;
 
 import byteback.whyml.WhyFunctionSCC;
 import byteback.whyml.identifiers.Identifier;
-import byteback.whyml.syntax.function.VimpMethod;
 import byteback.whyml.syntax.WhyClass;
+import byteback.whyml.syntax.expr.Expression;
+import byteback.whyml.syntax.expr.transformer.CallDependenceVisitor;
+import byteback.whyml.syntax.function.VimpMethod;
 import byteback.whyml.syntax.function.WhyFunction;
 import byteback.whyml.syntax.function.WhyFunctionKind;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
-import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.transformer.CallDependenceVisitor;
 import byteback.whyml.syntax.type.ReferenceVisitor;
 import byteback.whyml.syntax.type.WhyType;
 import byteback.whyml.vimp.graph.PostOrder;
@@ -50,14 +50,11 @@ public class WhyResolver {
 		return result;
 	}
 
-	public Expression resolveCondition(VimpMethod scope, String conditionValue, boolean hasResult) {
-		final VimpMethod conditionRef = new VimpMethod(
-				scope.className(),
-				conditionValue,
-				hasResult ? scope.resultCondDescriptor() : scope.condDescriptor(),
-				WhyFunctionKind.PREDICATE);
+	public Expression resolveCondition(WhyFunctionSignature scope, String conditionValue, boolean hasResult) {
+		final VimpMethod conditionRef = scope.vimp().condition(conditionValue, hasResult);
 
-		return Objects.requireNonNull(specBodies.get(conditionRef), () -> "body for condition reference " + conditionRef + " not found");
+		return Objects.requireNonNull(specBodies.get(conditionRef),
+				() -> "body for condition reference " + conditionRef + " not found");
 	}
 
 	public void addClass(final WhyClass classDeclaration) {

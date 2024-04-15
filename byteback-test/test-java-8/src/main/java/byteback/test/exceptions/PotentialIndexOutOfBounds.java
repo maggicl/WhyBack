@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} --iobe -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c byteback.test.exceptions.PotentialIndexOutOfBounds --iobe -o %t.mlw
  */
 package byteback.test.exceptions;
 
@@ -101,6 +101,6 @@ public class PotentialIndexOutOfBounds {
 	
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 11 verified, 0 errors
+ * RUN-IGNORE: %{verify} %t.bpl | filecheck %s
+ * CHECK-IGNORE: Boogie program verifier finished with 11 verified, 0 errors
  */

@@ -27,9 +27,11 @@ public class WhySignaturePrinter {
 	}
 
 	public Statement toWhy(WhyFunctionSignature m, boolean noPredicates, boolean withWith, boolean recursive, WhyResolver resolver) {
-		final WhyFunctionKind kind = noPredicates && m.kind() == WhyFunctionKind.PURE_PREDICATE
-				? WhyFunctionKind.PURE
-				: m.kind();
+		if (m.kind().inline().must()) {
+			throw new IllegalArgumentException("function signature cannot be printed for an inline-required function");
+		}
+
+		final boolean isPredicate = !noPredicates && m.kind().decl() == WhyFunctionKind.Declaration.PREDICATE;
 
 		final List<WhyFunctionParam> paramsList = m.params().toList();
 
@@ -56,17 +58,13 @@ public class WhySignaturePrinter {
 		// TODO: capture variants
 		final Statement variant = recursive ? line("variant { 0 }") : many();
 
-		final String declaration;
+		final String declaration = withWith
+				? "with"
+				: m.kind().decl().isSpec()
+				? m.kind().decl().toWhy(recursive)
+				: m.kind().decl().toWhyDeclaration();
 
-		if (withWith) {
-			declaration = "with";
-		} else {
-			declaration = recursive ? kind.getWhyRecDeclaration() : kind.getWhyDeclaration();
-		}
-
-		final String returnType = kind != WhyFunctionKind.PURE_PREDICATE
-				? ": %s".formatted(m.returnType().getWhyType())
-				: "";
+		final String returnType = isPredicate ? "" : ": %s".formatted(m.returnType().getWhyType());
 
 		return many(
 				line("%s %s (ghost heap: Heap.t) %s %s".formatted(

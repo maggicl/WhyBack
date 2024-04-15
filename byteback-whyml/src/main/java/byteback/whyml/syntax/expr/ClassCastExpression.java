@@ -29,7 +29,7 @@ public class ClassCastExpression implements Expression {
 		return reference;
 	}
 
-	public WhyType getType() {
+	public WhyType exactType() {
 		return type;
 	}
 
@@ -45,7 +45,7 @@ public class ClassCastExpression implements Expression {
 
 	@Override
 	public WhyJVMType type() {
-		return WhyJVMType.BOOL;
+		return WhyJVMType.PTR;
 	}
 
 	@Override

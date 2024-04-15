@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public record WhyFunction(WhyFunctionSignature signature, Expression body) {
 	public WhyFunction {
-		if (!signature.kind().isSpec()) {
+		if (!signature.kind().decl().isSpec()) {
 			throw new IllegalArgumentException("a WhyFunction cannot be a program function");
 		}
 

@@ -10,14 +10,14 @@ public interface WhyType {
 	 * @param rValue type of the r-value
 	 * @return true if compatible, false if not
 	 */
-	static boolean compatible(WhyType lValue, WhyType rValue) {
-		if (lValue instanceof WhyJVMType && rValue instanceof WhyJVMType) {
+	static boolean jvmCompatible(WhyType lValue, WhyJVMType rValue) {
+		if (lValue instanceof WhyJVMType) {
 			return lValue == rValue;
 		} else if (lValue instanceof WhyReference) {
-			return true;
+			return rValue != WhyJVMType.UNIT;
 		}
-		if (lValue instanceof WhyArrayType && rValue instanceof WhyArrayType) {
-			return compatible(((WhyArrayType) lValue).baseType(), ((WhyArrayType) rValue).baseType());
+		if (lValue instanceof WhyArrayType) {
+			return rValue == WhyJVMType.PTR;
 		}
 		return false;
 	}

@@ -60,7 +60,7 @@ public enum WhyJVMType implements WhyType {
 
 	@Override
 	public String getWhyAccessorScope() {
-		if (preludeType == null) {
+		if (accessorScope == null) {
 			throw new UnsupportedOperationException(this + " does not have accessors");
 		}
 

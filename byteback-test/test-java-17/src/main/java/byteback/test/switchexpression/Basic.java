@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c byteback.test.switchexpression.Basic -o %t.mlw
  */
 package byteback.test.switchexpression;
 
@@ -26,6 +26,6 @@ public class Basic {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 4 verified, 0 errors
+ * RUN-IGNORE: %{verify} %t.bpl | filecheck %s
+ * CHECK-IGNORE: Boogie program verifier finished with 4 verified, 0 errors
  */

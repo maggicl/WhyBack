@@ -375,7 +375,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 		} else if (sourceType == WhyJVMType.PTR && targetJVMType == WhyJVMType.PTR) {
 			setExpression(new ClassCastExpression(op, targetType));
 		} else {
-			throw new IllegalArgumentException("cast operation not supported from type %s to type %s".formatted(op, targetType));
+			throw new IllegalArgumentException("cast operation not supported from type %s to type %s".formatted(op.type(), targetType));
 		}
 	}
 
@@ -435,7 +435,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseArrayRef(final ArrayRef v) {
-		final WhyType type = typeResolver.resolveType(v.getType());
+		final WhyType type = typeResolver.resolveType(v.getBase().getType());
 		if (!(type instanceof WhyArrayType)) {
 			throw new IllegalStateException("type of array ref expression is not array type");
 		}
@@ -449,7 +449,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseLengthExpr(final LengthExpr v) {
-		final WhyType type = typeResolver.resolveType(v.getType());
+		final WhyType type = typeResolver.resolveType(v.getOp().getType());
 		if (!(type instanceof WhyArrayType)) {
 			throw new IllegalStateException("type of array ref expression is not array type");
 		}

@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c byteback.test.instance.Counter -o %t.mlw
  */
 package byteback.test.instance;
 
@@ -54,6 +54,6 @@ public class Counter {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 5 verified, 0 errors
+ * RUN-IGNORE: %{verify} %t.bpl | filecheck %s
+ * CHECK-IGNORE: Boogie program verifier finished with 5 verified, 0 errors
  */

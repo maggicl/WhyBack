@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c byteback.test.algorithm.DoubleMax -o %t.mlw
  */
 package byteback.test.algorithm;
 
@@ -12,6 +12,7 @@ import byteback.annotations.Binding;
 public class DoubleMax {
 
 	@Pure
+	@Predicate
 	public static boolean array_is_not_null(double a[]) {
 		return neq(a, null);
 	}
@@ -53,6 +54,6 @@ public class DoubleMax {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 2 verified, 0 errors
+ * RUN-IGNORE: %{verify} %t.bpl | filecheck %s
+ * CHECK-IGNORE: Boogie program verifier finished with 2 verified, 0 errors
  */

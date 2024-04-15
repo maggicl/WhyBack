@@ -12,6 +12,7 @@ public record WhyFunctionSignature(
 		Optional<WhyFunctionParam> thisParam,
 		List<WhyFunctionParam> paramsList,
 		WhyType returnType,
+		WhyFunctionKind.Inline inline,
 		List<VimpCondition> conditions) {
 
 	public Stream<WhyFunctionParam> params() {
@@ -28,6 +29,6 @@ public record WhyFunctionSignature(
 	}
 
 	public WhyFunctionKind kind() {
-		return vimp.kind();
+		return vimp.kind(inline);
 	}
 }

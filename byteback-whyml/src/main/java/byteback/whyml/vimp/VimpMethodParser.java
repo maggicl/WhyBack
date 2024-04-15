@@ -16,6 +16,7 @@ import byteback.whyml.syntax.type.WhyType;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
+import soot.BooleanType;
 import soot.SootMethod;
 import soot.Type;
 import soot.tagkit.AnnotationElem;
@@ -60,26 +61,46 @@ public class VimpMethodParser {
 		return Optional.empty();
 	}
 
-	public Optional<WhyFunctionKind> whyFunctionKind(final SootMethod method) {
+	public WhyFunctionKind.Inline inline(final SootMethod method) {
+		// true if annotated with @Pure
+		final boolean isPure = SootHosts.hasAnnotation(method, Namespace.PURE_ANNOTATION);
+
+		// true if annotated with @Predicate
+		final boolean isPredicate = SootHosts.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION);
+
+		// if @Predicate and @Pure, may be inlined
+		// if only @Predicate, MUST be inlined (to make old(...) work)
+		// if only @Pure, MUST NOT be inlined (as old(...) won't work in a declaration)
+		return isPure && isPredicate
+				? WhyFunctionKind.Inline.OPTIONAL
+				: isPredicate
+				? WhyFunctionKind.Inline.REQUIRED
+				: WhyFunctionKind.Inline.NEVER;
+	}
+
+	private Optional<WhyFunctionKind.Declaration> declaration(final SootMethod method) {
+		// prelude functions must not be translated, as they are declared in the prelude
 		if (SootHosts.hasAnnotation(method, Namespace.PRELUDE_ANNOTATION)) {
 			return Optional.empty();
-		} else if (SootHosts.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {
-			return Optional.of(SootHosts.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION)
-					? WhyFunctionKind.PURE_PREDICATE
-					: WhyFunctionKind.PURE);
-		} else if (SootHosts.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION)) {
-			return Optional.of(WhyFunctionKind.PREDICATE);
-		} else if (method.isStatic()) {
-			return Optional.of(WhyFunctionKind.STATIC_METHOD);
-		} else {
-			return Optional.of(WhyFunctionKind.INSTANCE_METHOD);
 		}
+
+		// true if annotated with @Pure
+		final boolean isPure = SootHosts.hasAnnotation(method, Namespace.PURE_ANNOTATION);
+
+		// true if annotated with @Predicate
+		final boolean isPredicate = SootHosts.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION);
+
+		return Optional.of(!isPure && !isPredicate
+				? WhyFunctionKind.Declaration.PROGRAM
+				: method.getReturnType() == BooleanType.v()
+				? WhyFunctionKind.Declaration.PREDICATE
+				: WhyFunctionKind.Declaration.FUNCTION);
 	}
 
 	public Optional<VimpMethod> reference(SootMethod method) {
 		final Identifier.FQDN clazz = classNameParser.parse(method.getDeclaringClass());
 
-		return whyFunctionKind(method).map(k ->
+		return declaration(method).map(k ->
 				new VimpMethod(
 						clazz,
 						method.getName(),
@@ -93,7 +114,9 @@ public class VimpMethodParser {
 	}
 
 	public Optional<WhyFunctionSignature> signature(VimpMethod ref, SootMethod method) {
-		if (ref.kind() == WhyFunctionKind.PREDICATE) {
+		final WhyFunctionKind.Inline inline = inline(method);
+
+		if (inline.must()) { // if the function must be inlined, it does not have a signature for decl
 			return Optional.empty();
 		}
 
@@ -102,11 +125,9 @@ public class VimpMethodParser {
 		final List<WhyType> parameterTypes = ref.parameterTypes().stream().map(typeResolver::resolveType).toList();
 		final WhyType returnType = typeResolver.resolveType(sootReturnType);
 
-		if (ref.kind() == WhyFunctionKind.PURE_PREDICATE && returnType != WhyJVMType.BOOL) {
+		if (ref.decl() == WhyFunctionKind.Declaration.PREDICATE && returnType != WhyJVMType.BOOL) {
 			throw new IllegalStateException("return type of a predicate must be a boolean");
 		}
-
-		boolean hasThis = ref.kind() == WhyFunctionKind.INSTANCE_METHOD;
 
 		final Optional<WhyFunctionParam> thisParam = ref.thisType().map(e ->
 				new WhyFunctionParam(
@@ -116,7 +137,7 @@ public class VimpMethodParser {
 
 		final List<WhyFunctionParam> paramsList = IntStream.range(0, parameterTypes.size())
 				.mapToObj(i -> new WhyFunctionParam(
-						Identifier.Special.methodParam(i + (hasThis ? 1 : 0)),
+						Identifier.Special.methodParam(i + (method.isStatic() ? 0 : 1)),
 						parameterTypes.get(i),
 						false))
 				.toList();
@@ -127,6 +148,6 @@ public class VimpMethodParser {
 				.flatMap(Optional::stream)
 				.toList();
 
-		return Optional.of(new WhyFunctionSignature(ref, thisParam, paramsList, returnType, annotations));
+		return Optional.of(new WhyFunctionSignature(ref, thisParam, paramsList, returnType, inline, annotations));
 	}
 }

@@ -90,7 +90,7 @@ public class WhyResolver {
 	public List<WhyFunctionSCC> functions() {
 		final List<WhyFunction> functions = specSignatures.keySet()
 				.stream()
-				.filter(e -> e.kind().isSpec())
+				.filter(e -> e.decl().isSpec())
 				.map(e -> new WhyFunction(specSignatures.get(e), specBodies.get(e)))
 				.toList();
 
@@ -117,7 +117,7 @@ public class WhyResolver {
 		return refsByClass.entrySet()
 				.stream()
 				.map(e -> Map.entry(e.getKey(), e.getValue().stream()
-						.filter(f -> !f.kind().isSpec())
+						.filter(f -> !f.decl().isSpec())
 						.map(specSignatures::get)
 						.filter(Objects::nonNull)
 						.toList()))

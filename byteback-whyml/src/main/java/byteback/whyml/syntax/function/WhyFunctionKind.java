@@ -1,57 +1,51 @@
 package byteback.whyml.syntax.function;
 
-public enum WhyFunctionKind {
-
-	/**
-	 * An instance method, program code
-	 */
-	INSTANCE_METHOD("val", "let rec"), // TODO: change
-
-	/**
-	 * A static method, program code
-	 */
-	STATIC_METHOD("val", "let rec"),
-
-	/**
-	 * A pure specification function
-	 */
-	PURE("let function", "let rec function"),
-
-	/**
-	 * A pure specification predicate
-	 */
-	PURE_PREDICATE("let predicate", "let rec predicate"),
-
-	/**
-	 * Body of a precondition or postcondition. To be inlined in a <code>requires</code> or <code>ensures</code> clause.
-	 */
-	PREDICATE(null, null);
-
-	private final String whyDeclaration;
-	private final String recursiveDeclaration;
-
-	WhyFunctionKind(String whyDeclaration, String recursiveDeclaration) {
-		this.whyDeclaration = whyDeclaration;
-		this.recursiveDeclaration = recursiveDeclaration;
+public record WhyFunctionKind(boolean isStatic, Declaration decl, Inline inline) {
+	public WhyFunctionKind {
+		if (inline != Inline.NEVER && !decl.isSpec()) {
+			throw new IllegalArgumentException("A WhyFunction that can be inlined must be a spec function");
+		}
 	}
 
-	public boolean hasDeclaration() {
-		return this != PREDICATE;
+	public enum Declaration {
+		PROGRAM("let", "let rec", "val"),
+		PREDICATE("let predicate", "let rec predicate", "val predicate"),
+		FUNCTION("let function", "let rec function", "val function");
+
+		private final String why;
+		private final String whyRec;
+		private final String whyDecl;
+
+		Declaration(String why, String whyRec, String whyDecl) {
+			this.why = why;
+			this.whyRec = whyRec;
+			this.whyDecl = whyDecl;
+		}
+
+		public String toWhy(boolean recursive) {
+			return recursive ? whyRec : why;
+		}
+
+		public String toWhyDeclaration() {
+			return whyDecl;
+		}
+
+		public boolean isSpec() {
+			return this != PROGRAM;
+		}
 	}
 
-	public String getWhyDeclaration() {
-		if (whyDeclaration == null) throw new UnsupportedOperationException();
-		return whyDeclaration;
-	}
+	public enum Inline {
+		REQUIRED,
+		OPTIONAL,
+		NEVER;
 
-	public boolean isSpec() {
-		return this == WhyFunctionKind.PURE
-				|| this == WhyFunctionKind.PURE_PREDICATE
-				|| this == WhyFunctionKind.PREDICATE;
-	}
+		public boolean can() {
+			return this != NEVER;
+		}
 
-	public String getWhyRecDeclaration() {
-		if (recursiveDeclaration == null) throw new UnsupportedOperationException();
-		return recursiveDeclaration;
+		public boolean must() {
+			return this == REQUIRED;
+		}
 	}
 }

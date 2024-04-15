@@ -40,11 +40,11 @@ public class ExpressionTransformer {
 	}
 
 	public Expression transformClassCastExpression(ClassCastExpression source) {
-		return new ClassCastExpression(source.getReference().accept(this), source.getType());
+		return new ClassCastExpression(source.getReference().accept(this), source.exactType());
 	}
 
 	public Expression transformOldReference(OldReference source) {
-		return new OldReference(source.getInner().accept(this));
+		return new OldReference(source.inner().accept(this));
 	}
 
 	public Expression transformDoubleLiteral(DoubleLiteral source) {

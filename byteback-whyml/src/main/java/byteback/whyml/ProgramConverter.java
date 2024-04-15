@@ -55,7 +55,7 @@ public class ProgramConverter {
 
 			methodParser.signature(ref, m).ifPresent(e -> whyResolver.addSpecSignature(ref, e));
 
-			if (ref.kind().isSpec()) {
+			if (ref.decl().isSpec()) {
 				whyResolver.addSpecBody(ref, methodBodyParser.parse(m));
 			}
 		}

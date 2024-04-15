@@ -35,7 +35,7 @@ public record FunctionCall(WhyFunctionSignature function, Identifier.L name, Lis
 			final Expression argument = params.get(i);
 			final WhyType paramType = paramTypes.get(i);
 
-			if (!WhyType.compatible(paramType, argument.type())) {
+			if (!WhyType.jvmCompatible(paramType, argument.type())) {
 				throw new IllegalArgumentException("argument %d must be of type %s, given %s".formatted(
 						i + 1, paramType.getWhyType(), argument.type().getWhyType()));
 			}

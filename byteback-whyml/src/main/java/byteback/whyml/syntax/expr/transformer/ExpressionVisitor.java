@@ -41,7 +41,7 @@ public class ExpressionVisitor {
 	}
 
 	public void visitOldReference(OldReference source) {
-		source.getInner().accept(this);
+		source.inner().accept(this);
 	}
 
 	public void visitDoubleLiteral(DoubleLiteral source) {

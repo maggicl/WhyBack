@@ -16,10 +16,10 @@ aspect Constructor {
   /**
    * Creates an {@link Assignee} from a {@link ValueReference}.
    *
-   * @param access The access to be assigned.
+   * @param reference The reference to be assigned.
    */
-  public static Assignee Assignee.of(ValueReference access) {
-    return new Assignee(access.getAccessor());
+  public static Assignee Assignee.of(ValueReference reference) {
+    return new Assignee(reference.getAccessor());
   }
 
   /**

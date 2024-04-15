@@ -198,7 +198,7 @@ public class Prelude {
 	}
 
 	public Function getTypeReferenceFunction() {
-		return program().lookupFunction("~xtype.reference")
+		return program().lookupFunction("~type.reference")
 				.orElseThrow(() -> new IllegalStateException("Missing definition for the ~type.reference function"));
 	}
 

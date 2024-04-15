@@ -23,7 +23,7 @@ List declarator_comma_list
     ;
 
 SetBinding set_binding
-    = declarator_comma_list.dl COLON kind.t
+    = declarator_comma_list.dl COLON type.t
     {: return new SetBinding(t, dl); :}
     ;
 
@@ -57,7 +57,7 @@ OptionalBinding used_binding
     ;
 
 OptionalBinding unused_binding
-    = kind.t
+    = type.t
     {: return new OptionalBinding(t, new Opt()); :}
     ;
 
@@ -69,7 +69,7 @@ List bounded_binding_comma_list
     ;
 
 BoundedBinding bounded_binding
-    = declarator_comma_list.dl COLON kind.t where_clause.wc?
+    = declarator_comma_list.dl COLON type.t where_clause.wc?
     {: return new BoundedBinding(t, dl, wc); :}
     ;
 

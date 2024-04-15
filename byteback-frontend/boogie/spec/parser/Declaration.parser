@@ -84,7 +84,7 @@ TypeConstructorDeclaration type_constructor_definition
 		;
 
 TypeSynonymDeclaration type_synonym_definition
-		= declarator.d type_parameter_list.tpl? EQUALS kind.t
+		= declarator.d type_parameter_list.tpl? EQUALS type.t
 		{: return new TypeSynonymDeclaration(new List(), d, tpl, t); :}
 		;
 

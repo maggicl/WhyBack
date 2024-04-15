@@ -78,11 +78,11 @@ function ~instanceof(h: Store, r: Reference, t: Type) returns (bool)
 
 axiom (forall h: Store, t: Type :: !~instanceof(h, ~void, t));
 
-function ~type.access(Type) returns (Reference);
+function ~type.reference(Type) returns (Reference);
 
 function ~type.reference_inverse(Reference) returns (Type);
 
-axiom (forall t: Type :: { ~type.access(t) } ~type.reference_inverse(~type.access(t)) == t);
+axiom (forall t: Type :: { ~type.reference(t) } ~type.reference_inverse(~type.reference(t)) == t);
 
 // -------------------------------------------------------------------
 // Array model

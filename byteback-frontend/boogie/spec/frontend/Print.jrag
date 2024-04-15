@@ -148,7 +148,7 @@ aspect Print {
 	}
 
 	public void TypeDeclaration.print(final StringBuilder builder) {
-		builder.append("kind ");
+		builder.append("type ");
 		super.printAttributes(builder);
 	}
 

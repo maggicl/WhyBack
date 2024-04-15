@@ -200,7 +200,7 @@ Expression expression7
     ;
 
 CoercionOperation coercion_operation
-		= expression8.e COLON kind.a
+		= expression8.e COLON type.a
 		{: return new CoercionOperation(e, a); :}
 		;
 

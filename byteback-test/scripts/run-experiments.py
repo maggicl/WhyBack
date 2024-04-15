@@ -81,7 +81,7 @@ def benchmark(entry, repetitions):
 
 @cl.command()
 @cl.option("--output", required=True, help="Path to the output .csv file")
-@cl.option("--repetitions", required=True, kind=cl.INT, help="Repetitions for each test")
+@cl.option("--repetitions", required=True, type=cl.INT, help="Repetitions for each test")
 @cl.option("--summary", required=True, help="Path to the .csv containing the system tests' summary")
 def main(output, repetitions, summary):
     output_path = output

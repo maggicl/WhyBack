@@ -166,14 +166,14 @@ aspect Variable {
   eq Accessor.lookupRemoteVariable() = lookupRemoteVariable(getName());
 
   /**
-   * Get kind access used in variable.
+   * Get type access used in variable.
    */
   inh lazy TypeAccess Variable.getTypeAccess();
 
   eq Binding.getVariable().getTypeAccess() = getTypeAccess();
 
   /**
-   * Get access to variable.
+   * Get reference to variable.
    */
   syn ValueReference Variable.makeValueReference();
 
@@ -206,7 +206,7 @@ aspect Variable {
 	eq ValueReference.getVariable() = getAccessor().lookupRemoteVariable().get();
 
   /**
-   * Create variable declaration from access.
+   * Create variable declaration from reference.
    */
   syn VariableDeclaration ValueReference.makeVariableDeclaration(TypeAccess typeAccess);
 
@@ -215,7 +215,7 @@ aspect Variable {
       typeAccess, new List<>(getAccessor().makeDeclarator()), new Opt<>())));
 
   /**
-   * Create assignee from access.
+   * Create assignee from reference.
    */
   syn Assignee ValueReference.makeAssignee();
 

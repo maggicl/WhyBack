@@ -59,7 +59,7 @@ aspect Function {
   eq FunctionDeclaration.getChild().getFunctionDeclaration() = this;
 
   /**
-   * Creates a function access with unbound arguments.
+   * Creates a function reference with unbound arguments.
    *
    * @return A new {@link FunctionReference} to this function.
    */
@@ -71,7 +71,7 @@ aspect Function {
    * Inline a function to a set of arguments.
    * 
    * Note that this function does not perform any kind of
-   * kind-checking to its arguments.
+   * type-checking to its arguments.
    *
    * @param arguments The arguments with which the function will be
    * inlined.
@@ -89,9 +89,9 @@ aspect Function {
       final Expression argument = arguments.getChild(0);
       arguments.removeChild(0);
 
-      for (ValueReference access : variable.references()) {
-        final ASTNode parent = access.getParent();
-        final int index = parent.getIndexOfChild(access);
+      for (ValueReference reference : variable.references()) {
+        final ASTNode parent = reference.getParent();
+        final int index = parent.getIndexOfChild(reference);
         parent.setChild(argument.fullCopy(), index);
       }
     }
@@ -111,7 +111,7 @@ aspect Function {
   syn Expression FunctionReference.inline();
 
   eq FunctionReference.inline() = getAccessor().lookupFunction()
-    .orElseThrow(() -> new RuntimeException("Cannot inline an unresolved function access"))
+    .orElseThrow(() -> new RuntimeException("Cannot inline an unresolved function reference"))
     .inline(getArgumentList());
 
 }

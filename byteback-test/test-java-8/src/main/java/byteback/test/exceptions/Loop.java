@@ -95,6 +95,6 @@ public class Loop {
 
 }
 /**
- * RUN-IGNORE: %{verify} %t.bpl | filecheck %s
+ * RUN: %{verify} %t.mlw
  * CHECK-IGNORE: Boogie program verifier finished with 10 verified, 0 errors
  */

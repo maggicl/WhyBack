@@ -55,6 +55,8 @@ public class Summary {
 
 }
 /**
- * RUN-IGNORE: %{verify} /infer:j %t.bpl | filecheck %s
+ * RUN: %{verify} %t.mlw
  * CHECK-IGNORE: Boogie program verifier finished with 2 verified, 0 errors
+ *
+ * /infer:j
  */

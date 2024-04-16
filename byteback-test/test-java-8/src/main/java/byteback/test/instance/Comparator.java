@@ -64,6 +64,6 @@ public interface Comparator {
 
 }
 /**
- * RUN-IGNORE: %{verify} %t.bpl | filecheck %s
+ * RUN: %{verify} %t.mlw
  * CHECK-IGNORE: Boogie program verifier finished with 7 verified, 0 errors
  */

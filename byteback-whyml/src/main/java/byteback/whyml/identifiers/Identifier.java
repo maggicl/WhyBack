@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public sealed class Identifier permits Identifier.L, Identifier.U {
 	private final String contents;
@@ -71,6 +72,10 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 
 		private static FQDN special(String... identifiers) {
 			return new FQDN(Arrays.stream(identifiers).map(U::new).toList());
+		}
+
+		public FQDN qualify(Identifier.U... identifier) {
+			return new FQDN(Stream.concat(identifiers.stream(), Stream.of(identifier)).toList());
 		}
 
 		public List<U> getIdentifiers() {

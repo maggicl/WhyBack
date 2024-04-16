@@ -1,5 +1,6 @@
 package byteback.whyml.syntax.expr.field;
 
+import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.printer.SExpr;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
@@ -39,21 +40,22 @@ public class FieldExpression implements Expression {
 	public SExpr toWhy() {
 		final String accessor = access.getField().getType().jvm().getWhyAccessorScope();
 		final String instanceOrStatic = access instanceof Access.Instance ? "f" : "s";
+		final Identifier.FQDN fieldFqdn = access.getField().getClazz().qualify(access.getField().getName());
 
 		if (operation instanceof Operation.Put put) {
 			return prefix(
 					"%s.put%s".formatted(accessor, instanceOrStatic),
 					terminal("heap"),
 					access.referenceToWhy(),
-					terminal(access.getField().getName() + ".v"),
+					terminal(fieldFqdn + ".v"),
 					put.getValue().toWhy()
 			);
 		} else {
 			return prefix(
-					"%s.get%s".formatted(accessor, instanceOrStatic),
+					"%s.%s%s".formatted(accessor, operation instanceof Operation.Get ? "get" : "is", instanceOrStatic),
 					terminal("heap"),
 					access.referenceToWhy(),
-					terminal(access.getField().getName() + ".v")
+					terminal(fieldFqdn + ".v")
 			);
 		}
 	}

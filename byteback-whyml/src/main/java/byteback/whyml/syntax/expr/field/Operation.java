@@ -7,6 +7,10 @@ import java.util.Optional;
 public sealed abstract class Operation {
 	public abstract Optional<WhyJVMType> fixedReturnType();
 
+	public static Is is() {
+		return Is.INSTANCE;
+	}
+
 	public static Get get() {
 		return Get.INSTANCE;
 	}
@@ -19,6 +23,21 @@ public sealed abstract class Operation {
 		private static final Get INSTANCE = new Get();
 
 		private Get() {
+		}
+
+		@Override
+		public Optional<WhyJVMType> fixedReturnType() {
+			return Optional.empty();
+		}
+	}
+
+	/**
+	 * Like get, but for spec functions
+	 */
+	public static final class Is extends Operation {
+		private static final Is INSTANCE = new Is();
+
+		private Is() {
 		}
 
 		@Override

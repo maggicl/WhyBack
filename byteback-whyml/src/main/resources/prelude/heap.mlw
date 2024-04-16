@@ -149,6 +149,8 @@ module HeapOp
     requires { f.ftype = ft_marker }
     ensures { ctor result = heap.static[(p,f)] }
 
+  let function iss [@inline:trivial] (ghost heap: t) (p: Type.class) (f: field) = gets heap p f
+
   val puts (ghost heap: t) (p: Type.class) (f: field) (c: op_ft) : unit
     writes { heap.static }
     ensures { heap.static[(p,f)] = ctor c }

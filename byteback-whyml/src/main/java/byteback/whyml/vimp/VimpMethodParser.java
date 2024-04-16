@@ -131,7 +131,7 @@ public class VimpMethodParser {
 
 		final Optional<WhyFunctionParam> thisParam = ref.thisType().map(e ->
 				new WhyFunctionParam(
-						Identifier.Special.methodParam(0),
+						Identifier.Special.THIS,
 						new WhyReference(ref.className()),
 						true));
 

@@ -23,6 +23,6 @@ public class InstanceField {
 
 }
 /**
- * RUN-IGNORE: %{verify} %t.bpl | filecheck %s
+ * RUN: %{verify} %t.mlw
  * CHECK-IGNORE: Boogie program verifier finished with 1 verified, 0 errors
  */

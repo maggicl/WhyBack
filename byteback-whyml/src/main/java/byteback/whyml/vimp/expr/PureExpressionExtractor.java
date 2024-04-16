@@ -420,7 +420,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 		}
 
 		final Expression base = visit(v.getBase());
-		setExpression(new FieldExpression(Operation.get(), Access.instance(base, (WhyInstanceField) field)));
+		setExpression(new FieldExpression(Operation.is(), Access.instance(base, (WhyInstanceField) field)));
 	}
 
 	@Override
@@ -430,7 +430,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 			throw new IllegalStateException("InstanceFieldRef has a non-instance field");
 		}
 
-		setExpression(new FieldExpression(Operation.get(), Access.staticAccess((WhyStaticField) field)));
+		setExpression(new FieldExpression(Operation.is(), Access.staticAccess((WhyStaticField) field)));
 	}
 
 	@Override

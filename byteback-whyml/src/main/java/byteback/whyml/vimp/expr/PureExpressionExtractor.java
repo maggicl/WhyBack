@@ -444,7 +444,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 		final Expression base = visit(v.getBase());
 		final Expression index = visit(v.getIndex());
 
-		setExpression(new ArrayExpression(base, elemType, ArrayOperation.load(index)));
+		setExpression(new ArrayExpression(base, elemType, ArrayOperation.isElem(index)));
 	}
 
 	@Override

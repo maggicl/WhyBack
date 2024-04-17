@@ -38,8 +38,12 @@ subprojects { test ->
 								environment 'TEST_JAR', project.shadowJar.archivePath
 								environment 'BOOGIE_TIME_LIMIT', boogieTimeLimitProperty
 								environment 'PATH', path
-//								commandLine 'printenv'
-								commandLine 'lit', target, '-a', '-j', jobsProperty
+								commandLine 'echo', 'env', 'SRC_BASE=' + sourceDir, 'CLASS_BASE=' + compiledDir,
+										'BYTEBACK_ROOT=' + bytebackRoot, 'TEST_JAR=' + project.shadowJar.archivePath,
+										'SUMMARY=' + summaryDir, 'lit', target, '-a', '-j', jobsProperty
+								commandLine 'env', 'SRC_BASE=' + sourceDir, 'CLASS_BASE=' + compiledDir,
+									'BYTEBACK_ROOT=' + bytebackRoot, 'TEST_JAR=' + project.shadowJar.archivePath,
+									'SUMMARY=' + summaryDir, 'lit', target, '-a', '-j', jobsProperty
 						}
 				}
 

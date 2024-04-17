@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c byteback.test.controlflow.EnhancedFor -o %t.mlw
+ * RUN: %{translate} %{byteback} %{jar} %s %t
  */
 package byteback.test.controlflow;
 

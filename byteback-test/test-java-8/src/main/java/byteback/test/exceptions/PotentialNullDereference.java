@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c byteback.test.exceptions.PotentialNullDereference --npe -o %t.mlw
+ * RUN: %{translate} %{byteback} %{jar} %s %t --npe
  */
 package byteback.test.exceptions;
 

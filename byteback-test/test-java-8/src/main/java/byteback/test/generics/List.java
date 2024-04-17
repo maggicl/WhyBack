@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c byteback.test.generics.List -o %t.mlw
+ * RUN: %{translate} %{byteback} %{jar} %s %t
  */
 package byteback.test.generics;
 

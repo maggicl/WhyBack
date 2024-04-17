@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c byteback.test.typeinference.Basic -o %t.mlw
+ * RUN: %{translate} %{byteback} %{jar} %s %t
  */
 package byteback.test.typeinference;
 

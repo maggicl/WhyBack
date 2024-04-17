@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c byteback.test.instance.Unit -o %t.mlw
+ * RUN: %{translate} %{byteback} %{jar} %s %t
  */
 package byteback.test.instance;
 

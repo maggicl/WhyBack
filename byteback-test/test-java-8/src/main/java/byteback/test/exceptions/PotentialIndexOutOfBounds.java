@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c byteback.test.exceptions.PotentialIndexOutOfBounds --iobe -o %t.mlw
+ * RUN: %{translate} %{byteback} %{jar} %s %t --iobe
  */
 package byteback.test.exceptions;
 

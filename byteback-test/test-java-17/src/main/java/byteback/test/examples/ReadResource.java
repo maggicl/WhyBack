@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c byteback.test.examples.ReadResource --npe --iobe -o %t.mlw
+ * RUN: %{translate} %{byteback} %{jar} %s %t --npe --iobe
  */
 package byteback.test.examples;
 

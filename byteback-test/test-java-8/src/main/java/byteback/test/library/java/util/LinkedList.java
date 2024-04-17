@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c byteback.test.library.java.util.LinkedList -o %t.mlw
+ * RUN: %{translate} %{byteback} %{jar} %s %t
  */
 
 /*

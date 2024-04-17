@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} --npe -o %t.bpl
+ * RUN: %{translate} %{byteback} %{jar} %s %t --npe
  */
 
 package byteback.test.exceptions

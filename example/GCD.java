@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ * RUN: %{translate} %{byteback} %{jar} %s %t -o %t.bpl
  */
 
 import static byteback.annotations.Contract.*;

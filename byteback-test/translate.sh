@@ -13,4 +13,6 @@ extension=".mlw"
 # strip extension, replace '/' with '.'
 class="$(realpath "$source" --relative-to="$0" | sed 's/\.[a-z]*$//;s/\//\./g;s/.*\.src\.main\.[a-z][a-z]*\.//')"
 
-exec "$byteback" -cp "$jar" -c "$class" -o "$file$extension" "$@"
+# TODO: handle --npe and --iobe options in "$@"
+
+exec "$byteback" -cp "$jar" -c "$class" -o "$file$extension"

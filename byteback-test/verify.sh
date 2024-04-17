@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -euo pipefail
 
@@ -10,4 +10,9 @@ prelude="$dir/../byteback-whyml/src/main/resources"
 # is not given explicitly.
 conf="$(realpath ~)/.why3.conf"
 
-exec why3 --config "$conf" prove -P Z3,4.8.17, -L "$prelude" "$@"
+file="$1"
+extension=".mlw"
+
+shift 1
+
+exec why3 --config "$conf" prove -P Z3,4.8.17, -L "$prelude" "$file$extension" "$@"

@@ -101,6 +101,6 @@ public class Basic {
 
 }
 /**
- * RUN: %{verify} %t.mlw
+ * RUN: %{verify} %t
  * CHECK-IGNORE: Boogie program verifier finished with 17 verified, 0 errors
  */

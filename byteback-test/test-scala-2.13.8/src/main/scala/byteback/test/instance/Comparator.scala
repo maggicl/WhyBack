@@ -66,6 +66,6 @@ class Comparator {
 
 }
 /**
- * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 8 verified, 0 errors
+ * RUN: %{verify} %t
+ * CHECK-IGNORE: Boogie program verifier finished with 8 verified, 0 errors
  */

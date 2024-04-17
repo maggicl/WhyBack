@@ -1394,6 +1394,6 @@ public class LinkedList<E>
 }
 
 /**
- * RUN: %{verify} %t.mlw
+ * RUN: %{verify} %t
  * CHECK-IGNORE: Boogie program verifier finished with 86 verified, 0 errors
  */

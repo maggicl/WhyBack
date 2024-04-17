@@ -53,6 +53,6 @@ public class List<T> {
 
 }
 /**
- * RUN: %{verify} %t.mlw
+ * RUN: %{verify} %t
  * CHECK-IGNORE: Boogie program verifier finished with 3 verified, 0 errors
  */

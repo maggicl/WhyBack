@@ -49,6 +49,6 @@ public class MultiCatch {
 
 }
 /**
- * RUN: %{verify} %t.mlw
+ * RUN: %{verify} %t
  * CHECK-IGNORE: Boogie program verifier finished with 9 verified
  */

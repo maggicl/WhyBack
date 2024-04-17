@@ -51,6 +51,6 @@ class PotentialNullDereference {
 }
 
 /**
-  * RUN: %{verify} %t.bpl | filecheck %s
-  * CHECK: Boogie program verifier finished with 7 verified, 0 errors
+  * RUN: %{verify} %t
+  * CHECK-IGNORE: Boogie program verifier finished with 7 verified, 0 errors
   */

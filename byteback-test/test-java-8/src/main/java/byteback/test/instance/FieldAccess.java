@@ -33,6 +33,6 @@ public class FieldAccess {
 
 }
 /**
- * RUN: %{verify} %t.mlw
+ * RUN: %{verify} %t
  * CHECK-IGNORE: Boogie program verifier finished with 1 verified, 0 errors
  */

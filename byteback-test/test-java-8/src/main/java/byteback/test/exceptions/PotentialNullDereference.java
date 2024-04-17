@@ -100,6 +100,6 @@ public class PotentialNullDereference {
 
 }
 /**
- * RUN: %{verify} %t.mlw
+ * RUN: %{verify} %t
  * CHECK-IGNORE: Boogie program verifier finished with 11 verified, 0 errors
  */

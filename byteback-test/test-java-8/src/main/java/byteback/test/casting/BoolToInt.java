@@ -21,6 +21,6 @@ public class BoolToInt {
 
 }
 /**
- * RUN: %{verify} %t.mlw
+ * RUN: %{verify} %t
  * CHECK-IGNORE: Boogie program verifier finished with 2 verified, 0 errors
  */

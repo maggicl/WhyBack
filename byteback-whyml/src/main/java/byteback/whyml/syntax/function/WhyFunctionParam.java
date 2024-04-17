@@ -11,7 +11,8 @@ public record WhyFunctionParam(Identifier.L name, WhyType type, boolean isNonNul
 			return Optional.empty();
 		}
 
-		final String precondition = "Heap.instanceof heap %s (%s)".formatted(
+		final String precondition = "Heap.instanceof %s %s (%s)".formatted(
+				Identifier.Special.HEAP,
 				name,
 				type.getPreludeType());
 

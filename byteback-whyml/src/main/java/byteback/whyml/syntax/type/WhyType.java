@@ -1,7 +1,6 @@
 package byteback.whyml.syntax.type;
 
 public interface WhyType {
-
 	/**
 	 * Checks if a variable of type lValue can hold a value of type rValue. Does not check class hierarchy, only primitive
 	 * and array compatibility

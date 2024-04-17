@@ -10,6 +10,10 @@ public abstract sealed class ArrayOperation {
 		return new Load(index);
 	}
 
+	public static IsElem isElem(Expression index) {
+		return new IsElem(index);
+	}
+
 	public static Store store(Expression index, Expression value) {
 		return new Store(index, value);
 	}
@@ -20,10 +24,10 @@ public abstract sealed class ArrayOperation {
 
 	public abstract Optional<WhyJVMType> fixedReturnType();
 
-	public final static class Load extends ArrayOperation {
+	private abstract static sealed class AbstractLoad extends ArrayOperation {
 		private final Expression index;
 
-		private Load(Expression index) {
+		protected AbstractLoad(Expression index) {
 			if (index.type() != WhyJVMType.INT) {
 				throw new IllegalArgumentException("array load operation must have index of type INT");
 			}
@@ -38,6 +42,21 @@ public abstract sealed class ArrayOperation {
 
 		public Expression getIndex() {
 			return index;
+		}
+	}
+
+	public final static class Load extends AbstractLoad {
+		private Load(Expression index) {
+			super(index);
+		}
+	}
+
+	/**
+	 * Like load but pure, does not throw exception if pointer is null or index is out of bounds, for spec code
+	 */
+	public final static class IsElem extends AbstractLoad {
+		private IsElem(Expression index) {
+			super(index);
 		}
 	}
 

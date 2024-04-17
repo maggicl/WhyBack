@@ -23,6 +23,8 @@ public class FunctionBodyExtractor extends JimpleStmtSwitch<Expression> {
 		// For the translation process we simply rely on the `l<n>` local variable name, and we name the Why function
 		// params using the same convention
 
+		final IdentityStmt a = identity;
+
 		// FIXME: bullshit, if the local variable table is present names are preserved. FIX THIS
 	}
 

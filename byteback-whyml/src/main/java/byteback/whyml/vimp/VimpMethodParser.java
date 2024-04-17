@@ -3,30 +3,38 @@ package byteback.whyml.vimp;
 import byteback.analysis.Namespace;
 import byteback.analysis.util.AnnotationElems;
 import byteback.analysis.util.SootAnnotations;
+import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootHosts;
+import byteback.analysis.util.SootMethods;
 import byteback.whyml.identifiers.Identifier;
+import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.function.VimpCondition;
 import byteback.whyml.syntax.function.VimpMethod;
+import byteback.whyml.syntax.function.VimpMethodParamNames;
 import byteback.whyml.syntax.function.WhyFunctionKind;
 import byteback.whyml.syntax.function.WhyFunctionParam;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyReference;
 import byteback.whyml.syntax.type.WhyType;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import soot.BooleanType;
+import soot.Local;
 import soot.SootMethod;
 import soot.Type;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 
 public class VimpMethodParser {
+	private final IdentifierEscaper identifierEscaper;
 	private final VimpClassNameParser classNameParser;
 	private final TypeResolver typeResolver;
 
-	public VimpMethodParser(VimpClassNameParser classNameParser, TypeResolver typeResolver) {
+	public VimpMethodParser(IdentifierEscaper identifierEscaper, VimpClassNameParser classNameParser, TypeResolver typeResolver) {
+		this.identifierEscaper = identifierEscaper;
 		this.classNameParser = classNameParser;
 		this.typeResolver = typeResolver;
 	}
@@ -59,6 +67,22 @@ public class VimpMethodParser {
 		}
 
 		return Optional.empty();
+	}
+
+	private static Optional<Local> getThisLocal(final SootMethod method) {
+		if (method.hasActiveBody()) {
+			return SootBodies.getThisLocal(method.getActiveBody());
+		} else {
+			return SootMethods.makeFakeThisLocal(method);
+		}
+	}
+
+	private static List<Local> getLocals(final SootMethod method) {
+		if (method.hasActiveBody()) {
+			return method.getActiveBody().getParameterLocals();
+		} else {
+			return SootMethods.makeFakeLocals(method);
+		}
 	}
 
 	public WhyFunctionKind.Inline inline(final SootMethod method) {
@@ -100,6 +124,9 @@ public class VimpMethodParser {
 	public Optional<VimpMethod> reference(SootMethod method) {
 		final Identifier.FQDN clazz = classNameParser.parse(method.getDeclaringClass());
 
+		final Optional<String> thisName = getThisLocal(method).map(Local::getName);
+		final List<String> parameterNames = getLocals(method).stream().map(Local::getName).toList();
+
 		return declaration(method).map(k ->
 				new VimpMethod(
 						clazz,
@@ -109,7 +136,8 @@ public class VimpMethodParser {
 								: Optional.of(method.getDeclaringClass().getType()),
 						method.getParameterTypes(),
 						method.getReturnType(),
-						k)
+						k,
+						Optional.of(new VimpMethodParamNames(thisName, parameterNames)))
 		);
 	}
 
@@ -129,15 +157,21 @@ public class VimpMethodParser {
 			throw new IllegalStateException("return type of a predicate must be a boolean");
 		}
 
-		final Optional<WhyFunctionParam> thisParam = ref.thisType().map(e ->
+		if (ref.names().isEmpty()) {
+			throw new IllegalStateException("parameter name information must be available to build signature");
+		}
+
+		final VimpMethodParamNames names = ref.names().get();
+
+		final Optional<WhyFunctionParam> thisParam = names.thisName().map(e ->
 				new WhyFunctionParam(
-						Identifier.Special.THIS,
+						identifierEscaper.escapeL(e),
 						new WhyReference(ref.className()),
 						true));
 
 		final List<WhyFunctionParam> paramsList = IntStream.range(0, parameterTypes.size())
 				.mapToObj(i -> new WhyFunctionParam(
-						Identifier.Special.methodParam(i + (method.isStatic() ? 0 : 1)),
+						identifierEscaper.escapeL(names.parameterNames().get(i)),
 						parameterTypes.get(i),
 						false))
 				.toList();

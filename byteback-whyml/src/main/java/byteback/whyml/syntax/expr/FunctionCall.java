@@ -59,7 +59,7 @@ public record FunctionCall(WhyFunctionSignature function, Identifier.L name, Lis
 	@Override
 	public SExpr toWhy() {
 		return prefix(name.toString(), Stream.concat(
-				Stream.of(terminal("heap")),
+				Stream.of(terminal(Identifier.Special.HEAP)),
 				params.stream().map(Expression::toWhy)));
 	}
 

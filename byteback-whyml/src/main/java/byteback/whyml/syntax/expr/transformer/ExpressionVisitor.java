@@ -37,7 +37,7 @@ public class ExpressionVisitor {
 	}
 
 	public void visitClassCastExpression(ClassCastExpression source) {
-		source.getReference().accept(this);
+		source.reference().accept(this);
 	}
 
 	public void visitOldReference(OldReference source) {

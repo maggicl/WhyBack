@@ -7,7 +7,6 @@ import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.transformer.CallDependenceVisitor;
 import byteback.whyml.syntax.function.VimpMethod;
 import byteback.whyml.syntax.function.WhyFunction;
-import byteback.whyml.syntax.function.WhyFunctionKind;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.type.ReferenceVisitor;
 import byteback.whyml.syntax.type.WhyType;
@@ -50,11 +49,13 @@ public class WhyResolver {
 		return result;
 	}
 
-	public Expression resolveCondition(WhyFunctionSignature scope, String conditionValue, boolean hasResult) {
+	public Map.Entry<VimpMethod, Expression> resolveCondition(WhyFunctionSignature scope, String conditionValue, boolean hasResult) {
 		final VimpMethod conditionRef = scope.vimp().condition(conditionValue, hasResult);
 
-		return Objects.requireNonNull(specBodies.get(conditionRef),
+		final Expression body = Objects.requireNonNull(specBodies.get(conditionRef),
 				() -> "body for condition reference " + conditionRef + " not found");
+
+		return Map.entry(conditionRef, body);
 	}
 
 	public void addClass(final WhyClass classDeclaration) {

@@ -45,7 +45,7 @@ public class FieldExpression implements Expression {
 		if (operation instanceof Operation.Put put) {
 			return prefix(
 					"%s.put%s".formatted(accessor, instanceOrStatic),
-					terminal("heap"),
+					terminal(Identifier.Special.HEAP),
 					access.referenceToWhy(),
 					terminal(fieldFqdn + ".v"),
 					put.getValue().toWhy()
@@ -53,7 +53,7 @@ public class FieldExpression implements Expression {
 		} else {
 			return prefix(
 					"%s.%s%s".formatted(accessor, operation instanceof Operation.Get ? "get" : "is", instanceOrStatic),
-					terminal("heap"),
+					terminal(Identifier.Special.HEAP),
 					access.referenceToWhy(),
 					terminal(fieldFqdn + ".v")
 			);

@@ -189,6 +189,9 @@ module HeapArrayOpRead
     ensures { result.length = arraylength heap p }
     ensures { result.elts = Map.set (is heap p).elts i v }
 
+  predicate valid_access (heap: t) (p: Ptr.t) (i: jint) =
+    p = Ptr.null && (i >= 0 || i < arraylength heap p)
+
   predicate out_of_bounds (e: Type.class) (heap: t) (p: Ptr.t) (i: jint) =
     p <> Ptr.null && (i < 0 || i >= arraylength heap p) &&
       e = Java.Lang.ArrayIndexOutOfBoundsException.class
@@ -221,6 +224,11 @@ module HeapArrayOp
   val load (ghost heap: t) (p: Ptr.t) (i: jint) : elem_t
     requires { valid_type heap p }
     raises { JException e -> npe_if_null e p || out_of_bounds e heap p i }
+    ensures { result = (is heap p).elts i }
+
+  val function iselem (ghost heap: t) (p: Ptr.t) (i: jint) : elem_t
+    requires { valid_type heap p }
+    requires { valid_access heap p i }
     ensures { result = (is heap p).elts i }
 
   val store (ghost heap: t) (p: Ptr.t) (i: jint) (c: elem_t) : unit
@@ -275,6 +283,12 @@ module Heap
     ensures { result = p }
     ensures { hastype heap result t }
     raises { JException e -> not (hastype heap p t) && e = Java.Lang.ClassCastException.class }
+
+  val function iscast (ghost heap: t) (p: Ptr.t) (t: Type.t) : Ptr.t
+    reads { heap }
+    requires { hastype heap p t }
+    ensures { result = p }
+    ensures { hastype heap result t }
 
   clone HeapOp as Z with type op_ft = jbool, val ft_marker = Bool, val ctor = ABool
   clone HeapOp as B with type op_ft = jbyte, val ft_marker = Byte, val ctor = AByte
@@ -368,6 +382,12 @@ module Heap
     val load (ghost heap: t) (p: Ptr.t) (i: jint) : Ptr.t
       requires { valid_type heap p }
       raises { JException e -> npe_if_null e p || out_of_bounds e heap p i }
+      ensures { result = (is heap p).elts i }
+      ensures { valid_elem heap p result }
+
+    val function iselem (ghost heap: t) (p: Ptr.t) (i: jint) : Ptr.t
+      requires { valid_type heap p }
+      requires { valid_access heap p i }
       ensures { result = (is heap p).elts i }
       ensures { valid_elem heap p result }
 

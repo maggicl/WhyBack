@@ -373,7 +373,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 		if (!sourceType.isMeta() && !targetJVMType.isMeta()) {
 			setExpression(new PrimitiveCastExpression(op, targetJVMType));
 		} else if (sourceType == WhyJVMType.PTR && targetJVMType == WhyJVMType.PTR) {
-			setExpression(new ClassCastExpression(op, targetType));
+			setExpression(new ClassCastExpression(op, targetType, true));
 		} else {
 			throw new IllegalArgumentException("cast operation not supported from type %s to type %s".formatted(op.type(), targetType));
 		}

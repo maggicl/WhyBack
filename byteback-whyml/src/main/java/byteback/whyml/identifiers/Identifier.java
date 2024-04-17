@@ -40,8 +40,10 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 		public static final FQDN NEGATIVE_ARRAY_SIZE_EXCEPTION = FQDN.special("Java", "Lang", "NegativeArraySizeException");
 		public static final FQDN CLASS_CAST_EXCEPTION = FQDN.special("Java", "Lang", "ClassCastException");
 		public static final Identifier.U DEFAULT_PACKAGE = new U("Default" + IdentifierEscaper.PRELUDE_RESERVED);
-		public static final Identifier.L THIS = new L("this");
 		public static final Identifier.L RESULT = new L("result");
+		public static final Identifier.L HEAP = new L("heap" + IdentifierEscaper.PRELUDE_RESERVED);
+		public static final Identifier.L EXCEPTION_PARAM = new L("e" + IdentifierEscaper.PRELUDE_RESERVED);
+
 		private Special() {
 		}
 

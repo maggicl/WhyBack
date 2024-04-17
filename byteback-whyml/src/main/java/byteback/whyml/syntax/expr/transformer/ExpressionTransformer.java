@@ -40,7 +40,7 @@ public class ExpressionTransformer {
 	}
 
 	public Expression transformClassCastExpression(ClassCastExpression source) {
-		return new ClassCastExpression(source.getReference().accept(this), source.exactType());
+		return new ClassCastExpression(source.reference().accept(this), source.exactType(), source.forSpec());
 	}
 
 	public Expression transformOldReference(OldReference source) {
@@ -54,7 +54,7 @@ public class ExpressionTransformer {
 	public Expression transformFieldExpression(FieldExpression source) {
 		final Operation op = source.getOperation() instanceof Operation.Put put
 				? Operation.put(put.getValue().accept(this))
-				: source.getOperation();
+				: source.getOperation(); // both get and is do not have parameters
 
 		final Access access = source.getAccess() instanceof Access.Instance instance ?
 				Access.instance(instance.getBase().accept(this), instance.getField()) :
@@ -119,6 +119,8 @@ public class ExpressionTransformer {
 				? ArrayOperation.store(store.getIndex().accept(this), store.getValue().accept(this))
 				: source.getOperation() instanceof ArrayOperation.Load load
 				? ArrayOperation.load(load.getIndex().accept(this))
+				: source.getOperation() instanceof ArrayOperation.IsElem isElem
+				? ArrayOperation.isElem(isElem.getIndex().accept(this))
 				: source.getOperation();
 
 		return new ArrayExpression(source.getBase().accept(this), source.getElementType(), op);

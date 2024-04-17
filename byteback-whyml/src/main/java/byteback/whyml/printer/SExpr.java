@@ -1,5 +1,6 @@
 package byteback.whyml.printer;
 
+import byteback.whyml.identifiers.Identifier;
 import static byteback.whyml.printer.Statement.indent;
 import static byteback.whyml.printer.Statement.line;
 import static byteback.whyml.printer.Statement.many;
@@ -21,6 +22,10 @@ public sealed abstract class SExpr {
 
 	public static SExpr terminal(String line) {
 		return new Terminal(line);
+	}
+
+	public static SExpr terminal(Identifier.L line) {
+		return new Terminal(line.toString());
 	}
 
 	public static SExpr prefix(String op, SExpr... exprs) {

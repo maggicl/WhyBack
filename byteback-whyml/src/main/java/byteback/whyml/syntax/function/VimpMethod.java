@@ -2,6 +2,7 @@ package byteback.whyml.syntax.function;
 
 import byteback.whyml.identifiers.Identifier;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import soot.AbstractJasminClass;
@@ -14,7 +15,21 @@ public record VimpMethod(Identifier.FQDN className,
 						 Optional<Type> thisType,
 						 List<Type> parameterTypes,
 						 Type returnType,
-						 WhyFunctionKind.Declaration decl) {
+						 WhyFunctionKind.Declaration decl,
+						 Optional<VimpMethodParamNames> names) {
+
+	public VimpMethod {
+		names.ifPresent(n -> {
+			if (thisType.isEmpty() != n.thisName().isEmpty()) {
+				throw new IllegalArgumentException("thisTypeName must be present or absent if thisType is present or absent");
+			}
+
+			if (parameterTypes.size() != n.parameterNames().size()) {
+				throw new IllegalArgumentException("parameterTypes and parameterNames should have same length");
+			}
+		});
+
+	}
 
 	/**
 	 * Return a VimpMethod signature for a spec method with the given name matching the signature of this method
@@ -35,7 +50,8 @@ public record VimpMethod(Identifier.FQDN className,
 								Stream.ofNullable(returnType != VoidType.v() && hasResult ? returnType : null))
 						.toList(),
 				BooleanType.v(),
-				WhyFunctionKind.Declaration.PREDICATE);
+				WhyFunctionKind.Declaration.PREDICATE,
+				Optional.empty());
 	}
 
 	public WhyFunctionKind kind(WhyFunctionKind.Inline inline) {
@@ -58,5 +74,23 @@ public record VimpMethod(Identifier.FQDN className,
 		buffer.append(AbstractJasminClass.jasminDescriptorOf(returnType));
 
 		return buffer.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		VimpMethod that = (VimpMethod) o;
+		return Objects.equals(className, that.className) &&
+				Objects.equals(name, that.name) &&
+				Objects.equals(thisType, that.thisType) &&
+				Objects.equals(parameterTypes, that.parameterTypes) &&
+				Objects.equals(returnType, that.returnType) &&
+				decl == that.decl;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(className, name, thisType, parameterTypes, returnType, decl);
 	}
 }

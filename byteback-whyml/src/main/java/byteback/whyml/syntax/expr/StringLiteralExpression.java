@@ -1,5 +1,6 @@
 package byteback.whyml.syntax.expr;
 
+import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.printer.SExpr;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
@@ -42,7 +43,7 @@ public class StringLiteralExpression implements Expression {
 		sb.append("\"");
 
 		return prefix("Java.Lang.String.literal'8",
-				terminal("heap"),
+				terminal(Identifier.Special.HEAP),
 				terminal(sb.toString()));
 	}
 

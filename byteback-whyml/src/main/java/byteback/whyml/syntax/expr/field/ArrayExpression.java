@@ -1,5 +1,6 @@
 package byteback.whyml.syntax.expr.field;
 
+import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.printer.SExpr;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
@@ -52,7 +53,7 @@ public class ArrayExpression implements Expression {
 		if (operation instanceof ArrayOperation.Store store) {
 			return prefix(
 					accessor + ".store",
-					terminal("heap"),
+					terminal(Identifier.Special.HEAP),
 					base.toWhy(),
 					store.getIndex().toWhy(),
 					store.getValue().toWhy()
@@ -60,14 +61,21 @@ public class ArrayExpression implements Expression {
 		} else if (operation instanceof ArrayOperation.Load load) {
 			return prefix(
 					accessor + ".load",
-					terminal("heap"),
+					terminal(Identifier.Special.HEAP),
 					base.toWhy(),
 					load.getIndex().toWhy()
+			);
+		} else if (operation instanceof ArrayOperation.IsElem isElem) {
+			return prefix(
+					accessor + ".iselem",
+					terminal(Identifier.Special.HEAP),
+					base.toWhy(),
+					isElem.getIndex().toWhy()
 			);
 		} else {
 			return prefix(
 					accessor + ".arraylength",
-					terminal("heap"),
+					terminal(Identifier.Special.HEAP),
 					base.toWhy()
 			);
 		}

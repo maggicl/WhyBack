@@ -2,6 +2,7 @@ package byteback.whyml.printer;
 
 import byteback.whyml.identifiers.FQDNEscaper;
 import byteback.whyml.identifiers.Identifier;
+import byteback.whyml.identifiers.IdentifierEscaper;
 import static byteback.whyml.printer.Statement.block;
 import static byteback.whyml.printer.Statement.indent;
 import static byteback.whyml.printer.Statement.line;
@@ -17,11 +18,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WhySignaturePrinter {
+	private final IdentifierEscaper identifierEscaper;
 	private final FQDNEscaper fqdnEscaper;
 
 	private final VimpMethodNameParser vimpMethodNameParser;
 
-	public WhySignaturePrinter(FQDNEscaper fqdnEscaper, VimpMethodNameParser vimpMethodNameParser) {
+	public WhySignaturePrinter(IdentifierEscaper identifierEscaper, FQDNEscaper fqdnEscaper, VimpMethodNameParser vimpMethodNameParser) {
+		this.identifierEscaper = identifierEscaper;
 		this.fqdnEscaper = fqdnEscaper;
 		this.vimpMethodNameParser = vimpMethodNameParser;
 	}
@@ -44,7 +47,7 @@ public class WhySignaturePrinter {
 				.flatMap(Optional::stream)
 				.map(e -> line("requires { %s }".formatted(e))));
 
-		final VimpCondition.Transformer<Statement> toStatement = new StatementTransformer(fqdnEscaper, resolver, m);
+		final VimpCondition.Transformer<Statement> toStatement = new StatementTransformer(identifierEscaper, fqdnEscaper, resolver, m);
 
 		final Statement conditions = many(m.conditions().stream().map(toStatement::transform));
 
@@ -67,9 +70,10 @@ public class WhySignaturePrinter {
 		final String returnType = isPredicate ? "" : ": %s".formatted(m.returnType().getWhyType());
 
 		return many(
-				line("%s %s (ghost heap: Heap.t) %s %s".formatted(
+				line("%s %s (ghost %s: Heap.t) %s %s".formatted(
 						declaration,
 						vimpMethodNameParser.methodName(m.vimp()),
+						Identifier.Special.HEAP,
 						params,
 						returnType).trim()),
 				indent(paramPreconditions, resultPostcondition, conditions, variant)

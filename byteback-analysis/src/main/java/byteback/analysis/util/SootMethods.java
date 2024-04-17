@@ -3,6 +3,7 @@ package byteback.analysis.util;
 import byteback.analysis.Namespace;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import soot.Local;
 import soot.SootMethod;
 import soot.jimple.internal.JimpleLocal;
@@ -15,6 +16,25 @@ public class SootMethods {
 		if (!method.isStatic()) {
 			parameterLocals.add(new JimpleLocal("this", method.getDeclaringClass().getType()));
 		}
+
+		for (int i = 0; i < method.getParameterCount(); ++i) {
+			final String name = "p" + i;
+			parameterLocals.add(new JimpleLocal(name, method.getParameterType(i)));
+		}
+
+		return parameterLocals;
+	}
+
+	public static Optional<Local> makeFakeThisLocal(final SootMethod method) {
+		if (!method.isStatic()) {
+			return Optional.of(new JimpleLocal("this", method.getDeclaringClass().getType()));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static List<Local> makeFakeLocals(final SootMethod method) {
+		final List<Local> parameterLocals = new ArrayList<>();
 
 		for (int i = 0; i < method.getParameterCount(); ++i) {
 			final String name = "p" + i;

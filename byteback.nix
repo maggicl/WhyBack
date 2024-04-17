@@ -9,7 +9,7 @@ pkgs.mkShell {
     ))
     pkgs.boogie
     pkgs.z3
-    pkgs.alt-ergo
+    # pkgs.alt-ergo # breaks nix on mac, codesign not found
     pkgs.why3
     pkgs.coq
   ];

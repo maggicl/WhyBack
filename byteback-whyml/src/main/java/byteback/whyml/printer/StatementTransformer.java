@@ -10,12 +10,14 @@ import byteback.whyml.syntax.expr.UnaryExpression;
 import byteback.whyml.syntax.expr.transformer.ParamActualizationTransformer;
 import byteback.whyml.syntax.function.VimpCondition;
 import byteback.whyml.syntax.function.VimpMethod;
+import byteback.whyml.syntax.function.VimpMethodParamNames;
 import byteback.whyml.syntax.function.WhyFunctionParam;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.vimp.WhyResolver;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class StatementTransformer implements VimpCondition.Transformer<Statement> {
 	private final IdentifierEscaper identifierEscaper;
@@ -30,34 +32,45 @@ class StatementTransformer implements VimpCondition.Transformer<Statement> {
 		this.m = m;
 	}
 
+	private List<Identifier.L> nameIdentifiers(VimpMethodParamNames names) {
+		return Stream.concat(
+						names.thisName().stream(),
+						names.parameterNames().stream()
+				)
+				.map(identifierEscaper::escapeL)
+				.toList();
+	}
+
 	private Expression resolveCondition(String name, boolean hasResult) {
 		final Map.Entry<VimpMethod, Expression> kv = resolver.resolveCondition(m, name, hasResult);
 		final VimpMethod conditionRef = kv.getKey();
 		final Expression expression = kv.getValue();
 
-		if (!hasResult) {
-			return expression;
-		}
-
 		if (conditionRef.names().isEmpty()) {
-			throw new IllegalStateException("method parameter name information needed to replace result parameter in " +
+			throw new IllegalStateException("method parameter name information needed to actualize parameters in " +
 					"condition");
 		}
 
-		final List<String> parameterNames = conditionRef.names().get().parameterNames();
+		final VimpMethodParamNames condNames = conditionRef.names().get();
+
+		final List<Identifier.L> condIdentifiers = nameIdentifiers(condNames);
+		final List<WhyFunctionParam> methodParams =
+				(hasResult ? m.paramsWithResult(Identifier.Special.RESULT) : m.params()).toList();
+
+		if (condIdentifiers.size() != methodParams.size()) {
+			throw new IllegalStateException("condIdentifiers and methodParams should have same length");
+		}
 
 		// replace the last parameter in the predicate expression with the special `result` local variable
-		// representing the return value in a WhyML condition
-		final Identifier.L resultParam = identifierEscaper.escapeL(parameterNames.get(parameterNames.size() - 1));
-		final Map<Identifier.L, Expression> params = m.paramsWithResult(resultParam)
-				.collect(Collectors.toMap(
-						WhyFunctionParam::name,
-						e -> new LocalVariableExpression(e.name() == resultParam
-								? Identifier.Special.RESULT
-								: e.name(),
-								e.type().jvm())));
+		// representing the return value in a WhyML condition. Also replace other param names in the condition method
+		// with param names of the method itself for inlining
+		final HashMap<Identifier.L, Expression> replacementMap = new HashMap<>();
+		for (int i = 0; i < methodParams.size(); i++) {
+			final WhyFunctionParam param = methodParams.get(i);
+			replacementMap.put(condIdentifiers.get(i), new LocalVariableExpression(param.name(), param.type().jvm()));
+		}
 
-		return ParamActualizationTransformer.transform(params, expression);
+		return ParamActualizationTransformer.transform(replacementMap, expression);
 	}
 
 	@Override

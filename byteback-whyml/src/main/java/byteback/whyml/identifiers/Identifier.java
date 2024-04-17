@@ -46,11 +46,6 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 
 		private Special() {
 		}
-
-		// FIXME: this has to match exactly the param naming mechanism from soot. Kinda fragile
-		public static Identifier.L methodParam(int num) {
-			return new L("l%d".formatted(num));
-		}
 	}
 
 	public static final class L extends Identifier {

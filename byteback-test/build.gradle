@@ -29,6 +29,7 @@ subprojects { test ->
 				def sourceDir = null;
 
 				def execute = { target ->
+						// env BYTEBACK_ROOT=/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli lit /Users/maggicl/git/byteback/byteback-test/test-java-8/src/main/java -a -j 1
 						test.exec {
 								environment 'SUMMARY', summaryDir
 								environment 'SRC_BASE', sourceDir
@@ -37,6 +38,7 @@ subprojects { test ->
 								environment 'TEST_JAR', project.shadowJar.archivePath
 								environment 'BOOGIE_TIME_LIMIT', boogieTimeLimitProperty
 								environment 'PATH', path
+//								commandLine 'printenv'
 								commandLine 'lit', target, '-a', '-j', jobsProperty
 						}
 				}

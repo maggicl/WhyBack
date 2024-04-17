@@ -29,6 +29,7 @@ public class WhyResolver {
 	private final Map<Identifier.FQDN, Set<VimpMethod>> refsByClass = new HashMap<>();
 	private final Map<VimpMethod, WhyFunctionSignature> specSignatures = new HashMap<>();
 	private final Map<VimpMethod, Expression> specBodies = new HashMap<>();
+	private final Map<VimpMethod, VimpMethod> specMethods = new HashMap<>();
 
 	public Set<WhyClass> getAllSuper(WhyClass from) {
 		final Deque<Identifier.FQDN> toProcess = from.superNames().collect(Collectors.toCollection(ArrayDeque::new));
@@ -55,7 +56,7 @@ public class WhyResolver {
 		final Expression body = Objects.requireNonNull(specBodies.get(conditionRef),
 				() -> "body for condition reference " + conditionRef + " not found");
 
-		return Map.entry(conditionRef, body);
+		return Map.entry(specMethods.get(conditionRef), body);
 	}
 
 	public void addClass(final WhyClass classDeclaration) {
@@ -70,6 +71,7 @@ public class WhyResolver {
 	public void addSpecBody(final VimpMethod r, final Expression body) {
 		refsByClass.computeIfAbsent(r.className(), (k) -> new HashSet<>()).add(r);
 		specBodies.put(r, body);
+		specMethods.put(r, r);
 	}
 
 	public boolean isResolved(WhyType t) {

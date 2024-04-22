@@ -33,7 +33,7 @@ public class ExpressionVisitor {
 	}
 
 	public void visitInstanceOfExpression(InstanceOfExpression source) {
-		source.getReference().accept(this);
+		source.reference().accept(this);
 	}
 
 	public void visitClassCastExpression(ClassCastExpression source) {

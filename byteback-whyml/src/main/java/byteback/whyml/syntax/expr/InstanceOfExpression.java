@@ -9,29 +9,15 @@ import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
 
-public class InstanceOfExpression implements Expression {
-	private final Expression reference;
-	private final WhyType type;
-
-	public InstanceOfExpression(Expression reference, WhyType type) {
+public record InstanceOfExpression(Expression reference, WhyType checkType) implements Expression {
+	public InstanceOfExpression {
 		if (reference.type() != WhyJVMType.PTR) {
 			throw new IllegalArgumentException("instanceof expression must have type PTR, given " + reference.type());
 		}
 
-		if (type.jvm() != WhyJVMType.PTR) {
-			throw new IllegalArgumentException("instanceof type to check must have JVM type PTR, given " + type.jvm());
+		if (checkType.jvm() != WhyJVMType.PTR) {
+			throw new IllegalArgumentException("instanceof type to check must have JVM type PTR, given " + checkType.jvm());
 		}
-
-		this.reference = reference;
-		this.type = type;
-	}
-
-	public Expression getReference() {
-		return reference;
-	}
-
-	public WhyType getType() {
-		return type;
 	}
 
 	@Override
@@ -40,13 +26,13 @@ public class InstanceOfExpression implements Expression {
 				"instanceof",
 				terminal(Identifier.Special.HEAP),
 				reference.toWhy(),
-				terminal(type.getPreludeType())
+				terminal(checkType.getPreludeType())
 		);
 	}
 
 	@Override
 	public WhyJVMType type() {
-		return WhyJVMType.PTR;
+		return WhyJVMType.BOOL;
 	}
 
 	@Override

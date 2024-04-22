@@ -178,7 +178,7 @@ public class RootResolver {
 
 		SootHosts.getAnnotations(method).forEach((tag) -> {
 			SootAnnotations.getAnnotations(tag).forEach((sub) -> {
-				sub.getElems().stream().forEach((elem) -> {
+				sub.getElems().forEach((elem) -> {
 					final String classDescriptor = new AnnotationElems.ClassElemExtractor().visit(elem);
 
 					if (classDescriptor != null) {

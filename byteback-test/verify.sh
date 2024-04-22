@@ -20,4 +20,4 @@ shift 1
 # Check syntax only
 exec why3 --config "$conf" prove -L "$prelude" \
   --warn-off=unused_expression --warn-off=unused_variable --warn-off=useless_at \
-  "$file$extension" "$@"
+  "$file$extension" "$@" >/dev/null

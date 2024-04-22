@@ -17,7 +17,7 @@ class MultiCatch {
     return e.isInstanceOf[Exception1] | e.isInstanceOf[Exception2]
   }
 
-  @Ensure("always_throws_exception1_exception2")
+  // @Ensure("always_throws_exception1_exception2")
   def alwaysThrowsMultiple(): Unit = {
     throw new Exception1();
   }

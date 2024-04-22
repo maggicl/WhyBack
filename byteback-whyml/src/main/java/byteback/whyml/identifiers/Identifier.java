@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public sealed class Identifier permits Identifier.L, Identifier.U {
+public sealed class Identifier implements Comparable<Identifier> permits Identifier.L, Identifier.U {
 	private final String contents;
 
 	Identifier(String contents) {
@@ -29,6 +29,11 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 
 	public String toString() {
 		return contents;
+	}
+
+	@Override
+	public int compareTo(Identifier o) {
+		return this.contents.compareTo(o.contents);
 	}
 
 	public final static class Special {
@@ -60,7 +65,7 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 		}
 	}
 
-	public static final class FQDN {
+	public static final class FQDN implements Comparable<FQDN> {
 		private final List<U> identifiers;
 
 		FQDN(List<U> identifiers) {
@@ -94,6 +99,26 @@ public sealed class Identifier permits Identifier.L, Identifier.U {
 		@Override
 		public int hashCode() {
 			return Objects.hash(identifiers);
+		}
+
+		@Override
+		public int compareTo(FQDN o) {
+			final int thisSize = this.identifiers.size();
+			final int otherSize = o.identifiers.size();
+
+			int i = 0;
+			for (; i < Math.min(thisSize, otherSize); i++) {
+				int result = this.identifiers.get(i).compareTo(o.identifiers.get(i));
+				if (result != 0) return result;
+			}
+
+			if (i == thisSize && thisSize < otherSize) {
+				return -1;
+			} else if (i == otherSize && thisSize > otherSize) {
+				return 1;
+			} else {
+				return 0;
+			}
 		}
 	}
 }

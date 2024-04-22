@@ -45,9 +45,9 @@ public class IdentifierEscaper {
 	private static final String PRIME = "'9";
 
 	// source: src/parser/handcrafted.messages, lines 18-21
-	private static final Set<String> RESERVED_L_KEYWORDS = Set.of("val", "user", "type", "theory", "scope", "preducate",
-			"module", "meda", "let", "lemma", "inductive", "import", "goal", "function", "exception", "eof", "end",
-			"constant", "coinductive", "clone", "axiom", "as", "old");
+	private static final Set<String> RESERVED_L_KEYWORDS = Set.of("val", "user", "type", "theory", "scope", "predicate",
+			"module", "meta", "let", "lemma", "inductive", "import", "goal", "function", "exception", "eof", "end",
+			"constant", "coinductive", "clone", "axiom", "as", "old", "to", "returns", "ensures", "requires", "raises");
 
 	private final CaseInverter caseInverter;
 

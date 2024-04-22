@@ -2,6 +2,7 @@ package byteback.whyml;
 
 import byteback.whyml.syntax.function.WhyFunction;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,7 +15,7 @@ public final class WhyFunctionSCC {
 	private final boolean recursive;
 
 	public WhyFunctionSCC(Set<WhyFunction> functions, Map<WhyFunction, Set<WhyFunction>> callees) {
-		this.functionList = functions.stream().toList();
+		this.functionList = functions.stream().sorted(Comparator.comparing(e -> e.signature().vimp())).toList();
 
 		// collect here the set of functions called by this SCC. We later remove functions that belong to the SCC itself
 		this.calls = functions.stream()

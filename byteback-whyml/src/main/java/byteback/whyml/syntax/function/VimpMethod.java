@@ -16,7 +16,7 @@ public record VimpMethod(Identifier.FQDN className,
 						 List<Type> parameterTypes,
 						 Type returnType,
 						 WhyFunctionKind.Declaration decl,
-						 Optional<VimpMethodParamNames> names) {
+						 Optional<VimpMethodParamNames> names) implements Comparable<VimpMethod> {
 
 	public VimpMethod {
 		names.ifPresent(n -> {
@@ -92,5 +92,28 @@ public record VimpMethod(Identifier.FQDN className,
 	@Override
 	public int hashCode() {
 		return Objects.hash(className, name, thisType, parameterTypes, returnType, decl);
+	}
+
+	private String jasminDescriptorOf() {
+		StringBuilder buffer = new StringBuilder();
+		buffer.append('(');
+
+		for (Type t : parameterTypes()) {
+			buffer.append(AbstractJasminClass.jasminDescriptorOf(t));
+		}
+
+		buffer.append(')');
+		buffer.append(AbstractJasminClass.jasminDescriptorOf(returnType()));
+
+		return buffer.toString();
+	}
+
+	@Override
+	public int compareTo(VimpMethod o) {
+		int a = this.className.compareTo(o.className);
+		if (a != 0) return a;
+		int b = this.name.compareTo(o.name);
+		if (b != 0) return b;
+		return this.jasminDescriptorOf().compareTo(o.jasminDescriptorOf());
 	}
 }

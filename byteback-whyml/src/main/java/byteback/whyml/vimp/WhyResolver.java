@@ -13,6 +13,7 @@ import byteback.whyml.syntax.type.WhyType;
 import byteback.whyml.vimp.graph.PostOrder;
 import byteback.whyml.vimp.graph.Tarjan;
 import java.util.ArrayDeque;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -87,7 +88,7 @@ public class WhyResolver {
 		final Map<WhyClass, Set<WhyClass>> superAdjMap = classes.values().stream()
 				.collect(Collectors.toMap(Function.identity(), this::getAllSuper));
 
-		return PostOrder.compute(superAdjMap);
+		return PostOrder.compute(superAdjMap, Comparator.comparing(WhyClass::name));
 	}
 
 	public List<WhyFunctionSCC> functions() {
@@ -113,7 +114,9 @@ public class WhyResolver {
 		final Map<WhyFunctionSCC, Set<WhyFunctionSCC>> sccAdjMap = sccMap.stream()
 				.collect(Collectors.toMap(Function.identity(), e -> e.nearTo(sccMap)));
 
-		return PostOrder.compute(sccAdjMap);
+		// order by post-order, sorting siblings based on the first function on the SCC. Functions within the SCC
+		// are already sorted by the WhyFunctionSCC constructor
+		return PostOrder.compute(sccAdjMap, Comparator.comparing(e -> e.functionList().get(0).signature().vimp()));
 	}
 
 	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunctionSignature>>> methodDeclarations() {

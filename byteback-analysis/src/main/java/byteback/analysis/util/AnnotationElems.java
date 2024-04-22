@@ -1,9 +1,12 @@
 package byteback.analysis.util;
 
 import byteback.analysis.AnnotationElemSwitch;
+import soot.tagkit.AnnotationAnnotationElem;
+import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationStringElem;
+import soot.util.annotations.AnnotationInstanceCreator;
 
 public class AnnotationElems {
 
@@ -31,6 +34,20 @@ public class AnnotationElems {
 	public static class ClassElemExtractor extends AnnotationElemSwitch<String> {
 
 		public String value;
+
+		@Override
+		public void caseAnnotationAnnotationElem(AnnotationAnnotationElem v) {
+			for (final AnnotationElem elem : v.getValue().getElems()) {
+				this.visit(elem);
+			}
+		}
+
+		@Override
+		public void caseAnnotationArrayElem(AnnotationArrayElem v) {
+			for (final AnnotationElem elem : v.getValues()) {
+				this.visit(elem);
+			}
+		}
 
 		@Override
 		public void caseAnnotationClassElem(final AnnotationClassElem element) {

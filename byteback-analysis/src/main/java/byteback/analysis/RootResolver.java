@@ -193,8 +193,9 @@ public class RootResolver {
 	}
 
 	public void scanMethod(final SootMethod method) {
+		scanSignature(method);
+
 		if (!SootMethods.hasBody(method)) {
-			scanSignature(method);
 			return;
 		}
 

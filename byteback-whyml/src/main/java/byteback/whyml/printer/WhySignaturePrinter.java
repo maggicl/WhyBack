@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class WhySignaturePrinter {
 	private final IdentifierEscaper identifierEscaper;
 	private final FQDNEscaper fqdnEscaper;
-
 	private final VimpMethodNameParser vimpMethodNameParser;
 
 	public WhySignaturePrinter(IdentifierEscaper identifierEscaper, FQDNEscaper fqdnEscaper, VimpMethodNameParser vimpMethodNameParser) {

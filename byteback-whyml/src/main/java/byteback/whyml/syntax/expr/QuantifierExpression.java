@@ -1,5 +1,6 @@
 package byteback.whyml.syntax.expr;
 
+import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.printer.SExpr;
 import static byteback.whyml.printer.SExpr.infix;
 import static byteback.whyml.printer.SExpr.prefix;
@@ -40,8 +41,10 @@ public class QuantifierExpression implements Expression {
 
 		return prefix(
 				"q_%s".formatted(kind.symbol),
+				terminal(Identifier.Special.HEAP),
 				prefix(
 						"fun",
+						terminal("(%s: Heap.t)".formatted(Identifier.Special.HEAP)),
 						terminal("(%s: %s)".formatted(variable.name(), variable.type().getWhyType())),
 						terminal("->"),
 						body

@@ -98,13 +98,12 @@ class StatementTransformer implements VimpCondition.Transformer<Statement> {
 	@Override
 	public Statement transformRaises(VimpCondition.Raises r) {
 		// TODO: check if multiple raises clauses with exception type conflict with each other
-		// TODO: check if exact exception type or "instanceof" check (subclasses too) should be used here
 
 		return r.getWhen().map(when -> resolveCondition(when, false))
 				.orElseGet(() -> new BooleanLiteral(true))
 				.toWhy()
 				.statement(
-						"raises { JException %s -> %s = %s.class && ".formatted(
+						"raises { JException %s -> (Class %s) :> (Class %s.class) && ".formatted(
 								Identifier.Special.EXCEPTION_PARAM,
 								Identifier.Special.EXCEPTION_PARAM,
 								fqdnEscaper.escape(r.getException(), !r.getException().contains("."))),

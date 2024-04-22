@@ -176,14 +176,17 @@ module HeapArrayOpRead
     p <> Ptr.null && valid_type heap p
 
   val function is (ghost heap: t) (p: Ptr.t) : arr_t
+    reads { heap }
     requires { valid_ptr heap p }
     ensures { ctor result = heap.arr[p] }
 
   val function arraylength (ghost heap: t) (p: Ptr.t) : jint
+    reads { heap }
     requires { valid_ptr heap p }
     ensures { result = (is heap p).length }
 
   val ghost function set (ghost heap: t) (p: Ptr.t) (i: int) (v: elem_t): arr_t
+    reads { heap }
     requires { valid_ptr heap p }
     requires { 0 <= i && i < arraylength heap p }
     ensures { result.length = arraylength heap p }
@@ -222,11 +225,13 @@ module HeapArrayOp
     predicate valid_type = valid_type
 
   val load (ghost heap: t) (p: Ptr.t) (i: jint) : elem_t
+    reads { heap }
     requires { valid_type heap p }
     raises { JException e -> npe_if_null e p || out_of_bounds e heap p i }
     ensures { result = (is heap p).elts i }
 
   val function iselem (ghost heap: t) (p: Ptr.t) (i: jint) : elem_t
+    reads { heap }
     requires { valid_type heap p }
     requires { valid_access heap p i }
     ensures { result = (is heap p).elts i }
@@ -380,12 +385,14 @@ module Heap
       not valid_elem heap p z && e = Java.Lang.ArrayStoreException.class
 
     val load (ghost heap: t) (p: Ptr.t) (i: jint) : Ptr.t
+      reads { heap }
       requires { valid_type heap p }
       raises { JException e -> npe_if_null e p || out_of_bounds e heap p i }
       ensures { result = (is heap p).elts i }
       ensures { valid_elem heap p result }
 
     val function iselem (ghost heap: t) (p: Ptr.t) (i: jint) : Ptr.t
+      reads { heap }
       requires { valid_type heap p }
       requires { valid_access heap p i }
       ensures { result = (is heap p).elts i }

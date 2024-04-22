@@ -3,6 +3,8 @@
    operator precedence *)
 
 module Operators
+  use bool.Bool
+  use prelude.heap.Heap
   use prelude.ptr.Ptr
   use prelude.machine.Operators
 
@@ -18,9 +20,14 @@ module Operators
   val function (\/.) (a: bool) (b: bool) : bool
     ensures { result = a \/ b }
 
-  val function q_forall (clause: 'a -> bool) : bool
-    ensures { result = forall x. (clause x) }
+  val function q_forall (heap: Heap.t) (clause: Heap.t -> 'a -> bool) : bool
+    ensures { result = forall x. (clause heap x) }
 
-  val function q_exists (clause: 'a -> bool) : bool
-    ensures { result = exists x. (clause x) }
+  val function q_exists (heap: Heap.t) (clause: Heap.t -> 'a -> bool) : bool
+    ensures { result = exists x. (clause heap x) }
+
+  scope ZCMP
+    let function eq [@inline:trivial] (x y: jbool) : jbool = not (xorb x y)
+    let function ne [@inline:trivial] (x y: jbool) : jbool = xorb x y
+  end
 end

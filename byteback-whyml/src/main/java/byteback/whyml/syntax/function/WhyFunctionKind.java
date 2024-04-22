@@ -9,8 +9,8 @@ public record WhyFunctionKind(boolean isStatic, Declaration decl, Inline inline)
 
 	public enum Declaration {
 		PROGRAM("let", "let rec", "val"),
-		PREDICATE("let predicate", "let rec predicate", "val predicate"),
-		FUNCTION("let function", "let rec function", "val function");
+		PREDICATE("let ghost predicate", "let rec ghost predicate", "val ghost predicate"),
+		FUNCTION("let ghost function", "let rec ghost function", "val ghost function");
 
 		private final String why;
 		private final String whyRec;

@@ -47,7 +47,7 @@ public class IdentifierEscaper {
 	// source: src/parser/handcrafted.messages, lines 18-21
 	private static final Set<String> RESERVED_L_KEYWORDS = Set.of("val", "user", "type", "theory", "scope", "preducate",
 			"module", "meda", "let", "lemma", "inductive", "import", "goal", "function", "exception", "eof", "end",
-			"constant", "coinductive", "clone", "axiom");
+			"constant", "coinductive", "clone", "axiom", "as", "old");
 
 	private final CaseInverter caseInverter;
 

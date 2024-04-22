@@ -1,6 +1,8 @@
 package byteback.whyml;
 
 import byteback.analysis.RootResolver;
+import byteback.analysis.util.SootAnnotations;
+import byteback.analysis.util.SootHosts;
 import byteback.whyml.printer.Statement;
 import static byteback.whyml.printer.Statement.block;
 import static byteback.whyml.printer.Statement.line;
@@ -10,13 +12,15 @@ import byteback.whyml.printer.WhyClassPrinter;
 import byteback.whyml.printer.WhyFunctionPrinter;
 import byteback.whyml.printer.WhySignaturePrinter;
 import byteback.whyml.syntax.WhyProgram;
-import byteback.whyml.vimp.VimpClassParser;
+import byteback.whyml.syntax.function.VimpCondition;
 import byteback.whyml.syntax.function.VimpMethod;
+import byteback.whyml.vimp.VimpClassParser;
 import byteback.whyml.vimp.VimpMethodBodyParser;
 import byteback.whyml.vimp.VimpMethodParser;
 import byteback.whyml.vimp.WhyResolver;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import soot.SootMethod;
 
@@ -42,6 +46,16 @@ public class ProgramConverter {
 
 	public WhyResolver resolve(final RootResolver resolver) {
 		final WhyResolver whyResolver = new WhyResolver();
+
+//		// FIXME: dynamic class resolution
+//		final var excClasses = StreamSupport.stream(resolver.getUsedMethods().spliterator(), false)
+//				.flatMap(SootHosts::getAnnotations)
+//				.flatMap(SootAnnotations::getAnnotations)
+//				.map(VimpMethodParser::getCondition)
+//				.flatMap(Optional::stream)
+//				.filter(e -> e instanceof VimpCondition.Raises)
+//				.map(e -> ((VimpCondition.Raises) e).getException())
+//				.collect(Collectors.toSet());
 
 		StreamSupport.stream(resolver.getUsedClasses().spliterator(), false)
 				.map(classParser::parse)

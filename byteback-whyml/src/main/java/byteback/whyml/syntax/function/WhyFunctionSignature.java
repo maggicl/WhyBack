@@ -19,10 +19,6 @@ public record WhyFunctionSignature(
 		return Stream.concat(thisParam.stream(), paramsList.stream());
 	}
 
-	public int paramCount() {
-		return (thisParam.isPresent() ? 1 : 0) + paramsList.size();
-	}
-
 	public Stream<WhyFunctionParam> paramsWithResult(Identifier.L resultParamName) {
 		if (returnType == WhyJVMType.UNIT) return params();
 		return Stream.concat(params(), Stream.of(new WhyFunctionParam(resultParamName, returnType, false)));

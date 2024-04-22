@@ -1,6 +1,8 @@
 package byteback.whyml.syntax.function;
 
+import byteback.whyml.ListComparator;
 import byteback.whyml.identifiers.Identifier;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,6 +19,9 @@ public record VimpMethod(Identifier.FQDN className,
 						 Type returnType,
 						 WhyFunctionKind.Declaration decl,
 						 Optional<VimpMethodParamNames> names) implements Comparable<VimpMethod> {
+	private static final Comparator<List<Type>> PARAMETERS_ORDER =
+			(ListComparator<Type>) (o1, o2) -> o1.toString().compareTo(o2.toString());
+
 
 	public VimpMethod {
 		names.ifPresent(n -> {
@@ -28,7 +33,6 @@ public record VimpMethod(Identifier.FQDN className,
 				throw new IllegalArgumentException("parameterTypes and parameterNames should have same length");
 			}
 		});
-
 	}
 
 	/**
@@ -42,7 +46,6 @@ public record VimpMethod(Identifier.FQDN className,
 		return new VimpMethod(
 				this.className,
 				name,
-				// method must be static
 				thisType,
 				Stream.concat(
 								parameterTypes.stream(),
@@ -55,11 +58,7 @@ public record VimpMethod(Identifier.FQDN className,
 	}
 
 	public WhyFunctionKind kind(WhyFunctionKind.Inline inline) {
-		return new WhyFunctionKind(
-				thisType().isPresent(),
-				decl,
-				inline
-		);
+		return new WhyFunctionKind(thisType().isPresent(), decl, inline);
 	}
 
 	public String descriptor() {
@@ -94,26 +93,14 @@ public record VimpMethod(Identifier.FQDN className,
 		return Objects.hash(className, name, thisType, parameterTypes, returnType, decl);
 	}
 
-	private String jasminDescriptorOf() {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append('(');
-
-		for (Type t : parameterTypes()) {
-			buffer.append(AbstractJasminClass.jasminDescriptorOf(t));
-		}
-
-		buffer.append(')');
-		buffer.append(AbstractJasminClass.jasminDescriptorOf(returnType()));
-
-		return buffer.toString();
-	}
-
 	@Override
 	public int compareTo(VimpMethod o) {
 		int a = this.className.compareTo(o.className);
 		if (a != 0) return a;
 		int b = this.name.compareTo(o.name);
 		if (b != 0) return b;
-		return this.jasminDescriptorOf().compareTo(o.jasminDescriptorOf());
+		int c = PARAMETERS_ORDER.compare(this.parameterTypes, o.parameterTypes);
+		if (c != 0) return c;
+		return this.returnType.toString().compareTo(o.returnType.toString());
 	}
 }

@@ -11,9 +11,18 @@ import java.lang.annotation.Target;
  */
 public interface Contract {
 
+	public static void assertion(boolean condition) {
+	}
+
+	public static void assumption(boolean condition) {
+	}
+
+	public static void invariant(boolean condition) {
+	}
+
 	/**
 	 * Declares a predicate method.
-	 *
+	 * <p>
 	 * A predicate method is a completely pure static method containing boolean
 	 * statements verifying conditions on its inputs. A predicate method may only
 	 * indirectly call other static predicate methods.
@@ -62,10 +71,24 @@ public interface Contract {
 		public String value();
 	}
 
+
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Ensures {
 		public Ensure[] value();
+	}
+
+	@Repeatable(Decreases.class)
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	public @interface Decrease {
+		public String value();
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	public @interface Decreases {
+		public Decrease[] value();
 	}
 
 	@Repeatable(Raises.class)
@@ -73,6 +96,7 @@ public interface Contract {
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Raise {
 		public Class<?> exception();
+
 		public String when() default "[unassigned]";
 	}
 
@@ -118,15 +142,6 @@ public interface Contract {
 
 	public static @interface AttachLabel {
 		public String value();
-	}
-
-	public static void assertion(boolean condition) {
-	}
-
-	public static void assumption(boolean condition) {
-	}
-
-	public static void invariant(boolean condition) {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)

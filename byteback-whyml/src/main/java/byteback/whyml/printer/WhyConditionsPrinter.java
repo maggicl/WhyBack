@@ -4,6 +4,7 @@ import byteback.whyml.identifiers.Identifier;
 import static byteback.whyml.printer.SExpr.infix;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
+import static byteback.whyml.printer.Statement.line;
 import static byteback.whyml.printer.Statement.many;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.UnaryExpression;
@@ -16,10 +17,17 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class WhyConditionsPrinter implements WhyCondition.Visitor {
+	private final boolean isRecursive;
+
 	private final List<Statement> requiresList = new ArrayList<>();
 	private final List<Statement> ensuresList = new ArrayList<>();
+	private final List<Statement> decreasesList = new ArrayList<>();
 	private final List<Expression> returnsList = new ArrayList<>();
 	private final List<SExpr> raisesList = new ArrayList<>();
+
+	public WhyConditionsPrinter(boolean isRecursive) {
+		this.isRecursive = isRecursive;
+	}
 
 	@Override
 	public void visitRequires(WhyCondition.Requires r) {
@@ -29,6 +37,11 @@ public class WhyConditionsPrinter implements WhyCondition.Visitor {
 	@Override
 	public void visitEnsures(WhyCondition.Ensures r) {
 		ensuresList.add(r.value().toWhy().statement("ensures { ", " }"));
+	}
+
+	@Override
+	public void visitDecreases(WhyCondition.Decreases r) {
+		decreasesList.add(r.value().toWhy().statement("variant { ", " }"));
 	}
 
 	@Override
@@ -68,6 +81,9 @@ public class WhyConditionsPrinter implements WhyCondition.Visitor {
 		return many(
 				many(requiresList.stream()),
 				many(ensuresList.stream()),
+				decreasesList.isEmpty() && isRecursive
+						? line("variant { 0 }")
+						: many(decreasesList.stream()),
 				many(Stream.concat(returnsClause.stream(), raisesClause.stream())
 						.reduce((a, b) -> infix("&&", a, b))
 						.map(e -> e.statement(

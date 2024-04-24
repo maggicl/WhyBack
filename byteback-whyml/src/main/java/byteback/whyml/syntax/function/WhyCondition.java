@@ -16,6 +16,8 @@ public sealed abstract class WhyCondition {
 
 		void visitEnsures(WhyCondition.Ensures r);
 
+		void visitDecreases(WhyCondition.Decreases r);
+
 		void visitReturns(WhyCondition.Returns r);
 
 		void visitRaises(WhyCondition.Raises r);
@@ -52,6 +54,23 @@ public sealed abstract class WhyCondition {
 		@Override
 		public void visit(Visitor visitor) {
 			visitor.visitEnsures(this);
+		}
+	}
+
+	public static final class Decreases extends WhyCondition {
+		private final Expression value;
+
+		public Decreases(Expression value) {
+			this.value = value;
+		}
+
+		public Expression value() {
+			return value;
+		}
+
+		@Override
+		public void visit(Visitor visitor) {
+			visitor.visitDecreases(this);
 		}
 	}
 

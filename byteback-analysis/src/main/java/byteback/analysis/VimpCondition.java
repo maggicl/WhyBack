@@ -5,9 +5,16 @@ import byteback.analysis.util.SootAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.IntType;
+import soot.LongType;
 import soot.Scene;
+import soot.ShortType;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
@@ -17,7 +24,7 @@ import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 
 public sealed abstract class VimpCondition {
-	private static SootMethod resolveConditionMethod(SootMethod scope, String name, boolean hasResult) {
+	private static SootMethod resolveConditionMethod(SootMethod scope, String name, boolean hasResult, boolean isDecreases) {
 		final List<Type> parameters = new ArrayList<>(scope.getParameterTypes());
 		final Type returnType = scope.getReturnType();
 
@@ -25,7 +32,24 @@ public sealed abstract class VimpCondition {
 			parameters.add(returnType);
 		}
 
-		return scope.getDeclaringClass().getMethod(name, parameters, BooleanType.v());
+		final SootClass clazz = scope.getDeclaringClass();
+
+		if (isDecreases) {
+			final List<Type> returnTypes = List.of(ByteType.v(), ShortType.v(), CharType.v(), IntType.v(), LongType.v());
+
+			for (final Type t : returnTypes) {
+				final SootMethod m = clazz.getMethodUnsafe(name, parameters, t);
+				if (m != null) return m;
+			}
+
+			throw new RuntimeException("Class %s doesn't have any of:\n%s".formatted(
+					clazz.getName(),
+					returnTypes.stream()
+							.map(e -> SootMethod.getSubSignature(name, parameters, e))
+							.collect(Collectors.joining("\n"))));
+		} else {
+			return clazz.getMethod(name, parameters, BooleanType.v());
+		}
 	}
 
 	public static Optional<VimpCondition> parse(final SootMethod scope, final AnnotationTag tag) {
@@ -36,18 +60,26 @@ public sealed abstract class VimpCondition {
 		if (isRequires || Namespace.ENSURE_ANNOTATION.equals(type)) {
 			final AnnotationElem elem = SootAnnotations.getValue(tag).orElseThrow();
 			final String value = new AnnotationElems.StringElemExtractor().visit(elem);
-			final SootMethod method = resolveConditionMethod(scope, value, !isRequires);
+			boolean hasResult = !isRequires;
+
+			final SootMethod method = resolveConditionMethod(scope, value, hasResult, false);
 			return Optional.of(isRequires ? new VimpCondition.Requires(method) : new VimpCondition.Ensures(method));
+		} else if (Namespace.DECREASE_ANNOTATION.equals(type)) {
+			final AnnotationElem elem = SootAnnotations.getValue(tag).orElseThrow();
+			final String value = new AnnotationElems.StringElemExtractor().visit(elem);
+
+			final SootMethod method = resolveConditionMethod(scope, value, false, true);
+			return Optional.of(new VimpCondition.Decreases(method));
 		} else if (Namespace.RETURN_ANNOTATION.equals(type)) {
 			final Optional<SootMethod> when = SootAnnotations.getElem(tag, "when")
 					.map(new AnnotationElems.StringElemExtractor()::visit)
-					.map(e -> resolveConditionMethod(scope, e, false));
+					.map(e -> resolveConditionMethod(scope, e, false, false));
 
 			return Optional.of(new VimpCondition.Returns(when));
 		} else if (Namespace.RAISE_ANNOTATION.equals(type)) {
 			final Optional<SootMethod> when = SootAnnotations.getElem(tag, "when")
 					.map(new AnnotationElems.StringElemExtractor()::visit)
-					.map(e -> resolveConditionMethod(scope, e, false));
+					.map(e -> resolveConditionMethod(scope, e, false, false));
 
 			final AnnotationElem exceptionElem = SootAnnotations.getElem(tag, "exception").orElseThrow();
 			final String exception = Namespace.stripDescriptor(new AnnotationElems.ClassElemExtractor().visit(exceptionElem));
@@ -69,6 +101,8 @@ public sealed abstract class VimpCondition {
 		T transformRequires(Requires r);
 
 		T transformEnsures(Ensures r);
+
+		T transformDecreases(Decreases r);
 
 		T transformReturns(Returns r);
 
@@ -111,6 +145,28 @@ public sealed abstract class VimpCondition {
 		@Override
 		public <T> T transform(Transformer<T> transformer) {
 			return transformer.transformEnsures(this);
+		}
+
+		@Override
+		public Stream<? extends AbstractHost> getHosts() {
+			return Stream.of(value);
+		}
+	}
+
+	public static final class Decreases extends VimpCondition {
+		private final SootMethod value;
+
+		public Decreases(SootMethod value) {
+			this.value = value;
+		}
+
+		public SootMethod getValue() {
+			return value;
+		}
+
+		@Override
+		public <T> T transform(Transformer<T> transformer) {
+			return transformer.transformDecreases(this);
 		}
 
 		@Override

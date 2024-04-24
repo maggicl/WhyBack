@@ -48,7 +48,8 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 		).toList() : scopeParams;
 
 		if (condIdentifiers.size() != methodParams.size()) {
-			throw new IllegalStateException("condIdentifiers and methodParams should have same length");
+			throw new IllegalStateException("condIdentifiers and methodParams should have same length: condIdentifiers=" +
+					condIdentifiers + " methodParams=" + methodParams);
 		}
 
 		// replace the last parameter in the predicate expression with the special `result` local variable
@@ -71,6 +72,11 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 	@Override
 	public WhyCondition.Ensures transformEnsures(VimpCondition.Ensures r) {
 		return new WhyCondition.Ensures(resolveCondition(r.getValue(), true));
+	}
+
+	@Override
+	public WhyCondition.Decreases transformDecreases(VimpCondition.Decreases r) {
+		return new WhyCondition.Decreases(resolveCondition(r.getValue(), false));
 	}
 
 	@Override

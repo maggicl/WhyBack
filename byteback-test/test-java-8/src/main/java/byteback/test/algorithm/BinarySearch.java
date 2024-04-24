@@ -34,11 +34,17 @@ public class BinarySearch {
 		return neq(a, null);
 	}
 
+	@Predicate
+	public static int decreases_distance(final int[] a, int n, int left, int right) {
+		return right - left;
+	}
+
 	@Return
 	@Require("array_is_not_null")
 	@Require("sorted_array")
 	@Require("bounded_indices")
 	@Ensure("result_is_index")
+	@Decrease("decreases_distance")
 	public static int search(int a[], int n, int left, int right) {
 		if (left < right) {
 			int p = left + (right - left) / 2;

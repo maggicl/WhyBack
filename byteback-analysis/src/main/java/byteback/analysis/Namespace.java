@@ -39,9 +39,11 @@ public class Namespace {
 
 	public static final String ENSURES_ANNOTATION = "Lbyteback/annotations/Contract$Ensures;";
 
+	public static final String DECREASE_ANNOTATION = "Lbyteback/annotations/Contract$Decrease;";
 	public static final String RAISE_ANNOTATION = "Lbyteback/annotations/Contract$Raise;";
 
 	public static final String RAISES_ANNOTATION = "Lbyteback/annotations/Contract$Raises;";
+
 
 	public static final String RETURN_ANNOTATION = "Lbyteback/annotations/Contract$Return;";
 

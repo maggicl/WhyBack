@@ -40,11 +40,8 @@ public class WhySignaturePrinter {
 						.map(Statement::line)
 						.stream());
 
-		final WhyConditionsPrinter p = new WhyConditionsPrinter();
+		final WhyConditionsPrinter p = new WhyConditionsPrinter(isRecursive);
 		p.print(m.conditions());
-
-		// TODO: capture variants
-		final Statement variant = isRecursive ? line("variant { 0 }") : many();
 
 		final String declaration;
 		if (withWith) {
@@ -63,7 +60,7 @@ public class WhySignaturePrinter {
 						Identifier.Special.HEAP,
 						params,
 						returnType).trim()),
-				indent(paramPreconditions, resultPostcondition, p.conditionStatements(), variant)
+				indent(paramPreconditions, resultPostcondition, p.conditionStatements())
 		);
 	}
 

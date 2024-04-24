@@ -40,6 +40,11 @@ public record WhyArrayType(WhyType baseType) implements WhyPtrType {
 	}
 
 	@Override
+	public String getDescriptor() {
+		return "R" + baseType.getDescriptor();
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;

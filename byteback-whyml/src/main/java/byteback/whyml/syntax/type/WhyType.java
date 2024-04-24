@@ -1,6 +1,10 @@
 package byteback.whyml.syntax.type;
 
+import java.util.Comparator;
+
 public interface WhyType {
+	Comparator<WhyType> ORDER = Comparator.comparing(WhyType::getDescriptor);
+
 	/**
 	 * Checks if a variable of type lValue can hold a value of type rValue. Does not check class hierarchy, only primitive
 	 * and array compatibility
@@ -36,4 +40,6 @@ public interface WhyType {
 	 * @return A WhyML scope
 	 */
 	String getWhyAccessorScope();
+
+	String getDescriptor();
 }

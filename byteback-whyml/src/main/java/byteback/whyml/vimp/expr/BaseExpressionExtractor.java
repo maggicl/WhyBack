@@ -79,14 +79,11 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 		} else if (SootHosts.hasAnnotation(method, Namespace.PRIMITIVE_ANNOTATION)) {
 			setExpression(PreludeFunctionParser.parse(method, argExpressions));
 		} else {
-			// FIXME: do not recompute signature
-			final WhyFunctionSignature sig = methodSignatureParser.reference(method)
-					.flatMap(e -> methodSignatureParser.signature(e, method))
+			final WhyFunctionSignature sig = methodSignatureParser.signature(method)
 					.orElseThrow(() -> new IllegalStateException("method " + method + " is not callable"));
 
-			setExpression(new FunctionCall(sig, methodNameParser.methodName(sig.vimp()), argExpressions));
+			setExpression(new FunctionCall(sig, methodNameParser.methodName(sig), argExpressions));
 		}
-
 	}
 
 	abstract protected void caseInstanceInvokeExpr(final InstanceInvokeExpr invoke);

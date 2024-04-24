@@ -20,7 +20,7 @@ public class WhyFieldPrinter {
 					line("clone prelude.heap.Field as %s with val f = %s, axiom of".formatted(name, preludeType))
 			);
 		} else {
-			final String resolvedType = resolver.isResolved(field.getType())
+			final String resolvedType = resolver.isClassResolved(field.getType())
 					? preludeType
 					: "Type.unknown (* %s *)".formatted(preludeType);
 

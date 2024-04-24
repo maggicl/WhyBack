@@ -3,14 +3,12 @@ package byteback.whyml.syntax.function;
 import byteback.whyml.syntax.expr.Expression;
 import java.util.Objects;
 
-public record WhyFunction(WhyFunctionSignature signature, Expression body) {
-	public WhyFunction {
-		if (!signature.kind().decl().isSpec()) {
+public record WhySpecFunction(WhyFunctionSignature signature, Expression body) {
+	public WhySpecFunction {
+		if (!signature.declaration().isSpec()) {
 			throw new IllegalArgumentException("a WhyFunction cannot be a program function");
 		}
-
 	}
-
 
 	@Override
 	public String toString() {
@@ -21,7 +19,7 @@ public record WhyFunction(WhyFunctionSignature signature, Expression body) {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		WhyFunction that = (WhyFunction) o;
+		WhySpecFunction that = (WhySpecFunction) o;
 		return Objects.equals(signature, that.signature);
 	}
 

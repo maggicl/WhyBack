@@ -1,14 +1,11 @@
 package byteback.whyml.printer;
 
-import byteback.whyml.identifiers.FQDNEscaper;
 import byteback.whyml.identifiers.Identifier;
-import byteback.whyml.identifiers.IdentifierEscaper;
 import static byteback.whyml.printer.Statement.block;
 import static byteback.whyml.printer.Statement.indent;
 import static byteback.whyml.printer.Statement.line;
 import static byteback.whyml.printer.Statement.many;
-import byteback.whyml.syntax.function.VimpCondition;
-import byteback.whyml.syntax.function.WhyFunctionKind;
+import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyFunctionParam;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.vimp.VimpMethodNameParser;
@@ -18,37 +15,23 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WhySignaturePrinter {
-	private final IdentifierEscaper identifierEscaper;
-	private final FQDNEscaper fqdnEscaper;
 	private final VimpMethodNameParser vimpMethodNameParser;
 
-	public WhySignaturePrinter(IdentifierEscaper identifierEscaper, FQDNEscaper fqdnEscaper, VimpMethodNameParser vimpMethodNameParser) {
-		this.identifierEscaper = identifierEscaper;
-		this.fqdnEscaper = fqdnEscaper;
+	public WhySignaturePrinter(VimpMethodNameParser vimpMethodNameParser) {
 		this.vimpMethodNameParser = vimpMethodNameParser;
 	}
 
 	public Statement toWhy(WhyFunctionSignature m, boolean noPredicates, boolean withWith, boolean recursive, WhyResolver resolver) {
-		if (m.kind().inline().must()) {
-			throw new IllegalArgumentException("function signature cannot be printed for an inline-required function");
-		}
+		final boolean isPredicate = !noPredicates && m.declaration() == WhyFunctionDeclaration.PREDICATE;
 
-		final boolean isPredicate = !noPredicates && m.kind().decl() == WhyFunctionKind.Declaration.PREDICATE;
-
-		final List<WhyFunctionParam> paramsList = m.params().toList();
-
-		final String params = paramsList.stream()
+		final String params = m.params().stream()
 				.map(e -> "(%s: %s)".formatted(e.name(), e.type().getWhyType()))
 				.collect(Collectors.joining(" "));
 
-		final Statement paramPreconditions = many(paramsList.stream()
+		final Statement paramPreconditions = many(m.params().stream()
 				.map(WhyFunctionParam::condition)
 				.flatMap(Optional::stream)
 				.map(e -> line("requires { %s }".formatted(e))));
-
-		final VimpCondition.Transformer<Statement> toStatement = new StatementTransformer(identifierEscaper, fqdnEscaper, resolver, m);
-
-		final Statement conditions = many(m.conditions().stream().map(toStatement::transform));
 
 		final Statement resultPostcondition = many(
 				new WhyFunctionParam(Identifier.Special.RESULT, m.returnType(), false)
@@ -57,25 +40,28 @@ public class WhySignaturePrinter {
 						.map(Statement::line)
 						.stream());
 
+		final WhyConditionsPrinter p = new WhyConditionsPrinter();
+		p.print(m.conditions());
+
 		// TODO: capture variants
 		final Statement variant = recursive ? line("variant { 0 }") : many();
 
 		final String declaration = withWith
 				? "with"
-				: m.kind().decl().isSpec()
-				? m.kind().decl().toWhy(recursive)
-				: m.kind().decl().toWhyDeclaration();
+				: m.declaration().isSpec()
+				? m.declaration().toWhy(recursive)
+				: m.declaration().toWhyDeclaration();
 
 		final String returnType = isPredicate ? "" : ": %s".formatted(m.returnType().getWhyType());
 
 		return many(
 				line("%s %s (ghost %s: Heap.t) %s %s".formatted(
 						declaration,
-						vimpMethodNameParser.methodName(m.vimp()),
+						vimpMethodNameParser.methodName(m),
 						Identifier.Special.HEAP,
 						params,
 						returnType).trim()),
-				indent(paramPreconditions, resultPostcondition, conditions, variant)
+				indent(paramPreconditions, resultPostcondition, p.conditionStatements(), variant)
 		);
 	}
 

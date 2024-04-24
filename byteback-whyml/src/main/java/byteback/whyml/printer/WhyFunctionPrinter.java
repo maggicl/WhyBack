@@ -3,7 +3,7 @@ package byteback.whyml.printer;
 import byteback.whyml.WhyFunctionSCC;
 import static byteback.whyml.printer.Statement.block;
 import static byteback.whyml.printer.Statement.many;
-import byteback.whyml.syntax.function.WhyFunction;
+import byteback.whyml.syntax.function.WhySpecFunction;
 import byteback.whyml.vimp.WhyResolver;
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class WhyFunctionPrinter {
 	}
 
 	public Statement toWhy(WhyFunctionSCC scc, WhyResolver resolver) {
-		final List<WhyFunction> f = scc.functionList();
+		final List<WhySpecFunction> f = scc.functionList();
 		if (f.isEmpty()) return many();
 
 		final Statement[] statements = new Statement[f.size()];
@@ -30,7 +30,7 @@ public class WhyFunctionPrinter {
 		return block(statements);
 	}
 
-	private Statement defineFunction(WhyFunction f, boolean withWith, boolean recursive, WhyResolver resolver) {
+	private Statement defineFunction(WhySpecFunction f, boolean withWith, boolean recursive, WhyResolver resolver) {
 		return many(
 				signaturePrinter.toWhy(f.signature(), true, withWith, recursive, resolver),
 				f.body().toWhy().statement("= ", "")

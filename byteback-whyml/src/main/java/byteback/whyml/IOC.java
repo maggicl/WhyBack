@@ -13,7 +13,9 @@ import byteback.whyml.vimp.VimpClassParser;
 import byteback.whyml.vimp.VimpFieldParser;
 import byteback.whyml.vimp.VimpMethodBodyParser;
 import byteback.whyml.vimp.VimpMethodNameParser;
+import byteback.whyml.vimp.VimpMethodParamParser;
 import byteback.whyml.vimp.VimpMethodParser;
+import byteback.whyml.vimp.WhyResolver;
 import byteback.whyml.vimp.expr.FunctionBodyExtractor;
 import byteback.whyml.vimp.expr.PureExpressionExtractor;
 
@@ -25,16 +27,18 @@ public final class IOC {
 	public static final TypeResolver TYPE_RESOLVER = new TypeResolver(CLASS_NAME_PARSER);
 	public static final VimpFieldParser VIMP_FIELD_PARSER = new VimpFieldParser(CLASS_NAME_PARSER, IDENTIFIER_ESCAPER, TYPE_RESOLVER);
 	public static final VimpClassParser CLASS_PARSER = new VimpClassParser(CLASS_NAME_PARSER, VIMP_FIELD_PARSER);
-	public static final VimpMethodParser METHOD_PARSER = new VimpMethodParser(IDENTIFIER_ESCAPER, CLASS_NAME_PARSER, TYPE_RESOLVER);
+	public static final VimpMethodParamParser METHOD_PARAM_PARSER = new VimpMethodParamParser(IDENTIFIER_ESCAPER, TYPE_RESOLVER);
+	public static final VimpMethodParser METHOD_PARSER = new VimpMethodParser(METHOD_PARAM_PARSER, CLASS_NAME_PARSER, TYPE_RESOLVER);
 	public static final VimpMethodNameParser METHOD_NAME_PARSER = new VimpMethodNameParser(IDENTIFIER_ESCAPER);
 	public static final PureExpressionExtractor PURE_EXPRESSION_EXTRACTOR = new PureExpressionExtractor(METHOD_PARSER, METHOD_NAME_PARSER, TYPE_RESOLVER, VIMP_FIELD_PARSER, IDENTIFIER_ESCAPER);
 	public static final FunctionBodyExtractor FUNCTION_BODY_EXTRACTOR = new FunctionBodyExtractor(PURE_EXPRESSION_EXTRACTOR);
 	public static final VimpMethodBodyParser METHOD_BODY_PARSER = new VimpMethodBodyParser(FUNCTION_BODY_EXTRACTOR);
-	public static final WhySignaturePrinter WHY_METHOD_PRINTER = new WhySignaturePrinter(IDENTIFIER_ESCAPER, FQDN_ESCAPER, METHOD_NAME_PARSER);
-	public static final WhyFunctionPrinter WHY_FUNCTION_PRINTER = new WhyFunctionPrinter(WHY_METHOD_PRINTER);
+	public static final WhyResolver WHY_RESOLVER = new WhyResolver(CLASS_NAME_PARSER, CLASS_PARSER, METHOD_PARSER, METHOD_BODY_PARSER);
+	public static final WhySignaturePrinter WHY_SIGNATURE_PRINTER = new WhySignaturePrinter(METHOD_NAME_PARSER);
+	public static final WhyFunctionPrinter WHY_FUNCTION_PRINTER = new WhyFunctionPrinter(WHY_SIGNATURE_PRINTER);
 	public static final WhyFieldPrinter WHY_FIELD_PRINTER = new WhyFieldPrinter();
 	public static final WhyClassPrinter WHY_CLASS_PRINTER = new WhyClassPrinter(WHY_FIELD_PRINTER);
-	public static final ProgramConverter PROGRAM_CONVERTER = new ProgramConverter(CLASS_PARSER, METHOD_PARSER, METHOD_BODY_PARSER, WHY_CLASS_PRINTER, WHY_METHOD_PRINTER, WHY_FUNCTION_PRINTER);
+	public static final ProgramConverter PROGRAM_CONVERTER = new ProgramConverter(WHY_RESOLVER, WHY_CLASS_PRINTER, WHY_SIGNATURE_PRINTER, WHY_FUNCTION_PRINTER);
 
 	private IOC() {
 	}

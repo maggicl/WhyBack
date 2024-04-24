@@ -9,6 +9,11 @@ public record WhyReference(Identifier.FQDN fqdn) implements WhyPtrType {
 	}
 
 	@Override
+	public String getDescriptor() {
+		return "L" + fqdn.descriptor();
+	}
+
+	@Override
 	public String getPreludeType() {
 		// we can't use the full name if we are in a scope that matches it
 		return "Class %s.class".formatted(fqdn);

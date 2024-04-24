@@ -1,5 +1,7 @@
 package byteback.whyml.syntax.type;
 
+import byteback.whyml.identifiers.Identifier;
+
 public enum WhyJVMType implements WhyType {
 	BOOL("jbool", "Z", "HeapDef.Int", true),
 	BYTE("jbyte", "B", "HeapDef.Byte", true),
@@ -64,6 +66,13 @@ public enum WhyJVMType implements WhyType {
 			throw new UnsupportedOperationException(this + " does not have accessors");
 		}
 
+		return accessorScope;
+	}
+
+	@Override
+	public String getDescriptor() {
+		if (this == PTR) return "L" + Identifier.Special.OBJECT + ";";
+		if (this == UNIT) return "V";
 		return accessorScope;
 	}
 }

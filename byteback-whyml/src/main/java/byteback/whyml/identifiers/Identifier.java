@@ -91,6 +91,12 @@ public sealed class Identifier implements Comparable<Identifier> permits Identif
 			return identifiers.stream().map(U::toString).collect(Collectors.joining("."));
 		}
 
+		public String descriptor() {
+			return identifiers.stream().map(U::toString)
+					.collect(Collectors.joining(IdentifierEscaper.DESCRIPTOR_SEPARATOR))
+					+ IdentifierEscaper.DESCRIPTOR_END;
+		}
+
 		@Override
 		public boolean equals(Object o) {
 			if (this == o) return true;

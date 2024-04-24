@@ -1,12 +1,13 @@
 package byteback.whyml.vimp;
 
+import byteback.analysis.VimpCondition;
 import byteback.whyml.WhyFunctionSCC;
 import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.syntax.WhyClass;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.transformer.CallDependenceVisitor;
-import byteback.whyml.syntax.function.VimpMethod;
-import byteback.whyml.syntax.function.WhyFunction;
+import byteback.whyml.syntax.function.WhyFunctionDeclaration;
+import byteback.whyml.syntax.function.WhySpecFunction;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.type.ReferenceVisitor;
 import byteback.whyml.syntax.type.WhyType;
@@ -20,19 +21,37 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import soot.SootClass;
+import soot.SootMethod;
 
 public class WhyResolver {
-	private final Map<Identifier.FQDN, WhyClass> classes = new HashMap<>();
-	private final Map<Identifier.FQDN, Set<VimpMethod>> refsByClass = new HashMap<>();
-	private final Map<VimpMethod, WhyFunctionSignature> specSignatures = new HashMap<>();
-	private final Map<VimpMethod, Expression> specBodies = new HashMap<>();
-	private final Map<VimpMethod, VimpMethod> specMethods = new HashMap<>();
+	private final VimpClassNameParser classNameParser;
+	private final VimpClassParser classParser;
+	private final VimpMethodParser methodParser;
+	private final VimpMethodBodyParser methodBodyParser;
 
-	public Set<WhyClass> getAllSuper(WhyClass from) {
+	private final Map<Identifier.FQDN, WhyClass> classes = new HashMap<>();
+	private final Set<SootMethod> parsed = new HashSet<>();
+	private final Map<SootMethod, WhyFunctionSignature> specSignatures = new HashMap<>();
+	private final Map<SootMethod, Expression> specBodies = new HashMap<>();
+	private final Map<SootMethod, List<VimpCondition>> conditions = new HashMap<>();
+
+	public WhyResolver(VimpClassNameParser classNameParser,
+					   VimpClassParser classParser,
+					   VimpMethodParser methodParser,
+					   VimpMethodBodyParser methodBodyParser) {
+		this.classNameParser = classNameParser;
+		this.classParser = classParser;
+		this.methodParser = methodParser;
+		this.methodBodyParser = methodBodyParser;
+	}
+
+	private Set<WhyClass> getAllSuper(WhyClass from) {
 		final Deque<Identifier.FQDN> toProcess = from.superNames().collect(Collectors.toCollection(ArrayDeque::new));
 		final Set<WhyClass> result = new HashSet<>();
 
@@ -51,31 +70,40 @@ public class WhyResolver {
 		return result;
 	}
 
-	public Map.Entry<VimpMethod, Expression> resolveCondition(WhyFunctionSignature scope, String conditionValue, boolean hasResult) {
-		final VimpMethod conditionRef = scope.vimp().condition(conditionValue, hasResult);
-
-		final Expression body = Objects.requireNonNull(specBodies.get(conditionRef),
-				() -> "body for condition reference " + conditionRef + " not found");
-
-		return Map.entry(specMethods.get(conditionRef), body);
+	public Expression getSpecBody(final SootMethod method) {
+		resolveMethod(method);
+		return Objects.requireNonNull(specBodies.get(method), () -> "no spec body for method " + method);
 	}
 
-	public void addClass(final WhyClass classDeclaration) {
-		classes.put(classDeclaration.type().fqdn(), classDeclaration);
+	public void resolveAllConditionData(final Map<SootMethod, List<VimpCondition>> data) {
+		conditions.putAll(data);
 	}
 
-	public void addSpecSignature(final VimpMethod r, final WhyFunctionSignature sig) {
-		refsByClass.computeIfAbsent(r.className(), (k) -> new HashSet<>()).add(r);
-		specSignatures.put(r, sig);
+	public void resolveClass(final SootClass clazz) {
+		final WhyClass c = classParser.parse(clazz);
+		classes.put(c.name(), c);
 	}
 
-	public void addSpecBody(final VimpMethod r, final Expression body) {
-		refsByClass.computeIfAbsent(r.className(), (k) -> new HashSet<>()).add(r);
-		specBodies.put(r, body);
-		specMethods.put(r, r);
+	public void resolveMethod(final SootMethod method) {
+		if (parsed.contains(method)) return;
+
+		final Optional<WhyFunctionDeclaration> decl = VimpMethodParser.declaration(method);
+		if (decl.isEmpty()) return;
+
+		final Identifier.FQDN className = classNameParser.parse(method.getDeclaringClass());
+		parsed.add(method);
+
+		final List<VimpCondition> methodConditions = conditions.getOrDefault(method, List.of());
+
+		methodParser.signature(method, methodConditions, decl.get(), this)
+				.ifPresent(signature -> specSignatures.put(method, signature));
+
+		if (decl.get().isSpec()) {
+			specBodies.put(method, methodBodyParser.parseSpec(method));
+		}
 	}
 
-	public boolean isResolved(WhyType t) {
+	public boolean isClassResolved(WhyType t) {
 		return ReferenceVisitor.get(t)
 				.filter(e -> !classes.containsKey(e.fqdn()))
 				.isEmpty();
@@ -91,17 +119,17 @@ public class WhyResolver {
 		return PostOrder.compute(superAdjMap, Comparator.comparing(WhyClass::name));
 	}
 
-	public List<WhyFunctionSCC> functions() {
-		final List<WhyFunction> functions = specSignatures.keySet()
+	public List<WhyFunctionSCC> specFunctions() {
+		final List<WhySpecFunction> functions = specSignatures.entrySet()
 				.stream()
-				.filter(e -> e.decl().isSpec())
-				.map(e -> new WhyFunction(specSignatures.get(e), specBodies.get(e)))
+				.filter(e -> e.getValue().declaration().isSpec())
+				.map(e -> new WhySpecFunction(specSignatures.get(e.getKey()), specBodies.get(e.getKey())))
 				.toList();
 
-		final Map<WhyFunctionSignature, WhyFunction> bySignature = functions.stream()
-				.collect(Collectors.toMap(WhyFunction::signature, Function.identity()));
+		final Map<WhyFunctionSignature, WhySpecFunction> bySignature = functions.stream()
+				.collect(Collectors.toMap(WhySpecFunction::signature, Function.identity()));
 
-		final Map<WhyFunction, Set<WhyFunction>> callees = functions.stream()
+		final Map<WhySpecFunction, Set<WhySpecFunction>> callees = functions.stream()
 				.collect(Collectors.toMap(Function.identity(), e -> CallDependenceVisitor.getCallees(e.body())
 						.stream()
 						.map(bySignature::get)
@@ -116,7 +144,7 @@ public class WhyResolver {
 
 		// order by post-order, sorting siblings based on the first function on the SCC. Functions within the SCC
 		// are already sorted by the WhyFunctionSCC constructor
-		return PostOrder.compute(sccAdjMap, Comparator.comparing(e -> e.functionList().get(0).signature().vimp()));
+		return PostOrder.compute(sccAdjMap, Comparator.comparing(e -> e.functionList().get(0).signature()));
 	}
 
 	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunctionSignature>>> methodDeclarations() {

@@ -36,9 +36,23 @@ public class IdentifierEscaper {
 	 */
 	private static final String RESERVED = "'3";
 	/**
-	 * Separates class and function name in a spec function
+	 * Separates scopes in a function name
 	 */
-	private static final String CLASS_FUNC_SEPARATOR = "'4";
+	private static final String SCOPE_SEPARATOR = "'4";
+	/**
+	 * Separates scopes in a descriptor class name for a parameter
+	 */
+	static final String DESCRIPTOR_SEPARATOR = "'5";
+	/**
+	 * Terminates a descriptor class name
+	 */
+	static final String DESCRIPTOR_END = "'6";
+
+	/**
+	 * Separates the method name from the parameter descriptor section, and the parameter descriptor section from the
+	 * return type descriptor
+	 */
+	public static final String DESCRIPTOR_SECTION_SEPARATOR = "'7";
 	/**
 	 * Denotes a prime
 	 */
@@ -114,10 +128,10 @@ public class IdentifierEscaper {
 								.map(Identifier.U::toString)
 								.map(caseInverter::invertCase),
 						Stream.of(ids.get(last).toString()))
-				.collect(Collectors.joining("_"));
+				.collect(Collectors.joining(SCOPE_SEPARATOR));
 
 		// no need to check if reserved or note as it contains CLASS_FUNC_SEPARATOR
-		return new Identifier.L(classPrefix + CLASS_FUNC_SEPARATOR + function.toString());
+		return new Identifier.L(classPrefix + SCOPE_SEPARATOR + function.toString());
 	}
 
 	public Identifier.U escapeU(String input) {

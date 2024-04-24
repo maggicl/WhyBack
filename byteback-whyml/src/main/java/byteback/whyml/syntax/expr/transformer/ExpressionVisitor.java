@@ -78,7 +78,7 @@ public class ExpressionVisitor {
 	}
 
 	public void visitFunctionCall(FunctionCall source) {
-		source.params().forEach(e -> e.accept(this));
+		source.actualParams().forEach(e -> e.accept(this));
 	}
 
 	public void visitWholeNumberLiteral(WholeNumberLiteral source) {

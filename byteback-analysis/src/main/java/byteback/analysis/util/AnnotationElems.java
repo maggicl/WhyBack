@@ -6,12 +6,24 @@ import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationStringElem;
-import soot.util.annotations.AnnotationInstanceCreator;
 
-public class AnnotationElems {
+public sealed abstract class AnnotationElems<T> extends AnnotationElemSwitch<T> {
 
-	public static class StringElemExtractor extends AnnotationElemSwitch<String> {
+	@Override
+	public final void caseAnnotationAnnotationElem(AnnotationAnnotationElem v) {
+		for (final AnnotationElem elem : v.getValue().getElems()) {
+			this.visit(elem);
+		}
+	}
 
+	@Override
+	public final void caseAnnotationArrayElem(AnnotationArrayElem v) {
+		for (final AnnotationElem elem : v.getValues()) {
+			this.visit(elem);
+		}
+	}
+
+	public final static class StringElemExtractor extends AnnotationElems<String> {
 		public String value;
 
 		@Override
@@ -28,26 +40,10 @@ public class AnnotationElems {
 		public String result() {
 			return value;
 		}
-
 	}
 
-	public static class ClassElemExtractor extends AnnotationElemSwitch<String> {
-
+	public final static class ClassElemExtractor extends AnnotationElems<String> {
 		public String value;
-
-		@Override
-		public void caseAnnotationAnnotationElem(AnnotationAnnotationElem v) {
-			for (final AnnotationElem elem : v.getValue().getElems()) {
-				this.visit(elem);
-			}
-		}
-
-		@Override
-		public void caseAnnotationArrayElem(AnnotationArrayElem v) {
-			for (final AnnotationElem elem : v.getValues()) {
-				this.visit(elem);
-			}
-		}
 
 		@Override
 		public void caseAnnotationClassElem(final AnnotationClassElem element) {
@@ -63,7 +59,5 @@ public class AnnotationElems {
 		public String result() {
 			return value;
 		}
-
 	}
-
 }

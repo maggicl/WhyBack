@@ -1,8 +1,20 @@
 package byteback.analysis;
 
 import byteback.analysis.tags.PositionTag;
-import byteback.analysis.transformer.*;
-import byteback.analysis.util.AnnotationElems;
+import byteback.analysis.transformer.CallCheckTransformer;
+import byteback.analysis.transformer.DynamicToStaticTransformer;
+import byteback.analysis.transformer.ExceptionInvariantTransformer;
+import byteback.analysis.transformer.ExpressionFolder;
+import byteback.analysis.transformer.GuardTransformer;
+import byteback.analysis.transformer.IndexCheckTransformer;
+import byteback.analysis.transformer.InvariantExpander;
+import byteback.analysis.transformer.LogicExpressionFolder;
+import byteback.analysis.transformer.LogicUnitTransformer;
+import byteback.analysis.transformer.LogicValueTransformer;
+import byteback.analysis.transformer.NullCheckTransformer;
+import byteback.analysis.transformer.PositionTagTransformer;
+import byteback.analysis.transformer.PureTransformer;
+import byteback.analysis.transformer.QuantifierValueTransformer;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootClasses;
@@ -11,9 +23,11 @@ import byteback.analysis.util.SootMethods;
 import byteback.util.Lazy;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import soot.ArrayType;
 import soot.Body;
@@ -38,6 +52,23 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
 public class RootResolver {
 
 	private static final Lazy<RootResolver> instance = Lazy.from(RootResolver::new);
+	private final Deque<AbstractHost> next;
+	private final Set<AbstractHost> visited;
+	private final Map<SootMethod, List<VimpCondition>> conditions;
+	private boolean checkArrayDereference;
+	private boolean checkNullDereference;
+
+	private RootResolver() {
+		this.next = new LinkedList<>();
+		this.visited = new HashSet<>();
+		this.checkArrayDereference = false;
+		this.checkNullDereference = false;
+		conditions = new HashMap<>();
+	}
+
+	public static RootResolver v() {
+		return instance.get();
+	}
 
 	public void transformMethod(final SootMethod method) {
 		final SootClass clazz = method.getDeclaringClass();
@@ -98,31 +129,12 @@ public class RootResolver {
 		}
 	}
 
-	private final Deque<AbstractHost> next;
-
-	private final Set<AbstractHost> visited;
-
-	private boolean checkArrayDereference;
-
-	private boolean checkNullDereference;
-
 	public void setCheckArrayDereference(boolean f) {
 		checkArrayDereference = f;
 	}
 
 	public void setCheckNullDereference(boolean f) {
 		checkNullDereference = f;
-	}
-
-	public static RootResolver v() {
-		return instance.get();
-	}
-
-	private RootResolver() {
-		this.next = new LinkedList<>();
-		this.visited = new HashSet<>();
-		this.checkArrayDereference = false;
-		this.checkNullDereference = false;
 	}
 
 	public boolean classIsValid(final SootClass clazz) {
@@ -176,20 +188,23 @@ public class RootResolver {
 			addType(type);
 		}
 
-		SootHosts.getAnnotations(method).forEach((tag) -> {
-			SootAnnotations.getAnnotations(tag).forEach((sub) -> {
-				sub.getElems().forEach((elem) -> {
-					final String classDescriptor = new AnnotationElems.ClassElemExtractor().visit(elem);
+		final List<VimpCondition> conditionList = SootHosts.getAnnotations(method)
+				.flatMap(SootAnnotations::getAnnotations)
+				.flatMap(e -> VimpCondition.parse(method, e).stream())
+				.toList();
 
-					if (classDescriptor != null) {
-						final String className = Namespace.stripDescriptor(classDescriptor);
-						addType(Scene.v().getType(className));
-					}
-				});
-			});
-		});
+		// Add all exception classes and predicate methods references by the conditions of this method
+		conditions.put(method, conditionList);
+
+		for (final VimpCondition condition : conditionList) {
+			condition.getHosts().forEach(this::addNext);
+		}
 
 		addType(method.getReturnType());
+	}
+
+	public Map<SootMethod, List<VimpCondition>> getConditions() {
+		return new HashMap<>(conditions);
 	}
 
 	public void scanMethod(final SootMethod method) {
@@ -295,7 +310,7 @@ public class RootResolver {
 	public List<SootClass> getVisibleSubclassesOf(final SootClass clazz) {
 		final Collection<SootClass> subclasses = Scene.v().getOrMakeFastHierarchy().getSubclassesOf(clazz);
 
-		return subclasses.stream().filter((c) -> visited.contains(c)).toList();
+		return subclasses.stream().filter(visited::contains).toList();
 	}
 
 	public void ensureResolved(final AbstractHost host) {

@@ -44,7 +44,7 @@ public class WhyClassPrinter {
 		final String classReference = "Class %sclass".formatted(typeDeclared ? (clazz.name() + ".") : "");
 
 		final String hierarchyStatements = Utils.trimToNull(clazz.superNames()
-				.filter(e -> resolver.isResolved(new WhyReference(e)) && !e.equals(Identifier.Special.OBJECT))
+				.filter(e -> resolver.isClassResolved(new WhyReference(e)) && !e.equals(Identifier.Special.OBJECT))
 				.map(e -> "(%s :> Class %s.class)".formatted(classReference, e))
 				.collect(Collectors.joining(" &&\n")));
 

@@ -11,7 +11,7 @@ public class VimpMethodBodyParser {
 		this.functionBodyExtractor = functionBodyExtractor;
 	}
 
-	public Expression parse(SootMethod method) {
+	public Expression parseSpec(SootMethod method) {
 		return functionBodyExtractor.visit(method.retrieveActiveBody());
 	}
 }

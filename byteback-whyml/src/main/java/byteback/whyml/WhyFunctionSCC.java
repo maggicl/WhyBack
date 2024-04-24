@@ -15,7 +15,7 @@ public final class WhyFunctionSCC {
 	private final boolean recursive;
 
 	public WhyFunctionSCC(Set<WhySpecFunction> functions, Map<WhySpecFunction, Set<WhySpecFunction>> callees) {
-		this.functionList = functions.stream().sorted(Comparator.comparing(WhySpecFunction::signature)).toList();
+		this.functionList = functions.stream().sorted(Comparator.comparing(WhySpecFunction::contract)).toList();
 
 		// collect here the set of functions called by this SCC. We later remove functions that belong to the SCC itself
 		this.calls = functions.stream()

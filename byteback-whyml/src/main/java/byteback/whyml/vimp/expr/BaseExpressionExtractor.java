@@ -10,6 +10,7 @@ import byteback.whyml.syntax.expr.OldReference;
 import byteback.whyml.syntax.expr.UnaryExpression;
 import byteback.whyml.syntax.expr.binary.BinaryExpression;
 import byteback.whyml.syntax.expr.binary.BinaryOperator;
+import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.vimp.VimpMethodNameParser;
 import byteback.whyml.vimp.VimpMethodParser;
@@ -79,10 +80,11 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 		} else if (SootHosts.hasAnnotation(method, Namespace.PRIMITIVE_ANNOTATION)) {
 			setExpression(PreludeFunctionParser.parse(method, argExpressions));
 		} else {
-			final WhyFunctionSignature sig = methodSignatureParser.signature(method)
+			final WhyFunctionSignature sig = VimpMethodParser.declaration(method)
+					.flatMap(decl -> methodSignatureParser.signature(method, decl))
 					.orElseThrow(() -> new IllegalStateException("method " + method + " is not callable"));
 
-			setExpression(new FunctionCall(sig, methodNameParser.methodName(sig), argExpressions));
+			setExpression(new FunctionCall(methodNameParser.methodName(sig), sig, argExpressions));
 		}
 	}
 

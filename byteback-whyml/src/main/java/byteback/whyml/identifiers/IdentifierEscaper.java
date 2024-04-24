@@ -70,12 +70,12 @@ public class IdentifierEscaper {
 	}
 
 	private static String escapeChar(int e) {
-		if (('0' <= e && e <= '9') || ('a' <= e && e <= 'z') || ('A' <= e && e <= 'Z') || e == '_') {
-			return Character.toString(e);
-		}
-
 		if (e == '\'') {
 			return PRIME;
+		}
+
+		if (Identifier.isLegalChar(e)) {
+			return Character.toString(e);
 		}
 
 		return e <= 255 ? String.format("%s%02X", ESCAPE_LOW_CP, e) : String.format("%s%04X", ESCAPE_HIGH_CP, e);

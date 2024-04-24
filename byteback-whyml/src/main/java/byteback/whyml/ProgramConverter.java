@@ -10,14 +10,9 @@ import byteback.whyml.printer.WhyClassPrinter;
 import byteback.whyml.printer.WhyFunctionPrinter;
 import byteback.whyml.printer.WhySignaturePrinter;
 import byteback.whyml.syntax.WhyProgram;
-import byteback.whyml.syntax.function.WhyFunctionDeclaration;
-import byteback.whyml.vimp.VimpClassParser;
-import byteback.whyml.vimp.VimpMethodBodyParser;
-import byteback.whyml.vimp.VimpMethodParser;
 import byteback.whyml.vimp.WhyResolver;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 import soot.SootClass;
 import soot.SootMethod;
 
@@ -61,7 +56,7 @@ public class ProgramConverter {
 				.toList();
 
 		final List<Statement> methodDecls = whyResolver.methodDeclarations()
-				.map(e -> whySignaturePrinter.toWhy(e.getKey(), e.getValue(), whyResolver))
+				.map(e -> whySignaturePrinter.toWhy(e.getKey(), e.getValue()))
 				.toList();
 
 		return new WhyProgram(many(
@@ -71,7 +66,7 @@ public class ProgramConverter {
 				block(decls.stream().map(WhyClassDeclaration::fieldDeclaration).flatMap(Optional::stream)),
 				block(line("(* spec declaration *)")),
 				block(functionDecls.stream()),
-				block(line("(* method signature declaration *)")),
+				block(line("(* method contract declaration *)")),
 				block(methodDecls.stream()),
 				block(line("(* method bodies declaration *)")),
 				block(line("(* TODO *)"))

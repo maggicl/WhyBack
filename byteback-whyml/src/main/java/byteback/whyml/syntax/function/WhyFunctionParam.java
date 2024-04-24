@@ -5,7 +5,7 @@ import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
 import java.util.Optional;
 
-public record WhyFunctionParam(Identifier.L name, WhyType type, boolean isNonNull) {
+public record WhyFunctionParam(Identifier.L name, WhyType type, boolean isThis) {
 	public Optional<String> condition() {
 		if (type.jvm() != WhyJVMType.PTR) {
 			return Optional.empty();
@@ -16,7 +16,7 @@ public record WhyFunctionParam(Identifier.L name, WhyType type, boolean isNonNul
 				name,
 				type.getPreludeType());
 
-		return Optional.of(isNonNull
+		return Optional.of(isThis
 				? "%s <> Ptr.null && %s".formatted(name, precondition)
 				: precondition);
 	}

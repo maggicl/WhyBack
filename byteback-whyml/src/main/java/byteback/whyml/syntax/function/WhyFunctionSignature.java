@@ -13,14 +13,15 @@ public record WhyFunctionSignature(
 		Identifier.FQDN className,
 		String name,
 		List<WhyFunctionParam> params,
-		WhyType returnType,
-		List<WhyCondition> conditions) implements Comparable<WhyFunctionSignature> {
+		WhyType returnType) implements Comparable<WhyFunctionSignature> {
 
 	private static final Comparator<List<WhyFunctionParam>> PARAMETERS_ORDER =
 			(ListComparator<WhyFunctionParam>) (a, b) -> WhyType.ORDER.compare(a.type(), b.type());
 
-	public static String descriptor(List<WhyFunctionParam> params, WhyType returnType) {
-		return params.stream().map(e -> e.type().getDescriptor())
+	public String descriptor() {
+		return params.stream()
+				.filter(e -> !e.isThis())
+				.map(e -> e.type().getDescriptor())
 				.collect(Collectors.joining(
 						"",
 						IdentifierEscaper.DESCRIPTOR_SECTION_SEPARATOR,

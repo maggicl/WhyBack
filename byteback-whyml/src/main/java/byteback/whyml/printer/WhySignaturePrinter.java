@@ -7,7 +7,7 @@ import static byteback.whyml.printer.Statement.line;
 import static byteback.whyml.printer.Statement.many;
 import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyFunctionParam;
-import byteback.whyml.syntax.function.WhyFunctionSignature;
+import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.vimp.VimpMethodNameParser;
 import byteback.whyml.vimp.WhyResolver;
 import java.util.List;
@@ -21,20 +21,20 @@ public class WhySignaturePrinter {
 		this.vimpMethodNameParser = vimpMethodNameParser;
 	}
 
-	public Statement toWhy(WhyFunctionSignature m, boolean noPredicates, boolean withWith, boolean recursive, WhyResolver resolver) {
-		final boolean isPredicate = !noPredicates && m.declaration() == WhyFunctionDeclaration.PREDICATE;
+	public Statement toWhy(WhyFunctionContract m, boolean noPredicates, boolean withWith, boolean isRecursive) {
+		final boolean isPredicate = !noPredicates && m.signature().declaration() == WhyFunctionDeclaration.PREDICATE;
 
-		final String params = m.params().stream()
+		final String params = m.signature().params().stream()
 				.map(e -> "(%s: %s)".formatted(e.name(), e.type().getWhyType()))
 				.collect(Collectors.joining(" "));
 
-		final Statement paramPreconditions = many(m.params().stream()
+		final Statement paramPreconditions = many(m.signature().params().stream()
 				.map(WhyFunctionParam::condition)
 				.flatMap(Optional::stream)
 				.map(e -> line("requires { %s }".formatted(e))));
 
 		final Statement resultPostcondition = many(
-				new WhyFunctionParam(Identifier.Special.RESULT, m.returnType(), false)
+				new WhyFunctionParam(Identifier.Special.RESULT, m.signature().returnType(), false)
 						.condition()
 						.map("ensures { %s }"::formatted)
 						.map(Statement::line)
@@ -44,20 +44,22 @@ public class WhySignaturePrinter {
 		p.print(m.conditions());
 
 		// TODO: capture variants
-		final Statement variant = recursive ? line("variant { 0 }") : many();
+		final Statement variant = isRecursive ? line("variant { 0 }") : many();
 
-		final String declaration = withWith
-				? "with"
-				: m.declaration().isSpec()
-				? m.declaration().toWhy(recursive)
-				: m.declaration().toWhyDeclaration();
+		final String declaration;
+		if (withWith) {
+			declaration = "with";
+		} else {
+			final WhyFunctionDeclaration declType = m.signature().declaration();
+			declaration = declType.isSpec() ? declType.toWhy(isRecursive) : declType.toWhyDeclaration();
+		}
 
-		final String returnType = isPredicate ? "" : ": %s".formatted(m.returnType().getWhyType());
+		final String returnType = isPredicate ? "" : ": %s".formatted(m.signature().returnType().getWhyType());
 
 		return many(
 				line("%s %s (ghost %s: Heap.t) %s %s".formatted(
 						declaration,
-						vimpMethodNameParser.methodName(m),
+						vimpMethodNameParser.methodName(m.signature()),
 						Identifier.Special.HEAP,
 						params,
 						returnType).trim()),
@@ -65,12 +67,12 @@ public class WhySignaturePrinter {
 		);
 	}
 
-	public Statement toWhy(WhyFunctionSignature m, WhyResolver resolver) {
-		return toWhy(m, false, false, false, resolver);
+	public Statement toWhy(WhyFunctionContract m) {
+		return toWhy(m, false, false, false);
 	}
 
-	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunctionSignature> methods, WhyResolver resolver) {
+	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunctionContract> methods) {
 		final WhyClassScope scope = new WhyClassScope(declaringClass);
-		return scope.with(block(methods.stream().map(e -> toWhy(e, resolver)).map(Statement::block)));
+		return scope.with(block(methods.stream().map(this::toWhy).map(Statement::block)));
 	}
 }

@@ -3,16 +3,11 @@ package byteback.whyml.syntax.function;
 import byteback.whyml.syntax.expr.Expression;
 import java.util.Objects;
 
-public record WhySpecFunction(WhyFunctionSignature signature, Expression body) {
+public record WhySpecFunction(WhyFunctionContract contract, Expression body) {
 	public WhySpecFunction {
-		if (!signature.declaration().isSpec()) {
+		if (!contract.signature().declaration().isSpec()) {
 			throw new IllegalArgumentException("a WhyFunction cannot be a program function");
 		}
-	}
-
-	@Override
-	public String toString() {
-		return "WhyFunction{signature=%s}".formatted(signature);
 	}
 
 	@Override
@@ -20,11 +15,11 @@ public record WhySpecFunction(WhyFunctionSignature signature, Expression body) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		WhySpecFunction that = (WhySpecFunction) o;
-		return Objects.equals(signature, that.signature);
+		return Objects.equals(contract, that.contract);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(signature);
+		return Objects.hash(contract);
 	}
 }

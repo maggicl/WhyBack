@@ -35,9 +35,6 @@ public class Main {
 	public static void convert(final byteback.cli.Configuration configuration) {
 		final PrintStream output;
 
-		// TODO: change
-		final boolean useMLCFG = configuration.getOutputPath().getFileName().toString().endsWith(".mlw");
-
 		if (configuration.getOutputPath() != null) {
 			final File file = configuration.getOutputPath().toFile();
 
@@ -52,8 +49,8 @@ public class Main {
 			output = System.out;
 		}
 
-		final var task = useMLCFG ?
-				new MLCFGConversionTask(resolver) :
+		final var task = configuration.useWhy() ?
+				new WhyConversionTask(resolver, configuration.useMLCFG()) :
 				new BoogieConversionTask(resolver, prelude);
 		output.print(task.run().print());
 		output.close();
@@ -103,11 +100,11 @@ public class Main {
 		injector.inject(scene.getClasses());
 		resolver.setCheckNullDereference(Configuration.v().getTransformNullCheck());
 		resolver.setCheckArrayDereference(Configuration.v().getTransformArrayCheck());
+		// TODO: remove if MLCFG does not support exceptions
+//		resolver.setTransformExceptionalControlFlow(!configuration.useWhy());
 		resolver.resolve(startingClasses);
 
-		// TODO: change
-		final boolean useMLCFG = configuration.getOutputPath().getFileName().toString().endsWith(".mlw");
-		if (!useMLCFG) {
+		if (!configuration.useWhy()) {
 			if (preludePath != null) {
 				prelude.loadFile(preludePath);
 			} else {

@@ -40,6 +40,15 @@ public class Configuration {
 
 	private JCommander jCommander;
 
+	public boolean useWhy() {
+		final String fileName = getOutputPath().getFileName().toString();
+		return fileName.endsWith(".mlw") || fileName.endsWith(".mlcfg");
+	}
+
+	public boolean useMLCFG() {
+		return getOutputPath().getFileName().toString().endsWith(".mlcfg");
+	}
+
 	public boolean getHelp() {
 		return help;
 	}

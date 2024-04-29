@@ -11,7 +11,7 @@ prelude="$dir/../byteback-whyml/src/main/resources"
 conf="$(realpath ~)/.why3.conf"
 
 file="$1"
-extension=".mlw"
+extension=".mlcfg"
 
 shift 1
 

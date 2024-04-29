@@ -5,11 +5,10 @@ import static byteback.whyml.printer.Statement.block;
 import static byteback.whyml.printer.Statement.indent;
 import static byteback.whyml.printer.Statement.line;
 import static byteback.whyml.printer.Statement.many;
+import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyFunctionParam;
-import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.vimp.VimpMethodNameParser;
-import byteback.whyml.vimp.WhyResolver;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,20 +44,23 @@ public class WhySignaturePrinter {
 
 		final String declaration;
 		if (withWith) {
-			declaration = "with";
+			declaration = m.signature().declaration().isSpec() ? "with ghost" : "with";
 		} else {
 			final WhyFunctionDeclaration declType = m.signature().declaration();
 			declaration = declType.isSpec() ? declType.toWhy(isRecursive) : declType.toWhyDeclaration();
 		}
 
-		final String returnType = isPredicate ? "" : ": %s".formatted(m.signature().returnType().getWhyType());
+		final String returnType = isPredicate
+				? ""
+				: (m.signature().declaration().isSpec() ? ": %s" : ": Result.t %s")
+					.formatted(m.signature().returnType().getWhyType());
 
 		return many(
-				line("%s %s (ghost %s: Heap.t) %s %s".formatted(
+				line("%s %s (ghost %s: Heap.t)%s %s".formatted(
 						declaration,
 						vimpMethodNameParser.methodName(m.signature()),
 						Identifier.Special.HEAP,
-						params,
+						params.isEmpty() ? "" : (" " + params),
 						returnType).trim()),
 				indent(paramPreconditions, resultPostcondition, p.conditionStatements())
 		);

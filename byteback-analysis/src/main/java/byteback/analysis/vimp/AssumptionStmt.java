@@ -30,4 +30,8 @@ public class AssumptionStmt extends LogicStmt {
 		getCondition().toString(up);
 	}
 
+	@Override
+	public String toString() {
+		return "assume " + getCondition().toString();
+	}
 }

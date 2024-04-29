@@ -1,0 +1,42 @@
+module Program
+  use int.Int
+  use array.Array
+
+  exception AAA
+
+  let cfg compute_max (a: array int) : (max: int, ghost ind: int)
+    requires { length a > 0 }
+    ensures { 0 <= ind < length a }
+    ensures { forall i. 0 <= i < length a -> a[ind] >= a[i] }
+  =
+  var i m: int;
+  ghost var ind: int;
+  {
+    i <- 0;
+    goto L
+  }
+  L {
+    raise AAA;
+    m <- a[i];
+    ind <- i;
+    goto L1
+  }
+  L1 {
+    invariant { 0 <= i < length a };
+    invariant { 0 <= ind < length a };
+    invariant { m = a[ind] };
+    invariant { forall j. 0 <= j <= i -> m >= a[j] };
+                           (* (yes, j <= i, not j < i !) *)
+    i <- i + 1;
+    switch (i < length a)
+    | True  -> goto L2
+    | False -> return (m, ind)
+    end
+  }
+  L2 {
+    switch (a[i] > m)
+    | True  -> goto L
+    | False -> goto L1
+    end
+  }
+end

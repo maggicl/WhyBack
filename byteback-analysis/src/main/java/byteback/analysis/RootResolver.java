@@ -57,12 +57,14 @@ public class RootResolver {
 	private final Map<SootMethod, List<VimpCondition>> conditions;
 	private boolean checkArrayDereference;
 	private boolean checkNullDereference;
+	private boolean transformExceptionalControlFlow;
 
 	private RootResolver() {
 		this.next = new LinkedList<>();
 		this.visited = new HashSet<>();
 		this.checkArrayDereference = false;
 		this.checkNullDereference = false;
+		this.transformExceptionalControlFlow = true;
 		conditions = new HashMap<>();
 	}
 
@@ -109,8 +111,10 @@ public class RootResolver {
 					NullCheckTransformer.v().transform(body);
 				}
 
-				CallCheckTransformer.v().transform(body);
-				GuardTransformer.v().transform(body);
+				if (this.transformExceptionalControlFlow) {
+					CallCheckTransformer.v().transform(body);
+					GuardTransformer.v().transform(body);
+				}
 
 			} else {
 				PureTransformer.v().transform(body);
@@ -135,6 +139,10 @@ public class RootResolver {
 
 	public void setCheckNullDereference(boolean f) {
 		checkNullDereference = f;
+	}
+
+	public void setTransformExceptionalControlFlow(boolean f) {
+		transformExceptionalControlFlow = f;
 	}
 
 	public boolean classIsValid(final SootClass clazz) {

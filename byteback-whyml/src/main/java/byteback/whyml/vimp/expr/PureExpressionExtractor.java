@@ -386,14 +386,11 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseClassConstant(final ClassConstant classConstant) {
-		// FIXME: find what this does
-		throw new UnsupportedOperationException("not implemented");
-
-//		final String className = Namespace.stripConstantDescriptor(classConstant.getValue());
-//		final ValueReference valueReference = ValueReference.of(ReferenceTypeConverter.typeName(className));
-//		final FunctionReference typeReference = Prelude.v().getTypeReferenceFunction().makeFunctionReference();
-//		typeReference.addArgument(valueReference);
-//		setExpression(typeReference);
+		// A `class constant` represents the java.lang.Class instance of an object (i.e. the value returned by the
+		// `.class` operator). This is not needed for reflection, so we ignore it. In principle this can be implemented
+		// by encapsulating the Type.class instance of the class in a special Prelude object (in a similar fashion to
+		// java.lang.String.literal'8).
+		throw new UnsupportedOperationException("'.class' (class constant) operator is not supported in WhyBack");
 	}
 
 	@Override

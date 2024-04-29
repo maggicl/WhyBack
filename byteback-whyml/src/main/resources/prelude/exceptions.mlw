@@ -6,7 +6,7 @@ module Exceptions
   use prelude.typing.Type
   use prelude.ptr.Ptr
 
-  exception JException Type.class
+  (* exception JException Type.class *)
 
   scope Java
   scope Lang
@@ -33,4 +33,29 @@ module Exceptions
   end
 
   predicate npe_if_null (e: Type.class) (p: Ptr.t) = p = Ptr.null && e = Java.Lang.NullPointerException.class
+end
+
+module Result
+  use prelude.ptr.Ptr
+  use prelude.machine.Operators
+
+  type t 'r = Ok 'r | Exception Ptr.t
+
+  predicate when_returns (r: t 'a) (clause: 'a -> bool) =
+    match r with
+      | Ok value -> (clause value)
+      | Exception _ -> true
+    end
+
+  predicate must_return (r: t 'a) =
+    match r with
+      | Ok _ -> true
+      | Exception _ -> false
+    end
+
+  predicate when_throws (r: t 'a) (clause: Ptr.t -> bool) =
+    match r with
+      | Ok _ -> true
+      | Exception e -> clause e
+    end
 end

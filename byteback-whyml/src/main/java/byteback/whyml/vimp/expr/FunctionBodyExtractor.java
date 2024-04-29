@@ -18,14 +18,10 @@ public class FunctionBodyExtractor extends JimpleStmtSwitch<Expression> {
 	@Override
 	public void caseIdentityStmt(final IdentityStmt identity) {
 		// IMPORTANT: a spec function is a static method with a single return statement. However, soot declares each
-		// parameter as a local variable with an identity statement in the form "l<n>: @parameter<n>" where 0
-		// is `this` if the method is not static, 1 in the first parameter (or second for statics), and so on.
-		// For the translation process we simply rely on the `l<n>` local variable name, and we name the Why function
-		// actualParams using the same convention
-
-		final IdentityStmt a = identity;
-
-		// FIXME: bullshit, if the local variable table is present names are preserved. FIX THIS
+		// parameter as a local variable with an identity statement in the form "<var>: @parameter<n>" where `<var>` is
+		// either the local variable name of the parameter if the local variable table has been preserved, or an
+		// auto-generated name. For the translation process we simply declare `<var>` as the WhyML parameter name, so
+		// we don't need to process these assignments
 	}
 
 	@Override

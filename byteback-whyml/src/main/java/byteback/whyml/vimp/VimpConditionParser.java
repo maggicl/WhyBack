@@ -44,7 +44,7 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 		List<WhyFunctionParam> methodParams = hasResult && returnType != WhyJVMType.UNIT
 				? Stream.concat(
 				scopeParams.stream(),
-				Stream.of(new WhyFunctionParam(Identifier.Special.RESULT, returnType, false))
+				Stream.of(new WhyFunctionParam(Identifier.Special.RESULT_VAR, returnType, false))
 		).toList() : scopeParams;
 
 		if (condIdentifiers.size() != methodParams.size()) {

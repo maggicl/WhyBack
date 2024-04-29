@@ -44,7 +44,7 @@ public class ProgramConverter {
 		}
 	}
 
-	public WhyProgram convert(final RootResolver resolver) {
+	public WhyProgram convert(final RootResolver resolver, final boolean useMLCFG) {
 		resolveAll(resolver);
 
 		final List<WhyClassDeclaration> decls = whyResolver.classes().stream()

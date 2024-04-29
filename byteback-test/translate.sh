@@ -8,7 +8,7 @@ source="$3"
 file="$4"
 shift 4
 
-extension=".mlw"
+extension=".mlcfg"
 
 # strip extension, replace '/' with '.'
 class="$(realpath "$source" --relative-to="$0" | sed 's/\.[a-z]*$//;s/\//\./g;s/.*\.src\.main\.[a-z][a-z]*\.//')"

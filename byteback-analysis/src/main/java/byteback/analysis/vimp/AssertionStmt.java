@@ -30,4 +30,8 @@ public class AssertionStmt extends LogicStmt {
 		getCondition().toString(up);
 	}
 
+	@Override
+	public String toString() {
+		return "assert " + getCondition().toString();
+	}
 }

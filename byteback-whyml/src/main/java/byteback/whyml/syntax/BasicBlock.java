@@ -1,7 +1,9 @@
-package byteback.whyml.syntax.expr;
+package byteback.whyml.syntax;
 
 import byteback.whyml.printer.Statement;
 import static byteback.whyml.printer.Statement.block;
+import byteback.whyml.syntax.expr.Expression;
+import byteback.whyml.syntax.expr.UnitLiteral;
 import java.util.ArrayList;
 import java.util.List;
 

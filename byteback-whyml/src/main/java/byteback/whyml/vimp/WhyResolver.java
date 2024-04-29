@@ -93,6 +93,8 @@ public class WhyResolver {
 
 			if (decl.isSpec()) {
 				specBodies.put(method, methodBodyParser.parseSpec(method));
+			} else {
+				methodBodyParser.parseProgram(method);
 			}
 		});
 	}

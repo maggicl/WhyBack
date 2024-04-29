@@ -1,0 +1,61 @@
+Block 0:
+[preds: ] [succs: 1 2 ]
+l0 := @parameter0: short;
+l1 := @parameter1: short;
+if (int) l0 <= 0 goto $u0 = new java.lang.IllegalArgumentException;
+
+Block 1:
+[preds: 0 ] [succs: 2 3 ]
+if (int) l1 > 0 goto $stack7 = "ciao".<java.lang.String: int length()>();
+
+Block 2:
+[preds: 0 1 ] [succs: ]
+$u0 = new java.lang.IllegalArgumentException;
+$u0.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Both arguments must be positive");
+throw $u0;
+
+Block 3:
+[preds: 1 ] [succs: 4 5 ]
+$stack7 = "ciao".<java.lang.String: int length()>();
+if (int) ((long) l0 cmp (long) $stack7) <= 0 goto l2 = l0;
+
+Block 4:
+[preds: 3 ] [succs: 5 ]
+<java.lang.System: java.io.PrintStream out>.<java.io.PrintStream: void println(java.lang.String)>("aaaa");
+
+Block 5:
+[preds: 3 4 ] [succs: 6 ]
+l2 = l0;
+l3 = l1;
+
+Block 6:
+[preds: 5 8 9 ] [succs: 7 10 ]
+assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l2, 0) ∧ staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l3, 0);
+assert staticinvoke <byteback.annotations.Operator: boolean eq(short,short)>(staticinvoke <GCD: short gcd_recursive(short,short)>(l2, l3), staticinvoke <GCD: short gcd_recursive(short,short)>(l0, l1));
+assert @caughtexception == voidc;
+assert @caughtexception == voidc;
+if (int) l2 == (int) l3 goto assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l2, 0) ∧ staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l3, 0);
+
+Block 7:
+[preds: 6 ] [succs: 8 9 ]
+if (int) l2 <= (int) l3 goto l3 = (short) ((int) l3 - (int) l2);
+
+Block 8:
+[preds: 7 ] [succs: 6 ]
+l2 = (short) ((int) l2 - (int) l3);
+goto [?= assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l2, 0) ∧ staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l3, 0)];
+
+Block 9:
+[preds: 7 ] [succs: 6 ]
+l3 = (short) ((int) l3 - (int) l2);
+assert @caughtexception == voidc;
+assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l2, 0) ∧ staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l3, 0);
+assert staticinvoke <byteback.annotations.Operator: boolean eq(short,short)>(staticinvoke <GCD: short gcd_recursive(short,short)>(l2, l3), staticinvoke <GCD: short gcd_recursive(short,short)>(l0, l1));
+goto [?= assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l2, 0) ∧ staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l3, 0)];
+
+Block 10:
+[preds: 6 ] [succs: ]
+assert staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l2, 0) ∧ staticinvoke <byteback.annotations.Operator: boolean gt(int,int)>((int) l3, 0);
+assert staticinvoke <byteback.annotations.Operator: boolean eq(short,short)>(staticinvoke <GCD: short gcd_recursive(short,short)>(l2, l3), staticinvoke <GCD: short gcd_recursive(short,short)>(l0, l1));
+assert @caughtexception == voidc;
+return l2;

@@ -30,4 +30,8 @@ public class InvariantStmt extends LogicStmt {
 		getCondition().toString(up);
 	}
 
+	@Override
+	public String toString() {
+		return "invariant " + getCondition().toString();
+	}
 }

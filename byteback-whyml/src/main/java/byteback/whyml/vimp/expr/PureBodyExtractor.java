@@ -6,12 +6,12 @@ import soot.Unit;
 import soot.jimple.IdentityStmt;
 import soot.jimple.ReturnStmt;
 
-public class FunctionBodyExtractor extends JimpleStmtSwitch<Expression> {
+public class PureBodyExtractor extends JimpleStmtSwitch<Expression> {
 	private final PureExpressionExtractor extractor;
 
 	private Expression result;
 
-	public FunctionBodyExtractor(PureExpressionExtractor extractor) {
+	public PureBodyExtractor(PureExpressionExtractor extractor) {
 		this.extractor = extractor;
 	}
 

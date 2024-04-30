@@ -70,7 +70,7 @@ public class ExpressionTransformer {
 	}
 
 	public Expression transformUnaryExpression(UnaryExpression source) {
-		return new UnaryExpression(source.getOperator(), source.getOperand().accept(this));
+		return new UnaryExpression(source.operator(), source.operand().accept(this));
 	}
 
 	public Expression transformUnitLiteral(UnitLiteral source) {

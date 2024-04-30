@@ -8,10 +8,9 @@ import byteback.whyml.syntax.expr.LocalVariableExpression;
 import byteback.whyml.syntax.expr.UnaryExpression;
 import byteback.whyml.syntax.expr.transformer.ParamActualizationTransformer;
 import byteback.whyml.syntax.function.WhyCondition;
-import byteback.whyml.syntax.function.WhyFunctionParam;
+import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.type.WhyJVMType;
-import byteback.whyml.syntax.type.WhyType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
@@ -38,7 +37,7 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 
 		final List<Identifier.L> condIdentifiers = paramParser.paramNames(method).toList();
 
-		List<WhyFunctionParam> methodParams = hasResult && signature.returnType() != WhyJVMType.UNIT
+		List<WhyLocal> methodParams = hasResult && signature.returnType() != WhyJVMType.UNIT
 				? Stream.concat(
 					signature.params().stream(),
 					Stream.of(signature.resultParam())
@@ -55,7 +54,7 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 		// with param names of the method itself for inlining
 		final HashMap<Identifier.L, Expression> replacementMap = new HashMap<>();
 		for (int i = 0; i < methodParams.size(); i++) {
-			final WhyFunctionParam param = methodParams.get(i);
+			final WhyLocal param = methodParams.get(i);
 			replacementMap.put(condIdentifiers.get(i), new LocalVariableExpression(param.name(), param.type().jvm()));
 		}
 

@@ -3,11 +3,11 @@ package byteback.whyml.printer;
 import byteback.whyml.Utils;
 import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.identifiers.IdentifierEscaper;
-import static byteback.whyml.printer.Statement.block;
-import static byteback.whyml.printer.Statement.indent;
-import static byteback.whyml.printer.Statement.line;
-import static byteback.whyml.printer.Statement.lines;
-import static byteback.whyml.printer.Statement.many;
+import static byteback.whyml.printer.Code.block;
+import static byteback.whyml.printer.Code.indent;
+import static byteback.whyml.printer.Code.line;
+import static byteback.whyml.printer.Code.lines;
+import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.WhyClass;
 import byteback.whyml.syntax.type.WhyReference;
 import byteback.whyml.vimp.WhyResolver;
@@ -48,7 +48,7 @@ public class WhyClassPrinter {
 				.map(e -> "(%s :> Class %s.class)".formatted(classReference, e))
 				.collect(Collectors.joining(" &&\n")));
 
-		final Statement hierarchy = hierarchyStatements == null
+		final Code hierarchy = hierarchyStatements == null
 				? many()
 				: many(
 				line("axiom hierarchy" + IdentifierEscaper.PRELUDE_RESERVED + ":"),

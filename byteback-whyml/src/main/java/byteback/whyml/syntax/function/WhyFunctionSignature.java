@@ -12,27 +12,26 @@ public record WhyFunctionSignature(
 		WhyFunctionDeclaration declaration,
 		Identifier.FQDN className,
 		String name,
-		List<WhyFunctionParam> params,
+		List<WhyLocal> params,
 		WhyType returnType) implements Comparable<WhyFunctionSignature> {
 
-	public WhyFunctionParam resultParam() {
+	public WhyLocal resultParam() {
 		// spec functions return a pure result, while program function return a result encapsulated in a Result.t object
 		// which encapsulates a possibly thrown exception, hence RESULT_VAR is used.
-		return new WhyFunctionParam(
+		return new WhyLocal(
 				declaration.isSpec()
 						? Identifier.Special.RESULT
 						: Identifier.Special.RESULT_VAR,
-				returnType,
-				false
+				returnType
 		);
 	}
 
-	private static final Comparator<List<WhyFunctionParam>> PARAMETERS_ORDER =
-			(ListComparator<WhyFunctionParam>) (a, b) -> WhyType.ORDER.compare(a.type(), b.type());
+	private static final Comparator<List<WhyLocal>> PARAMETERS_ORDER =
+			(ListComparator<WhyLocal>) (a, b) -> WhyType.ORDER.compare(a.type(), b.type());
 
 	public String descriptor() {
 		return params.stream()
-				.filter(e -> !e.isThis())
+				.filter(e -> !e.isNotNull())
 				.map(e -> e.type().getDescriptor())
 				.collect(Collectors.joining(
 						"",

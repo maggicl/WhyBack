@@ -64,6 +64,13 @@ public sealed class Identifier implements Comparable<Identifier> permits Identif
 		public static final Identifier.L RESULT_VAR = new L("result" + IdentifierEscaper.PRELUDE_RESERVED);
 		public static final Identifier.L EXCEPTION_VAR = new L("e" + IdentifierEscaper.PRELUDE_RESERVED);
 
+		/**
+		 * Generate an MLCFG label given a label number
+		 */
+		public static Identifier.U label(int number) {
+			return new Identifier.U("L" + number);
+		}
+
 		private Special() {
 		}
 	}

@@ -1,11 +1,12 @@
 package byteback.whyml.printer;
 
 import byteback.whyml.identifiers.Identifier;
-import static byteback.whyml.printer.Statement.indent;
-import static byteback.whyml.printer.Statement.line;
-import static byteback.whyml.printer.Statement.many;
+import static byteback.whyml.printer.Code.indent;
+import static byteback.whyml.printer.Code.line;
+import static byteback.whyml.printer.Code.many;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,6 +15,24 @@ public sealed abstract class SExpr {
 
 	private static <T> Stream<T> allButLast(List<T> list) {
 		return list.isEmpty() ? Stream.of() : list.stream().limit(list.size() - 1);
+	}
+
+	private static String lineParens(SExpr t) {
+		if (t instanceof Terminal) {
+			return t.toLine();
+		} else {
+			return "(%s)".formatted(t.toLine());
+		}
+	}
+
+	private static Code multilineParens(SExpr t) {
+		return multilineParens(t, "", "");
+	}
+
+	private static Code multilineParens(SExpr t, String prefix, String postfix) {
+		return t instanceof Terminal
+				? t.statement(prefix, postfix)
+				: t.statement(prefix + "(", ")" + postfix);
 	}
 
 	private static <T> T last(List<T> list) {
@@ -44,11 +63,15 @@ public sealed abstract class SExpr {
 		return new Conditional(op, left, right);
 	}
 
-	public final Statement statement() {
+	public static SExpr switchEq(SExpr test, List<Map.Entry<Integer, SExpr>> branches) {
+		return new Switch(test, branches);
+	}
+
+	public final Code statement() {
 		return statement("", "");
 	}
 
-	public final Statement statement(String prefix, String postfix) {
+	public final Code statement(String prefix, String postfix) {
 		if (prefix.length() + opLength() + postfix.length() <= MAX_LENGTH) {
 			return line(prefix + toLine() + postfix);
 		} else {
@@ -58,7 +81,7 @@ public sealed abstract class SExpr {
 
 	protected abstract String toLine();
 
-	protected abstract Statement withParens(String prefix, String postfix);
+	protected abstract Code withParens(String prefix, String postfix);
 
 	protected abstract int opLength();
 
@@ -75,7 +98,7 @@ public sealed abstract class SExpr {
 		}
 
 		@Override
-		protected Statement withParens(String prefix, String postfix) {
+		protected Code withParens(String prefix, String postfix) {
 			return line(prefix + value + postfix);
 		}
 
@@ -96,16 +119,16 @@ public sealed abstract class SExpr {
 
 		@Override
 		protected String toLine() {
-			return Stream.concat(Stream.of(op), exprs.stream().map(SExpr::toLine))
-					.collect(Collectors.joining(" ", "(", ")"));
+			return Stream.concat(Stream.of(op), exprs.stream().map(SExpr::lineParens))
+					.collect(Collectors.joining(" "));
 		}
 
 		@Override
-		public Statement withParens(String prefix, String postfix) {
+		public Code withParens(String prefix, String postfix) {
 			return many(
-					line(prefix + "(" + op),
-					indent(many(allButLast(exprs).map(SExpr::statement))),
-					indent(many(last(exprs).statement("", ")" + postfix)))
+					line(prefix + op),
+					indent(many(allButLast(exprs).map(SExpr::multilineParens))),
+					indent(many(last(exprs).statement("(", ")" + postfix)))
 			);
 		}
 
@@ -128,21 +151,20 @@ public sealed abstract class SExpr {
 
 		@Override
 		protected String toLine() {
-			return Stream.of(left.toLine(), op, right.toLine())
-					.collect(Collectors.joining(" ", "(", ")"));
+			return String.join(" ", lineParens(left), op, lineParens(right));
 		}
 
 		@Override
-		protected Statement withParens(String prefix, String postfix) {
+		protected Code withParens(String prefix, String postfix) {
 			return many(
-					left.statement(prefix + "(", ""),
-					right.statement(op + " ", ")" + postfix)
+					multilineParens(left, prefix, ""),
+					multilineParens(right, "%s ".formatted(op), postfix)
 			);
 		}
 
 		@Override
 		protected int opLength() {
-			return op.length() + left.opLength() + right.opLength() + "( )".length();
+			return op.length() + left.opLength() + right.opLength() + "()()".length();
 		}
 	}
 
@@ -164,7 +186,7 @@ public sealed abstract class SExpr {
 		}
 
 		@Override
-		protected Statement withParens(String prefix, String postfix) {
+		protected Code withParens(String prefix, String postfix) {
 			return many(conditional.statement(prefix + "if ", " then"),
 					indent(thenBranch.statement("", ""),
 							elseBranch.statement("else ", postfix))
@@ -174,6 +196,43 @@ public sealed abstract class SExpr {
 		@Override
 		protected int opLength() {
 			return conditional.opLength() + thenBranch.opLength() + elseBranch.opLength() + "if then else ".length();
+		}
+	}
+
+	private static final class Switch extends SExpr {
+		private final SExpr test;
+		private final List<Map.Entry<Integer, SExpr>> branches;
+
+		private Switch(SExpr test, List<Map.Entry<Integer, SExpr>> branches) {
+			this.test = test;
+			this.branches = branches;
+		}
+
+		@Override
+		protected String toLine() {
+			return branches.stream()
+					.map(e -> "| %d -> %s".formatted(e.getKey(), e.getValue()))
+					.collect(Collectors.joining(
+							" ",
+							"switch (%s) ".formatted(test.toLine()),
+							" end"));
+		}
+
+		@Override
+		protected Code withParens(String prefix, String postfix) {
+			return many(
+					test.statement(prefix + " switch (", ")"),
+					indent(many(branches.stream()
+							.map(e -> e.getValue().statement("| %d -> ".formatted(e.getKey()), "")))),
+					line("end")
+			);
+		}
+
+		@Override
+		protected int opLength() {
+			return 12 + test.opLength() + branches.stream()
+					.mapToInt(e -> 6 + 1 + (int) Math.log10(e.getKey()) + e.getValue().opLength())
+					.sum();
 		}
 	}
 }

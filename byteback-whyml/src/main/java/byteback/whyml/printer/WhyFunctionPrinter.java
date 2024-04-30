@@ -1,8 +1,8 @@
 package byteback.whyml.printer;
 
 import byteback.whyml.WhyFunctionSCC;
-import static byteback.whyml.printer.Statement.block;
-import static byteback.whyml.printer.Statement.many;
+import static byteback.whyml.printer.Code.block;
+import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.function.WhySpecFunction;
 import byteback.whyml.vimp.WhyResolver;
 import java.util.List;
@@ -14,23 +14,23 @@ public class WhyFunctionPrinter {
 		this.signaturePrinter = signaturePrinter;
 	}
 
-	public Statement toWhy(WhyFunctionSCC scc, WhyResolver resolver) {
+	public Code toWhy(WhyFunctionSCC scc, WhyResolver resolver) {
 		final List<WhySpecFunction> f = scc.functionList();
 		if (f.isEmpty()) return many();
 
-		final Statement[] statements = new Statement[f.size()];
+		final Code[] lines = new Code[f.size()];
 		final boolean recursive = scc.isRecursive();
 
-		statements[0] = defineFunction(f.get(0), false, recursive);
+		lines[0] = defineFunction(f.get(0), false, recursive);
 
-		for (int i = 1; i < statements.length; i++) {
-			statements[i] = defineFunction(f.get(i), true, recursive);
+		for (int i = 1; i < lines.length; i++) {
+			lines[i] = defineFunction(f.get(i), true, recursive);
 		}
 
-		return block(statements);
+		return block(lines);
 	}
 
-	private Statement defineFunction(WhySpecFunction f, boolean withWith, boolean recursive) {
+	private Code defineFunction(WhySpecFunction f, boolean withWith, boolean recursive) {
 		return many(
 				signaturePrinter.toWhy(f.contract(), true, withWith, recursive),
 				f.body().toWhy().statement("= ", "")

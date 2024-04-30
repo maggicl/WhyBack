@@ -62,7 +62,7 @@ public class ExpressionVisitor {
 	}
 
 	public void visitUnaryExpression(UnaryExpression source) {
-		source.getOperand().accept(this);
+		source.operand().accept(this);
 	}
 
 	public void visitUnitLiteral(UnitLiteral source) {

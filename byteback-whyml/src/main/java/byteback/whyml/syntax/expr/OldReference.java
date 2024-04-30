@@ -6,7 +6,6 @@ import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 
-// FIXME: old references might possibly be forbidden in spec functions, consider passing parameter copy of old values to fun
 public record OldReference(Expression inner) implements Expression {
 	@Override
 	public SExpr toWhy() {

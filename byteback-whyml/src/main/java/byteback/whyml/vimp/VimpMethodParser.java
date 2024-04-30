@@ -6,7 +6,7 @@ import byteback.analysis.VimpCondition;
 import byteback.analysis.util.SootHosts;
 import byteback.whyml.syntax.function.WhyCondition;
 import byteback.whyml.syntax.function.WhyFunctionDeclaration;
-import byteback.whyml.syntax.function.WhyFunctionParam;
+import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.type.WhyType;
@@ -52,7 +52,7 @@ public class VimpMethodParser {
 			return Optional.empty();
 		}
 
-		final List<WhyFunctionParam> params = paramParser.parseParams(method);
+		final List<WhyLocal> params = paramParser.parseParams(method);
 		final WhyType returnType = typeResolver.resolveType(method.getReturnType());
 
 		return Optional.of(new WhyFunctionSignature(

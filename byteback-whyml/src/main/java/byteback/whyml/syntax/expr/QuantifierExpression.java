@@ -7,11 +7,11 @@ import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
-import byteback.whyml.syntax.function.WhyFunctionParam;
+import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.type.WhyJVMType;
 
 public record QuantifierExpression(QuantifierExpression.Kind kind,
-								   WhyFunctionParam variable,
+								   WhyLocal variable,
 								   Expression inner) implements Expression {
 	@Override
 	public SExpr toWhy() {
@@ -20,7 +20,7 @@ public record QuantifierExpression(QuantifierExpression.Kind kind,
 				.orElseGet(inner::toWhy);
 
 		return prefix(
-				"q_%s".formatted(kind.symbol),
+				kind.symbol,
 				terminal(Identifier.Special.HEAP),
 				prefix(
 						"fun",
@@ -48,8 +48,8 @@ public record QuantifierExpression(QuantifierExpression.Kind kind,
 	}
 
 	public enum Kind {
-		EXISTS("exists"),
-		FORALL("forall");
+		EXISTS("q_exists"),
+		FORALL("q_forall");
 
 		private final String symbol;
 

@@ -1,16 +1,16 @@
 package byteback.whyml.printer;
 
 import byteback.whyml.identifiers.Identifier;
-import static byteback.whyml.printer.Statement.block;
-import static byteback.whyml.printer.Statement.indent;
-import static byteback.whyml.printer.Statement.line;
+import static byteback.whyml.printer.Code.block;
+import static byteback.whyml.printer.Code.indent;
+import static byteback.whyml.printer.Code.line;
 import byteback.whyml.syntax.field.WhyField;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
 import byteback.whyml.vimp.WhyResolver;
 
 public class WhyFieldPrinter {
-	public Statement toWhy(WhyField field, WhyResolver resolver) {
+	public Code toWhy(WhyField field, WhyResolver resolver) {
 		final Identifier.U name = field.getName();
 		final WhyType fieldType = field.getType();
 		final String preludeType = fieldType.getPreludeType();

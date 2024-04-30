@@ -11,7 +11,11 @@ import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
 import java.util.Optional;
 
-public record WhyFunctionParam(Identifier.L name, WhyType type, boolean isThis) {
+public record WhyLocal(Identifier.L name, WhyType type, boolean isNotNull) {
+	public WhyLocal(Identifier.L name, WhyType type) {
+		this(name, type, false);
+	}
+
 	public Optional<Expression> condition() {
 		if (type.jvm() != WhyJVMType.PTR) {
 			return Optional.empty();
@@ -20,7 +24,7 @@ public record WhyFunctionParam(Identifier.L name, WhyType type, boolean isThis) 
 		final Expression var = new LocalVariableExpression(name, type.jvm());
 		final Expression isType = new InstanceOfExpression(var, type);
 
-		return Optional.of(isThis
+		return Optional.of(isNotNull
 				? new BinaryExpression(LogicConnector.AND,
 				new UnaryExpression(UnaryExpression.Operator.COND_IFNOTNULL, var),
 				isType)

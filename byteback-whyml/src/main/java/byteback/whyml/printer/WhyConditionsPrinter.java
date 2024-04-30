@@ -3,8 +3,8 @@ package byteback.whyml.printer;
 import byteback.whyml.identifiers.Identifier;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
-import static byteback.whyml.printer.Statement.line;
-import static byteback.whyml.printer.Statement.many;
+import static byteback.whyml.printer.Code.line;
+import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
 import byteback.whyml.syntax.expr.LocalVariableExpression;
@@ -21,11 +21,11 @@ public class WhyConditionsPrinter implements WhyCondition.Visitor {
 	private final boolean isRecursive;
 	private final boolean isSpec;
 
-	private final List<Statement> requiresList = new ArrayList<>();
-	private final List<Statement> ensuresList = new ArrayList<>();
-	private final List<Statement> returnsList = new ArrayList<>();
-	private final List<Statement> raisesList = new ArrayList<>();
-	private final List<Statement> decreasesList = new ArrayList<>();
+	private final List<Code> requiresList = new ArrayList<>();
+	private final List<Code> ensuresList = new ArrayList<>();
+	private final List<Code> returnsList = new ArrayList<>();
+	private final List<Code> raisesList = new ArrayList<>();
+	private final List<Code> decreasesList = new ArrayList<>();
 
 	public WhyConditionsPrinter(boolean isRecursive, boolean isSpec) {
 		this.isRecursive = isRecursive;
@@ -103,7 +103,7 @@ public class WhyConditionsPrinter implements WhyCondition.Visitor {
 		conditions.forEach(this::visit);
 	}
 
-	public Statement conditionStatements() {
+	public Code conditionStatements() {
 		return many(
 				many(requiresList.stream()),
 				many(ensuresList.stream()),

@@ -1,7 +1,7 @@
 package byteback.whyml.syntax;
 
-import byteback.whyml.printer.Statement;
-import static byteback.whyml.printer.Statement.block;
+import byteback.whyml.printer.Code;
+import static byteback.whyml.printer.Code.block;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.UnitLiteral;
 import java.util.ArrayList;
@@ -16,8 +16,8 @@ public class BasicBlock {
 				: expressionList;
 	}
 
-	public Statement toWhy() {
-		final List<Statement> lines = new ArrayList<>();
+	public Code toWhy() {
+		final List<Code> lines = new ArrayList<>();
 		for (int i = 0; i < expressionList.size() - 1; i++) {
 			lines.add(expressionList.get(i).toWhy().statement("", ";"));
 		}

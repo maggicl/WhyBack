@@ -1,10 +1,10 @@
 package byteback.whyml;
 
 import byteback.analysis.RootResolver;
-import byteback.whyml.printer.Statement;
-import static byteback.whyml.printer.Statement.block;
-import static byteback.whyml.printer.Statement.line;
-import static byteback.whyml.printer.Statement.many;
+import byteback.whyml.printer.Code;
+import static byteback.whyml.printer.Code.block;
+import static byteback.whyml.printer.Code.line;
+import static byteback.whyml.printer.Code.many;
 import byteback.whyml.printer.WhyClassDeclaration;
 import byteback.whyml.printer.WhyClassPrinter;
 import byteback.whyml.printer.WhyFunctionPrinter;
@@ -51,11 +51,11 @@ public class ProgramConverter {
 				.map(e -> whyClassPrinter.toWhy(e, whyResolver))
 				.toList();
 
-		final List<Statement> functionDecls = whyResolver.specFunctions().stream()
+		final List<Code> functionDecls = whyResolver.specFunctions().stream()
 				.map(e -> whyFunctionPrinter.toWhy(e, whyResolver))
 				.toList();
 
-		final List<Statement> methodDecls = whyResolver.methodDeclarations()
+		final List<Code> methodDecls = whyResolver.methodDeclarations()
 				.map(e -> whySignaturePrinter.toWhy(e.getKey(), e.getValue()))
 				.toList();
 

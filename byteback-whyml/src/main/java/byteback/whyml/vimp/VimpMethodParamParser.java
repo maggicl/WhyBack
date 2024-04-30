@@ -4,7 +4,7 @@ import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootMethods;
 import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.identifiers.IdentifierEscaper;
-import byteback.whyml.syntax.function.WhyFunctionParam;
+import byteback.whyml.syntax.function.WhyLocal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -36,8 +36,8 @@ public class VimpMethodParamParser {
 		}
 	}
 
-	private WhyFunctionParam localToParam(Local local, boolean isThis) {
-		return new WhyFunctionParam(
+	private WhyLocal localToParam(Local local, boolean isThis) {
+		return new WhyLocal(
 				identifierEscaper.escapeL(local.getName()),
 				typeResolver.resolveType(local.getType()),
 				isThis
@@ -50,7 +50,7 @@ public class VimpMethodParamParser {
 				.map(identifierEscaper::escapeL);
 	}
 
-	public List<WhyFunctionParam> parseParams(SootMethod method) {
+	public List<WhyLocal> parseParams(SootMethod method) {
 		return Stream.concat(
 				getThisLocal(method).stream().map(local -> localToParam(local, true)),
 				getLocals(method).stream().map(local -> localToParam(local, false))

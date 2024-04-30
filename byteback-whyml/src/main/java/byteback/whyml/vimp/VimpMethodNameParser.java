@@ -2,12 +2,7 @@ package byteback.whyml.vimp;
 
 import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.identifiers.IdentifierEscaper;
-import byteback.whyml.syntax.function.WhyFunctionDeclaration;
-import byteback.whyml.syntax.function.WhyFunctionParam;
-import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
-import byteback.whyml.syntax.type.WhyType;
-import java.util.List;
 
 public class VimpMethodNameParser {
 	private final IdentifierEscaper identifierEscaper;

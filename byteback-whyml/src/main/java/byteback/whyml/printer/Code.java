@@ -4,34 +4,34 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public sealed abstract class Statement {
+public sealed abstract class Code {
 	public static final String INDENTATION = "  ";
 
-	public static Statement line(String line) {
+	public static Code line(String line) {
 		return new Single(line);
 	}
 
-	public static Statement block(Statement... lines) {
+	public static Code block(Code... lines) {
 		return new Multiple(Arrays.asList(lines), 0, true);
 	}
 
-	public static Statement block(Stream<Statement> lines) {
+	public static Code block(Stream<Code> lines) {
 		return new Multiple(lines.toList(), 0, true);
 	}
 
-	public static Statement lines(Stream<String> lines) {
+	public static Code lines(Stream<String> lines) {
 		return new Multiple(lines.map(Single::new).toList(), 0, false);
 	}
 
-	public static Statement many(Stream<Statement> lines) {
+	public static Code many(Stream<Code> lines) {
 		return new Multiple(lines.toList(), 0, false);
 	}
 
-	public static Statement many(Statement... lines) {
+	public static Code many(Code... lines) {
 		return new Multiple(Arrays.asList(lines), 0, false);
 	}
 
-	public static Statement indent(Statement... lines) {
+	public static Code indent(Code... lines) {
 		return new Multiple(Arrays.asList(lines), 1, false);
 	}
 
@@ -75,7 +75,7 @@ public sealed abstract class Statement {
 		}
 	}
 
-	public static final class Single extends Statement {
+	public static final class Single extends Code {
 		private final String line;
 
 		private Single(String line) {
@@ -88,12 +88,12 @@ public sealed abstract class Statement {
 		}
 	}
 
-	public static final class Multiple extends Statement {
-		private final List<? extends Statement> statements;
+	public static final class Multiple extends Code {
+		private final List<? extends Code> statements;
 		private final int indent;
 		private final boolean newline;
 
-		private Multiple(List<? extends Statement> statements, int indent, boolean newline) {
+		private Multiple(List<? extends Code> statements, int indent, boolean newline) {
 			this.statements = statements;
 			this.indent = indent;
 			this.newline = newline;
@@ -102,7 +102,7 @@ public sealed abstract class Statement {
 		@Override
 		protected Stream<Line> getLines() {
 			final Stream<Line> lines = statements.stream()
-					.flatMap(Statement::getLines)
+					.flatMap(Code::getLines)
 					.map(e -> e.indent(indent));
 
 			return newline ? Stream.concat(lines, Stream.of(new Line("", indent))) : lines;

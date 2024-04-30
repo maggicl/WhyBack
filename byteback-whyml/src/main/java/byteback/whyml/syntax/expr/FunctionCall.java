@@ -6,7 +6,7 @@ import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
-import byteback.whyml.syntax.function.WhyFunctionParam;
+import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
@@ -19,7 +19,7 @@ public record FunctionCall(Identifier.L name,
 						   List<Expression> actualParams) implements Expression {
 
 	public FunctionCall {
-		final List<WhyType> paramTypes = signature.params().stream().map(WhyFunctionParam::type).toList();
+		final List<WhyType> paramTypes = signature.params().stream().map(WhyLocal::type).toList();
 
 		if (paramTypes.size() != actualParams.size()) {
 			throw new IllegalArgumentException("expected %d arguments for %s, found %d".formatted(

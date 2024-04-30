@@ -8,7 +8,7 @@ import byteback.analysis.vimp.OldExpr;
 import byteback.analysis.vimp.VoidConstant;
 import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.field.WhyField;
-import byteback.whyml.syntax.function.WhyFunctionParam;
+import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.field.WhyInstanceField;
 import byteback.whyml.syntax.field.WhyStaticField;
 import byteback.whyml.syntax.expr.BooleanLiteral;
@@ -458,8 +458,8 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	}
 
 	public QuantifierExpression quantifierExpression(final QuantifierExpression.Kind kind, final QuantifierExpr v) {
-		final List<WhyFunctionParam> variables = v.getFreeLocals().stream()
-				.map(e -> new WhyFunctionParam(
+		final List<WhyLocal> variables = v.getFreeLocals().stream()
+				.map(e -> new WhyLocal(
 						identifierEscaper.escapeL(e.getName()),
 						typeResolver.resolveType(e.getType()),
 						false))

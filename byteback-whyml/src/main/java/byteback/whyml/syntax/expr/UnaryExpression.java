@@ -7,24 +7,11 @@ import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
 
-public final class UnaryExpression implements Expression {
+public record UnaryExpression(UnaryExpression.Operator operator,
+							  Expression operand) implements Expression {
 
-	private final Operator operator;
-	private final Expression operand;
-
-	public UnaryExpression(Operator operator, Expression operand) {
+	public UnaryExpression {
 		Expression.checkCompatibleType("1st", operand, operator.opType);
-
-		this.operator = operator;
-		this.operand = operand;
-	}
-
-	public Operator getOperator() {
-		return operator;
-	}
-
-	public Expression getOperand() {
-		return operand;
 	}
 
 	@Override

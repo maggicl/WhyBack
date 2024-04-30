@@ -1,14 +1,14 @@
 package byteback.whyml.printer;
 
 import byteback.whyml.identifiers.Identifier;
-import static byteback.whyml.printer.Statement.block;
-import static byteback.whyml.printer.Statement.indent;
-import static byteback.whyml.printer.Statement.line;
-import static byteback.whyml.printer.Statement.many;
+import static byteback.whyml.printer.Code.block;
+import static byteback.whyml.printer.Code.indent;
+import static byteback.whyml.printer.Code.line;
+import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.function.WhyCondition;
 import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.syntax.function.WhyFunctionDeclaration;
-import byteback.whyml.syntax.function.WhyFunctionParam;
+import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.vimp.VimpMethodNameParser;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +22,7 @@ public class WhySignaturePrinter {
 		this.vimpMethodNameParser = vimpMethodNameParser;
 	}
 
-	public Statement toWhy(WhyFunctionContract m, boolean noPredicates, boolean withWith, boolean isRecursive) {
+	public Code toWhy(WhyFunctionContract m, boolean noPredicates, boolean withWith, boolean isRecursive) {
 		final boolean isPredicate = !noPredicates && m.signature().declaration() == WhyFunctionDeclaration.PREDICATE;
 
 		final String params = m.signature().params().stream()
@@ -30,7 +30,7 @@ public class WhySignaturePrinter {
 				.collect(Collectors.joining(" "));
 
 		final Stream<WhyCondition> paramPreconditions = m.signature().params().stream()
-				.map(WhyFunctionParam::condition)
+				.map(WhyLocal::condition)
 				.flatMap(Optional::stream)
 				.map(WhyCondition.Requires::new);
 
@@ -68,12 +68,12 @@ public class WhySignaturePrinter {
 		);
 	}
 
-	public Statement toWhy(WhyFunctionContract m) {
+	public Code toWhy(WhyFunctionContract m) {
 		return toWhy(m, false, false, false);
 	}
 
-	public Statement toWhy(Identifier.FQDN declaringClass, List<WhyFunctionContract> methods) {
+	public Code toWhy(Identifier.FQDN declaringClass, List<WhyFunctionContract> methods) {
 		final WhyClassScope scope = new WhyClassScope(declaringClass);
-		return scope.with(block(methods.stream().map(this::toWhy).map(Statement::block)));
+		return scope.with(block(methods.stream().map(this::toWhy).map(Code::block)));
 	}
 }

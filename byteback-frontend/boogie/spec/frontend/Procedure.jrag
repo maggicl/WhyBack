@@ -40,7 +40,7 @@ aspect Procedure {
   eq ProcedureDeclaration.getProcedure() = new Procedure(getDeclarator());
 
   /**
-   * Links statements to procedure.
+   * Links lines to procedure.
    *
    * @return {@link Procedure} corresponding to this statement.
    */

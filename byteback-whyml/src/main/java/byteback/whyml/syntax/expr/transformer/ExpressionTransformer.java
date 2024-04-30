@@ -64,9 +64,9 @@ public class ExpressionTransformer {
 	}
 
 	public Expression transformQuantifierExpression(QuantifierExpression source) {
-		return new QuantifierExpression(source.getKind(),
-				source.getVariable(),
-				source.getInner().accept(this));
+		return new QuantifierExpression(source.kind(),
+				source.variable(),
+				source.inner().accept(this));
 	}
 
 	public Expression transformUnaryExpression(UnaryExpression source) {
@@ -115,15 +115,15 @@ public class ExpressionTransformer {
 	}
 
 	public Expression transformArrayExpression(ArrayExpression source) {
-		final ArrayOperation op = source.getOperation() instanceof ArrayOperation.Store store
+		final ArrayOperation op = source.operation() instanceof ArrayOperation.Store store
 				? ArrayOperation.store(store.getIndex().accept(this), store.getValue().accept(this))
-				: source.getOperation() instanceof ArrayOperation.Load load
+				: source.operation() instanceof ArrayOperation.Load load
 				? ArrayOperation.load(load.getIndex().accept(this))
-				: source.getOperation() instanceof ArrayOperation.IsElem isElem
+				: source.operation() instanceof ArrayOperation.IsElem isElem
 				? ArrayOperation.isElem(isElem.getIndex().accept(this))
-				: source.getOperation();
+				: source.operation();
 
-		return new ArrayExpression(source.getBase().accept(this), source.getElementType(), op);
+		return new ArrayExpression(source.base().accept(this), source.elementType(), op);
 	}
 
 	public Expression transformLocalVariableExpression(LocalVariableExpression source) {

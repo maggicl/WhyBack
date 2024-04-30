@@ -57,6 +57,8 @@ public final class UnaryExpression implements Expression {
 		COND_GT("cond_gt", WhyJVMType.INT, WhyJVMType.BOOL),
 		COND_LE("cond_le", WhyJVMType.INT, WhyJVMType.BOOL),
 		COND_GE("cond_ge", WhyJVMType.INT, WhyJVMType.BOOL),
+		COND_IFNULL("cond_ifnull", WhyJVMType.PTR, WhyJVMType.BOOL),
+		COND_IFNOTNULL("cond_ifnotnull", WhyJVMType.PTR, WhyJVMType.BOOL),
 		LNEG("lneg", WhyJVMType.LONG, WhyJVMType.LONG),
 
 		// Logic operation

@@ -9,13 +9,11 @@ import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 
-public class ArrayExpression implements Expression {
-	private final Expression base;
-	// We need to know the element type of the array as the array expression only has a JVM type of "ref" no matter what
-	private final WhyJVMType elementType;
-	private final ArrayOperation operation;
-
-	public ArrayExpression(Expression base, WhyJVMType elementType, ArrayOperation operation) {
+/**
+ * @param elementType We need to know the element type of the array as the array expression only has a JVM type of "ref" no matter what
+ */
+public record ArrayExpression(Expression base, WhyJVMType elementType, ArrayOperation operation) implements Expression {
+	public ArrayExpression {
 		if (base.type() != WhyJVMType.PTR) {
 			throw new IllegalArgumentException("base of an array expression must be of type PTR (i.e. an array)");
 		}
@@ -28,22 +26,6 @@ public class ArrayExpression implements Expression {
 						.formatted(elementType, valueType));
 			}
 		}
-
-		this.base = base;
-		this.elementType = elementType;
-		this.operation = operation;
-	}
-
-	public Expression getBase() {
-		return base;
-	}
-
-	public WhyJVMType getElementType() {
-		return elementType;
-	}
-
-	public ArrayOperation getOperation() {
-		return operation;
 	}
 
 	@Override

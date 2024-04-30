@@ -58,7 +58,7 @@ public class ExpressionVisitor {
 	}
 
 	public void visitQuantifierExpression(QuantifierExpression source) {
-		source.getInner().accept(this);
+		source.inner().accept(this);
 	}
 
 	public void visitUnaryExpression(UnaryExpression source) {
@@ -95,12 +95,12 @@ public class ExpressionVisitor {
 	}
 
 	public void visitArrayExpression(ArrayExpression source) {
-		source.getBase().accept(this);
+		source.base().accept(this);
 
-		if (source.getOperation() instanceof ArrayOperation.Store store) {
+		if (source.operation() instanceof ArrayOperation.Store store) {
 			store.getIndex().accept(this);
 			store.getValue().accept(this);
-		} else if (source.getOperation() instanceof ArrayOperation.Load load) {
+		} else if (source.operation() instanceof ArrayOperation.Load load) {
 			load.getIndex().accept(this);
 		}
 	}

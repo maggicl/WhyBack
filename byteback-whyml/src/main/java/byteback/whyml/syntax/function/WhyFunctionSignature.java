@@ -15,6 +15,18 @@ public record WhyFunctionSignature(
 		List<WhyFunctionParam> params,
 		WhyType returnType) implements Comparable<WhyFunctionSignature> {
 
+	public WhyFunctionParam resultParam() {
+		// spec functions return a pure result, while program function return a result encapsulated in a Result.t object
+		// which encapsulates a possibly thrown exception, hence RESULT_VAR is used.
+		return new WhyFunctionParam(
+				declaration.isSpec()
+						? Identifier.Special.RESULT
+						: Identifier.Special.RESULT_VAR,
+				returnType,
+				false
+		);
+	}
+
 	private static final Comparator<List<WhyFunctionParam>> PARAMETERS_ORDER =
 			(ListComparator<WhyFunctionParam>) (a, b) -> WhyType.ORDER.compare(a.type(), b.type());
 

@@ -5,6 +5,7 @@ import static byteback.whyml.printer.Statement.block;
 import static byteback.whyml.printer.Statement.indent;
 import static byteback.whyml.printer.Statement.line;
 import static byteback.whyml.printer.Statement.many;
+import byteback.whyml.syntax.function.WhyCondition;
 import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyFunctionParam;
@@ -12,6 +13,7 @@ import byteback.whyml.vimp.VimpMethodNameParser;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class WhySignaturePrinter {
 	private final VimpMethodNameParser vimpMethodNameParser;
@@ -27,20 +29,20 @@ public class WhySignaturePrinter {
 				.map(e -> "(%s: %s)".formatted(e.name(), e.type().getWhyType()))
 				.collect(Collectors.joining(" "));
 
-		final Statement paramPreconditions = many(m.signature().params().stream()
+		final Stream<WhyCondition> paramPreconditions = m.signature().params().stream()
 				.map(WhyFunctionParam::condition)
 				.flatMap(Optional::stream)
-				.map(e -> line("requires { %s }".formatted(e))));
+				.map(WhyCondition.Requires::new);
 
-		final Statement resultPostcondition = many(
-				new WhyFunctionParam(Identifier.Special.RESULT, m.signature().returnType(), false)
-						.condition()
-						.map("ensures { %s }"::formatted)
-						.map(Statement::line)
-						.stream());
+		final Stream<WhyCondition> resultPostcondition = m.signature().resultParam().condition()
+						.stream()
+						.map(WhyCondition.Ensures::new);
 
-		final WhyConditionsPrinter p = new WhyConditionsPrinter(isRecursive);
-		p.print(m.conditions());
+
+		final WhyConditionsPrinter p = new WhyConditionsPrinter(isRecursive, m.signature().declaration().isSpec());
+		p.print(Stream.concat(
+					Stream.concat(m.conditions().stream(), paramPreconditions),
+				resultPostcondition));
 
 		final String declaration;
 		if (withWith) {
@@ -62,7 +64,7 @@ public class WhySignaturePrinter {
 						Identifier.Special.HEAP,
 						params.isEmpty() ? "" : (" " + params),
 						returnType).trim()),
-				indent(paramPreconditions, resultPostcondition, p.conditionStatements())
+				indent(p.conditionStatements())
 		);
 	}
 

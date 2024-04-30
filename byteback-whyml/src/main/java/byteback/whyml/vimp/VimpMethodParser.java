@@ -68,13 +68,7 @@ public class VimpMethodParser {
 												  WhyFunctionDeclaration decl,
 												  WhyResolver resolver) {
 		return signature(method, decl).map(s -> {
-			final VimpConditionParser conditionParser = new VimpConditionParser(
-					classNameParser,
-					paramParser,
-					resolver,
-					s.params(),
-					s.returnType()
-			);
+			final VimpConditionParser conditionParser = new VimpConditionParser(classNameParser, paramParser, resolver, s);
 
 			final List<WhyCondition> conditions = vimpConditions.stream()
 					.map(conditionParser::transform)

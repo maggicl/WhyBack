@@ -25,7 +25,7 @@ public class VimpMethodBodyParser {
 	public Optional<Expression> parseProgram(SootMethod method) {
 		if (method.hasActiveBody()) {
 			final BlockGraph bg = SootBodies.getBlockGraph(method.getActiveBody());
-			System.out.println("bg " + bg);
+			//System.out.println("bg " + bg);
 
 			return Optional.empty(); // todo change
 		} else {

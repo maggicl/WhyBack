@@ -5,37 +5,17 @@ import byteback.whyml.printer.SExpr;
 import static byteback.whyml.printer.SExpr.infix;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
-import byteback.whyml.syntax.function.WhyFunctionParam;
 import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
+import byteback.whyml.syntax.function.WhyFunctionParam;
 import byteback.whyml.syntax.type.WhyJVMType;
 
-public class QuantifierExpression implements Expression {
-	private final Kind kind;
-	private final WhyFunctionParam variable;
-	private final Expression inner;
-
-	public QuantifierExpression(Kind kind, WhyFunctionParam variable, Expression inner) {
-		this.kind = kind;
-		this.variable = variable;
-		this.inner = inner;
-	}
-
-	public Kind getKind() {
-		return kind;
-	}
-
-	public WhyFunctionParam getVariable() {
-		return variable;
-	}
-
-	public Expression getInner() {
-		return inner;
-	}
-
+public record QuantifierExpression(QuantifierExpression.Kind kind,
+								   WhyFunctionParam variable,
+								   Expression inner) implements Expression {
 	@Override
 	public SExpr toWhy() {
-		final SExpr body = variable.condition().map(SExpr::terminal)
+		final SExpr body = variable.condition().map(Expression::toWhy)
 				.map(sExpr -> infix("->", sExpr, inner.toWhy()))
 				.orElseGet(inner::toWhy);
 

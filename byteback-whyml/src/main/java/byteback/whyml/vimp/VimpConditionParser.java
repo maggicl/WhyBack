@@ -9,6 +9,7 @@ import byteback.whyml.syntax.expr.UnaryExpression;
 import byteback.whyml.syntax.expr.transformer.ParamActualizationTransformer;
 import byteback.whyml.syntax.function.WhyCondition;
 import byteback.whyml.syntax.function.WhyFunctionParam;
+import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
 import java.util.HashMap;
@@ -20,20 +21,16 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 	private final VimpClassNameParser vimpClassNameParser;
 	private final VimpMethodParamParser paramParser;
 	private final WhyResolver resolver;
-
-	private final List<WhyFunctionParam> scopeParams;
-	private final WhyType returnType;
+	private final WhyFunctionSignature signature;
 
 	public VimpConditionParser(VimpClassNameParser vimpClassNameParser,
 							   VimpMethodParamParser paramParser,
 							   WhyResolver resolver,
-							   List<WhyFunctionParam> scopeParams,
-							   WhyType returnType) {
+							   WhyFunctionSignature signature) {
 		this.vimpClassNameParser = vimpClassNameParser;
 		this.paramParser = paramParser;
 		this.resolver = resolver;
-		this.scopeParams = scopeParams;
-		this.returnType = returnType;
+		this.signature = signature;
 	}
 
 	private Expression resolveCondition(SootMethod method, boolean hasResult) {
@@ -41,11 +38,12 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 
 		final List<Identifier.L> condIdentifiers = paramParser.paramNames(method).toList();
 
-		List<WhyFunctionParam> methodParams = hasResult && returnType != WhyJVMType.UNIT
+		List<WhyFunctionParam> methodParams = hasResult && signature.returnType() != WhyJVMType.UNIT
 				? Stream.concat(
-				scopeParams.stream(),
-				Stream.of(new WhyFunctionParam(Identifier.Special.RESULT_VAR, returnType, false))
-		).toList() : scopeParams;
+					signature.params().stream(),
+					Stream.of(signature.resultParam())
+				).toList()
+				: signature.params();
 
 		if (condIdentifiers.size() != methodParams.size()) {
 			throw new IllegalStateException("condIdentifiers and methodParams should have same length: condIdentifiers=" +

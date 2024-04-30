@@ -15,9 +15,11 @@ import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class WhyConditionsPrinter implements WhyCondition.Visitor {
 	private final boolean isRecursive;
+	private final boolean isSpec;
 
 	private final List<Statement> requiresList = new ArrayList<>();
 	private final List<Statement> ensuresList = new ArrayList<>();
@@ -25,8 +27,9 @@ public class WhyConditionsPrinter implements WhyCondition.Visitor {
 	private final List<Statement> raisesList = new ArrayList<>();
 	private final List<Statement> decreasesList = new ArrayList<>();
 
-	public WhyConditionsPrinter(boolean isRecursive) {
+	public WhyConditionsPrinter(boolean isRecursive, boolean isSpec) {
 		this.isRecursive = isRecursive;
+		this.isSpec = isSpec;
 	}
 
 	@Override
@@ -36,16 +39,18 @@ public class WhyConditionsPrinter implements WhyCondition.Visitor {
 
 	@Override
 	public void visitEnsures(WhyCondition.Ensures r) {
-		final SExpr ensures = prefix(
-				"when_returns",
-				terminal(Identifier.Special.RESULT),
-				prefix(
+		final SExpr ensures = isSpec
+				? r.value().toWhy()
+		        : prefix(
+					"when_returns",
+					terminal(Identifier.Special.RESULT),
+					prefix(
 						"fun",
 						terminal("(%s)".formatted(Identifier.Special.RESULT_VAR)),
 						terminal("->"),
 						r.value().toWhy()
-				)
-		);
+					)
+				);
 
 		ensuresList.add(ensures.statement("ensures { ", " }"));
 	}
@@ -57,13 +62,20 @@ public class WhyConditionsPrinter implements WhyCondition.Visitor {
 
 	@Override
 	public void visitReturns(WhyCondition.Returns r) {
-		// note: the `returns` condition in WhyML is a predicate that is guaranteed to hold on the return value
-		// the meaning of @Returns in bb-lib simply denotes that no exceptions are returned when the condition holds.
-		returnsList.add(r.when().toWhy().statement("ensures { ", " -> must_return result }"));
+		if (!isSpec) {
+			// note: the `returns` condition in WhyML is a predicate that is guaranteed to hold on the return value
+			// the meaning of @Returns in bb-lib simply denotes that no exceptions are returned when the condition holds.
+
+			returnsList.add(r.when().toWhy().statement("ensures { ", " -> must_return result }"));
+		}
 	}
 
 	@Override
 	public void visitRaises(WhyCondition.Raises r) {
+		if (isSpec) {
+			throw new IllegalStateException("spec function is not allowed to have a raises condition: " + r);
+		}
+
 		final Expression expr = new BinaryExpression(
 				LogicConnector.AND,
 				new InstanceOfExpression(
@@ -87,10 +99,8 @@ public class WhyConditionsPrinter implements WhyCondition.Visitor {
 		raisesList.add(ensures.statement("ensures { ", " }"));
 	}
 
-	public void print(List<WhyCondition> conditions) {
-		for (final WhyCondition c : conditions) {
-			visit(c);
-		}
+	public void print(Stream<WhyCondition> conditions) {
+		conditions.forEach(this::visit);
 	}
 
 	public Statement conditionStatements() {

@@ -1,6 +1,6 @@
 package byteback.whyml;
 
-import byteback.whyml.syntax.function.WhySpecFunction;
+import byteback.whyml.syntax.function.WhyFunction;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -10,12 +10,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class WhyFunctionSCC {
-	private final List<WhySpecFunction> functionList;
-	private final Set<WhySpecFunction> calls;
+	private final List<WhyFunction> functionList;
+	private final Set<WhyFunction> calls;
 	private final boolean recursive;
 
-	public WhyFunctionSCC(Set<WhySpecFunction> functions, Map<WhySpecFunction, Set<WhySpecFunction>> callees) {
-		this.functionList = functions.stream().sorted(Comparator.comparing(WhySpecFunction::contract)).toList();
+	public WhyFunctionSCC(Set<WhyFunction> functions, Map<WhyFunction, Set<WhyFunction>> callees) {
+		this.functionList = functions.stream().sorted(Comparator.comparing(WhyFunction::contract)).toList();
 
 		// collect here the set of functions called by this SCC. We later remove functions that belong to the SCC itself
 		this.calls = functions.stream()
@@ -37,11 +37,11 @@ public final class WhyFunctionSCC {
 				.collect(Collectors.toSet());
 	}
 
-	public List<WhySpecFunction> functionList() {
+	public List<WhyFunction> functionList() {
 		return functionList;
 	}
 
-	public Set<WhySpecFunction> calls() {
+	public Set<WhyFunction> calls() {
 		return calls;
 	}
 

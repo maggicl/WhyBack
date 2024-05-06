@@ -19,4 +19,8 @@ public record CFGBlock(CFGLabel label, List<Statement> statements, CFGTerminator
 				line("}")
 		);
 	}
+
+	public CFGLabel fallThroughLabel() {
+		return new CFGLabel(label().number() + 1);
+	}
 }

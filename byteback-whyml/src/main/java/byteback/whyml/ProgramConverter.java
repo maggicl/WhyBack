@@ -51,11 +51,11 @@ public class ProgramConverter {
 				.map(e -> whyClassPrinter.toWhy(e, whyResolver))
 				.toList();
 
-		final List<Code> functionDecls = whyResolver.specFunctions().stream()
-				.map(e -> whyFunctionPrinter.toWhy(e, whyResolver))
+		final List<Code> functionDecls = whyResolver.functions().stream()
+				.map(e -> whyFunctionPrinter.toWhy(e))
 				.toList();
 
-		final List<Code> methodDecls = whyResolver.methodDeclarations()
+		final List<Code> methodDecls = whyResolver.programFunctions()
 				.map(e -> whySignaturePrinter.toWhy(e.getKey(), e.getValue()))
 				.toList();
 

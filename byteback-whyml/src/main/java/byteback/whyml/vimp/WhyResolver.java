@@ -5,11 +5,10 @@ import byteback.whyml.WhyFunctionSCC;
 import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.syntax.WhyClass;
 import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.transformer.CallDependenceVisitor;
+import byteback.whyml.syntax.function.WhyFunction;
+import byteback.whyml.syntax.function.WhyFunctionBody;
 import byteback.whyml.syntax.function.WhyFunctionContract;
-import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
-import byteback.whyml.syntax.function.WhySpecFunction;
 import byteback.whyml.syntax.type.ReferenceVisitor;
 import byteback.whyml.syntax.type.WhyType;
 import byteback.whyml.vimp.graph.PostOrder;
@@ -21,11 +20,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import soot.SootClass;
 import soot.SootMethod;
 
@@ -36,8 +34,8 @@ public class WhyResolver {
 
 	private final Map<Identifier.FQDN, WhyClass> classes = new HashMap<>();
 	private final Set<SootMethod> parsed = new HashSet<>();
-	private final Map<SootMethod, WhyFunctionContract> specSignatures = new HashMap<>();
-	private final Map<SootMethod, Expression> specBodies = new HashMap<>();
+	private final Map<SootMethod, WhyFunctionContract> signatures = new HashMap<>();
+	private final Map<SootMethod, WhyFunctionBody> bodies = new HashMap<>();
 	private final Map<SootMethod, List<VimpCondition>> conditions = new HashMap<>();
 
 	public WhyResolver(VimpClassParser classParser,
@@ -69,7 +67,17 @@ public class WhyResolver {
 
 	public Expression getSpecBody(final SootMethod method) {
 		resolveMethod(method);
-		return Objects.requireNonNull(specBodies.get(method), () -> "no spec body for method " + method);
+		final WhyFunctionBody body = bodies.get(method);
+
+		if (body == null) {
+			throw new IllegalArgumentException("method has no body thus cannot be called: " + method);
+		}
+
+		if (body instanceof WhyFunctionBody.SpecBody specBody) {
+			return specBody.getExpression();
+		} else {
+			throw new IllegalArgumentException("method is not a spec method: " + method);
+		}
 	}
 
 	public void resolveAllConditionData(final Map<SootMethod, List<VimpCondition>> data) {
@@ -89,13 +97,9 @@ public class WhyResolver {
 			final List<VimpCondition> methodConditions = conditions.getOrDefault(method, List.of());
 
 			methodParser.contract(method, methodConditions, decl, this)
-					.ifPresent(signature -> specSignatures.put(method, signature));
+					.ifPresent(signature -> signatures.put(method, signature));
 
-			if (decl.isSpec()) {
-				specBodies.put(method, methodBodyParser.parseSpec(method));
-			} else {
-				methodBodyParser.parseProgram(method);
-			}
+			methodBodyParser.parse(decl, method).ifPresent(e -> bodies.put(method, e));
 		});
 	}
 
@@ -115,18 +119,17 @@ public class WhyResolver {
 		return PostOrder.compute(superAdjMap, Comparator.comparing(WhyClass::name));
 	}
 
-	public List<WhyFunctionSCC> specFunctions() {
-		final List<WhySpecFunction> functions = specSignatures.entrySet()
+	public List<WhyFunctionSCC> functions() {
+		final List<WhyFunction> functions = signatures.entrySet()
 				.stream()
-				.filter(e -> e.getValue().signature().declaration().isSpec())
-				.map(e -> new WhySpecFunction(specSignatures.get(e.getKey()), specBodies.get(e.getKey())))
+				.map(e -> new WhyFunction(e.getValue(), Optional.ofNullable(bodies.get(e.getKey()))))
 				.toList();
 
-		final Map<WhyFunctionSignature, WhySpecFunction> bySignature = functions.stream()
+		final Map<WhyFunctionSignature, WhyFunction> bySignature = functions.stream()
 				.collect(Collectors.toMap(e -> e.contract().signature(), Function.identity()));
 
-		final Map<WhySpecFunction, Set<WhySpecFunction>> callees = functions.stream()
-				.collect(Collectors.toMap(Function.identity(), e -> CallDependenceVisitor.getCallees(e.body())
+		final Map<WhyFunction, Set<WhyFunction>> callees = functions.stream()
+				.collect(Collectors.toMap(Function.identity(), e -> e.body().map(WhyFunctionBody::getCallees).orElseGet(Set::of)
 						.stream()
 						.map(bySignature::get)
 						.collect(Collectors.toSet())));
@@ -141,13 +144,5 @@ public class WhyResolver {
 		// order by post-order, sorting siblings based on the first function on the SCC. Functions within the SCC
 		// are already sorted by the WhyFunctionSCC constructor
 		return PostOrder.compute(sccAdjMap, Comparator.comparing(e -> e.functionList().get(0).contract()));
-	}
-
-	public Stream<Map.Entry<Identifier.FQDN, List<WhyFunctionContract>>> methodDeclarations() {
-		return specSignatures.values()
-				.stream()
-				.filter(e -> !e.signature().declaration().isSpec())
-				.collect(Collectors.groupingBy(whyFunctionContract -> whyFunctionContract.signature().className()))
-				.entrySet().stream();
 	}
 }

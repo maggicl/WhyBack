@@ -10,29 +10,50 @@ import byteback.whyml.syntax.expr.OldReference;
 import byteback.whyml.syntax.expr.UnaryExpression;
 import byteback.whyml.syntax.expr.binary.BinaryExpression;
 import byteback.whyml.syntax.expr.binary.BinaryOperator;
-import byteback.whyml.syntax.function.WhyFunctionContract;
+import byteback.whyml.syntax.expr.field.Access;
+import byteback.whyml.syntax.expr.field.ArrayExpression;
+import byteback.whyml.syntax.expr.field.ArrayOperation;
+import byteback.whyml.syntax.expr.field.FieldExpression;
+import byteback.whyml.syntax.expr.field.Operation;
+import byteback.whyml.syntax.field.WhyField;
+import byteback.whyml.syntax.field.WhyInstanceField;
+import byteback.whyml.syntax.field.WhyStaticField;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
+import byteback.whyml.syntax.type.WhyArrayType;
+import byteback.whyml.syntax.type.WhyJVMType;
+import byteback.whyml.syntax.type.WhyType;
+import byteback.whyml.vimp.TypeResolver;
+import byteback.whyml.vimp.VimpFieldParser;
 import byteback.whyml.vimp.VimpMethodNameParser;
 import byteback.whyml.vimp.VimpMethodParser;
 import java.util.List;
 import java.util.stream.StreamSupport;
 import soot.SootMethod;
 import soot.Value;
+import soot.jimple.ArrayRef;
 import soot.jimple.BinopExpr;
+import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InterfaceInvokeExpr;
+import soot.jimple.StaticFieldRef;
 import soot.jimple.UnopExpr;
 import soot.jimple.VirtualInvokeExpr;
 
 public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expression> {
+	protected final VimpFieldParser fieldParser;
+	protected final TypeResolver typeResolver;
 	private final VimpMethodParser methodSignatureParser;
 	private final VimpMethodNameParser methodNameParser;
-
 	protected Expression expression;
 
-	protected BaseExpressionExtractor(VimpMethodParser methodSignatureParser, VimpMethodNameParser methodNameParser) {
+	protected BaseExpressionExtractor(VimpMethodParser methodSignatureParser,
+									  VimpMethodNameParser methodNameParser,
+									  VimpFieldParser fieldParser,
+									  TypeResolver typeResolver) {
 		this.methodSignatureParser = methodSignatureParser;
 		this.methodNameParser = methodNameParser;
+		this.fieldParser = fieldParser;
+		this.typeResolver = typeResolver;
 	}
 
 	protected void setExpression(final Expression expression) {
@@ -105,4 +126,42 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 		return expression;
 	}
 
+	@Override
+	public void caseInstanceFieldRef(final InstanceFieldRef v) {
+		final WhyField field = fieldParser.parse(v.getField());
+		if (!(field instanceof WhyInstanceField)) {
+			throw new IllegalStateException("InstanceFieldRef has a non-instance field");
+		}
+
+		final Expression base = visit(v.getBase());
+		setExpression(new FieldExpression(fieldAccess(), Access.instance(base, (WhyInstanceField) field)));
+	}
+
+	@Override
+	public void caseStaticFieldRef(final StaticFieldRef v) {
+		final WhyField field = fieldParser.parse(v.getField());
+		if (!(field instanceof WhyStaticField)) {
+			throw new IllegalStateException("InstanceFieldRef has a non-instance field");
+		}
+
+		setExpression(new FieldExpression(fieldAccess(), Access.staticAccess((WhyStaticField) field)));
+	}
+
+	@Override
+	public void caseArrayRef(final ArrayRef v) {
+		final WhyType type = typeResolver.resolveType(v.getBase().getType());
+		if (!(type instanceof WhyArrayType)) {
+			throw new IllegalStateException("type of array ref expression is not array type");
+		}
+
+		final WhyJVMType elemType = ((WhyArrayType) type).baseType().jvm();
+		final Expression base = visit(v.getBase());
+		final Expression index = visit(v.getIndex());
+
+		setExpression(new ArrayExpression(base, elemType, arrayElemAccess(index)));
+	}
+
+	protected abstract Operation fieldAccess();
+
+	protected abstract ArrayOperation arrayElemAccess(Expression index);
 }

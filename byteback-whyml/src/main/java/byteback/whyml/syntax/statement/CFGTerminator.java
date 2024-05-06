@@ -1,13 +1,13 @@
 package byteback.whyml.syntax.statement;
 
 import byteback.whyml.printer.SExpr;
-import static byteback.whyml.printer.SExpr.conditional;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.switchEq;
 import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.function.CFGLabel;
 import byteback.whyml.syntax.type.WhyJVMType;
+import java.util.List;
 import java.util.Map;
 
 public sealed abstract class CFGTerminator {
@@ -61,15 +61,19 @@ public sealed abstract class CFGTerminator {
 
 		@Override
 		public SExpr toWhy() {
-			return conditional(expression.toWhy(), labelToWhy(trueBranch), labelToWhy(falseBranch));
+			return switchEq(expression.toWhy(), List.of(
+					Map.entry("True", CFGTerminator.labelToWhy(trueBranch)),
+					Map.entry("False", CFGTerminator.labelToWhy(falseBranch))
+			));
 		}
 	}
 
 	public static final class Switch extends CFGTerminator {
 		private final Expression test;
 		private final Map<Integer, CFGLabel> cases;
+		private final CFGLabel defaultTarget;
 
-		public Switch(Expression test, Map<Integer, CFGLabel> cases) {
+		public Switch(Expression test, Map<Integer, CFGLabel> cases, CFGLabel defaultTarget) {
 			if (!test.type().isWholeNumber() || test.type() == WhyJVMType.LONG) {
 				throw new IllegalArgumentException("Conditional test " + test +
 						" in switch CFG terminator must be of type BYTE, SHORT, CHAR, or INT");
@@ -77,14 +81,15 @@ public sealed abstract class CFGTerminator {
 
 			this.test = test;
 			this.cases = cases;
+			this.defaultTarget = defaultTarget;
 		}
 
 		@Override
 		public SExpr toWhy() {
 			return switchEq(test.toWhy(), cases.entrySet().stream()
 					.sorted(Map.Entry.comparingByKey())
-					.map(e -> Map.entry(e.getKey(), CFGTerminator.labelToWhy(e.getValue())))
-					.toList());
+					.map(e -> Map.entry(e.getKey().toString(), CFGTerminator.labelToWhy(e.getValue())))
+					.toList(), CFGTerminator.labelToWhy(defaultTarget));
 		}
 	}
 }

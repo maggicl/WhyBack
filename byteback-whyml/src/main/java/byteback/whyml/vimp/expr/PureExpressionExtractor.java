@@ -86,16 +86,12 @@ import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 
 public class PureExpressionExtractor extends BaseExpressionExtractor {
-	private final TypeResolver typeResolver;
-	private final VimpFieldParser fieldParser;
-	private final IdentifierEscaper identifierEscaper;
+	protected final IdentifierEscaper identifierEscaper;
 
 	public PureExpressionExtractor(VimpMethodParser methodSignatureParser, VimpMethodNameParser methodNameParser,
 								   TypeResolver typeResolver, VimpFieldParser fieldParser,
 								   IdentifierEscaper identifierEscaper) {
-		super(methodSignatureParser, methodNameParser);
-		this.typeResolver = typeResolver;
-		this.fieldParser = fieldParser;
+		super(methodSignatureParser, methodNameParser, fieldParser, typeResolver);
 		this.identifierEscaper = identifierEscaper;
 	}
 
@@ -112,6 +108,16 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 		final Value base = v.getBase();
 		final Iterable<Value> arguments = Stream.concat(Stream.of(base), v.getArgs().stream())::iterator;
 		setFunctionReference(method, arguments);
+	}
+
+	@Override
+	protected Operation fieldAccess() {
+		return Operation.is();
+	}
+
+	@Override
+	protected ArrayOperation arrayElemAccess(Expression index) {
+		return ArrayOperation.isElem(index);
 	}
 
 	@Override
@@ -407,41 +413,6 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 				identifierEscaper.escapeL(v.getName()),
 				typeResolver.resolveJVMType(v.getType())
 		));
-	}
-
-	@Override
-	public void caseInstanceFieldRef(final InstanceFieldRef v) {
-		final WhyField field = fieldParser.parse(v.getField());
-		if (!(field instanceof WhyInstanceField)) {
-			throw new IllegalStateException("InstanceFieldRef has a non-instance field");
-		}
-
-		final Expression base = visit(v.getBase());
-		setExpression(new FieldExpression(Operation.is(), Access.instance(base, (WhyInstanceField) field)));
-	}
-
-	@Override
-	public void caseStaticFieldRef(final StaticFieldRef v) {
-		final WhyField field = fieldParser.parse(v.getField());
-		if (!(field instanceof WhyStaticField)) {
-			throw new IllegalStateException("InstanceFieldRef has a non-instance field");
-		}
-
-		setExpression(new FieldExpression(Operation.is(), Access.staticAccess((WhyStaticField) field)));
-	}
-
-	@Override
-	public void caseArrayRef(final ArrayRef v) {
-		final WhyType type = typeResolver.resolveType(v.getBase().getType());
-		if (!(type instanceof WhyArrayType)) {
-			throw new IllegalStateException("type of array ref expression is not array type");
-		}
-
-		final WhyJVMType elemType = ((WhyArrayType) type).baseType().jvm();
-		final Expression base = visit(v.getBase());
-		final Expression index = visit(v.getIndex());
-
-		setExpression(new ArrayExpression(base, elemType, ArrayOperation.isElem(index)));
 	}
 
 	@Override

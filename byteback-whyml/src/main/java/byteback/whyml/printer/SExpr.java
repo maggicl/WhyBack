@@ -7,6 +7,7 @@ import static byteback.whyml.printer.Code.many;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -63,8 +64,12 @@ public sealed abstract class SExpr {
 		return new Conditional(op, left, right);
 	}
 
-	public static SExpr switchEq(SExpr test, List<Map.Entry<Integer, SExpr>> branches) {
-		return new Switch(test, branches);
+	public static SExpr switchEq(SExpr test, List<Map.Entry<String, SExpr>> branches, SExpr defaultBranch) {
+		return new Switch(test, branches, Optional.of(defaultBranch));
+	}
+
+	public static SExpr switchEq(SExpr test, List<Map.Entry<String, SExpr>> branches) {
+		return new Switch(test, branches, Optional.empty());
 	}
 
 	public final Code statement() {
@@ -201,17 +206,26 @@ public sealed abstract class SExpr {
 
 	private static final class Switch extends SExpr {
 		private final SExpr test;
-		private final List<Map.Entry<Integer, SExpr>> branches;
+		private final List<Map.Entry<String, SExpr>> branches;
+		private final Optional<SExpr> defaultBranch;
 
-		private Switch(SExpr test, List<Map.Entry<Integer, SExpr>> branches) {
+		private Switch(SExpr test, List<Map.Entry<String, SExpr>> branches, Optional<SExpr> defaultBranch) {
 			this.test = test;
 			this.branches = branches;
+			this.defaultBranch = defaultBranch;
+		}
+
+		private Stream<Map.Entry<String, SExpr>> branchStream() {
+			return Stream.concat(
+					branches.stream(),
+					defaultBranch.stream().map(e -> Map.entry("_", e))
+			);
 		}
 
 		@Override
 		protected String toLine() {
-			return branches.stream()
-					.map(e -> "| %d -> %s".formatted(e.getKey(), e.getValue()))
+			return branchStream()
+					.map(e -> "| %s -> %s".formatted(e.getKey(), e.getValue()))
 					.collect(Collectors.joining(
 							" ",
 							"switch (%s) ".formatted(test.toLine()),
@@ -222,8 +236,8 @@ public sealed abstract class SExpr {
 		protected Code withParens(String prefix, String postfix) {
 			return many(
 					test.statement(prefix + " switch (", ")"),
-					indent(many(branches.stream()
-							.map(e -> e.getValue().statement("| %d -> ".formatted(e.getKey()), "")))),
+					indent(many(branchStream()
+							.map(e -> e.getValue().statement("| %s -> ".formatted(e.getKey()), "")))),
 					line("end")
 			);
 		}
@@ -231,7 +245,7 @@ public sealed abstract class SExpr {
 		@Override
 		protected int opLength() {
 			return 12 + test.opLength() + branches.stream()
-					.mapToInt(e -> 6 + 1 + (int) Math.log10(e.getKey()) + e.getValue().opLength())
+					.mapToInt(e -> 6 + 1 + e.getKey().length() + e.getValue().opLength())
 					.sum();
 		}
 	}

@@ -1,5 +1,6 @@
 package byteback.whyml.syntax.statement;
 
+import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.printer.SExpr;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.switchEq;
@@ -26,7 +27,9 @@ public sealed abstract class CFGTerminator {
 
 		@Override
 		public SExpr toWhy() {
-			return prefix("return", value.toWhy());
+			return prefix("return",
+					prefix("build_result", terminal(Identifier.Special.CAUGHT_EXCEPTION), value.toWhy())
+			);
 		}
 	}
 

@@ -6,7 +6,6 @@ import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.LocalVariableExpression;
 import byteback.whyml.syntax.expr.NullLiteral;
-import byteback.whyml.syntax.expr.UnitLiteral;
 import byteback.whyml.syntax.expr.field.ArrayOperation;
 import byteback.whyml.syntax.expr.field.Operation;
 import byteback.whyml.syntax.type.WhyJVMType;
@@ -27,7 +26,7 @@ public class ProcedureExpressionExtractor extends PureExpressionExtractor {
 
 	@Override
 	protected Operation fieldAccess() {
-		return Operation.get();
+		return Operation.GET;
 	}
 
 	@Override

@@ -40,6 +40,8 @@ public record WhyLocal(Identifier.L name, WhyType type, boolean isNotNull) {
 	}
 
 	public Code initialization() {
-		return line("%s <- Default.%s;".formatted(name, type.jvm().getWhyAccessorScope().toLowerCase(Locale.ROOT)));
+		return type.jvm() == WhyJVMType.PTR
+				? line("%s <- Ptr.null;".formatted(name))
+				: line("%s <- Default.%s;".formatted(name, type.jvm().getWhyAccessorScope().toLowerCase(Locale.ROOT)));
 	}
 }

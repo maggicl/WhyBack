@@ -2,10 +2,10 @@ package byteback.whyml.vimp;
 
 import byteback.analysis.util.SootBodies;
 import byteback.whyml.identifiers.IdentifierEscaper;
-import byteback.whyml.syntax.function.WhyFunctionBody;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.function.CFGBlock;
 import byteback.whyml.syntax.function.CFGLabel;
+import byteback.whyml.syntax.function.WhyFunctionBody;
 import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.vimp.expr.PureBodyExtractor;
@@ -27,7 +27,7 @@ public class VimpMethodBodyParser {
 
 	public VimpMethodBodyParser(IdentifierEscaper identifierEscaper,
 								TypeResolver typeResolver,
-								PureBodyExtractor pureBodyExtractor, 
+								PureBodyExtractor pureBodyExtractor,
 								VimpBlockParser blockParser) {
 		this.identifierEscaper = identifierEscaper;
 		this.typeResolver = typeResolver;

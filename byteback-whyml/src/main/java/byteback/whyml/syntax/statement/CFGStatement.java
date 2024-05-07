@@ -2,6 +2,6 @@ package byteback.whyml.syntax.statement;
 
 import byteback.whyml.printer.Code;
 
-public interface Statement {
+public interface CFGStatement {
 	Code toWhy();
 }

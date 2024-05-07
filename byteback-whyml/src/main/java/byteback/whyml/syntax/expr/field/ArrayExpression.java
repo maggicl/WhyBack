@@ -17,30 +17,13 @@ public record ArrayExpression(Expression base, WhyJVMType elementType, ArrayOper
 		if (base.type() != WhyJVMType.PTR) {
 			throw new IllegalArgumentException("base of an array expression must be of type PTR (i.e. an array)");
 		}
-
-		if (operation instanceof ArrayOperation.Store store) {
-			final WhyJVMType valueType = store.getValue().type();
-
-			if (elementType != valueType) {
-				throw new IllegalArgumentException("cannot assign to array with type %s an expression with type %s"
-						.formatted(elementType, valueType));
-			}
-		}
 	}
 
 	@Override
 	public SExpr toWhy() {
 		final String accessor = "R" + elementType.getWhyAccessorScope();
 
-		if (operation instanceof ArrayOperation.Store store) {
-			return prefix(
-					accessor + ".store",
-					terminal(Identifier.Special.HEAP),
-					base.toWhy(),
-					store.getIndex().toWhy(),
-					store.getValue().toWhy()
-			);
-		} else if (operation instanceof ArrayOperation.Load load) {
+		if (operation instanceof ArrayOperation.Load load) {
 			return prefix(
 					accessor + ".load",
 					terminal(Identifier.Special.HEAP),

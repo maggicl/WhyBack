@@ -5,13 +5,9 @@ import byteback.analysis.vimp.LogicConstant;
 import byteback.analysis.vimp.LogicExistsExpr;
 import byteback.analysis.vimp.LogicForallExpr;
 import byteback.analysis.vimp.OldExpr;
-import byteback.analysis.vimp.VoidConstant;
 import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.expr.binary.BinaryExpression;
-import byteback.whyml.syntax.field.WhyField;
 import byteback.whyml.syntax.function.WhyLocal;
-import byteback.whyml.syntax.field.WhyInstanceField;
-import byteback.whyml.syntax.field.WhyStaticField;
 import byteback.whyml.syntax.expr.BooleanLiteral;
 import byteback.whyml.syntax.expr.ClassCastExpression;
 import byteback.whyml.syntax.expr.DoubleLiteral;
@@ -26,15 +22,12 @@ import byteback.whyml.syntax.expr.PrimitiveCastExpression;
 import byteback.whyml.syntax.expr.QuantifierExpression;
 import byteback.whyml.syntax.expr.StringLiteralExpression;
 import byteback.whyml.syntax.expr.UnaryExpression;
-import byteback.whyml.syntax.expr.UnitLiteral;
 import byteback.whyml.syntax.expr.binary.BinaryOperator;
 import byteback.whyml.syntax.expr.binary.Comparison;
 import byteback.whyml.syntax.expr.binary.LogicConnector;
 import byteback.whyml.syntax.expr.binary.PrefixOperator;
-import byteback.whyml.syntax.expr.field.Access;
 import byteback.whyml.syntax.expr.field.ArrayExpression;
 import byteback.whyml.syntax.expr.field.ArrayOperation;
-import byteback.whyml.syntax.expr.field.FieldExpression;
 import byteback.whyml.syntax.expr.field.Operation;
 import byteback.whyml.syntax.type.WhyArrayType;
 import byteback.whyml.syntax.type.WhyJVMType;
@@ -50,7 +43,6 @@ import soot.SootMethod;
 import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
-import soot.jimple.ArrayRef;
 import soot.jimple.CastExpr;
 import soot.jimple.ClassConstant;
 import soot.jimple.CmpExpr;
@@ -63,7 +55,6 @@ import soot.jimple.EqExpr;
 import soot.jimple.FloatConstant;
 import soot.jimple.GeExpr;
 import soot.jimple.GtExpr;
-import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.IntConstant;
@@ -79,7 +70,6 @@ import soot.jimple.OrExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.ShlExpr;
 import soot.jimple.ShrExpr;
-import soot.jimple.StaticFieldRef;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.StringConstant;
 import soot.jimple.SubExpr;
@@ -113,7 +103,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	protected Operation fieldAccess() {
-		return Operation.is();
+		return Operation.IS;
 	}
 
 	@Override

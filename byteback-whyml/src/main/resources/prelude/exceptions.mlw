@@ -41,6 +41,10 @@ module Result
 
   type t 'r = Ok 'r | Exception Ptr.t
 
+  val function build_result (caught: Ptr.t) (value: 'a) : t 'a
+    ensures { caught = Ptr.null  <-> result = Ok value }
+    ensures { caught <> Ptr.null <-> result = Exception caught }
+
   predicate when_returns (r: t 'a) (clause: 'a -> bool) =
     match r with
       | Ok value -> (clause value)

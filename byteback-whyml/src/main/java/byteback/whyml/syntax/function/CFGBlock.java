@@ -5,15 +5,15 @@ import static byteback.whyml.printer.Code.indent;
 import static byteback.whyml.printer.Code.line;
 import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.statement.CFGTerminator;
-import byteback.whyml.syntax.statement.Statement;
+import byteback.whyml.syntax.statement.CFGStatement;
 import java.util.List;
 
-public record CFGBlock(CFGLabel label, List<Statement> statements, CFGTerminator terminator) {
+public record CFGBlock(CFGLabel label, List<CFGStatement> CFGStatements, CFGTerminator terminator) {
 	public Code toWhy() {
 		return many(
 				line("%s {".formatted(label.name())),
 				indent(
-						many(statements.stream().map(Statement::toWhy)),
+						many(CFGStatements.stream().map(CFGStatement::toWhy)),
 						terminator.toWhy().statement()
 				),
 				line("}")

@@ -52,15 +52,11 @@ public class ExpressionTransformer {
 	}
 
 	public Expression transformFieldExpression(FieldExpression source) {
-		final Operation op = source.getOperation() instanceof Operation.Put put
-				? Operation.put(put.getValue().accept(this))
-				: source.getOperation(); // both get and is do not have parameters
-
-		final Access access = source.getAccess() instanceof Access.Instance instance ?
+		final Access access = source.access() instanceof Access.Instance instance ?
 				Access.instance(instance.getBase().accept(this), instance.getField()) :
-				source.getAccess();
+				source.access();
 
-		return new FieldExpression(op, access);
+		return new FieldExpression(source.operation(), access);
 	}
 
 	public Expression transformQuantifierExpression(QuantifierExpression source) {
@@ -115,9 +111,7 @@ public class ExpressionTransformer {
 	}
 
 	public Expression transformArrayExpression(ArrayExpression source) {
-		final ArrayOperation op = source.operation() instanceof ArrayOperation.Store store
-				? ArrayOperation.store(store.getIndex().accept(this), store.getValue().accept(this))
-				: source.operation() instanceof ArrayOperation.Load load
+		final ArrayOperation op = source.operation() instanceof ArrayOperation.Load load
 				? ArrayOperation.load(load.getIndex().accept(this))
 				: source.operation() instanceof ArrayOperation.IsElem isElem
 				? ArrayOperation.isElem(isElem.getIndex().accept(this))

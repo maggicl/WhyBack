@@ -2,10 +2,10 @@ package byteback.whyml.syntax.expr.field;
 
 import byteback.whyml.printer.SExpr;
 import static byteback.whyml.printer.SExpr.terminal;
+import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.field.WhyField;
 import byteback.whyml.syntax.field.WhyInstanceField;
 import byteback.whyml.syntax.field.WhyStaticField;
-import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.type.WhyJVMType;
 
 public sealed abstract class Access {
@@ -25,6 +25,7 @@ public sealed abstract class Access {
 	public static final class Instance extends Access {
 		private final Expression base;
 		private final WhyInstanceField field;
+
 		private Instance(Expression base, WhyInstanceField field) {
 			if (base.type() != WhyJVMType.PTR) {
 				throw new IllegalArgumentException("base expression must be a vimp");

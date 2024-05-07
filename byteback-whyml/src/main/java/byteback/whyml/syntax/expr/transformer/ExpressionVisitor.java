@@ -48,11 +48,11 @@ public class ExpressionVisitor {
 	}
 
 	public void visitFieldExpression(FieldExpression source) {
-		if (source.getOperation() instanceof Operation.Put put) {
+		if (source.operation() instanceof Operation.Put put) {
 			put.getValue().accept(this);
 		}
 
-		if (source.getAccess() instanceof Access.Instance instance) {
+		if (source.access() instanceof Access.Instance instance) {
 			instance.getBase().accept(this);
 		}
 	}

@@ -118,7 +118,7 @@ public class IdentifierEscaper {
 		return new Identifier.L(RESERVED_L_KEYWORDS.contains(identifier.toLowerCase()) ? identifier + RESERVED : identifier);
 	}
 
-	public Identifier.L specFunction(Identifier.FQDN clazz, Identifier.L function) {
+	public Identifier.L qualifiedMethod(Identifier.FQDN clazz, Identifier.L function) {
 		final List<Identifier.U> ids = clazz.getIdentifiers();
 		final int last = ids.size() - 1;
 

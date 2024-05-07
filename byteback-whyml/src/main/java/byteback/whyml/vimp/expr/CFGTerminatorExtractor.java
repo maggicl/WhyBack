@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import soot.Unit;
 import soot.Value;
+import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
@@ -24,6 +25,7 @@ public class CFGTerminatorExtractor extends JimpleStmtSwitch<Optional<CFGTermina
 	private final ProcedureExpressionExtractor expressionExtractor;
 	private final Map<Unit, CFGLabel> labelMap;
 	private final Optional<Unit> fallThrough;
+	private Optional<CFGTerminator> result;
 
 	public CFGTerminatorExtractor(ProcedureExpressionExtractor expressionExtractor,
 								  Optional<Unit> fallThrough,
@@ -33,8 +35,19 @@ public class CFGTerminatorExtractor extends JimpleStmtSwitch<Optional<CFGTermina
 		this.fallThrough = fallThrough;
 	}
 
+	@Override
+	public void setResult(Optional<CFGTerminator> result) {
+		this.result = result;
+	}
+
+	@Override
+	public Optional<CFGTerminator> getResult() {
+		return this.result;
+	}
+
 	public CFGTerminator visitOrFallThrough(Unit unit) {
-		return visit(unit).orElseGet(() ->
+		visit(unit);
+		return result.orElseGet(() ->
 				new CFGTerminator.Goto(
 						toLabel(fallThrough.orElseThrow(() ->
 								new IllegalStateException("no BB terminator instruction or fall through")))));
@@ -115,6 +128,6 @@ public class CFGTerminatorExtractor extends JimpleStmtSwitch<Optional<CFGTermina
 
 	@Override
 	public void caseDefault(Unit o) {
-		throw new IllegalStateException("unit is not a valid terminator for a basic block: " + o);
+		setResult(Optional.empty());
 	}
 }

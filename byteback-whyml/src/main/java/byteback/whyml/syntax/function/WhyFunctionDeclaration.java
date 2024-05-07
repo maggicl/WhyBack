@@ -1,7 +1,7 @@
 package byteback.whyml.syntax.function;
 
 public enum WhyFunctionDeclaration {
-	PROGRAM("let", "let rec", "val"),
+	PROGRAM("let cfg", "let rec cfg", "val"),
 	PREDICATE("let ghost predicate", "let rec ghost predicate", "val ghost predicate"),
 	FUNCTION("let ghost function", "let rec ghost function", "val ghost function");
 

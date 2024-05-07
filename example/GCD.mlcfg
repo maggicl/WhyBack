@@ -1,0 +1,635 @@
+module Program
+  (* prelude import *)
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.heap.Heap
+  use prelude.exceptions.Result
+  use export prelude.bootstrap.Bootstrap
+  use export prelude.logic.Operators
+  use export prelude.machine.Operators
+  use export prelude.ptr.Operators
+
+  (* class type hierarchy declaration *)
+
+  scope Java
+  scope Io
+  scope Serializable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Comparable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope AutoCloseable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope Closeable
+    val constant class: Type.class
+
+    axiom hierarchy'8:
+      (Class class :> Class Java.Lang.AutoCloseable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope Flushable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope OutputStream
+    val constant class: Type.class
+
+    axiom hierarchy'8:
+      (Class class :> Class Java.Io.Closeable.class) &&
+      (Class class :> Class Java.Io.Flushable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope FilterOutputStream
+    val constant class: Type.class
+
+    axiom hierarchy'8:
+      (Class class :> Class Java.Io.OutputStream.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Appendable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope CharSequence
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Constant
+  scope Constable
+    val constant class: Type.class
+  end
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Constant
+  scope ConstantDesc
+    val constant class: Type.class
+  end
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope String
+    axiom hierarchy'8:
+      (Class Java.Lang.String.class :> Class Java.Lang.Comparable.class) &&
+      (Class Java.Lang.String.class :> Class Java.Lang.Constant.ConstantDesc.class) &&
+      (Class Java.Lang.String.class :> Class Java.Lang.Constant.Constable.class) &&
+      (Class Java.Lang.String.class :> Class Java.Lang.CharSequence.class) &&
+      (Class Java.Lang.String.class :> Class Java.Io.Serializable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope System
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Throwable
+    val constant class: Type.class
+
+    axiom hierarchy'8:
+      (Class class :> Class Java.Io.Serializable.class)
+  end
+  end
+  end
+
+  scope Default'8
+  scope GCD
+    val constant class: Type.class
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Exception
+    val constant class: Type.class
+
+    axiom hierarchy'8:
+      (Class class :> Class Java.Lang.Throwable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope RuntimeException
+    val constant class: Type.class
+
+    axiom hierarchy'8:
+      (Class class :> Class Java.Lang.Exception.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope IllegalArgumentException
+    val constant class: Type.class
+
+    axiom hierarchy'8:
+      (Class class :> Class Java.Lang.RuntimeException.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope PrintStream
+    val constant class: Type.class
+
+    axiom hierarchy'8:
+      (Class class :> Class Java.Io.FilterOutputStream.class) &&
+      (Class class :> Class Java.Lang.Appendable.class) &&
+      (Class class :> Class Java.Io.Closeable.class)
+  end
+  end
+  end
+
+  (* class field declaration *)
+
+  scope Java
+  scope Io
+  scope FilterOutputStream
+    scope Out
+      let constant f: Type.t = Class Java.Io.OutputStream.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as Closed with val f = HeapDef.Int, axiom of
+
+    scope CloseLock
+      let constant f: Type.t = Class Java.Lang.Object.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope String
+    scope Value
+      let constant f: Type.t = ByteArray
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as Coder with val f = HeapDef.Byte, axiom of
+
+    clone prelude.heap.Field as Hash with val f = HeapDef.Int, axiom of
+
+    clone prelude.heap.Field as HashIsZero with val f = HeapDef.Int, axiom of
+
+    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
+
+    clone prelude.heap.Field as I'2COMPACT_STRINGS with val f = HeapDef.Int, axiom of
+
+    scope SerialPersistentFields
+      let constant f: Type.t = Type.unknown (* Type.ArrayOf (Class Java.Io.ObjectStreamField.class) *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as I'2REPL with val f = HeapDef.Char, axiom of
+
+    scope I'2CASE_INSENSITIVE_ORDER
+      let constant f: Type.t = Type.unknown (* Class Java.Util.Comparator.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as I'2LATIN1 with val f = HeapDef.Byte, axiom of
+
+    clone prelude.heap.Field as I'2UTF16 with val f = HeapDef.Byte, axiom of
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope System
+    scope In
+      let constant f: Type.t = Type.unknown (* Class Java.Io.InputStream.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope Out
+      let constant f: Type.t = Class Java.Io.PrintStream.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope Err
+      let constant f: Type.t = Class Java.Io.PrintStream.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as I'2NEVER with val f = HeapDef.Int, axiom of
+
+    clone prelude.heap.Field as I'2MAYBE with val f = HeapDef.Int, axiom of
+
+    clone prelude.heap.Field as AllowSecurityManager with val f = HeapDef.Int, axiom of
+
+    scope Security
+      let constant f: Type.t = Type.unknown (* Class Java.Lang.SecurityManager.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope Cons
+      let constant f: Type.t = Type.unknown (* Class Java.Io.Console.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope InitialErrStream
+      let constant f: Type.t = Class Java.Io.PrintStream.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope Props
+      let constant f: Type.t = Type.unknown (* Class Java.Util.Properties.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope LineSeparator
+      let constant f: Type.t = Class Java.Lang.String.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope BootLayer
+      let constant f: Type.t = Type.unknown (* Class Java.Lang.ModuleLayer.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Throwable
+    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
+
+    scope Backtrace
+      let constant f: Type.t = Class Java.Lang.Object.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope DetailMessage
+      let constant f: Type.t = Class Java.Lang.String.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope I'2UNASSIGNED_STACK
+      let constant f: Type.t = Type.unknown (* Type.ArrayOf (Class Java.Lang.StackTraceElement.class) *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope Cause
+      let constant f: Type.t = Class Java.Lang.Throwable.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope StackTrace
+      let constant f: Type.t = Type.unknown (* Type.ArrayOf (Class Java.Lang.StackTraceElement.class) *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as Depth with val f = HeapDef.Int, axiom of
+
+    scope I'2SUPPRESSED_SENTINEL
+      let constant f: Type.t = Type.unknown (* Class Java.Util.List.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope SuppressedExceptions
+      let constant f: Type.t = Type.unknown (* Class Java.Util.List.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope I'2NULL_CAUSE_MESSAGE
+      let constant f: Type.t = Class Java.Lang.String.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope I'2SELF_SUPPRESSION_MESSAGE
+      let constant f: Type.t = Class Java.Lang.String.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope I'2CAUSE_CAPTION
+      let constant f: Type.t = Class Java.Lang.String.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope I'2SUPPRESSED_CAPTION
+      let constant f: Type.t = Class Java.Lang.String.class
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope I'2EMPTY_THROWABLE_ARRAY
+      let constant f: Type.t = Type.ArrayOf (Class Java.Lang.Throwable.class)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as I'2'024assertionsDisabled with val f = HeapDef.Int, axiom of
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Exception
+    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope RuntimeException
+    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope IllegalArgumentException
+    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope PrintStream
+    clone prelude.heap.Field as AutoFlush with val f = HeapDef.Int, axiom of
+
+    clone prelude.heap.Field as Trouble with val f = HeapDef.Int, axiom of
+
+    scope Formatter
+      let constant f: Type.t = Type.unknown (* Class Java.Util.Formatter.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope TextOut
+      let constant f: Type.t = Type.unknown (* Class Java.Io.BufferedWriter.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    scope CharOut
+      let constant f: Type.t = Type.unknown (* Class Java.Io.OutputStreamWriter.class *)
+      clone export prelude.heap.PtrField with val f = f, axiom of
+    end
+
+    clone prelude.heap.Field as Closing with val f = HeapDef.Int, axiom of
+  end
+  end
+  end
+
+  (* methods *)
+
+  let rec ghost function default'8'4GCD'4gcd_recursive'7SS'7S (ghost heap'8: Heap.t) (l0: jshort) (l1: jshort) : jshort
+    variant { 0 }
+  = if SCMP.eq l0 l1 then
+    l0
+    else if SCMP.gt l0 l1 then
+      default'8'4GCD'4gcd_recursive2'7SS'7S
+        heap'8
+        (int2s (i2int (isub (int2i (s2int l0)) (int2i (s2int l1)))))
+        (l1)
+      else default'8'4GCD'4gcd_recursive2'7SS'7S
+        heap'8
+        l0
+        (int2s (i2int (isub (int2i (s2int l1)) (int2i (s2int l0)))))
+  with ghost default'8'4GCD'4gcd_recursive2'7SS'7S (ghost heap'8: Heap.t) (l0: jshort) (l1: jshort) : jshort
+    variant { 0 }
+  = if SCMP.eq l0 l1 then
+    l0
+    else if SCMP.gt l0 l1 then
+      default'8'4GCD'4gcd_recursive'7SS'7S
+        heap'8
+        (int2s (i2int (isub (int2i (s2int l0)) (int2i (s2int l1)))))
+        (l1)
+      else default'8'4GCD'4gcd_recursive'7SS'7S
+        heap'8
+        l0
+        (int2s (i2int (isub (int2i (s2int l1)) (int2i (s2int l0)))))
+
+  val java'4lang'4String'4length'7'7I (ghost heap'8: Heap.t) (this: Ptr.t) : Result.t jint
+    requires { (cond_ifnotnull this)
+    /\. (instanceof heap'8 this (Class Java.Lang.String.class)) }
+
+  val java'4lang'4Object'4i'2'03Cinit'03E'7'7V (ghost heap'8: Heap.t) (this: Ptr.t) : Result.t unit
+    requires { (cond_ifnotnull this)
+    /\. (instanceof heap'8 this (Class Java.Lang.Object.class)) }
+    ensures { true -> must_return result }
+
+  let ghost predicate default'8'4GCD'4arguments_are_negative'7SS'7Z (ghost heap'8: Heap.t) (l0: jshort) (l1: jshort) : jbool
+  = (ICMP.le (int2i (s2int l0)) (0:jint))
+  \/. (ICMP.le (int2i (s2int l1)) (0:jint))
+
+  let rec ghost function default'8'4GCD'4test'7S'7S (ghost heap'8: Heap.t) (l0: jshort) : jshort
+    variant { 0 }
+  = if SCMP.le l0 (0:jshort) then
+    (0:jshort)
+    else default'8'4GCD'4test'7S'7S
+      heap'8
+      (int2s (i2int (isub (int2i (s2int l0)) (1:jint))))
+
+  let ghost predicate default'8'4GCD'4test2'7'7Z (ghost heap'8: Heap.t) : jbool
+  = q_forall
+    heap'8
+    (fun (heap'8: Heap.t) (i'2'024stack1: jint) -> (ICMP.le i'2'024stack1 (0:jint)))
+
+  val java'4lang'4IllegalArgumentException'4i'2'03Cinit'03E'7LJava'5Lang'5String'6'7V (ghost heap'8: Heap.t) (this: Ptr.t) (p0: Ptr.t) : Result.t unit
+    requires { (cond_ifnotnull this)
+    /\. (instanceof heap'8 this (Class Java.Lang.IllegalArgumentException.class)) }
+    requires { instanceof heap'8 p0 (Class Java.Lang.String.class) }
+    ensures { true -> must_return result }
+
+  val java'4io'4PrintStream'4println'7LJava'5Lang'5String'6'7V (ghost heap'8: Heap.t) (this: Ptr.t) (p0: Ptr.t) : Result.t unit
+    requires { (cond_ifnotnull this)
+    /\. (instanceof heap'8 this (Class Java.Io.PrintStream.class)) }
+    requires { instanceof heap'8 p0 (Class Java.Lang.String.class) }
+
+  let cfg default'8'4GCD'4gcd'7SS'7S (ghost heap'8: Heap.t) (l0: jshort) (l1: jshort) : Result.t jshort
+    ensures { when_returns
+      result
+      (fun
+        (result'8)
+        ->
+        ((not (default'8'4GCD'4arguments_are_negative'7SS'7Z heap'8 l0 l1))
+        ->. (SCMP.eq result'8 (default'8'4GCD'4gcd_recursive'7SS'7S heap'8 l0 l1)))) }
+    ensures { when_throws
+      result
+      (fun
+        (e'8: Ptr.t)
+        ->
+        ((instanceof heap'8 e'8 (Class Java.Lang.IllegalArgumentException.class))
+        /\. ((ICMP.le (int2i (s2int l0)) (0:jint))
+        \/. (ICMP.le (int2i (s2int l1)) (0:jint))))) }
+  =
+    var l0: jshort;
+    var l1: jshort;
+    var i'2'024stack7: jint;
+    var l2: jshort;
+    var l3: jshort;
+    var i'2'024u0: Ptr.t;
+    {
+      l0 <- Default.s;
+      l1 <- Default.s;
+      i'2'024stack7 <- Default.i;
+      l2 <- Default.s;
+      l3 <- Default.s;
+      i'2'024u0 <- Default.l;
+      goto L1
+    }
+    L1 {
+      switch (ICMP.le (int2i (s2int l0)) (0:jint))
+      | True -> goto L3
+      | False -> goto L2
+      end
+    }
+    L2 {
+      switch (ICMP.gt (int2i (s2int l1)) (0:jint))
+      | True -> goto L6
+      | False -> goto L3
+      end
+    }
+    L3 {
+      switch (LCMP.eq caughtexception'8 Ptr.null)
+      | True -> goto L5
+      | False -> goto L4
+      end
+    }
+    L4 {
+      return ()
+    }
+    L5 {
+      return ()
+    }
+    L6 {
+      switch (LCMP.eq caughtexception'8 Ptr.null)
+      | True -> goto L8
+      | False -> goto L7
+      end
+    }
+    L7 {
+      return ()
+    }
+    L8 {
+      switch (ICMP.le
+        (int2i (i2int (lcmp (int2j (s2int l0)) (int2j (i2int i'2'024stack7)))))
+        ((0:jint)))
+      | True -> goto L11
+      | False -> goto L9
+      end
+    }
+    L9 {
+      switch (LCMP.eq caughtexception'8 Ptr.null)
+      | True -> goto L11
+      | False -> goto L10
+      end
+    }
+    L10 {
+      return ()
+    }
+    L11 {
+      goto L12
+    }
+    L12 {
+      switch (ICMP.eq (int2i (s2int l2)) (int2i (s2int l3)))
+      | True -> goto L16
+      | False -> goto L13
+      end
+    }
+    L13 {
+      switch (ICMP.le (int2i (s2int l2)) (int2i (s2int l3)))
+      | True -> goto L15
+      | False -> goto L14
+      end
+    }
+    L14 {
+      goto L12
+    }
+    L15 {
+      goto L12
+    }
+    L16 {
+      return l2
+    }
+
+  let ghost predicate default'8'4GCD'4arguments_are_positive'7SS'7Z (ghost heap'8: Heap.t) (l0: jshort) (l1: jshort) : jbool
+  = (ICMP.le (int2i (s2int l0)) (0:jint))
+  /\. (ICMP.le (int2i (s2int l1)) (0:jint))
+
+  let cfg default'8'4GCD'4i'2'03Cinit'03E'7'7V (ghost heap'8: Heap.t) (l0: Ptr.t) : Result.t unit
+    requires { (cond_ifnotnull l0)
+    /\. (instanceof heap'8 l0 (Class Default'8.GCD.class)) }
+  =
+    var l0: Ptr.t;
+    {
+      l0 <- Default.l;
+      goto L1
+    }
+    L1 {
+      switch (LCMP.eq caughtexception'8 Ptr.null)
+      | True -> goto L3
+      | False -> goto L2
+      end
+    }
+    L2 {
+      return ()
+    }
+    L3 {
+      return ()
+    }
+end

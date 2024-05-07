@@ -78,6 +78,12 @@ public sealed abstract class WhyFunctionBody {
 					line("="),
 					indent(
 							many(locals.stream().map(WhyLocal::toWhy)),
+							line("{"),
+							indent(
+									many(locals.stream().map(WhyLocal::initialization)),
+									line("goto %s".formatted(blocks.get(0).label().name()))
+							),
+							line("}"),
 							many(blocks.stream().map(CFGBlock::toWhy))
 					)
 			);

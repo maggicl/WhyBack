@@ -62,6 +62,7 @@ public sealed class Identifier implements Comparable<Identifier> permits Identif
 		public static final Identifier.L RESULT = new L("result");
 		public static final Identifier.L HEAP = new L("heap" + IdentifierEscaper.PRELUDE_RESERVED);
 		public static final Identifier.L RESULT_VAR = new L("result" + IdentifierEscaper.PRELUDE_RESERVED);
+		public static final Identifier.L CAUGHT_EXCEPTION = new L("caughtexception" + IdentifierEscaper.PRELUDE_RESERVED);
 		public static final Identifier.L EXCEPTION_VAR = new L("e" + IdentifierEscaper.PRELUDE_RESERVED);
 
 		/**

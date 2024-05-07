@@ -11,6 +11,7 @@ import byteback.whyml.syntax.expr.binary.BinaryExpression;
 import byteback.whyml.syntax.expr.binary.LogicConnector;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
+import java.util.Locale;
 import java.util.Optional;
 
 public record WhyLocal(Identifier.L name, WhyType type, boolean isNotNull) {
@@ -36,5 +37,9 @@ public record WhyLocal(Identifier.L name, WhyType type, boolean isNotNull) {
 	public Code toWhy() {
 		// TODO: consider adding invariants for object variables
 		return line("var %s: %s;".formatted(name, type.getWhyType()));
+	}
+
+	public Code initialization() {
+		return line("%s <- Default.%s;".formatted(name, type.jvm().getWhyAccessorScope().toLowerCase(Locale.ROOT)));
 	}
 }

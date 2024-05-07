@@ -13,6 +13,6 @@ public class VimpMethodNameParser {
 
 	public Identifier.L methodName(WhyFunctionSignature method) {
 		final Identifier.L name = identifierEscaper.escapeL(method.name()).append(method.descriptor());
-		return method.declaration().isSpec() ? identifierEscaper.specFunction(method.className(), name) : name;
+		return identifierEscaper.qualifiedMethod(method.className(), name);
 	}
 }

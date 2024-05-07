@@ -77,7 +77,9 @@ public sealed abstract class SExpr {
 	}
 
 	public final Code statement(String prefix, String postfix) {
-		if (prefix.length() + opLength() + postfix.length() <= MAX_LENGTH) {
+		int op = opLength();
+
+		if (op > 0 && prefix.length() + op + postfix.length() <= MAX_LENGTH) {
 			return line(prefix + toLine() + postfix);
 		} else {
 			return withParens(prefix, postfix);
@@ -224,29 +226,23 @@ public sealed abstract class SExpr {
 
 		@Override
 		protected String toLine() {
-			return branchStream()
-					.map(e -> "| %s -> %s".formatted(e.getKey(), e.getValue()))
-					.collect(Collectors.joining(
-							" ",
-							"switch (%s) ".formatted(test.toLine()),
-							" end"));
+			throw new UnsupportedOperationException("switch expression is always multiline");
 		}
 
 		@Override
 		protected Code withParens(String prefix, String postfix) {
 			return many(
-					test.statement(prefix + " switch (", ")"),
-					indent(many(branchStream()
-							.map(e -> e.getValue().statement("| %s -> ".formatted(e.getKey()), "")))),
+					test.statement(prefix + "switch (", ")"),
+					many(branchStream()
+							.map(e -> e.getValue().statement("| %s -> ".formatted(e.getKey()), ""))),
 					line("end")
 			);
 		}
 
 		@Override
 		protected int opLength() {
-			return 12 + test.opLength() + branches.stream()
-					.mapToInt(e -> 6 + 1 + e.getKey().length() + e.getValue().opLength())
-					.sum();
+			// switch is always multiline
+			return -1;
 		}
 	}
 }

@@ -259,10 +259,13 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseCmpExpr(final CmpExpr v) {
-		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
-		if (opType != WhyJVMType.LONG) {
-			throw new IllegalArgumentException("cmp operation not supported on type " + opType);
+		final WhyJVMType op1Type = typeResolver.resolveJVMType(v.getOp1().getType());
+		final WhyJVMType op2Type = typeResolver.resolveJVMType(v.getOp2().getType());
+
+		if (op1Type != WhyJVMType.LONG || op2Type != WhyJVMType.LONG) {
+			throw new IllegalArgumentException("cmp operation not supported on type " + op1Type + " and " + op2Type);
 		}
+
 		setBinaryExpression(v, PrefixOperator.LCMP);
 	}
 
@@ -368,11 +371,6 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	@Override
 	public void caseNullConstant(final NullConstant v) {
 		setExpression(NullLiteral.INSTANCE);
-	}
-
-	@Override
-	public void caseVoidConstant(final VoidConstant v) {
-		setExpression(UnitLiteral.INSTANCE);
 	}
 
 	@Override

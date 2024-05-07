@@ -4,8 +4,7 @@ import byteback.whyml.WhyFunctionSCC;
 import static byteback.whyml.printer.Code.block;
 import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.function.WhyFunction;
-import byteback.whyml.syntax.function.WhySpecFunction;
-import byteback.whyml.vimp.WhyResolver;
+import byteback.whyml.syntax.function.WhyFunctionBody;
 import java.util.List;
 
 public class WhyFunctionPrinter {
@@ -33,8 +32,8 @@ public class WhyFunctionPrinter {
 
 	private Code defineFunction(WhyFunction f, boolean withWith, boolean recursive) {
 		return many(
-				signaturePrinter.toWhy(f.contract(), true, withWith, recursive),
-				f.body().toWhy().statement("= ", "")
+				signaturePrinter.toWhy(f.contract(), true, withWith, recursive, f.body().isPresent()),
+				many(f.body().stream().map(WhyFunctionBody::toWhy))
 		);
 	}
 }

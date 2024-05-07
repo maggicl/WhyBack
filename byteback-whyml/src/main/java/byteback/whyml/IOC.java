@@ -42,7 +42,7 @@ public final class IOC {
 	public static final WhyFunctionPrinter WHY_FUNCTION_PRINTER = new WhyFunctionPrinter(WHY_SIGNATURE_PRINTER);
 	public static final WhyFieldPrinter WHY_FIELD_PRINTER = new WhyFieldPrinter();
 	public static final WhyClassPrinter WHY_CLASS_PRINTER = new WhyClassPrinter(WHY_FIELD_PRINTER);
-	public static final ProgramConverter PROGRAM_CONVERTER = new ProgramConverter(WHY_RESOLVER, WHY_CLASS_PRINTER, WHY_SIGNATURE_PRINTER, WHY_FUNCTION_PRINTER);
+	public static final ProgramConverter PROGRAM_CONVERTER = new ProgramConverter(WHY_RESOLVER, WHY_CLASS_PRINTER, WHY_FUNCTION_PRINTER);
 
 	private IOC() {
 	}

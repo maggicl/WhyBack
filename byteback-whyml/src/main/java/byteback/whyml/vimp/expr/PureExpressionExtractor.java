@@ -7,6 +7,7 @@ import byteback.analysis.vimp.LogicForallExpr;
 import byteback.analysis.vimp.OldExpr;
 import byteback.analysis.vimp.VoidConstant;
 import byteback.whyml.identifiers.IdentifierEscaper;
+import byteback.whyml.syntax.expr.binary.BinaryExpression;
 import byteback.whyml.syntax.field.WhyField;
 import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.field.WhyInstanceField;
@@ -266,8 +267,14 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	}
 
 	private void setConditionExpr(final ConditionExpr expr, final Comparison.Kind kind) {
-		final WhyJVMType opType = typeResolver.resolveJVMType(expr.getType());
-		setBinaryExpression(expr, new Comparison(opType, kind));
+		final Expression v1 = visit(expr.getOp1());
+		final Expression v2 = visit(expr.getOp2());
+
+		if (v1.type() != v2.type()) {
+			throw new IllegalStateException("condition expression has incompatible types: " + v1.type() + " and " + v2.type());
+		}
+
+		setExpression(new BinaryExpression(new Comparison(v1.type(), kind), v1, v2));
 	}
 
 	@Override

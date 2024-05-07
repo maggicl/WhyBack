@@ -1,5 +1,9 @@
 package byteback.whyml.syntax.function;
 
+import byteback.whyml.printer.Code;
+import static byteback.whyml.printer.Code.indent;
+import static byteback.whyml.printer.Code.line;
+import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.transformer.CallDependenceVisitor;
 import java.util.EnumSet;
@@ -8,7 +12,10 @@ import java.util.Set;
 
 public sealed abstract class WhyFunctionBody {
 	public abstract Set<WhyFunctionDeclaration> forDecls();
+
 	public abstract Set<WhyFunctionSignature> getCallees();
+
+	public abstract Code toWhy();
 
 	public static final class SpecBody extends WhyFunctionBody {
 		private final Expression expression;
@@ -29,6 +36,11 @@ public sealed abstract class WhyFunctionBody {
 		@Override
 		public Set<WhyFunctionSignature> getCallees() {
 			return CallDependenceVisitor.getCallees(expression);
+		}
+
+		@Override
+		public Code toWhy() {
+			return expression.toWhy().statement("= ", "");
 		}
 	}
 
@@ -58,6 +70,17 @@ public sealed abstract class WhyFunctionBody {
 		public Set<WhyFunctionSignature> getCallees() {
 			// TODO: change
 			return Set.of();
+		}
+
+		@Override
+		public Code toWhy() {
+			return many(
+					line("="),
+					indent(
+							many(locals.stream().map(WhyLocal::toWhy)),
+							many(blocks.stream().map(CFGBlock::toWhy))
+					)
+			);
 		}
 	}
 }

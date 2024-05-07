@@ -22,7 +22,7 @@ public class WhySignaturePrinter {
 		this.vimpMethodNameParser = vimpMethodNameParser;
 	}
 
-	public Code toWhy(WhyFunctionContract m, boolean noPredicates, boolean withWith, boolean isRecursive) {
+	public Code toWhy(WhyFunctionContract m, boolean noPredicates, boolean withWith, boolean isRecursive, boolean hasBody) {
 		final boolean isPredicate = !noPredicates && m.signature().declaration() == WhyFunctionDeclaration.PREDICATE;
 
 		final String params = m.signature().params().stream()
@@ -49,7 +49,9 @@ public class WhySignaturePrinter {
 			declaration = m.signature().declaration().isSpec() ? "with ghost" : "with";
 		} else {
 			final WhyFunctionDeclaration declType = m.signature().declaration();
-			declaration = declType.isSpec() ? declType.toWhy(isRecursive) : declType.toWhyDeclaration();
+			declaration = declType.isSpec() || hasBody
+					? declType.toWhy(isRecursive)
+					: declType.toWhyDeclaration();
 		}
 
 		final String returnType = isPredicate
@@ -66,14 +68,5 @@ public class WhySignaturePrinter {
 						returnType).trim()),
 				indent(p.conditionStatements())
 		);
-	}
-
-	public Code toWhy(WhyFunctionContract m) {
-		return toWhy(m, false, false, false);
-	}
-
-	public Code toWhy(Identifier.FQDN declaringClass, List<WhyFunctionContract> methods) {
-		final WhyClassScope scope = new WhyClassScope(declaringClass);
-		return scope.with(block(methods.stream().map(this::toWhy).map(Code::block)));
 	}
 }

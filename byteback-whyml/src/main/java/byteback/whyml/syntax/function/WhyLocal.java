@@ -1,6 +1,8 @@
 package byteback.whyml.syntax.function;
 
 import byteback.whyml.identifiers.Identifier;
+import byteback.whyml.printer.Code;
+import static byteback.whyml.printer.Code.line;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
 import byteback.whyml.syntax.expr.LocalVariableExpression;
@@ -29,5 +31,10 @@ public record WhyLocal(Identifier.L name, WhyType type, boolean isNotNull) {
 				new UnaryExpression(UnaryExpression.Operator.COND_IFNOTNULL, var),
 				isType)
 				: isType);
+	}
+
+	public Code toWhy() {
+		// TODO: consider adding invariants for object variables
+		return line("var %s: %s;".formatted(name, type.getWhyType()));
 	}
 }

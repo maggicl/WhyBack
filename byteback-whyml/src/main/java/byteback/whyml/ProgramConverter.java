@@ -19,16 +19,13 @@ import soot.SootMethod;
 public class ProgramConverter {
 	private final WhyResolver whyResolver;
 	private final WhyClassPrinter whyClassPrinter;
-	private final WhySignaturePrinter whySignaturePrinter;
 	private final WhyFunctionPrinter whyFunctionPrinter;
 
 	public ProgramConverter(WhyResolver resolver,
 							WhyClassPrinter whyClassPrinter,
-							WhySignaturePrinter whySignaturePrinter,
 							WhyFunctionPrinter whyFunctionPrinter) {
 		this.whyResolver = resolver;
 		this.whyClassPrinter = whyClassPrinter;
-		this.whySignaturePrinter = whySignaturePrinter;
 		this.whyFunctionPrinter = whyFunctionPrinter;
 	}
 
@@ -52,11 +49,7 @@ public class ProgramConverter {
 				.toList();
 
 		final List<Code> functionDecls = whyResolver.functions().stream()
-				.map(e -> whyFunctionPrinter.toWhy(e))
-				.toList();
-
-		final List<Code> methodDecls = whyResolver.programFunctions()
-				.map(e -> whySignaturePrinter.toWhy(e.getKey(), e.getValue()))
+				.map(whyFunctionPrinter::toWhy)
 				.toList();
 
 		return new WhyProgram(many(
@@ -64,12 +57,8 @@ public class ProgramConverter {
 				block(decls.stream().map(WhyClassDeclaration::typeDeclaration)),
 				block(line("(* class field declaration *)")),
 				block(decls.stream().map(WhyClassDeclaration::fieldDeclaration).flatMap(Optional::stream)),
-				block(line("(* spec declaration *)")),
-				block(functionDecls.stream()),
-				block(line("(* method contract declaration *)")),
-				block(methodDecls.stream()),
-				block(line("(* method bodies declaration *)")),
-				block(line("(* TODO *)"))
+				block(line("(* methods *)")),
+				block(functionDecls.stream())
 		));
 	}
 }

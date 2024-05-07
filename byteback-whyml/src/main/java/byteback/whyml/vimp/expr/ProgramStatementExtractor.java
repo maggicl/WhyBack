@@ -1,11 +1,18 @@
 package byteback.whyml.vimp.expr;
 
+import byteback.analysis.JimpleStmtSwitch;
 import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Vimp;
 import byteback.analysis.tags.PositionTag;
 import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.AssumptionStmt;
-import java.util.Iterator;
+import byteback.analysis.vimp.InvariantStmt;
+import byteback.whyml.syntax.expr.Expression;
+import byteback.whyml.syntax.statement.CFGLogicalStatement;
+import byteback.whyml.syntax.statement.CFGStatement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import soot.Local;
 import soot.SootField;
@@ -16,33 +23,40 @@ import soot.grimp.Grimp;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
-import soot.jimple.GotoStmt;
 import soot.jimple.IdentityStmt;
-import soot.jimple.IfStmt;
 import soot.jimple.InstanceFieldRef;
-import soot.jimple.IntConstant;
 import soot.jimple.InvokeStmt;
-import soot.jimple.LookupSwitchStmt;
 import soot.jimple.ParameterRef;
-import soot.jimple.ReturnStmt;
-import soot.jimple.ReturnVoidStmt;
 import soot.jimple.StaticFieldRef;
-import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThisRef;
 import soot.jimple.ThrowStmt;
+import soot.tagkit.AbstractHost;
+import soot.toolkits.graph.Block;
 
-public class ProgramStatementExtractor extends PureBodyExtractor {
+public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatement>> {
+	private final ProcedureExpressionExtractor procedureExpressionExtractor;
 
+	private final List<CFGStatement> statements = new ArrayList<>();
 
+	public ProgramStatementExtractor(ProcedureExpressionExtractor procedureExpressionExtractor) {
+		this.procedureExpressionExtractor = procedureExpressionExtractor;
+	}
 
-	public Body visit(final Unit unit) {
-		try {
-			unit.apply(this);
+	@Override
+	public List<CFGStatement> getResult() {
+		return statements;
+	}
 
-			return result();
-		} catch (final ConversionException exception) {
-			throw new StatementConversionException(unit, exception);
+	private void addStatement(CFGStatement statement) {
+		statements.add(statement);
+	}
+
+	public List<CFGStatement> visit(final Block block) {
+		for (final Unit u : block) {
+			u.apply(this);
 		}
+
+		return getResult();
 	}
 
 	@Override
@@ -138,102 +152,47 @@ public class ProgramStatementExtractor extends PureBodyExtractor {
 	}
 
 	@Override
-	public void caseReturnVoidStmt(final ReturnVoidStmt returnStatement) {
-		addStatement(new ReturnStatement());
-	}
-
-	@Override
-	public void caseReturnStmt(final ReturnStmt returnStatement) {
-		final Value operand = returnStatement.getOp();
-		final ValueReference valueReference = Convention.makeReturnReference();
-		final var assignee = Assignee.of(valueReference);
-		final Expression expression = makeExpressionExtractor().visit(operand);
-		addSingleAssignment(assignee, expression);
-		addStatement(new ReturnStatement());
-	}
-
-	@Override
-	public void caseLookupSwitchStmt(final LookupSwitchStmt switchStatement) {
-		final Iterator<Unit> targets = switchStatement.getTargets().iterator();
-		final Iterator<IntConstant> values = switchStatement.getLookupValues().iterator();
-		final Expression key = new ProgramExpressionExtractor(bodyExtractor).visit(switchStatement.getKey());
-
-		while (targets.hasNext() && values.hasNext()) {
-			final Unit target = targets.next();
-			final Value value = values.next();
-			final var ifBuilder = new IfStatementBuilder();
-			final Expression index = new ProgramExpressionExtractor(bodyExtractor).visit(value);
-			final Label label = bodyExtractor.getLabelCollector().fetchLabel(target);
-
-			ifBuilder.condition(new EqualsOperation(index, key)).thenStatement(new GotoStatement(label));
-			addStatement(ifBuilder.build());
-		}
-	}
-
-	@Override
-	public void caseTableSwitchStmt(final TableSwitchStmt switchStatement) {
-		final Expression key = new ProgramExpressionExtractor(bodyExtractor).visit(switchStatement.getKey());
-
-		for (int i = 0; i <= switchStatement.getHighIndex() - switchStatement.getLowIndex(); ++i) {
-			final Unit target = switchStatement.getTarget(i);
-			final var ifBuilder = new IfStatementBuilder();
-			final int offsetIndex = switchStatement.getLowIndex() + i;
-			final Expression index = new NumberLiteral(Integer.toString(offsetIndex));
-			final Label label = bodyExtractor.getLabelCollector().fetchLabel(target);
-			ifBuilder.condition(new EqualsOperation(index, key)).thenStatement(new GotoStatement(label));
-			addStatement(ifBuilder.build());
-		}
-
-		final Label defaultLabel = bodyExtractor.getLabelCollector().fetchLabel(switchStatement.getDefaultTarget());
-		addStatement(new GotoStatement(defaultLabel));
-	}
-
-	@Override
-	public void caseGotoStmt(final GotoStmt gotoStatement) {
-		final Unit targetUnit = gotoStatement.getTarget();
-		final Label label = bodyExtractor.getLabelCollector().fetchLabel(targetUnit);
-		addStatement(new GotoStatement(label));
-	}
-
-	@Override
-	public void caseIfStmt(final IfStmt ifStatement) {
-		final var ifBuilder = new IfStatementBuilder();
-		final Value condition = ifStatement.getCondition();
-		final Label label = bodyExtractor.getLabelCollector().fetchLabel(ifStatement.getTarget());
-		ifBuilder.condition(new ProgramExpressionExtractor(bodyExtractor).visit(condition))
-				.thenStatement(new GotoStatement(label));
-		addStatement(ifBuilder.build());
-	}
-
-	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 		final var invoke = invokeStatement.getInvokeExpr();
 		makeExpressionExtractor().visit(invoke);
 	}
 
+	private Optional<String> positionAttribute(AbstractHost stmt, String string) {
+		if (stmt.hasTag("PositionTag")) {
+			final PositionTag tag = (PositionTag) stmt.getTag("PositionTag");
+			return Optional.of("%s: (line %d): %s might not hold".formatted(tag.file, tag.lineNumber, string));
+		} else {
+			return Optional.empty();
+		}
+	}
+
 	@Override
 	public void caseAssertionStmt(final AssertionStmt assertionStmt) {
-		final Expression condition = makeExpressionExtractor().visit(assertionStmt.getCondition());
-		final List<Attribute> attributes = new List<>();
+		final Expression condition = procedureExpressionExtractor.visit(assertionStmt.getCondition());
+		final Optional<String> position = positionAttribute(assertionStmt, "assertion");
 
-		if (assertionStmt.hasTag("PositionTag")) {
-			final PositionTag tag = (PositionTag) assertionStmt.getTag("PositionTag");
-			final String message = tag.file + ": (line " + tag.lineNumber + "): Error: This assertion might not hold.";
-			attributes.add(Convention.makeMessageAttribute(message));
-		}
-
-		addStatement(new AssertStatement(attributes, condition));
+		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.ASSERT, position, condition));
 	}
 
 	@Override
 	public void caseAssumptionStmt(final AssumptionStmt assumptionStmt) {
-		final Expression condition = makeExpressionExtractor().visit(assumptionStmt.getCondition());
-		addStatement(new AssumeStatement(condition));
+		final Expression condition = procedureExpressionExtractor.visit(assumptionStmt.getCondition());
+		final Optional<String> position = positionAttribute(assumptionStmt, "assumption");
+
+		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.ASSUME, position, condition));
+	}
+
+	@Override
+	public void caseInvariantStmt(final InvariantStmt assumptionStmt) {
+		final Expression condition = procedureExpressionExtractor.visit(assumptionStmt.getCondition());
+		final Optional<String> position = positionAttribute(assumptionStmt, "invariant");
+
+		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.INVARIANT, position, condition));
 	}
 
 	@Override
 	public void caseDefault(final Unit unit) {
-		throw new StatementConversionException(unit, "Cannot extract statements of type " + unit.getClass().getName());
+		throw new IllegalStateException("Cannot extract statements of type " + unit.getClass().getName());
 	}
 
 	@Override
@@ -257,5 +216,4 @@ public class ProgramStatementExtractor extends PureBodyExtractor {
 	public Body result() {
 		return bodyExtractor.result();
 	}
-
 }

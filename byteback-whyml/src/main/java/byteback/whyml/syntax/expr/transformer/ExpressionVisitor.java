@@ -21,7 +21,6 @@ import byteback.whyml.syntax.expr.field.Access;
 import byteback.whyml.syntax.expr.field.ArrayExpression;
 import byteback.whyml.syntax.expr.field.ArrayOperation;
 import byteback.whyml.syntax.expr.field.FieldExpression;
-import byteback.whyml.syntax.expr.field.Operation;
 
 public class ExpressionVisitor {
 	public void visitFloatLiteral(FloatLiteral source) {
@@ -48,10 +47,6 @@ public class ExpressionVisitor {
 	}
 
 	public void visitFieldExpression(FieldExpression source) {
-		if (source.operation() instanceof Operation.Put put) {
-			put.getValue().accept(this);
-		}
-
 		if (source.access() instanceof Access.Instance instance) {
 			instance.getBase().accept(this);
 		}
@@ -97,10 +92,7 @@ public class ExpressionVisitor {
 	public void visitArrayExpression(ArrayExpression source) {
 		source.base().accept(this);
 
-		if (source.operation() instanceof ArrayOperation.Store store) {
-			store.getIndex().accept(this);
-			store.getValue().accept(this);
-		} else if (source.operation() instanceof ArrayOperation.Load load) {
+		if (source.operation() instanceof ArrayOperation.AbstractLoad load) {
 			load.getIndex().accept(this);
 		}
 	}

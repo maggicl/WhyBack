@@ -19,7 +19,7 @@ public abstract sealed class ArrayOperation {
 
 	public abstract Optional<WhyJVMType> fixedReturnType();
 
-	private abstract static sealed class AbstractLoad extends ArrayOperation {
+	public abstract static sealed class AbstractLoad extends ArrayOperation {
 		private final Expression index;
 
 		protected AbstractLoad(Expression index) {

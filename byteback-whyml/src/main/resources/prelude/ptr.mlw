@@ -8,10 +8,8 @@ module Operators
   use Ptr
   use prelude.machine.Operators
 
-  val function cond_ifnull (x: Ptr.t) : jbool
-    ensures { result <-> x = Ptr.null }
-
-  let function cond_ifnotnull [@inline:trivial] (x: Ptr.t) : jbool = not (cond_ifnull x)
+  val function not_null (x: Ptr.t) : jbool =
+    ensures { result <-> x <> Ptr.null }
 
   val function acmpeq (x y: Ptr.t) : jbool
     ensures { result <-> x = y }

@@ -29,7 +29,7 @@ public record WhyLocal(Identifier.L name, WhyType type, boolean isNotNull) {
 
 		return Optional.of(isNotNull
 				? new BinaryExpression(LogicConnector.AND,
-				new UnaryExpression(UnaryExpression.Operator.COND_IFNOTNULL, var),
+				new UnaryExpression(UnaryExpression.Operator.NOT_NULL, var),
 				isType)
 				: isType);
 	}

@@ -4,9 +4,11 @@ import byteback.whyml.printer.Code;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.type.WhyJVMType;
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.Set;
 
 public record CFGLogicalStatement(CFGLogicalStatement.Kind kind,
+								  Optional<String> annotation,
 								  Expression expression) implements CFGStatement {
 	public CFGLogicalStatement {
 		if (!kind.expressionTypes.contains(expression.type())) {
@@ -17,7 +19,10 @@ public record CFGLogicalStatement(CFGLogicalStatement.Kind kind,
 
 	@Override
 	public Code toWhy() {
-		return expression.toWhy().statement("%s {".formatted(kind.keyword), "};");
+		return expression.toWhy().statement(
+				"%s { %s".formatted(kind.keyword, annotation.map("[@expl:%s] "::formatted).orElse("")),
+				" };"
+		);
 	}
 
 	public enum Kind {

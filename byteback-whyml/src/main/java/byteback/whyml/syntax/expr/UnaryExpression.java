@@ -38,18 +38,15 @@ public record UnaryExpression(UnaryExpression.Operator operator,
 		DNEG("dneg", WhyJVMType.DOUBLE, WhyJVMType.DOUBLE),
 		FNEG("fneg", WhyJVMType.FLOAT, WhyJVMType.FLOAT),
 		INEG("ineg", WhyJVMType.INT, WhyJVMType.INT),
-		COND_EQ("cond_eq", WhyJVMType.INT, WhyJVMType.BOOL),
-		COND_NE("cond_ne", WhyJVMType.INT, WhyJVMType.BOOL),
-		COND_LT("cond_lt", WhyJVMType.INT, WhyJVMType.BOOL),
-		COND_GT("cond_gt", WhyJVMType.INT, WhyJVMType.BOOL),
-		COND_LE("cond_le", WhyJVMType.INT, WhyJVMType.BOOL),
-		COND_GE("cond_ge", WhyJVMType.INT, WhyJVMType.BOOL),
-		COND_IFNULL("cond_ifnull", WhyJVMType.PTR, WhyJVMType.BOOL),
-		COND_IFNOTNULL("cond_ifnotnull", WhyJVMType.PTR, WhyJVMType.BOOL),
 		LNEG("lneg", WhyJVMType.LONG, WhyJVMType.LONG),
 
 		// Logic operation
-		NOT("not", WhyJVMType.BOOL, WhyJVMType.BOOL);
+		NOT("not", WhyJVMType.BOOL, WhyJVMType.BOOL),
+
+		/**
+		 * Used exclusively for asserting that the parameter matching 'this' is not null
+		 */
+		NOT_NULL("not_null", WhyJVMType.PTR, WhyJVMType.BOOL);
 
 		private final String opName;
 		private final WhyType opType;

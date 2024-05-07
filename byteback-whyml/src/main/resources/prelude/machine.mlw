@@ -95,19 +95,6 @@ module Operators
     then ishr x 0
     else Int32.(+) (ishr x 0) (Int32BV.of_bv (BV32.lsr (Int32BV.to_bv (2:jint)) (Int.(-) 31 (jint_to_ishift y))))
 
-  let function cond_icmpeq [@inline:trivial] (x y: jint) : jbool = Int32.(=) x y
-  let function cond_icmpne [@inline:trivial] (x y: jint) : jbool = not (Int32.(=) x y)
-  let function cond_icmplt [@inline:trivial] (x y: jint) : jbool = Int32.(<) x y
-  let function cond_icmpgt [@inline:trivial] (x y: jint) : jbool = Int32.(>) x y
-  let function cond_icmple [@inline:trivial] (x y: jint) : jbool = Int32.(<=) x y
-  let function cond_icmpge [@inline:trivial] (x y: jint) : jbool = Int32.(>=) x y
-  let function cond_eq [@inline:trivial] (x: jint) : jbool = Int32.(=) x Default.i
-  let function cond_ne [@inline:trivial] (x: jint) : jbool = not (Int32.(=) x Default.i)
-  let function cond_lt [@inline:trivial] (x: jint) : jbool = Int32.(<) x Default.i
-  let function cond_gt [@inline:trivial] (x: jint) : jbool = Int32.(>) x Default.i
-  let function cond_le [@inline:trivial] (x: jint) : jbool = Int32.(<=) x Default.i
-  let function cond_ge [@inline:trivial] (x: jint) : jbool = Int32.(>=) x Default.i
-
   let function l2i [@inline:trivial] (x: jlong) : jint = Int32.of_int (int_to_bounds min_int32 max_int32 (Int64.to_int x))
   let function l2f [@inline:trivial] (x: jlong) : jfloat = Float32Support.of_int_java (Int64.to_int x)
   let function l2d [@inline:trivial] (x: jlong) : jdouble = Float64Support.of_int_java (Int64.to_int x)

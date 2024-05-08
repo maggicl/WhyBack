@@ -8,6 +8,8 @@ import byteback.whyml.syntax.expr.FloatLiteral;
 import byteback.whyml.syntax.expr.FunctionCall;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
 import byteback.whyml.syntax.expr.LocalVariableExpression;
+import byteback.whyml.syntax.expr.NewArrayExpression;
+import byteback.whyml.syntax.expr.NewExpression;
 import byteback.whyml.syntax.expr.NullLiteral;
 import byteback.whyml.syntax.expr.OldReference;
 import byteback.whyml.syntax.expr.PrimitiveCastExpression;
@@ -98,5 +100,12 @@ public class ExpressionVisitor {
 	}
 
 	public void visitLocalVariableExpression(LocalVariableExpression source) {
+	}
+
+	public void visitNewArrayExpression(NewArrayExpression newArrayExpression) {
+		newArrayExpression.size().accept(this);
+	}
+
+	public void visitNewExpression(NewExpression newExpression) {
 	}
 }

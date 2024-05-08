@@ -8,7 +8,7 @@ module Operators
   use Ptr
   use prelude.machine.Operators
 
-  val function not_null (x: Ptr.t) : jbool =
+  val function not_null (x: Ptr.t) : jbool
     ensures { result <-> x <> Ptr.null }
 
   val function acmpeq (x y: Ptr.t) : jbool

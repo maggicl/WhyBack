@@ -1,5 +1,8 @@
 package byteback.whyml.syntax.type;
 
+import byteback.whyml.printer.SExpr;
+import static byteback.whyml.printer.SExpr.prefix;
+import static byteback.whyml.printer.SExpr.terminal;
 import java.util.Objects;
 
 public record WhyArrayType(WhyType baseType) implements WhyPtrType {
@@ -10,9 +13,9 @@ public record WhyArrayType(WhyType baseType) implements WhyPtrType {
 	}
 
 	@Override
-	public String getPreludeType() {
+	public SExpr getPreludeType() {
 		if (baseType instanceof WhyJVMType) {
-			return switch ((WhyJVMType) baseType) {
+			return terminal(switch ((WhyJVMType) baseType) {
 				case BOOL -> "BoolArray";
 				case BYTE -> "ByteArray";
 				case CHAR -> "CharArray";
@@ -22,10 +25,10 @@ public record WhyArrayType(WhyType baseType) implements WhyPtrType {
 				case FLOAT -> "FloatArray";
 				case DOUBLE -> "DoubleArray";
 				default -> throw new IllegalStateException("unreachable");
-			};
+			});
 		} else {
 			final WhyPtrType ptrType = (WhyPtrType) baseType;
-			return "Type.ArrayOf (%s)".formatted(ptrType.getPreludeType());
+			return prefix("Type.ArrayOf", ptrType.getPreludeType());
 		}
 	}
 

@@ -1,5 +1,6 @@
 package byteback.whyml.syntax.type;
 
+import byteback.whyml.printer.SExpr;
 import java.util.Comparator;
 
 public interface WhyType {
@@ -29,7 +30,7 @@ public interface WhyType {
 
 	WhyJVMType jvm();
 
-	String getPreludeType();
+	SExpr getPreludeType();
 
 	void accept(WhyTypeVisitor visitor);
 

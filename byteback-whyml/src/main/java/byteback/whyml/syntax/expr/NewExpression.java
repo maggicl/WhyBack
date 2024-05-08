@@ -5,26 +5,27 @@ import byteback.whyml.printer.SExpr;
 import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
-import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.type.WhyJVMType;
+import byteback.whyml.syntax.type.WhyReference;
 
-public record LocalVariableExpression(Identifier.L name, WhyJVMType type) implements Expression {
-	public LocalVariableExpression(WhyLocal local) {
-		this(local.name(), local.type().jvm());
+public record NewExpression(WhyReference objType) implements Expression {
+	@Override
+	public SExpr toWhy() {
+		return SExpr.prefix("new", terminal(Identifier.Special.HEAP), objType.getPreludeClassType());
 	}
 
 	@Override
-	public SExpr toWhy() {
-		return terminal(name.toString());
+	public WhyJVMType type() {
+		return WhyJVMType.PTR;
 	}
 
 	@Override
 	public Expression accept(ExpressionTransformer transformer) {
-		return transformer.transformLocalVariableExpression(this);
+		return transformer.transformNewExpression(this);
 	}
 
 	@Override
 	public void accept(ExpressionVisitor visitor) {
-		visitor.visitLocalVariableExpression(this);
+		visitor.visitNewExpression(this);
 	}
 }

@@ -1,5 +1,6 @@
 package byteback.whyml.vimp;
 
+import byteback.analysis.Inline;
 import byteback.analysis.VimpCondition;
 import byteback.whyml.WhyFunctionSCC;
 import byteback.whyml.identifiers.Identifier;
@@ -96,10 +97,16 @@ public class WhyResolver {
 		VimpMethodParser.declaration(method).ifPresent(decl -> {
 			final List<VimpCondition> methodConditions = conditions.getOrDefault(method, List.of());
 
-			methodParser.contract(method, methodConditions, decl, this)
-					.ifPresent(signature -> signatures.put(method, signature));
+			if (Inline.parse(method).must()) {
+				// if the function must be inlined, it does not have a contract for decl
+				// also, it is a spec-function and not a program function
+				bodies.put(method, methodBodyParser.parseSpec(method));
+			} else {
+				final WhyFunctionContract c = methodParser.contract(method, methodConditions, decl, this);
 
-			methodBodyParser.parse(decl, method).ifPresent(e -> bodies.put(method, e));
+				signatures.put(method, c);
+				methodBodyParser.parse(decl, c.signature(), method).ifPresent(e -> bodies.put(method, e));
+			}
 		});
 	}
 

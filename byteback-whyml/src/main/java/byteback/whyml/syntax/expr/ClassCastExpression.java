@@ -26,7 +26,7 @@ public record ClassCastExpression(Expression reference, WhyType exactType, boole
 				forSpec ? "iscast" : "checkcast",
 				terminal(Identifier.Special.HEAP),
 				reference.toWhy(),
-				terminal("(" + exactType.getPreludeType() + ")")
+				exactType.getPreludeType()
 		);
 	}
 

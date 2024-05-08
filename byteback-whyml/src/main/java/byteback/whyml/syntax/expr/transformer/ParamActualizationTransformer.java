@@ -14,7 +14,7 @@ public class ParamActualizationTransformer extends ExpressionTransformer {
 
 	@Override
 	public Expression transformLocalVariableExpression(LocalVariableExpression source) {
-		final Identifier.L name = source.getName();
+		final Identifier.L name = source.name();
 
 		return argumentMap.containsKey(name)
 				? argumentMap.get(name)

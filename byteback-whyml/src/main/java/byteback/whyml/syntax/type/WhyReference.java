@@ -1,6 +1,9 @@
 package byteback.whyml.syntax.type;
 
 import byteback.whyml.identifiers.Identifier;
+import byteback.whyml.printer.SExpr;
+import static byteback.whyml.printer.SExpr.prefix;
+import static byteback.whyml.printer.SExpr.terminal;
 
 public record WhyReference(Identifier.FQDN fqdn) implements WhyPtrType {
 	@Override
@@ -13,10 +16,14 @@ public record WhyReference(Identifier.FQDN fqdn) implements WhyPtrType {
 		return "L" + fqdn.descriptor();
 	}
 
+	public SExpr getPreludeClassType() {
+		return terminal("%s.class".formatted(fqdn));
+	}
+
 	@Override
-	public String getPreludeType() {
+	public SExpr getPreludeType() {
 		// we can't use the full name if we are in a scope that matches it
-		return "Class %s.class".formatted(fqdn);
+		return prefix("Class", getPreludeClassType());
 	}
 
 	@Override

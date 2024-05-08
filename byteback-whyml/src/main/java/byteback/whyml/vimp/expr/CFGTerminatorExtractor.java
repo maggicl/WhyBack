@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.Optional;
 import soot.Unit;
 import soot.Value;
-import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
@@ -22,12 +21,12 @@ import soot.jimple.ReturnVoidStmt;
 import soot.jimple.TableSwitchStmt;
 
 public class CFGTerminatorExtractor extends JimpleStmtSwitch<Optional<CFGTerminator>> {
-	private final ProcedureExpressionExtractor expressionExtractor;
+	private final ProgramExpressionExtractor expressionExtractor;
 	private final Map<Unit, CFGLabel> labelMap;
 	private final Optional<Unit> fallThrough;
 	private Optional<CFGTerminator> result;
 
-	public CFGTerminatorExtractor(ProcedureExpressionExtractor expressionExtractor,
+	public CFGTerminatorExtractor(ProgramExpressionExtractor expressionExtractor,
 								  Optional<Unit> fallThrough,
 								  Map<Unit, CFGLabel> labelMap) {
 		this.expressionExtractor = expressionExtractor;

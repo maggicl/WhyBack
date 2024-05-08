@@ -1,14 +1,13 @@
 package byteback.whyml.vimp;
 
-import byteback.analysis.Inline;
 import byteback.analysis.Namespace;
 import byteback.analysis.VimpCondition;
 import byteback.analysis.util.SootHosts;
 import byteback.whyml.syntax.function.WhyCondition;
-import byteback.whyml.syntax.function.WhyFunctionDeclaration;
-import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.function.WhyFunctionContract;
+import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
+import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.type.WhyType;
 import java.util.List;
 import java.util.Optional;
@@ -47,34 +46,31 @@ public class VimpMethodParser {
 				: WhyFunctionDeclaration.FUNCTION);
 	}
 
-	public Optional<WhyFunctionSignature> signature(SootMethod method, WhyFunctionDeclaration declaration) {
-		if (Inline.parse(method).must()) { // if the function must be inlined, it does not have a contract for decl
-			return Optional.empty();
-		}
-
+	public WhyFunctionSignature signature(SootMethod method, WhyFunctionDeclaration declaration) {
 		final List<WhyLocal> params = paramParser.parseParams(method);
 		final WhyType returnType = typeResolver.resolveType(method.getReturnType());
 
-		return Optional.of(new WhyFunctionSignature(
+		return new WhyFunctionSignature(
 				declaration,
 				classNameParser.parse(method.getDeclaringClass()),
 				method.getName(),
+				method.isStatic(),
 				params,
-				returnType));
+				returnType);
 	}
 
-	public Optional<WhyFunctionContract> contract(SootMethod method,
-												  List<VimpCondition> vimpConditions,
-												  WhyFunctionDeclaration decl,
-												  WhyResolver resolver) {
-		return signature(method, decl).map(s -> {
-			final VimpConditionParser conditionParser = new VimpConditionParser(classNameParser, paramParser, resolver, s);
+	public WhyFunctionContract contract(SootMethod method,
+										List<VimpCondition> vimpConditions,
+										WhyFunctionDeclaration decl,
+										WhyResolver resolver) {
+		final WhyFunctionSignature s = signature(method, decl);
 
-			final List<WhyCondition> conditions = vimpConditions.stream()
-					.map(conditionParser::transform)
-					.toList();
+		final VimpConditionParser conditionParser = new VimpConditionParser(classNameParser, paramParser, resolver, s);
 
-			return new WhyFunctionContract(s, conditions);
-		});
+		final List<WhyCondition> conditions = vimpConditions.stream()
+				.map(conditionParser::transform)
+				.toList();
+
+		return new WhyFunctionContract(s, conditions);
 	}
 }

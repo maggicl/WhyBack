@@ -1,6 +1,8 @@
 package byteback.whyml.syntax.type;
 
 import byteback.whyml.identifiers.Identifier;
+import byteback.whyml.printer.SExpr;
+import static byteback.whyml.printer.SExpr.terminal;
 
 public enum WhyJVMType implements WhyType {
 	BOOL("jbool", "Z", "HeapDef.Int", true),
@@ -47,12 +49,12 @@ public enum WhyJVMType implements WhyType {
 	}
 
 	@Override
-	public String getPreludeType() {
+	public SExpr getPreludeType() {
 		if (preludeType == null) {
 			throw new UnsupportedOperationException(this + " does not have a prelude type");
 		}
 
-		return preludeType;
+		return terminal(preludeType);
 	}
 
 	@Override

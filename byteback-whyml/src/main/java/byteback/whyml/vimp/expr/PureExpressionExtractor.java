@@ -5,6 +5,7 @@ import byteback.analysis.vimp.LogicConstant;
 import byteback.analysis.vimp.LogicExistsExpr;
 import byteback.analysis.vimp.LogicForallExpr;
 import byteback.analysis.vimp.OldExpr;
+import byteback.analysis.vimp.VoidConstant;
 import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.expr.binary.BinaryExpression;
 import byteback.whyml.syntax.function.WhyLocal;
@@ -44,6 +45,7 @@ import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ClassConstant;
 import soot.jimple.CmpExpr;
 import soot.jimple.CmpgExpr;
@@ -451,6 +453,17 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	@Override
 	public void caseOldExpr(final OldExpr v) {
 		setExpression(new OldReference(visit(v.getOp())));
+	}
+
+	@Override
+	public void caseCaughtExceptionRef(CaughtExceptionRef v) {
+		setExpression(new LocalVariableExpression(WhyLocal.CAUGHT_EXCEPTION));
+	}
+
+	@Override
+	public void caseVoidConstant(VoidConstant v) {
+		// TODO: consider making a "void" specific pointer for no exceptions
+		setExpression(NullLiteral.INSTANCE);
 	}
 
 	@Override

@@ -73,7 +73,7 @@ public sealed abstract class WhyFunctionBody {
 		private Stream<WhyLocal> localsWithExc() {
 			return Stream.concat(
 					locals.stream(),
-					Stream.of(new WhyLocal(Identifier.Special.CAUGHT_EXCEPTION, WhyJVMType.PTR))
+					Stream.of(WhyLocal.CAUGHT_EXCEPTION)
 			);
 		}
 

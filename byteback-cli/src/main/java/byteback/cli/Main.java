@@ -102,6 +102,7 @@ public class Main {
 		resolver.setCheckArrayDereference(Configuration.v().getTransformArrayCheck());
 		// TODO: remove if MLCFG does not support exceptions
 //		resolver.setTransformExceptionalControlFlow(!configuration.useWhy());
+		resolver.setPreserveInvariants(configuration.useWhy());
 		resolver.resolve(startingClasses);
 
 		if (!configuration.useWhy()) {

@@ -3,17 +3,26 @@ package byteback.whyml.syntax.function;
 import byteback.whyml.ListComparator;
 import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.identifiers.IdentifierEscaper;
+import byteback.whyml.syntax.type.WhyReference;
 import byteback.whyml.syntax.type.WhyType;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public record WhyFunctionSignature(
 		WhyFunctionDeclaration declaration,
 		Identifier.FQDN className,
 		String name,
+		boolean isStatic,
 		List<WhyLocal> params,
 		WhyType returnType) implements Comparable<WhyFunctionSignature> {
+
+	public WhyFunctionSignature {
+		if (!isStatic && (params.isEmpty() || !params.get(0).type().equals(new WhyReference(className)))) {
+			throw new IllegalArgumentException("missing this parameter from instance method");
+		}
+	}
 
 	public WhyLocal resultParam() {
 		// spec functions return a pure result, while program function return a result encapsulated in a Result.t object
@@ -24,6 +33,19 @@ public record WhyFunctionSignature(
 						: Identifier.Special.RESULT_VAR,
 				returnType
 		);
+	}
+
+	public Optional<WhyLocal> getThisParam() {
+		return isStatic
+				? Optional.empty()
+				: Optional.of(params.get(0));
+	}
+
+	public Optional<WhyLocal> getParam(int n) {
+		int i = n + (isStatic ? 0 : 1);
+		return i >= params.size()
+				? Optional.empty()
+				: Optional.of(params.get(i));
 	}
 
 	private static final Comparator<List<WhyLocal>> PARAMETERS_ORDER =

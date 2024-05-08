@@ -1,5 +1,6 @@
 package byteback.whyml.vimp.expr;
 
+import byteback.analysis.Inline;
 import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Namespace;
 import byteback.analysis.util.SootHosts;
@@ -27,6 +28,7 @@ import byteback.whyml.vimp.VimpFieldParser;
 import byteback.whyml.vimp.VimpMethodNameParser;
 import byteback.whyml.vimp.VimpMethodParser;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 import soot.SootMethod;
 import soot.Value;
@@ -102,7 +104,9 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 			setExpression(PreludeFunctionParser.parse(method, argExpressions));
 		} else {
 			final WhyFunctionSignature sig = VimpMethodParser.declaration(method)
-					.flatMap(decl -> methodSignatureParser.signature(method, decl))
+					.flatMap(decl -> Inline.parse(method).must()
+							? Optional.empty()
+							: Optional.of(methodSignatureParser.signature(method, decl)))
 					.orElseThrow(() -> new IllegalStateException("method " + method + " is not callable"));
 
 			setExpression(new FunctionCall(methodNameParser.methodName(sig), sig, argExpressions));

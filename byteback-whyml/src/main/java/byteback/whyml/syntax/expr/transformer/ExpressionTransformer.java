@@ -9,6 +9,8 @@ import byteback.whyml.syntax.expr.FloatLiteral;
 import byteback.whyml.syntax.expr.FunctionCall;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
 import byteback.whyml.syntax.expr.LocalVariableExpression;
+import byteback.whyml.syntax.expr.NewArrayExpression;
+import byteback.whyml.syntax.expr.NewExpression;
 import byteback.whyml.syntax.expr.NullLiteral;
 import byteback.whyml.syntax.expr.OldReference;
 import byteback.whyml.syntax.expr.PrimitiveCastExpression;
@@ -122,5 +124,13 @@ public class ExpressionTransformer {
 
 	public Expression transformLocalVariableExpression(LocalVariableExpression source) {
 		return source;
+	}
+
+	public Expression transformNewArrayExpression(NewArrayExpression newArrayExpression) {
+		return new NewArrayExpression(newArrayExpression.baseType(), newArrayExpression.size().accept(this));
+	}
+
+	public Expression transformNewExpression(NewExpression newExpression) {
+		return newExpression;
 	}
 }

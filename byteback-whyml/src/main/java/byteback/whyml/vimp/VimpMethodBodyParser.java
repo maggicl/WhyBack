@@ -1,12 +1,13 @@
 package byteback.whyml.vimp;
 
 import byteback.analysis.util.SootBodies;
-import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.function.CFGBlock;
 import byteback.whyml.syntax.function.CFGLabel;
 import byteback.whyml.syntax.function.WhyFunctionBody;
+import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.syntax.function.WhyFunctionDeclaration;
+import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.vimp.expr.PureBodyExtractor;
 import java.util.ArrayList;
@@ -20,46 +21,40 @@ import soot.toolkits.graph.Block;
 import soot.toolkits.graph.BlockGraph;
 
 public class VimpMethodBodyParser {
-	private final IdentifierEscaper identifierEscaper;
-	private final TypeResolver typeResolver;
+	private final VimpLocalParser vimpLocalParser;
 	private final PureBodyExtractor pureBodyExtractor;
 	private final VimpBlockParser blockParser;
 
-	public VimpMethodBodyParser(IdentifierEscaper identifierEscaper,
-								TypeResolver typeResolver,
+	public VimpMethodBodyParser(VimpLocalParser vimpLocalParser,
 								PureBodyExtractor pureBodyExtractor,
 								VimpBlockParser blockParser) {
-		this.identifierEscaper = identifierEscaper;
-		this.typeResolver = typeResolver;
+		this.vimpLocalParser = vimpLocalParser;
 		this.pureBodyExtractor = pureBodyExtractor;
 		this.blockParser = blockParser;
 	}
 
-	public Optional<? extends WhyFunctionBody> parse(WhyFunctionDeclaration decl, SootMethod method) {
+	public Optional<? extends WhyFunctionBody> parse(WhyFunctionDeclaration decl, WhyFunctionSignature s, SootMethod method) {
 		if (decl.isSpec()) {
-			return Optional.of(new WhyFunctionBody.SpecBody(parseSpec(method)));
+			return Optional.of(parseSpec(method));
 		} else {
-			return parseProgram(method);
+			return parseProgram(s, method);
 		}
 	}
 
-	private Expression parseSpec(SootMethod method) {
+	public WhyFunctionBody.SpecBody parseSpec(SootMethod method) {
 		if (!method.hasActiveBody()) {
 			throw new IllegalStateException("Spec method " + method.getSignature() + " has no active body");
 		}
 
-		return pureBodyExtractor.visit(method.retrieveActiveBody());
+		return new WhyFunctionBody.SpecBody(pureBodyExtractor.visit(method.retrieveActiveBody()));
 	}
 
-	public Optional<WhyFunctionBody.CFGBody> parseProgram(SootMethod method) {
+	public Optional<WhyFunctionBody.CFGBody> parseProgram(WhyFunctionSignature s, SootMethod method) {
 		if (method.hasActiveBody()) {
 			final Body body = method.getActiveBody();
 
 			final List<WhyLocal> locals = body.getLocals().stream()
-					.map(e -> new WhyLocal(
-							identifierEscaper.escapeL(e.getName()),
-							typeResolver.resolveType(e.getType())
-					))
+					.map(vimpLocalParser::parse)
 					.toList();
 
 			final BlockGraph bg = SootBodies.getBlockGraph(method.getActiveBody());
@@ -77,7 +72,7 @@ public class VimpMethodBodyParser {
 						? Optional.of(sootBlocks.get(i + 1).getHead())
 						: Optional.empty();
 
-				blocks.add(blockParser.parse(b, fallThrough, labelMap));
+				blocks.add(blockParser.parse(s, b, fallThrough, labelMap));
 			}
 
 			return Optional.of(new WhyFunctionBody.CFGBody(locals, blocks));

@@ -59,12 +59,19 @@ public class RootResolver {
 	private boolean checkNullDereference;
 	private boolean transformExceptionalControlFlow;
 
+	public void setPreserveInvariants(boolean preserveInvariants) {
+		this.preserveInvariants = preserveInvariants;
+	}
+
+	private boolean preserveInvariants;
+
 	private RootResolver() {
 		this.next = new LinkedList<>();
 		this.visited = new HashSet<>();
 		this.checkArrayDereference = false;
 		this.checkNullDereference = false;
 		this.transformExceptionalControlFlow = true;
+		this.preserveInvariants = false;
 		conditions = new HashMap<>();
 	}
 
@@ -125,7 +132,7 @@ public class RootResolver {
 			UnusedLocalEliminator.v().transform(body);
 			DynamicToStaticTransformer.v().transform(body);
 
-			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method) && !this.preserveInvariants) {
 				InvariantExpander.v().transform(body);
 			}
 

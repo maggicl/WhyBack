@@ -2,10 +2,12 @@ package byteback.whyml.vimp;
 
 import byteback.whyml.syntax.function.CFGBlock;
 import byteback.whyml.syntax.function.CFGLabel;
+import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.statement.CFGTerminator;
 import byteback.whyml.vimp.expr.CFGTerminatorExtractor;
-import byteback.whyml.vimp.expr.ProcedureExpressionExtractor;
-import java.util.List;
+import byteback.whyml.vimp.expr.ProgramExpressionExtractor;
+import byteback.whyml.vimp.expr.ProgramStatementExtractor;
+import byteback.whyml.vimp.expr.PureExpressionExtractor;
 import java.util.Map;
 import java.util.Optional;
 import soot.Unit;
@@ -13,18 +15,43 @@ import soot.toolkits.graph.Block;
 
 public class VimpBlockParser {
 
-	private final ProcedureExpressionExtractor procedureExpressionExtractor;
+	private final ProgramExpressionExtractor programExpressionExtractor;
+	private final PureExpressionExtractor pureExpressionExtractor;
+	private final VimpLocalParser vimpLocalParser;
+	private final VimpFieldParser fieldParser;
+	private final TypeResolver typeResolver;
 
-	public VimpBlockParser(ProcedureExpressionExtractor procedureExpressionExtractor) {
-		this.procedureExpressionExtractor = procedureExpressionExtractor;
+	public VimpBlockParser(ProgramExpressionExtractor programExpressionExtractor,
+						   PureExpressionExtractor pureExpressionExtractor,
+						   VimpLocalParser vimpLocalParser,
+						   VimpFieldParser fieldParser,
+						   TypeResolver typeResolver) {
+		this.programExpressionExtractor = programExpressionExtractor;
+		this.pureExpressionExtractor = pureExpressionExtractor;
+		this.vimpLocalParser = vimpLocalParser;
+		this.fieldParser = fieldParser;
+		this.typeResolver = typeResolver;
 	}
 
-	public CFGBlock parse(Block block, Optional<Unit> fallThrough, Map<Unit, CFGLabel> labelMap) {
+	public CFGBlock parse(WhyFunctionSignature s, Block block, Optional<Unit> fallThrough, Map<Unit, CFGLabel> labelMap) {
+		final ProgramStatementExtractor e = new ProgramStatementExtractor(
+				programExpressionExtractor,
+				pureExpressionExtractor,
+				vimpLocalParser,
+				fieldParser,
+				typeResolver,
+				s
+		);
+
 		final Unit tail = block.getTail();
-		final CFGTerminator terminator = new CFGTerminatorExtractor(procedureExpressionExtractor, fallThrough, labelMap)
+
+		for (Unit u = block.getHead(); u != tail; u = block.getSuccOf(u)) {
+			u.apply(e);
+		}
+
+		final CFGTerminator terminator = new CFGTerminatorExtractor(programExpressionExtractor, fallThrough, labelMap)
 				.visitOrFallThrough(tail);
 
-		// TODO: complete
-		return new CFGBlock(labelMap.get(block.getHead()), List.of(), terminator);
+		return new CFGBlock(labelMap.get(block.getHead()), e.result(), terminator);
 	}
 }

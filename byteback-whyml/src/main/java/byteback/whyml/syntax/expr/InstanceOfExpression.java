@@ -26,7 +26,7 @@ public record InstanceOfExpression(Expression reference, WhyType checkType) impl
 				"instanceof",
 				terminal(Identifier.Special.HEAP),
 				reference.toWhy(),
-				terminal("(" + checkType.getPreludeType() + ")")
+				checkType.getPreludeType()
 		);
 	}
 

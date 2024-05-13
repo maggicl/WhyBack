@@ -44,8 +44,8 @@ aspect ConditionInference {
 	 * variable.
 	 */
 	public void Variable.inferModifies() {
-		for (AssignmentStatement assignment : assignments()) {
-			assignment.getProcedure().addFrameCondition(this);
+		for (AssignmentStatement localAssignment : assignments()) {
+			localAssignment.getProcedure().addFrameCondition(this);
 		}
 	}
 

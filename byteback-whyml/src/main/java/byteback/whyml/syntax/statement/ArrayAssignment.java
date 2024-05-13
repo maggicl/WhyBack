@@ -5,10 +5,9 @@ import byteback.whyml.printer.Code;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
-import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
-import byteback.whyml.syntax.statement.CFGStatement;
+import byteback.whyml.syntax.statement.visitor.StatementVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
+import java.util.Set;
 
 /**
  * @param elementType We need to know the element type of the array as the array expression only has a JVM type of "ref" no matter what
@@ -41,5 +40,10 @@ public record ArrayAssignment(Expression base,
 				index.toWhy(),
 				value.toWhy()
 		).statement("", ";");
+	}
+
+	@Override
+	public void accept(StatementVisitor visitor) {
+		visitor.visitArrayAssignmentStatement(this);
 	}
 }

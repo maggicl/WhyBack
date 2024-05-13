@@ -14,7 +14,7 @@ public record CFGBlock(CFGLabel label, List<CFGStatement> CFGStatements, CFGTerm
 				line("%s {".formatted(label.name())),
 				indent(
 						many(CFGStatements.stream().map(CFGStatement::toWhy)),
-						terminator.toWhy().statement()
+						terminator.toWhy()
 				),
 				line("}")
 		);

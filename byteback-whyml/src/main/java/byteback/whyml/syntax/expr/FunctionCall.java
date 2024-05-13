@@ -6,19 +6,19 @@ import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
-import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
+import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-public record PureFunctionCall(Identifier.L name,
-							   WhyFunctionSignature signature,
-							   List<Expression> actualParams) implements Expression {
+public record FunctionCall(Identifier.L name,
+						   WhyFunctionSignature signature,
+						   List<Expression> actualParams) implements Expression {
 
-	public PureFunctionCall {
+	public FunctionCall {
 		final List<WhyType> paramTypes = signature.params().stream().map(WhyLocal::type).toList();
 
 		if (paramTypes.size() != actualParams.size()) {
@@ -44,9 +44,13 @@ public record PureFunctionCall(Identifier.L name,
 
 	@Override
 	public SExpr toWhy() {
-		return prefix(name.toString(), Stream.concat(
-				Stream.of(terminal(Identifier.Special.HEAP)),
-				actualParams.stream().map(Expression::toWhy)));
+		return prefix(
+				name.toString(),
+				Stream.concat(
+						Stream.of(terminal(Identifier.Special.HEAP)),
+						actualParams.stream().map(Expression::toWhy)
+				)
+		);
 	}
 
 	@Override

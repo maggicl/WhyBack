@@ -7,6 +7,7 @@ import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.field.Access;
 import byteback.whyml.syntax.statement.CFGStatement;
+import byteback.whyml.syntax.statement.visitor.StatementVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 
 public record FieldAssignment(Access access, Expression value) implements CFGStatement {
@@ -33,5 +34,10 @@ public record FieldAssignment(Access access, Expression value) implements CFGSta
 				terminal(fieldFqdn + ".v"),
 				value.toWhy()
 		).statement("", ";");
+	}
+
+	@Override
+	public void accept(StatementVisitor visitor) {
+		visitor.visitFieldAssignmentStatement(this);
 	}
 }

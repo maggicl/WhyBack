@@ -59,7 +59,6 @@ module HeapDef
     mutable staticptr: (Type.class, ptrfield) -> Ptr.t;
     mutable instptr: (Ptr.t, ptrfield) -> Ptr.t;
     mutable arr: (Ptr.t) -> arrcontents;
-    mutable strings: (Ptr.t) -> string;
     mutable typeof: Ptr.t -> Type.t
   } invariant {
     not ptrs[Ptr.null] &&
@@ -99,7 +98,6 @@ module HeapDef
       (p <> Ptr.null && (c = Ptr.null || typeof[c] :> f.fptype) <-> instptr[(p,f)] = c) &&
       (p <> Ptr.null <-> arr[p] = ARPtr d) &&
       ((c = Ptr.null || typeof[c] :> f.fptype) <-> staticptr[(t,f)] = c)) &&
-    (forall p:Ptr.t. exists s:string. p <> Ptr.null <-> strings[p] = s) &&
     (forall p:Ptr.t. exists typ:Type.t. p <> Ptr.null <-> typeof[p] = typ)
   }
 

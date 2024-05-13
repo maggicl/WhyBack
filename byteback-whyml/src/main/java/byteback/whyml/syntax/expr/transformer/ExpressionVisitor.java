@@ -5,7 +5,7 @@ import byteback.whyml.syntax.expr.ClassCastExpression;
 import byteback.whyml.syntax.expr.ConditionalExpression;
 import byteback.whyml.syntax.expr.DoubleLiteral;
 import byteback.whyml.syntax.expr.FloatLiteral;
-import byteback.whyml.syntax.expr.PureFunctionCall;
+import byteback.whyml.syntax.expr.FunctionCall;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
 import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.NewArrayExpression;
@@ -74,7 +74,7 @@ public class ExpressionVisitor {
 	public void visitBooleanLiteral(BooleanLiteral source) {
 	}
 
-	public void visitFunctionCall(PureFunctionCall source) {
+	public void visitFunctionCall(FunctionCall source) {
 		source.actualParams().forEach(e -> e.accept(this));
 	}
 

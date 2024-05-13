@@ -19,7 +19,7 @@ import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.NullLiteral;
 import byteback.whyml.syntax.expr.OldReference;
 import byteback.whyml.syntax.expr.PrimitiveCastExpression;
-import byteback.whyml.syntax.expr.PureFunctionCall;
+import byteback.whyml.syntax.expr.FunctionCall;
 import byteback.whyml.syntax.expr.QuantifierExpression;
 import byteback.whyml.syntax.expr.StringLiteralExpression;
 import byteback.whyml.syntax.expr.UnaryExpression;
@@ -510,6 +510,6 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 				.map(decl -> methodSignatureParser.signature(method, decl))
 				.orElseThrow(() -> new IllegalStateException("method " + method + " is not callable from a pure expression"));
 
-		return new PureFunctionCall(methodNameParser.methodName(sig), sig, argExpressions);
+		return new FunctionCall(methodNameParser.methodName(sig), sig, argExpressions);
 	}
 }

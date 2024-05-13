@@ -43,7 +43,6 @@ public class StringLiteralExpression implements Expression {
 		sb.append("\"");
 
 		return prefix("Java.Lang.String.literal'8",
-				terminal(Identifier.Special.HEAP),
 				terminal(sb.toString()));
 	}
 

@@ -42,7 +42,6 @@ import soot.jimple.InvokeStmt;
 import soot.jimple.ParameterRef;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.ThisRef;
-import soot.jimple.ThrowStmt;
 import soot.tagkit.AbstractHost;
 
 public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatement>> {

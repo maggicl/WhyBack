@@ -6,7 +6,7 @@ import byteback.whyml.syntax.expr.ConditionalExpression;
 import byteback.whyml.syntax.expr.DoubleLiteral;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.FloatLiteral;
-import byteback.whyml.syntax.expr.PureFunctionCall;
+import byteback.whyml.syntax.expr.FunctionCall;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
 import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.NewArrayExpression;
@@ -86,8 +86,8 @@ public class ExpressionTransformer {
 		return source;
 	}
 
-	public Expression transformFunctionCall(PureFunctionCall source) {
-		return new PureFunctionCall(
+	public Expression transformFunctionCall(FunctionCall source) {
+		return new FunctionCall(
 				source.name(),
 				source.signature(),
 				source.actualParams().stream()

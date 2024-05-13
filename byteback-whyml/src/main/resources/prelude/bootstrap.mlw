@@ -8,9 +8,6 @@ module Bootstrap
   use string.String
   use map.Map
 
-  predicate other_same_strings (heap: Heap.t) (old_heap: t) (p: Ptr.t) =
-      forall p'. p <> p' -> heap.strings[p'] = old_heap.strings[p']
-
   scope Java
   scope Lang
   scope Object
@@ -24,13 +21,19 @@ module Bootstrap
   scope String
     (* the String class. This value is used for java.lang.String *)
     val constant class: Type.class
-  
-    (* FIXME: same literals should map to the same ptr *)
-    val literal'8 (ghost heap: Heap.t) (s: string) : Ptr.t
-      writes { heap.strings }
-      ensures { result <> Ptr.null && Heap.instanceof heap result (Class class) }
-      ensures { heap.strings[result] = s }
-      ensures { other_same_strings heap (old heap) result }
+
+    type stringset = abstract {
+      v: string -> Ptr.t
+    } invariant {
+      (forall s:string. v[s] <> Ptr.null) /\
+      (forall s:string, s2:string. s <> s2 -> v[s] <> v[s2])
+    }
+
+    val pointers: stringset
+
+    val literal'8 (s: string) : Ptr.t
+      reads { pointers }
+      ensures { result = pointers.v[s] }
   end
   end
   end

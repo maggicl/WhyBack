@@ -2,15 +2,13 @@ package byteback.whyml.vimp.expr;
 
 import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.NewArrayExpression;
 import byteback.whyml.syntax.expr.NewExpression;
-import byteback.whyml.syntax.expr.PureFunctionCall;
+import byteback.whyml.syntax.expr.FunctionCall;
 import byteback.whyml.syntax.expr.field.ArrayOperation;
 import byteback.whyml.syntax.expr.field.Operation;
 import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
-import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyReference;
 import byteback.whyml.syntax.type.WhyType;
@@ -20,7 +18,6 @@ import byteback.whyml.vimp.VimpMethodNameParser;
 import byteback.whyml.vimp.VimpMethodParser;
 import java.util.List;
 import soot.SootMethod;
-import soot.jimple.CaughtExceptionRef;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.NewMultiArrayExpr;
@@ -61,7 +58,7 @@ public class ProgramExpressionExtractor extends PureExpressionExtractor {
 				.map(decl -> methodSignatureParser.signature(method, decl))
 				.orElseThrow(() -> new IllegalStateException("method " + method + " is not callable from a program expression"));
 
-		return new PureFunctionCall(methodNameParser.methodName(sig), sig, argExpressions);
+		return new FunctionCall(methodNameParser.methodName(sig), sig, argExpressions);
 	}
 
 	@Override

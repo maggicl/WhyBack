@@ -2,6 +2,7 @@ package byteback.whyml.syntax.statement;
 
 import byteback.whyml.printer.Code;
 import byteback.whyml.syntax.expr.Expression;
+import byteback.whyml.syntax.statement.visitor.StatementVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 import java.util.EnumSet;
 import java.util.Optional;
@@ -23,6 +24,11 @@ public record CFGLogicalStatement(CFGLogicalStatement.Kind kind,
 				"%s { %s".formatted(kind.keyword, annotation.map("[@expl:%s] "::formatted).orElse("")),
 				" };"
 		);
+	}
+
+	@Override
+	public void accept(StatementVisitor visitor) {
+		visitor.visitLogicalStatement(this);
 	}
 
 	public enum Kind {

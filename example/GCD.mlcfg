@@ -519,7 +519,6 @@ module Program
     ->. ((ICMP.le (int2i (s2int l0)) (0:jint))
     \/. (ICMP.le (int2i (s2int l1)) (0:jint))) }
     writes { caughtexception'8 }
-    writes { heap'8.strings }
     writes { heap'8.ptrs }
     writes { heap'8.typeof }
   =

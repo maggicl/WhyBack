@@ -1,22 +1,24 @@
 package byteback.whyml.syntax.statement;
 
-import byteback.whyml.identifiers.Identifier;
+import byteback.whyml.printer.Code;
 import byteback.whyml.printer.SExpr;
 import static byteback.whyml.printer.SExpr.prefix;
-import static byteback.whyml.printer.SExpr.switchEq;
+import static byteback.whyml.printer.SExpr.switchExpr;
 import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.function.CFGLabel;
+import byteback.whyml.syntax.statement.visitor.StatementVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
-public sealed abstract class CFGTerminator {
+public sealed abstract class CFGTerminator implements CFGStatement {
 	private static SExpr labelToWhy(CFGLabel label) {
 		return terminal("goto %s".formatted(label.name()));
 	}
 
-	public abstract SExpr toWhy();
+	public abstract Code toWhy();
 
 	public static final class Return extends CFGTerminator {
 		private final Expression value;
@@ -25,9 +27,18 @@ public sealed abstract class CFGTerminator {
 			this.value = value;
 		}
 
+		public Expression value() {
+			return value;
+		}
+
 		@Override
-		public SExpr toWhy() {
-			return prefix("return", value.toWhy());
+		public Code toWhy() {
+			return prefix("return", value.toWhy()).statement();
+		}
+
+		@Override
+		public void accept(StatementVisitor visitor) {
+			visitor.visitReturnStatement(this);
 		}
 	}
 
@@ -42,11 +53,20 @@ public sealed abstract class CFGTerminator {
 			this.value = value;
 		}
 
+		public Expression value() {
+			return value;
+		}
+
 		@Override
-		public SExpr toWhy() {
+		public Code toWhy() {
 			return prefix("return",
 					prefix("jthrow", value.toWhy())
-			);
+			).statement();
+		}
+
+		@Override
+		public void accept(StatementVisitor visitor) {
+			visitor.visitThrowStatement(this);
 		}
 	}
 
@@ -58,8 +78,13 @@ public sealed abstract class CFGTerminator {
 		}
 
 		@Override
-		public SExpr toWhy() {
-			return labelToWhy(next);
+		public Code toWhy() {
+			return labelToWhy(next).statement();
+		}
+
+		@Override
+		public void accept(StatementVisitor visitor) {
+			visitor.visitGotoStatement(this);
 		}
 	}
 
@@ -79,12 +104,21 @@ public sealed abstract class CFGTerminator {
 			this.falseBranch = falseBranch;
 		}
 
+		public Expression expression() {
+			return expression;
+		}
+
 		@Override
-		public SExpr toWhy() {
-			return switchEq(expression.toWhy(), List.of(
+		public Code toWhy() {
+			return switchExpr(expression.toWhy(), List.of(
 					Map.entry("True", CFGTerminator.labelToWhy(trueBranch)),
 					Map.entry("False", CFGTerminator.labelToWhy(falseBranch))
-			));
+			)).statement();
+		}
+
+		@Override
+		public void accept(StatementVisitor visitor) {
+			visitor.visitIfStatement(this);
 		}
 	}
 
@@ -104,12 +138,34 @@ public sealed abstract class CFGTerminator {
 			this.defaultTarget = defaultTarget;
 		}
 
+		public Expression test() {
+			return test;
+		}
+
 		@Override
-		public SExpr toWhy() {
-			return switchEq(test.toWhy(), cases.entrySet().stream()
-					.sorted(Map.Entry.comparingByKey())
-					.map(e -> Map.entry(e.getKey().toString(), CFGTerminator.labelToWhy(e.getValue())))
-					.toList(), CFGTerminator.labelToWhy(defaultTarget));
+		public Code toWhy() {
+			return switchExpr(
+					test.toWhy(),
+					Stream.concat(
+							cases.entrySet().stream()
+									.sorted(Map.Entry.comparingByKey())
+									.map(e -> Map.entry(
+											e.getKey().toString(),
+											CFGTerminator.labelToWhy(e.getValue())
+									)),
+							Stream.of(
+									Map.entry(
+											"_",
+											CFGTerminator.labelToWhy(defaultTarget)
+									)
+							)
+					).toList())
+					.statement();
+		}
+
+		@Override
+		public void accept(StatementVisitor visitor) {
+			visitor.visitSwitchStatement(this);
 		}
 	}
 }

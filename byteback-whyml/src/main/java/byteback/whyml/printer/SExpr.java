@@ -7,7 +7,6 @@ import static byteback.whyml.printer.Code.many;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -64,12 +63,8 @@ public sealed abstract class SExpr {
 		return new Conditional(op, left, right);
 	}
 
-	public static SExpr switchEq(SExpr test, List<Map.Entry<String, SExpr>> branches, SExpr defaultBranch) {
-		return new Switch(test, branches, Optional.of(defaultBranch));
-	}
-
-	public static SExpr switchEq(SExpr test, List<Map.Entry<String, SExpr>> branches) {
-		return new Switch(test, branches, Optional.empty());
+	public static SExpr switchExpr(SExpr test, List<Map.Entry<String, SExpr>> branches) {
+		return new Switch(test, branches);
 	}
 
 	public final Code statement() {
@@ -209,19 +204,10 @@ public sealed abstract class SExpr {
 	private static final class Switch extends SExpr {
 		private final SExpr test;
 		private final List<Map.Entry<String, SExpr>> branches;
-		private final Optional<SExpr> defaultBranch;
 
-		private Switch(SExpr test, List<Map.Entry<String, SExpr>> branches, Optional<SExpr> defaultBranch) {
+		private Switch(SExpr test, List<Map.Entry<String, SExpr>> branches) {
 			this.test = test;
 			this.branches = branches;
-			this.defaultBranch = defaultBranch;
-		}
-
-		private Stream<Map.Entry<String, SExpr>> branchStream() {
-			return Stream.concat(
-					branches.stream(),
-					defaultBranch.stream().map(e -> Map.entry("_", e))
-			);
 		}
 
 		@Override
@@ -233,7 +219,7 @@ public sealed abstract class SExpr {
 		protected Code withParens(String prefix, String postfix) {
 			return many(
 					test.statement(prefix + "switch (", ")"),
-					many(branchStream()
+					many(branches.stream()
 							.map(e -> e.getValue().statement("| %s -> ".formatted(e.getKey()), ""))),
 					line("end")
 			);

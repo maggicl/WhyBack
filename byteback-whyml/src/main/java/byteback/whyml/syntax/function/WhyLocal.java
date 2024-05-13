@@ -5,7 +5,7 @@ import byteback.whyml.printer.Code;
 import static byteback.whyml.printer.Code.line;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
-import byteback.whyml.syntax.expr.LocalVariableExpression;
+import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.UnaryExpression;
 import byteback.whyml.syntax.expr.binary.BinaryExpression;
 import byteback.whyml.syntax.expr.binary.LogicConnector;
@@ -15,7 +15,8 @@ import java.util.Locale;
 import java.util.Optional;
 
 public record WhyLocal(Identifier.L name, WhyType type, boolean isNotNull) {
-	public static WhyLocal CAUGHT_EXCEPTION = new WhyLocal(Identifier.Special.CAUGHT_EXCEPTION, WhyJVMType.PTR);
+	public static final WhyLocal CAUGHT_EXCEPTION = new WhyLocal(Identifier.Special.CAUGHT_EXCEPTION, WhyJVMType.PTR);
+
 
 	public WhyLocal(Identifier.L name, WhyType type) {
 		this(name, type, false);
@@ -26,7 +27,7 @@ public record WhyLocal(Identifier.L name, WhyType type, boolean isNotNull) {
 			return Optional.empty();
 		}
 
-		final Expression var = new LocalVariableExpression(name, type.jvm());
+		final Expression var = new LocalExpression(name, type.jvm());
 		final Expression isType = new InstanceOfExpression(var, type);
 
 		return Optional.of(isNotNull

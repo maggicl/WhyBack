@@ -26,4 +26,7 @@ public enum WhyFunctionDeclaration {
 	public boolean isSpec() {
 		return this != PROGRAM;
 	}
+	public boolean isProgram() {
+		return this == PROGRAM;
+	}
 }

@@ -57,7 +57,7 @@ public class RootResolver {
 	private final Map<SootMethod, List<VimpCondition>> conditions;
 	private boolean checkArrayDereference;
 	private boolean checkNullDereference;
-	private boolean transformExceptionalControlFlow;
+	private boolean transformThrowStatements;
 
 	public void setPreserveInvariants(boolean preserveInvariants) {
 		this.preserveInvariants = preserveInvariants;
@@ -70,7 +70,7 @@ public class RootResolver {
 		this.visited = new HashSet<>();
 		this.checkArrayDereference = false;
 		this.checkNullDereference = false;
-		this.transformExceptionalControlFlow = true;
+		this.transformThrowStatements = true;
 		this.preserveInvariants = false;
 		conditions = new HashMap<>();
 	}
@@ -118,11 +118,8 @@ public class RootResolver {
 					NullCheckTransformer.v().transform(body);
 				}
 
-				if (this.transformExceptionalControlFlow) {
-					CallCheckTransformer.v().transform(body);
-					GuardTransformer.v().transform(body);
-				}
-
+				CallCheckTransformer.v().transform(body);
+				new GuardTransformer(this.transformThrowStatements).transform(body);
 			} else {
 				PureTransformer.v().transform(body);
 				new ExpressionFolder().transform(body);
@@ -148,8 +145,8 @@ public class RootResolver {
 		checkNullDereference = f;
 	}
 
-	public void setTransformExceptionalControlFlow(boolean f) {
-		transformExceptionalControlFlow = f;
+	public void setTransformThrowStatements(boolean f) {
+		transformThrowStatements = f;
 	}
 
 	public boolean classIsValid(final SootClass clazz) {

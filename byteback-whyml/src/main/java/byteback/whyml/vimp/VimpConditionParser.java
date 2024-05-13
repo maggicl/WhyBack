@@ -4,7 +4,7 @@ import byteback.analysis.VimpCondition;
 import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.syntax.expr.BooleanLiteral;
 import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.LocalVariableExpression;
+import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.UnaryExpression;
 import byteback.whyml.syntax.expr.transformer.ParamActualizationTransformer;
 import byteback.whyml.syntax.function.WhyCondition;
@@ -55,7 +55,7 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 		final HashMap<Identifier.L, Expression> replacementMap = new HashMap<>();
 		for (int i = 0; i < methodParams.size(); i++) {
 			final WhyLocal param = methodParams.get(i);
-			replacementMap.put(condIdentifiers.get(i), new LocalVariableExpression(param.name(), param.type().jvm()));
+			replacementMap.put(condIdentifiers.get(i), new LocalExpression(param.name(), param.type().jvm()));
 		}
 
 		return ParamActualizationTransformer.transform(replacementMap, expression);

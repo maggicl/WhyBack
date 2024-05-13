@@ -39,27 +39,9 @@ module Result
   use prelude.ptr.Ptr
   use prelude.machine.Operators
 
-  type t 'r = Ok 'r | Exception Ptr.t
+  let ref caughtexception'8: Ptr.t = Ptr.null
 
-  val function build_result (caught: Ptr.t) (value: 'a) : t 'a
-    ensures { caught = Ptr.null  <-> result = Ok value }
-    ensures { caught <> Ptr.null <-> result = Exception caught }
-
-  predicate when_returns (r: t 'a) (clause: 'a -> bool) =
-    match r with
-      | Ok value -> (clause value)
-      | Exception _ -> true
-    end
-
-  predicate must_return (r: t 'a) =
-    match r with
-      | Ok _ -> true
-      | Exception _ -> false
-    end
-
-  predicate when_throws (r: t 'a) (clause: Ptr.t -> bool) =
-    match r with
-      | Ok _ -> true
-      | Exception e -> clause e
-    end
+  val jthrow (exc: Ptr.t) : 'a
+    writes { caughtexception'8 }
+    ensures { caughtexception'8 = exc }
 end

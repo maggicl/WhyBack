@@ -1,6 +1,7 @@
 package byteback.whyml;
 
 import byteback.analysis.RootResolver;
+import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.printer.Code;
 import static byteback.whyml.printer.Code.block;
 import static byteback.whyml.printer.Code.line;

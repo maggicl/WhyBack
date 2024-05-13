@@ -19,6 +19,7 @@ import soot.jimple.LookupSwitchStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.TableSwitchStmt;
+import soot.jimple.ThrowStmt;
 
 public class CFGTerminatorExtractor extends JimpleStmtSwitch<Optional<CFGTerminator>> {
 	private final ProgramExpressionExtractor expressionExtractor;
@@ -64,6 +65,11 @@ public class CFGTerminatorExtractor extends JimpleStmtSwitch<Optional<CFGTermina
 	@Override
 	public void caseReturnStmt(final ReturnStmt returnStatement) {
 		setResult(Optional.of(new CFGTerminator.Return(expressionExtractor.visit(returnStatement.getOp()))));
+	}
+
+	@Override
+	public void caseThrowStmt(ThrowStmt stmt) {
+		setResult(Optional.of(new CFGTerminator.Throw(expressionExtractor.visit(stmt.getOp()))));
 	}
 
 	@Override

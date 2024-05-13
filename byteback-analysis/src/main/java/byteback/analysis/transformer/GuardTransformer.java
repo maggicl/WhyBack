@@ -25,14 +25,10 @@ import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
 public class GuardTransformer extends BodyTransformer {
+	private final boolean transformThrowStmt;
 
-	private static final Lazy<GuardTransformer> instance = Lazy.from(GuardTransformer::new);
-
-	public static GuardTransformer v() {
-		return instance.get();
-	}
-
-	private GuardTransformer() {
+	public GuardTransformer(boolean transformThrowStmt) {
+		this.transformThrowStmt = transformThrowStmt;
 	}
 
 	@Override
@@ -81,7 +77,7 @@ public class GuardTransformer extends BodyTransformer {
 				Stacks.pushAll(activeTraps, startToTraps.get(unit));
 			}
 
-			if (unit instanceof ThrowStmt throwUnit) {
+			if (this.transformThrowStmt && unit instanceof ThrowStmt throwUnit) {
 				final Unit retUnit = Grimp.v().newReturnVoidStmt();
 
 				units.insertBefore(retUnit, throwUnit);

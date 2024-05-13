@@ -6,9 +6,9 @@ import byteback.whyml.syntax.expr.ConditionalExpression;
 import byteback.whyml.syntax.expr.DoubleLiteral;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.FloatLiteral;
-import byteback.whyml.syntax.expr.FunctionCall;
+import byteback.whyml.syntax.expr.PureFunctionCall;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
-import byteback.whyml.syntax.expr.LocalVariableExpression;
+import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.NewArrayExpression;
 import byteback.whyml.syntax.expr.NewExpression;
 import byteback.whyml.syntax.expr.NullLiteral;
@@ -24,7 +24,6 @@ import byteback.whyml.syntax.expr.field.Access;
 import byteback.whyml.syntax.expr.field.ArrayExpression;
 import byteback.whyml.syntax.expr.field.ArrayOperation;
 import byteback.whyml.syntax.expr.field.FieldExpression;
-import byteback.whyml.syntax.expr.field.Operation;
 
 public class ExpressionTransformer {
 	public Expression transformFloatLiteral(FloatLiteral source) {
@@ -87,8 +86,8 @@ public class ExpressionTransformer {
 		return source;
 	}
 
-	public Expression transformFunctionCall(FunctionCall source) {
-		return new FunctionCall(
+	public Expression transformFunctionCall(PureFunctionCall source) {
+		return new PureFunctionCall(
 				source.name(),
 				source.signature(),
 				source.actualParams().stream()
@@ -122,7 +121,7 @@ public class ExpressionTransformer {
 		return new ArrayExpression(source.base().accept(this), source.elementType(), op);
 	}
 
-	public Expression transformLocalVariableExpression(LocalVariableExpression source) {
+	public Expression transformLocalVariableExpression(LocalExpression source) {
 		return source;
 	}
 

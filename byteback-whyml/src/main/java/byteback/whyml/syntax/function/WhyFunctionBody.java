@@ -1,14 +1,11 @@
 package byteback.whyml.syntax.function;
 
-import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.printer.Code;
 import static byteback.whyml.printer.Code.indent;
 import static byteback.whyml.printer.Code.line;
 import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.transformer.CallDependenceVisitor;
-import byteback.whyml.syntax.type.WhyJVMType;
-import byteback.whyml.syntax.type.WhyReference;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -70,13 +67,6 @@ public sealed abstract class WhyFunctionBody {
 			return EnumSet.of(WhyFunctionDeclaration.PROGRAM);
 		}
 
-		private Stream<WhyLocal> localsWithExc() {
-			return Stream.concat(
-					locals.stream(),
-					Stream.of(WhyLocal.CAUGHT_EXCEPTION)
-			);
-		}
-
 		@Override
 		public Set<WhyFunctionSignature> getCallees() {
 			// TODO: change
@@ -88,10 +78,10 @@ public sealed abstract class WhyFunctionBody {
 			return many(
 					line("="),
 					indent(
-							many(localsWithExc().map(WhyLocal::toWhy)),
+							many(locals.stream().map(WhyLocal::toWhy)),
 							line("{"),
 							indent(
-									many(localsWithExc().map(WhyLocal::initialization)),
+									many(locals.stream().map(WhyLocal::initialization)),
 									line("goto %s".formatted(blocks.get(0).label().name()))
 							),
 							line("}"),

@@ -1,5 +1,6 @@
 package byteback.whyml.vimp.expr;
 
+import byteback.analysis.Namespace;
 import byteback.analysis.QuantifierExpr;
 import byteback.analysis.vimp.LogicConstant;
 import byteback.analysis.vimp.LogicExistsExpr;
@@ -7,22 +8,23 @@ import byteback.analysis.vimp.LogicForallExpr;
 import byteback.analysis.vimp.OldExpr;
 import byteback.analysis.vimp.VoidConstant;
 import byteback.whyml.identifiers.IdentifierEscaper;
-import byteback.whyml.syntax.expr.binary.BinaryExpression;
-import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.expr.BooleanLiteral;
 import byteback.whyml.syntax.expr.ClassCastExpression;
+import byteback.whyml.syntax.expr.ConditionalExpression;
 import byteback.whyml.syntax.expr.DoubleLiteral;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.FloatLiteral;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
-import byteback.whyml.syntax.expr.LocalVariableExpression;
+import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.NullLiteral;
-import byteback.whyml.syntax.expr.WholeNumberLiteral;
 import byteback.whyml.syntax.expr.OldReference;
 import byteback.whyml.syntax.expr.PrimitiveCastExpression;
+import byteback.whyml.syntax.expr.PureFunctionCall;
 import byteback.whyml.syntax.expr.QuantifierExpression;
 import byteback.whyml.syntax.expr.StringLiteralExpression;
 import byteback.whyml.syntax.expr.UnaryExpression;
+import byteback.whyml.syntax.expr.WholeNumberLiteral;
+import byteback.whyml.syntax.expr.binary.BinaryExpression;
 import byteback.whyml.syntax.expr.binary.BinaryOperator;
 import byteback.whyml.syntax.expr.binary.Comparison;
 import byteback.whyml.syntax.expr.binary.LogicConnector;
@@ -30,6 +32,9 @@ import byteback.whyml.syntax.expr.binary.PrefixOperator;
 import byteback.whyml.syntax.expr.field.ArrayExpression;
 import byteback.whyml.syntax.expr.field.ArrayOperation;
 import byteback.whyml.syntax.expr.field.Operation;
+import byteback.whyml.syntax.function.WhyFunctionDeclaration;
+import byteback.whyml.syntax.function.WhyFunctionSignature;
+import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.type.WhyArrayType;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
@@ -60,6 +65,7 @@ import soot.jimple.GtExpr;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.IntConstant;
+import soot.jimple.InvokeExpr;
 import soot.jimple.LeExpr;
 import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
@@ -79,28 +85,33 @@ import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 
 public class PureExpressionExtractor extends BaseExpressionExtractor {
+	protected final VimpMethodParser methodSignatureParser;
+	protected final VimpMethodNameParser methodNameParser;
 	protected final IdentifierEscaper identifierEscaper;
 
 	public PureExpressionExtractor(VimpMethodParser methodSignatureParser, VimpMethodNameParser methodNameParser,
 								   TypeResolver typeResolver, VimpFieldParser fieldParser,
 								   IdentifierEscaper identifierEscaper) {
-		super(methodSignatureParser, methodNameParser, fieldParser, typeResolver);
+		super(fieldParser, typeResolver);
 		this.identifierEscaper = identifierEscaper;
+		this.methodSignatureParser = methodSignatureParser;
+		this.methodNameParser = methodNameParser;
 	}
 
 	@Override
 	public void caseStaticInvokeExpr(final StaticInvokeExpr v) {
-		final SootMethod method = v.getMethod();
-		final Iterable<Value> arguments = v.getArgs();
-		setFunctionReference(method, arguments);
+		setFunctionReference(v.getMethod(), v.getArgs());
+	}
+
+	protected void caseWithBaseInvokeExpr(final InvokeExpr v) {
+
 	}
 
 	@Override
 	public void caseInstanceInvokeExpr(final InstanceInvokeExpr v) {
-		final SootMethod method = v.getMethod();
 		final Value base = v.getBase();
 		final Iterable<Value> arguments = Stream.concat(Stream.of(base), v.getArgs().stream())::iterator;
-		setFunctionReference(method, arguments);
+		setFunctionReference(v.getMethod(), arguments);
 	}
 
 	@Override
@@ -406,7 +417,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseLocal(final Local v) {
-		setExpression(new LocalVariableExpression(
+		setExpression(new LocalExpression(
 				identifierEscaper.escapeL(v.getName()),
 				typeResolver.resolveJVMType(v.getType())
 		));
@@ -457,7 +468,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseCaughtExceptionRef(CaughtExceptionRef v) {
-		setExpression(new LocalVariableExpression(WhyLocal.CAUGHT_EXCEPTION));
+		setExpression(new LocalExpression(WhyLocal.CAUGHT_EXCEPTION));
 	}
 
 	@Override
@@ -469,5 +480,36 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	@Override
 	public void caseDefault(final Value v) {
 		throw new IllegalArgumentException("Unable to convert expression of type " + v.getClass().getName());
+	}
+
+	protected Expression parseSpecialClassMethod(SootMethod method, List<Expression> argExpressions) {
+		if (!method.isStatic()) {
+			throw new IllegalStateException("instance method \"%s\" in special class is unknown"
+					.formatted(method.getName()));
+		}
+
+		// handle special "old" and "conditional" methods
+		return switch (method.getName()) {
+			case Namespace.OLD_NAME -> new OldReference(argExpressions.get(0));
+			case Namespace.CONDITIONAL_NAME -> new ConditionalExpression(
+					argExpressions.get(0),
+					argExpressions.get(1),
+					argExpressions.get(2));
+			default -> throw new IllegalStateException("static method \"%s\" in special class is unknown".formatted(
+					method.getName()));
+		};
+	}
+
+	protected Expression parsePrimitiveOpMethod(SootMethod method, List<Expression> argExpressions) {
+		return PreludeFunctionParser.parse(method, argExpressions);
+	}
+
+	protected Expression parseMethodCall(SootMethod method, List<Expression> argExpressions) {
+		final WhyFunctionSignature sig = VimpMethodParser.declaration(method)
+				.filter(WhyFunctionDeclaration::isSpec)
+				.map(decl -> methodSignatureParser.signature(method, decl))
+				.orElseThrow(() -> new IllegalStateException("method " + method + " is not callable from a pure expression"));
+
+		return new PureFunctionCall(methodNameParser.methodName(sig), sig, argExpressions);
 	}
 }

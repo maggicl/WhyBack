@@ -1,8 +1,7 @@
 package byteback.whyml.syntax.expr.transformer;
 
-import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.FunctionCall;
+import byteback.whyml.syntax.expr.PureFunctionCall;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +18,7 @@ public class CallDependenceVisitor extends ExpressionVisitor {
 	}
 
 	@Override
-	public void visitFunctionCall(FunctionCall source) {
+	public void visitFunctionCall(PureFunctionCall source) {
 		calls.add(source.signature());
 		super.visitFunctionCall(source);
 	}

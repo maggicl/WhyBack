@@ -2,7 +2,7 @@ package byteback.whyml.syntax.expr.transformer;
 
 import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.LocalVariableExpression;
+import byteback.whyml.syntax.expr.LocalExpression;
 import java.util.Map;
 
 public class ParamActualizationTransformer extends ExpressionTransformer {
@@ -13,7 +13,7 @@ public class ParamActualizationTransformer extends ExpressionTransformer {
 	}
 
 	@Override
-	public Expression transformLocalVariableExpression(LocalVariableExpression source) {
+	public Expression transformLocalVariableExpression(LocalExpression source) {
 		final Identifier.L name = source.name();
 
 		return argumentMap.containsKey(name)

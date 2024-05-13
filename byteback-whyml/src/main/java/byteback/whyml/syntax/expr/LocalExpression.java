@@ -8,8 +8,8 @@ import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.type.WhyJVMType;
 
-public record LocalVariableExpression(Identifier.L name, WhyJVMType type) implements Expression {
-	public LocalVariableExpression(WhyLocal local) {
+public record LocalExpression(Identifier.L name, WhyJVMType type) implements Expression {
+	public LocalExpression(WhyLocal local) {
 		this(local.name(), local.type().jvm());
 	}
 

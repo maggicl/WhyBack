@@ -8,7 +8,7 @@ import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.AssumptionStmt;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.LocalVariableExpression;
+import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.field.Access;
 import byteback.whyml.syntax.field.WhyField;
 import byteback.whyml.syntax.field.WhyInstanceField;
@@ -100,7 +100,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 
 				addStatement(new LocalAssignment(
 						lValue,
-						new LocalVariableExpression(rValue.name(), rValue.type().jvm())
+						new LocalExpression(rValue.name(), rValue.type().jvm())
 				));
 			}
 		}
@@ -168,8 +168,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
 		final var invoke = invokeStatement.getInvokeExpr();
-//		procedureExpressionExtractor.visit(invoke);
-//		makeExpressionExtractor().visit(invoke);
+		programExpressionExtractor.visit(invoke);
 	}
 
 	private Optional<String> positionAttribute(AbstractHost stmt, String string) {
@@ -210,20 +209,5 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 	@Override
 	public void caseDefault(final Unit unit) {
 		throw new IllegalStateException("Cannot extract statements of type " + unit.getClass().getName());
-	}
-
-	@Override
-	public void caseThrowStmt(final ThrowStmt throwStatement) {
-		throw new UnsupportedOperationException("unreachable");
-		// TODO: check if all throw statements are transformed away
-
-//		final Value operand = throwStatement.getOp();
-//
-//		// assign to caughtexception
-//		// return
-//
-//		if (!(operand instanceof CaughtExceptionRef)) {
-//			addStatement(new LocalAssignment(WhyLocal.CAUGHT_EXCEPTION, procedureExpressionExtractor.visit(operand)));
-//		}
 	}
 }

@@ -27,8 +27,25 @@ public sealed abstract class CFGTerminator {
 
 		@Override
 		public SExpr toWhy() {
+			return prefix("return", value.toWhy());
+		}
+	}
+
+	public static final class Throw extends CFGTerminator {
+		private final Expression value;
+
+		public Throw(Expression value) {
+			if (value.type() != WhyJVMType.PTR) {
+				throw new IllegalArgumentException("throw exception expression must be a PTR, given " + value.type());
+			}
+
+			this.value = value;
+		}
+
+		@Override
+		public SExpr toWhy() {
 			return prefix("return",
-					prefix("build_result", terminal(Identifier.Special.CAUGHT_EXCEPTION), value.toWhy())
+					prefix("jthrow", value.toWhy())
 			);
 		}
 	}

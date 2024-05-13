@@ -100,8 +100,7 @@ public class Main {
 		injector.inject(scene.getClasses());
 		resolver.setCheckNullDereference(Configuration.v().getTransformNullCheck());
 		resolver.setCheckArrayDereference(Configuration.v().getTransformArrayCheck());
-		// TODO: remove if MLCFG does not support exceptions
-//		resolver.setTransformExceptionalControlFlow(!configuration.useWhy());
+		resolver.setTransformThrowStatements(!configuration.useMLCFG());
 		resolver.setPreserveInvariants(configuration.useWhy());
 		resolver.resolve(startingClasses);
 

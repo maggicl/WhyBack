@@ -14,11 +14,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-public record FunctionCall(Identifier.L name,
-						   WhyFunctionSignature signature,
-						   List<Expression> actualParams) implements Expression {
+public record PureFunctionCall(Identifier.L name,
+							   WhyFunctionSignature signature,
+							   List<Expression> actualParams) implements Expression {
 
-	public FunctionCall {
+	public PureFunctionCall {
 		final List<WhyType> paramTypes = signature.params().stream().map(WhyLocal::type).toList();
 
 		if (paramTypes.size() != actualParams.size()) {

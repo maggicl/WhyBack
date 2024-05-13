@@ -1,14 +1,15 @@
 package byteback.whyml.vimp.expr;
 
-import byteback.analysis.vimp.VoidConstant;
 import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.LocalVariableExpression;
+import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.NewArrayExpression;
 import byteback.whyml.syntax.expr.NewExpression;
-import byteback.whyml.syntax.expr.NullLiteral;
+import byteback.whyml.syntax.expr.PureFunctionCall;
 import byteback.whyml.syntax.expr.field.ArrayOperation;
 import byteback.whyml.syntax.expr.field.Operation;
+import byteback.whyml.syntax.function.WhyFunctionDeclaration;
+import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyReference;
@@ -17,6 +18,8 @@ import byteback.whyml.vimp.TypeResolver;
 import byteback.whyml.vimp.VimpFieldParser;
 import byteback.whyml.vimp.VimpMethodNameParser;
 import byteback.whyml.vimp.VimpMethodParser;
+import java.util.List;
+import soot.SootMethod;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
@@ -42,8 +45,23 @@ public class ProgramExpressionExtractor extends PureExpressionExtractor {
 	}
 
 	@Override
-	public void caseCaughtExceptionRef(CaughtExceptionRef v) {
-		setExpression(new LocalVariableExpression(WhyLocal.CAUGHT_EXCEPTION));
+	protected Expression parseSpecialClassMethod(SootMethod method, List<Expression> argExpressions) {
+		throw new IllegalStateException("special class method " + method + " called in program code");
+	}
+
+	@Override
+	protected Expression parsePrimitiveOpMethod(SootMethod method, List<Expression> argExpressions) {
+		throw new IllegalStateException("primitive operator method " + method + " called in program code");
+	}
+
+	@Override
+	protected Expression parseMethodCall(SootMethod method, List<Expression> argExpressions) {
+		final WhyFunctionSignature sig = VimpMethodParser.declaration(method)
+				.filter(WhyFunctionDeclaration::isProgram)
+				.map(decl -> methodSignatureParser.signature(method, decl))
+				.orElseThrow(() -> new IllegalStateException("method " + method + " is not callable from a program expression"));
+
+		return new PureFunctionCall(methodNameParser.methodName(sig), sig, argExpressions);
 	}
 
 	@Override
@@ -72,11 +90,5 @@ public class ProgramExpressionExtractor extends PureExpressionExtractor {
 		} else {
 			throw new IllegalStateException("new called with non-reference type: " + t);
 		}
-	}
-
-	@Override
-	public void caseVoidConstant(final VoidConstant v) {
-		// TODO: change and define a special "unit literal" for no exception being thrown
-		setExpression(NullLiteral.INSTANCE);
 	}
 }

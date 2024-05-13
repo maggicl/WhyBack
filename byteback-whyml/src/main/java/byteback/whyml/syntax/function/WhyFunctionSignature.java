@@ -27,12 +27,7 @@ public record WhyFunctionSignature(
 	public WhyLocal resultParam() {
 		// spec functions return a pure result, while program function return a result encapsulated in a Result.t object
 		// which encapsulates a possibly thrown exception, hence RESULT_VAR is used.
-		return new WhyLocal(
-				declaration.isSpec()
-						? Identifier.Special.RESULT
-						: Identifier.Special.RESULT_VAR,
-				returnType
-		);
+		return new WhyLocal(Identifier.Special.RESULT, returnType);
 	}
 
 	public Optional<WhyLocal> getThisParam() {

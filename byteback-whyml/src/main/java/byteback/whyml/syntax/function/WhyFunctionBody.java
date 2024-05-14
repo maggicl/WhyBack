@@ -5,16 +5,31 @@ import static byteback.whyml.printer.Code.indent;
 import static byteback.whyml.printer.Code.line;
 import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.transformer.CallDependenceVisitor;
+import byteback.whyml.syntax.statement.visitor.SideEffectVisitor;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 public sealed abstract class WhyFunctionBody {
+	private volatile WhySideEffects sideEffects = null;
+
+	protected abstract void visit(SideEffectVisitor v);
+
 	public abstract Set<WhyFunctionDeclaration> forDecls();
 
-	public abstract Set<WhyFunctionSignature> getCallees();
+	public WhySideEffects sideEffects() {
+		if (sideEffects == null) {
+			synchronized (this) {
+				if (sideEffects == null) {
+					final SideEffectVisitor v = new SideEffectVisitor();
+					visit(v);
+					sideEffects = v.sideEffects();
+				}
+			}
+		}
+
+		return sideEffects;
+	}
 
 	public abstract Code toWhy();
 
@@ -30,13 +45,13 @@ public sealed abstract class WhyFunctionBody {
 		}
 
 		@Override
-		public Set<WhyFunctionDeclaration> forDecls() {
-			return EnumSet.of(WhyFunctionDeclaration.FUNCTION, WhyFunctionDeclaration.PREDICATE);
+		protected void visit(SideEffectVisitor v) {
+			expression.accept(v);
 		}
 
 		@Override
-		public Set<WhyFunctionSignature> getCallees() {
-			return CallDependenceVisitor.getCallees(expression);
+		public Set<WhyFunctionDeclaration> forDecls() {
+			return EnumSet.of(WhyFunctionDeclaration.FUNCTION, WhyFunctionDeclaration.PREDICATE);
 		}
 
 		@Override
@@ -63,14 +78,15 @@ public sealed abstract class WhyFunctionBody {
 		}
 
 		@Override
-		public Set<WhyFunctionDeclaration> forDecls() {
-			return EnumSet.of(WhyFunctionDeclaration.PROGRAM);
+		protected void visit(SideEffectVisitor v) {
+			for (final CFGBlock b : blocks) {
+				b.allStatements().forEach(e -> e.accept(v));
+			}
 		}
 
 		@Override
-		public Set<WhyFunctionSignature> getCallees() {
-			// TODO: change
-			return Set.of();
+		public Set<WhyFunctionDeclaration> forDecls() {
+			return EnumSet.of(WhyFunctionDeclaration.PROGRAM);
 		}
 
 		@Override

@@ -1,9 +1,14 @@
 package byteback.whyml.syntax.function;
 
+import byteback.whyml.vimp.graph.Node;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
-public record WhyFunction(WhyFunctionContract contract, Optional<WhyFunctionBody> body) {
+public record WhyFunction(WhyFunctionContract contract,
+						  Optional<WhyFunctionBody> body) implements Node<WhyFunctionSignature, WhyFunction> {
 	public WhyFunction {
 		if (body.isEmpty() && contract.signature().declaration().isSpec()) {
 			throw new IllegalArgumentException("a spec WhyFunction cannot have an empty body");
@@ -25,5 +30,15 @@ public record WhyFunction(WhyFunctionContract contract, Optional<WhyFunctionBody
 	@Override
 	public int hashCode() {
 		return Objects.hash(contract);
+	}
+
+	@Override
+	public WhyFunctionSignature index() {
+		return contract.signature();
+	}
+
+	@Override
+	public List<WhyFunctionSignature> nearTo() {
+		return body.map(e -> e.sideEffects().calls().stream().sorted().toList()).orElse(List.of());
 	}
 }

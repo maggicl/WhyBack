@@ -19,6 +19,7 @@ public record WhyClass(
 	}
 
 	public Stream<Identifier.FQDN> superNames() {
-		return Stream.concat(extendsClass.stream(), implementsInterfaces.stream());
+		return Stream.concat(extendsClass.stream(), implementsInterfaces.stream())
+				.filter(e-> !e.equals(Identifier.Special.OBJECT));
 	}
 }

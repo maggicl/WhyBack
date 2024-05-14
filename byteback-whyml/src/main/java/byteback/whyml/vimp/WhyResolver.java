@@ -2,7 +2,6 @@ package byteback.whyml.vimp;
 
 import byteback.analysis.Inline;
 import byteback.analysis.VimpCondition;
-import byteback.whyml.WhyFunctionSCC;
 import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.syntax.WhyClass;
 import byteback.whyml.syntax.expr.Expression;
@@ -13,8 +12,10 @@ import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.type.ReferenceVisitor;
 import byteback.whyml.syntax.type.WhyType;
 import byteback.whyml.vimp.graph.PostOrder;
+import byteback.whyml.vimp.graph.SCC;
 import byteback.whyml.vimp.graph.Tarjan;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
@@ -126,30 +127,16 @@ public class WhyResolver {
 		return PostOrder.compute(superAdjMap, Comparator.comparing(WhyClass::name));
 	}
 
-	public List<WhyFunctionSCC> functions() {
-		final List<WhyFunction> functions = signatures.entrySet()
-				.stream()
-				.map(e -> new WhyFunction(e.getValue(), Optional.ofNullable(bodies.get(e.getKey()))))
-				.toList();
+	public List<SCC<WhyFunctionSignature, WhyFunction>> functions() {
+		final Map<WhyFunctionSignature, WhyFunction> functionMap = new HashMap<>();
 
-		final Map<WhyFunctionSignature, WhyFunction> bySignature = functions.stream()
-				.collect(Collectors.toMap(e -> e.contract().signature(), Function.identity()));
+		for (final SootMethod method : signatures.keySet()) {
+			final WhyFunctionContract contract = signatures.get(method);
+			final Optional<WhyFunctionBody> body = Optional.ofNullable(bodies.get(method));
 
-		final Map<WhyFunction, Set<WhyFunction>> callees = functions.stream()
-				.collect(Collectors.toMap(Function.identity(), e -> e.body().map(WhyFunctionBody::getCallees).orElseGet(Set::of)
-						.stream()
-						.map(bySignature::get)
-						.collect(Collectors.toSet())));
+			functionMap.put(contract.signature(), new WhyFunction(contract, body));
+		}
 
-		final Set<WhyFunctionSCC> sccMap = Tarjan.compute(callees).stream()
-				.map(e -> new WhyFunctionSCC(e, callees))
-				.collect(Collectors.toSet());
-
-		final Map<WhyFunctionSCC, Set<WhyFunctionSCC>> sccAdjMap = sccMap.stream()
-				.collect(Collectors.toMap(Function.identity(), e -> e.nearTo(sccMap)));
-
-		// order by post-order, sorting siblings based on the first function on the SCC. Functions within the SCC
-		// are already sorted by the WhyFunctionSCC constructor
-		return PostOrder.compute(sccAdjMap, Comparator.comparing(e -> e.functionList().get(0).contract()));
+		return Tarjan.compute(functionMap);
 	}
 }

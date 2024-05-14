@@ -38,7 +38,7 @@ public class WhyClassPrinter {
 		this.printer = printer;
 	}
 
-	public WhyClassDeclaration toWhy(final WhyClass clazz, final WhyResolver resolver) {
+	public byteback.whyml.printer.WhyClassDeclaration toWhy(final WhyClass clazz, final WhyResolver resolver) {
 		final boolean typeDeclared = BOOTSTRAP_TYPES.contains(clazz.name());
 
 		final String classReference = "Class %sclass".formatted(typeDeclared ? (clazz.name() + ".") : "");
@@ -57,7 +57,7 @@ public class WhyClassPrinter {
 
 		final WhyClassScope scope = new WhyClassScope(clazz.name());
 
-		return new WhyClassDeclaration(
+		return new byteback.whyml.printer.WhyClassDeclaration(
 				// make sure we don't open a scope if we have no type information to put in
 				typeDeclared && hierarchyStatements == null
 						? many()

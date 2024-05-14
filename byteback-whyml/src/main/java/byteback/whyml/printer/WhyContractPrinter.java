@@ -11,7 +11,8 @@ import byteback.whyml.syntax.expr.binary.BinaryExpression;
 import byteback.whyml.syntax.expr.binary.Comparison;
 import byteback.whyml.syntax.expr.binary.LogicConnector;
 import byteback.whyml.syntax.function.WhyCondition;
-import byteback.whyml.syntax.function.WhyFunctionContract;
+import byteback.whyml.syntax.function.WhyFunction;
+import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyReference;
@@ -20,17 +21,19 @@ import java.util.List;
 
 public class WhyContractPrinter implements WhyCondition.Visitor {
 	private final boolean isRecursive;
-	private final WhyFunctionContract contract;
+	private final WhyFunction function;
 
 	private final List<Code> requiresList = new ArrayList<>();
 	private final List<Code> ensuresList = new ArrayList<>();
 	private final List<Code> returnsList = new ArrayList<>();
 	private final List<Code> raisesList = new ArrayList<>();
 	private final List<Code> decreasesList = new ArrayList<>();
+	private final List<Code> readsList = new ArrayList<>();
+	private final List<Code> writesList = new ArrayList<>();
 
-	public WhyContractPrinter(boolean isRecursive, WhyFunctionContract contract) {
+	public WhyContractPrinter(boolean isRecursive, WhyFunction function) {
 		this.isRecursive = isRecursive;
-		this.contract = contract;
+		this.function = function;
 	}
 
 	private static Expression caughtExceptionIsNull(boolean isNull) {
@@ -64,7 +67,7 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 
 	@Override
 	public void visitReturns(WhyCondition.Returns r) {
-		if (contract.signature().declaration().isProgram()) {
+		if (function.contract().signature().declaration().isProgram()) {
 			// note: the `returns` condition in WhyML is a predicate that is guaranteed to hold on the return value
 			// the meaning of @Returns in bb-lib simply denotes that no exceptions are returned when the condition holds.
 
@@ -80,7 +83,7 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 
 	@Override
 	public void visitRaises(WhyCondition.Raises r) {
-		if (contract.signature().declaration().isSpec()) {
+		if (function.contract().signature().declaration().isSpec()) {
 			throw new IllegalStateException("spec function is not allowed to have a raises condition: " + r);
 		}
 
@@ -97,21 +100,37 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 	}
 
 	public void visit() {
-		if (contract.signature().declaration().isProgram()) {
+		final WhyFunctionSignature sig = function.contract().signature();
+
+		if (sig.declaration().isProgram()) {
 			// if this is a program function, require that the caught exception variable is null before calling the method
 			visit(new WhyCondition.Requires(caughtExceptionIsNull(true)));
 		}
 
-		for (final WhyLocal p : contract.signature().params()) {
+		for (final WhyLocal p : sig.params()) {
 			p.condition().ifPresent(c -> visit(new WhyCondition.Requires(c)));
 		}
 
-		contract.signature().resultParam().condition()
+		sig.resultParam().condition()
 				.ifPresent(c -> visit(new WhyCondition.Ensures(c)));
 
-		for (final WhyCondition c : contract.conditions()) {
+		for (final WhyCondition c : function.contract().conditions()) {
 			visit(c);
 		}
+
+		function.body().ifPresent(b -> {
+			if (decreasesList.isEmpty() && isRecursive) {
+				decreasesList.add(line("variant { 0 } (* no variant on method *)"));
+			}
+
+			for (final String w : b.sideEffects().reads()) {
+				readsList.add(line("reads { %s }".formatted(w)));
+			}
+
+			for (final String w : b.sideEffects().writes()) {
+				writesList.add(line("writes { %s }".formatted(w)));
+			}
+		});
 	}
 
 	public Code conditionStatements() {
@@ -120,12 +139,9 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 				many(ensuresList.stream()),
 				many(returnsList.stream()),
 				many(raisesList.stream()),
-				decreasesList.isEmpty() && isRecursive
-						? line("variant { 0 }")
-						: many(decreasesList.stream()),
-				contract.signature().declaration().isProgram()
-						? line("writes { %s }".formatted(Identifier.Special.CAUGHT_EXCEPTION))
-						: many()
+				many(decreasesList.stream()),
+				many(readsList.stream()),
+				many(writesList.stream())
 		);
 	}
 }

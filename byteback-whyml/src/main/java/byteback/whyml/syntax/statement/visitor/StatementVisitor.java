@@ -2,10 +2,10 @@ package byteback.whyml.syntax.statement.visitor;
 
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.statement.ArrayAssignment;
-import byteback.whyml.syntax.statement.LocalAssignment;
 import byteback.whyml.syntax.statement.CFGLogicalStatement;
 import byteback.whyml.syntax.statement.CFGTerminator;
 import byteback.whyml.syntax.statement.FieldAssignment;
+import byteback.whyml.syntax.statement.LocalAssignment;
 
 public class StatementVisitor extends ExpressionVisitor {
 	public void visitArrayAssignmentStatement(ArrayAssignment arrayAssignment) {
@@ -15,10 +15,9 @@ public class StatementVisitor extends ExpressionVisitor {
 	}
 
 	public void visitLogicalStatement(CFGLogicalStatement cfgLogicalStatement) {
-		// Do not visit the expression here as it is part of the spec code, not program code, and thus does not include
-		// side effects
+		// visit this no matter what to capture call dependency. Logical statements do not have other side effects by definition
+		cfgLogicalStatement.expression().accept(this);
 	}
-
 
 	public void visitFieldAssignmentStatement(FieldAssignment fieldAssignment) {
 		fieldAssignment.value().accept(this);

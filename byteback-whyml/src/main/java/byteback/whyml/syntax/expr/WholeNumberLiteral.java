@@ -16,10 +16,6 @@ public final class WholeNumberLiteral implements Expression {
 			WhyJVMType.CHAR, Map.entry((long) Character.MIN_VALUE, (long) Character.MAX_VALUE)
 	);
 
-	public static boolean isNarrowingTarget(WhyJVMType t) {
-		return NARROWING_LIMITS.containsKey(t);
-	}
-
 	private final WhyJVMType type;
 	private final long value;
 

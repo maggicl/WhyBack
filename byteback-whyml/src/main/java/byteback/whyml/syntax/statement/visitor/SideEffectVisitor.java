@@ -1,13 +1,14 @@
 package byteback.whyml.syntax.statement.visitor;
 
 import byteback.whyml.identifiers.Identifier;
+import byteback.whyml.syntax.expr.FunctionCall;
 import byteback.whyml.syntax.expr.NewArrayExpression;
 import byteback.whyml.syntax.expr.NewExpression;
-import byteback.whyml.syntax.expr.FunctionCall;
+import byteback.whyml.syntax.expr.StringLiteralExpression;
 import byteback.whyml.syntax.expr.field.Access;
-import byteback.whyml.syntax.function.WhyFunctionBody;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.function.WhyLocal;
+import byteback.whyml.syntax.function.WhySideEffects;
 import byteback.whyml.syntax.statement.ArrayAssignment;
 import byteback.whyml.syntax.statement.CFGTerminator;
 import byteback.whyml.syntax.statement.FieldAssignment;
@@ -16,8 +17,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SideEffectVisitor extends StatementVisitor {
-	public final Set<String> writes = new HashSet<>();
-	public final Set<WhyFunctionSignature> calls = new HashSet<>();
+	private final Set<String> reads = new HashSet<>();
+	private final Set<String> writes = new HashSet<>();
+	private final Set<WhyFunctionSignature> calls = new HashSet<>();
 
 	@Override
 	public void visitNewArrayExpression(NewArrayExpression newArrayExpression) {
@@ -77,11 +79,14 @@ public class SideEffectVisitor extends StatementVisitor {
 		super.visitFunctionCall(source);
 	}
 
-	public Set<String> getWrites() {
-		return writes;
+	@Override
+	public void visitStringLiteralExpression(StringLiteralExpression source) {
+		reads.add("Java.Lang.String.pointers'8");
+
+		super.visitStringLiteralExpression(source);
 	}
 
-	public Set<WhyFunctionSignature> getCalls() {
-		return calls;
+	public WhySideEffects sideEffects() {
+		return new WhySideEffects(reads, writes, calls);
 	}
 }

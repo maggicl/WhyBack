@@ -1,31 +1,49 @@
 package byteback.whyml.syntax.function;
 
+import java.util.StringJoiner;
+
 public enum WhyFunctionDeclaration {
-	PROGRAM("let cfg", "let rec cfg", "val"),
-	PREDICATE("let ghost predicate", "let rec ghost predicate", "val ghost predicate"),
-	FUNCTION("let ghost function", "let rec ghost function", "val ghost function");
+	PROGRAM("cfg", null),
+	PREDICATE(null, "ghost predicate"),
+	FUNCTION(null, "ghost function");
 
-	private final String why;
-	private final String whyRec;
-	private final String whyDecl;
+	private final String implOnlyToken;
+	private final String token;
 
-	WhyFunctionDeclaration(String why, String whyRec, String whyDecl) {
-		this.why = why;
-		this.whyRec = whyRec;
-		this.whyDecl = whyDecl;
+	WhyFunctionDeclaration(String implOnlyToken, String token) {
+		this.implOnlyToken = implOnlyToken;
+		this.token = token;
 	}
 
-	public String toWhy(boolean recursive) {
-		return recursive ? whyRec : why;
+	private static String build(String... tokens) {
+		final StringJoiner s = new StringJoiner(" ");
+
+		for (final String token : tokens) {
+			if (token != null) {
+				s.add(token);
+			}
+		}
+
+		return s.toString();
+	}
+
+	public String toWhy(boolean useWith, boolean recursive) {
+		return build(
+				useWith ? "with" : "let",
+				!useWith && recursive ? "rec" : null,
+				implOnlyToken,
+				token
+		);
 	}
 
 	public String toWhyDeclaration() {
-		return whyDecl;
+		return build("val", token);
 	}
 
 	public boolean isSpec() {
 		return this != PROGRAM;
 	}
+
 	public boolean isProgram() {
 		return this == PROGRAM;
 	}

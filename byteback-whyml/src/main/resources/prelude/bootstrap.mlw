@@ -29,11 +29,11 @@ module Bootstrap
       (forall s:string, s2:string. s <> s2 -> v[s] <> v[s2])
     }
 
-    val pointers: stringset
+    val pointers'8: stringset
 
     val literal'8 (s: string) : Ptr.t
-      reads { pointers }
-      ensures { result = pointers.v[s] }
+      reads { pointers'8 }
+      ensures { result = pointers'8.v[s] }
   end
   end
   end

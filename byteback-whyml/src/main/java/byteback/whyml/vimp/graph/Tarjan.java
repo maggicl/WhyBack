@@ -13,27 +13,32 @@ import java.util.Set;
  * @param <T> the vertex type
  * @see <a href="https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm">Wikipedia implementation</a>
  */
-public final class Tarjan<T> {
-	private final Map<T, Set<T>> map;
+public final class Tarjan<Index, T extends Node<Index, T>> {
+	private final Map<Index, T> map;
 	private final ArrayDeque<T> stack = new ArrayDeque<>();
 	private final Map<T, VertexState> vertexState = new HashMap<>();
-	private final List<Set<T>> sccList = new ArrayList<>();
+	private final List<SCC<Index, T>> sccList = new ArrayList<>();
 	private int globalIndex = 0;
 
-	private Tarjan(final Map<T, Set<T>> map) {
+	private Tarjan(Map<Index, T> map) {
 		this.map = map;
 	}
 
-	public Collection<Set<T>> compute() {
+	public static <Index, T extends Node<Index, T>> List<SCC<Index, T>> compute(Map<Index, T> map) {
+		return new Tarjan<Index, T>(map).apply();
+	}
+
+	public List<SCC<Index, T>> apply() {
 		if (globalIndex > 0) {
 			throw new IllegalStateException("tarjan instance already executed");
 		}
 
-		for (final T v : map.keySet()) {
+		for (final T v : map.values()) {
 			if (!vertexState.containsKey(v)) {
 				strongConnect(v);
 			}
 		}
+
 		return sccList;
 	}
 
@@ -44,7 +49,7 @@ public final class Tarjan<T> {
 		stack.push(v);
 		vState.onStack = true;
 
-		for (final T w : map.get(v)) {
+		v.neighbours(map).forEachOrdered(w -> {
 			if (!vertexState.containsKey(w)) {
 				// Successor w has not yet been visited; recurse on it
 				strongConnect(w);
@@ -56,18 +61,18 @@ public final class Tarjan<T> {
 				// It says w.index not w.lowLink; that is deliberate and from the original paper
 				vertexState.get(v).lowLink = Math.min(vertexState.get(v).lowLink, vertexState.get(w).index);
 			}
-		}
+		});
 
 		// If v is a root node, pop the stack and generate an SCC
 		if (vertexState.get(v).lowLink == vertexState.get(v).index) {
-			final Set<T> scc = new HashSet<>();
+			final List<T> scc = new ArrayList<>();
 			T w;
 			do {
 				w = stack.pop();
 				vertexState.get(w).onStack = false;
 				scc.add(w);
 			} while (w != v);
-			sccList.add(scc);
+			sccList.add(new SCC<>(scc));
 		}
 	}
 
@@ -82,9 +87,5 @@ public final class Tarjan<T> {
 			this.lowLink = globalIndex;
 			globalIndex++;
 		}
-	}
-
-	public static <T> Collection<Set<T>> compute(Map<T, Set<T>> adjMap) {
-		return new Tarjan<T>(adjMap).compute();
 	}
 }

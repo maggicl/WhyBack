@@ -31,4 +31,9 @@ public final class UnitLiteral implements Expression {
 	public void accept(ExpressionVisitor visitor) {
 		visitor.visitUnitLiteral(this);
 	}
+
+	@Override
+	public String toString() {
+		return "UnitLiteral{}";
+	}
 }

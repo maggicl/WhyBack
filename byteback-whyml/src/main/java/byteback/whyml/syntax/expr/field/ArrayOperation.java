@@ -24,7 +24,7 @@ public abstract sealed class ArrayOperation {
 
 		protected AbstractLoad(Expression index) {
 			if (index.type() != WhyJVMType.INT) {
-				throw new IllegalArgumentException("array load operation must have index of type INT");
+				throw new IllegalArgumentException("array load operation must have index of type INT, given " + index.type());
 			}
 
 			this.index = index;

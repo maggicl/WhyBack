@@ -31,4 +31,9 @@ public final class NullLiteral implements Expression {
 	public void accept(ExpressionVisitor visitor) {
 		visitor.visitNullLiteral(this);
 	}
+
+	@Override
+	public String toString() {
+		return "NullLiteral{}";
+	}
 }

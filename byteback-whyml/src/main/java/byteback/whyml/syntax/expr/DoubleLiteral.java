@@ -6,13 +6,7 @@ import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 
-public final class DoubleLiteral implements Expression {
-	private final double value;
-
-	public DoubleLiteral(double value) {
-		this.value = value;
-	}
-
+public record DoubleLiteral(double value) implements Expression {
 	@Override
 	public SExpr toWhy() {
 		if (Double.isNaN(value)) return terminal("jdouble_nan");

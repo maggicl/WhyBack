@@ -79,27 +79,27 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 
 	@Override
 	public void caseIdentityStmt(final IdentityStmt identity) {
-		final Value assignee = identity.getLeftOp();
-		final Value assigned = identity.getRightOp();
+		final Value lValue = identity.getLeftOp();
+		final Value rValue = identity.getRightOp();
 
-		if (assignee instanceof Local local) {
-			if (assigned instanceof CaughtExceptionRef) {
+		if (lValue instanceof Local local) {
+			if (rValue instanceof CaughtExceptionRef) {
 				visit(Grimp.v().newAssignStmt(local, Vimp.v().newCaughtExceptionRef()));
-			} else if (assigned instanceof ParameterRef || assigned instanceof ThisRef) {
-				final WhyLocal lValue = vimpLocalParser.parse(local);
+			} else if (rValue instanceof ParameterRef || rValue instanceof ThisRef) {
+				final WhyLocal lValueLocal = vimpLocalParser.parse(local);
 
-				final WhyLocal rValue;
-				if (assigned instanceof ParameterRef paramRef) {
-					rValue = signature.getParam(paramRef.getIndex()).orElseThrow(() ->
-							new IllegalStateException("parameter " + paramRef + " missing from signature " + signature));
+				final WhyLocal rValueLocal;
+				if (rValue instanceof ParameterRef paramRef) {
+					rValueLocal = signature.getParam(paramRef.getIndex()).orElseThrow(() ->
+							new WhyTranslationException(identity, "parameter " + paramRef + " missing from signature: " + signature));
 				} else {
-					rValue = signature.getThisParam().orElseThrow(() ->
-							new IllegalStateException("this parameter missing from signature " + signature));
+					rValueLocal = signature.getThisParam().orElseThrow(() ->
+							new WhyTranslationException(identity, "'this' parameter missing from signature: " + signature));
 				}
 
 				addStatement(new LocalAssignment(
-						lValue,
-						new LocalExpression(rValue.name(), rValue.type().jvm())
+						lValueLocal,
+						new LocalExpression(rValueLocal.name(), rValueLocal.type().jvm())
 				));
 			}
 		}
@@ -121,7 +121,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 			public void caseInstanceFieldRef(final InstanceFieldRef v) {
 				final WhyField field = fieldParser.parse(v.getField());
 				if (!(field instanceof WhyInstanceField)) {
-					throw new IllegalStateException("InstanceFieldRef has a non-instance field");
+					throw new WhyTranslationException(v, "InstanceFieldRef has a non-instance field: " + field);
 				}
 
 				final Expression base = programExpressionExtractor.visit(v.getBase());
@@ -132,7 +132,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 			public void caseStaticFieldRef(final StaticFieldRef v) {
 				final WhyField field = fieldParser.parse(v.getField());
 				if (!(field instanceof WhyStaticField)) {
-					throw new IllegalStateException("InstanceFieldRef has a non-instance field");
+					throw new WhyTranslationException(v, "StaticFieldRef has a non-static field: " + field);
 				}
 
 				addStatement(new FieldAssignment(Access.staticAccess((WhyStaticField) field), rValue));
@@ -142,7 +142,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 			public void caseArrayRef(final ArrayRef v) {
 				final WhyType type = typeResolver.resolveType(v.getBase().getType());
 				if (!(type instanceof WhyArrayType)) {
-					throw new IllegalStateException("type of array ref expression is not array type");
+					throw new WhyTranslationException(v, "ArrayRef has field with non-array type: " + type);
 				}
 
 				final WhyJVMType elemType = ((WhyArrayType) type).baseType().jvm();
@@ -159,7 +159,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 
 			@Override
 			public void caseDefault(final Value value) {
-				throw new IllegalArgumentException("Unknown left hand side argument in assignment: " + assignment);
+				throw new WhyTranslationException(value, "Unknown Soot class in assignment r-value: " + value.getClass().getName());
 			}
 		});
 	}
@@ -207,6 +207,6 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 
 	@Override
 	public void caseDefault(final Unit unit) {
-		throw new IllegalStateException("Cannot extract statements of type " + unit.getClass().getName());
+		throw new WhyTranslationException(unit, "Unknown Soot statement: " + unit.getClass().getName());
 	}
 }

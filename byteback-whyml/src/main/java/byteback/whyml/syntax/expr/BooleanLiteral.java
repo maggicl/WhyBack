@@ -6,13 +6,7 @@ import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 
-public final class BooleanLiteral implements Expression {
-	private final boolean value;
-
-	public BooleanLiteral(boolean value) {
-		this.value = value;
-	}
-
+public record BooleanLiteral(boolean value) implements Expression {
 	@Override
 	public SExpr toWhy() {
 		return terminal(value ? "true" : "false");

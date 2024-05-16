@@ -10,11 +10,17 @@ import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.vimp.expr.PureBodyExtractor;
+import byteback.whyml.vimp.expr.WhyTranslationErrorPrinter;
+import byteback.whyml.vimp.expr.WhyTranslationException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import soot.Body;
+import soot.Printer;
 import soot.SootMethod;
 import soot.Unit;
 import soot.toolkits.graph.Block;
@@ -34,10 +40,28 @@ public class VimpMethodBodyParser {
 	}
 
 	public Optional<? extends WhyFunctionBody> parse(WhyFunctionDeclaration decl, WhyFunctionSignature s, SootMethod method) {
-		if (decl.isSpec()) {
-			return Optional.of(parseSpec(method));
-		} else {
-			return parseProgram(s, method);
+		try {
+			if (decl.isSpec()) {
+				return Optional.of(parseSpec(method));
+			} else {
+				return parseProgram(s, method);
+			}
+		} catch (WhyTranslationException e) {
+			System.err.println("Error translating body of method " + method.getDeclaration() + ": " + e.getMessage());
+
+			final WhyTranslationErrorPrinter printer = new WhyTranslationErrorPrinter(method.getActiveBody(), e);
+			Printer.v().setCustomUnitPrinter(ignored -> printer);
+			try (StringWriter sw = new StringWriter()) {
+				try (PrintWriter pw = new PrintWriter(sw)) {
+					Printer.v().printTo(method.getActiveBody(), pw);
+				}
+
+				System.err.print(sw.toString().replaceAll("\n\n+", "\n"));
+			} catch (IOException ex) {
+				throw new RuntimeException("Error printing why translation error", ex);
+			}
+
+			throw new IllegalStateException("Error translating body of method: " + method.getDeclaration(), e);
 		}
 	}
 

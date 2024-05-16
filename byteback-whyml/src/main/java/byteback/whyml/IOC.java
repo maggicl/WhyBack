@@ -34,7 +34,7 @@ public final class IOC {
 	public static final VimpMethodParser METHOD_PARSER = new VimpMethodParser(METHOD_PARAM_PARSER, CLASS_NAME_PARSER, TYPE_RESOLVER);
 	public static final VimpLocalParser VIMP_LOCAL_PARSER = new VimpLocalParser(IDENTIFIER_ESCAPER, TYPE_RESOLVER);
 	public static final VimpMethodNameParser METHOD_NAME_PARSER = new VimpMethodNameParser(IDENTIFIER_ESCAPER);
-	public static final PureExpressionExtractor PURE_EXPRESSION_EXTRACTOR = new PureExpressionExtractor(METHOD_PARSER, METHOD_NAME_PARSER, TYPE_RESOLVER, VIMP_FIELD_PARSER, IDENTIFIER_ESCAPER);
+	public static final PureExpressionExtractor PURE_EXPRESSION_EXTRACTOR = new PureExpressionExtractor(VIMP_FIELD_PARSER, TYPE_RESOLVER, METHOD_PARSER, METHOD_NAME_PARSER, IDENTIFIER_ESCAPER);
 	public static final PureBodyExtractor FUNCTION_BODY_EXTRACTOR = new PureBodyExtractor(PURE_EXPRESSION_EXTRACTOR);
 	public static final ProgramExpressionExtractor PROCEDURE_EXPRESSION_EXTRACTOR = new ProgramExpressionExtractor(METHOD_PARSER, METHOD_NAME_PARSER, TYPE_RESOLVER, VIMP_FIELD_PARSER, IDENTIFIER_ESCAPER);
 	public static final VimpBlockParser VIMP_BLOCK_PARSER = new VimpBlockParser(PROCEDURE_EXPRESSION_EXTRACTOR, PURE_EXPRESSION_EXTRACTOR, VIMP_LOCAL_PARSER, VIMP_FIELD_PARSER, TYPE_RESOLVER);

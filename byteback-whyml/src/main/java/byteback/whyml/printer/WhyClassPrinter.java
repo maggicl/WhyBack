@@ -25,6 +25,7 @@ public class WhyClassPrinter {
 	public static final Set<Identifier.FQDN> BOOTSTRAP_TYPES = Set.of(
 			Identifier.Special.OBJECT,
 			Identifier.Special.STRING,
+			Identifier.Special.CLASS,
 			Identifier.Special.NULL_POINTER_EXCEPTION,
 			Identifier.Special.CLASS_CAST_EXCEPTION,
 			Identifier.Special.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION,

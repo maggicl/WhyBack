@@ -2,9 +2,9 @@ package byteback.whyml.vimp.expr;
 
 import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.expr.Expression;
+import byteback.whyml.syntax.expr.FunctionCall;
 import byteback.whyml.syntax.expr.NewArrayExpression;
 import byteback.whyml.syntax.expr.NewExpression;
-import byteback.whyml.syntax.expr.FunctionCall;
 import byteback.whyml.syntax.expr.field.ArrayOperation;
 import byteback.whyml.syntax.expr.field.Operation;
 import byteback.whyml.syntax.function.WhyFunctionDeclaration;
@@ -18,6 +18,7 @@ import byteback.whyml.vimp.VimpMethodNameParser;
 import byteback.whyml.vimp.VimpMethodParser;
 import java.util.List;
 import soot.SootMethod;
+import soot.jimple.InvokeExpr;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.NewMultiArrayExpr;
@@ -28,7 +29,7 @@ public class ProgramExpressionExtractor extends PureExpressionExtractor {
 									  TypeResolver typeResolver,
 									  VimpFieldParser fieldParser,
 									  IdentifierEscaper identifierEscaper) {
-		super(methodSignatureParser, methodNameParser, typeResolver, fieldParser, identifierEscaper);
+		super(fieldParser, typeResolver, methodSignatureParser, methodNameParser, identifierEscaper);
 	}
 
 	@Override
@@ -42,23 +43,13 @@ public class ProgramExpressionExtractor extends PureExpressionExtractor {
 	}
 
 	@Override
-	protected Expression parseSpecialClassMethod(SootMethod method, List<Expression> argExpressions) {
-		throw new IllegalStateException("special class method " + method + " called in program code");
+	protected Expression parseSpecialClassMethod(InvokeExpr call, List<Expression> argExpressions) {
+		throw new WhyTranslationException(call, "special class method '%s' called in program code".formatted(call));
 	}
 
 	@Override
-	protected Expression parsePrimitiveOpMethod(SootMethod method, List<Expression> argExpressions) {
-		throw new IllegalStateException("primitive operator method " + method + " called in program code");
-	}
-
-	@Override
-	protected Expression parseMethodCall(SootMethod method, List<Expression> argExpressions) {
-		final WhyFunctionSignature sig = VimpMethodParser.declaration(method)
-				.filter(WhyFunctionDeclaration::isProgram)
-				.map(decl -> methodSignatureParser.signature(method, decl))
-				.orElseThrow(() -> new IllegalStateException("method " + method + " is not callable from a program expression"));
-
-		return new FunctionCall(methodNameParser.methodName(sig), sig, argExpressions);
+	protected Expression parsePrimitiveOpMethod(InvokeExpr call, List<Expression> argExpressions) {
+		throw new WhyTranslationException(call, "primitive operator method '%s' called in program code".formatted(call));
 	}
 
 	@Override
@@ -67,7 +58,7 @@ public class ProgramExpressionExtractor extends PureExpressionExtractor {
 		final Expression size = visit(v.getSize());
 
 		if (size.type() != WhyJVMType.INT) {
-			throw new IllegalStateException("array size must be INT, given " + size.type());
+			throw new WhyTranslationException(v, "array size must not of type INT: " + size.type());
 		}
 
 		setExpression(new NewArrayExpression(t, size));
@@ -76,7 +67,7 @@ public class ProgramExpressionExtractor extends PureExpressionExtractor {
 	@Override
 	public void caseNewMultiArrayExpr(NewMultiArrayExpr v) {
 		// TODO: implement MULTIANEWARRAY
-		throw new UnsupportedOperationException("multi-array initialization not supported");
+		throw new WhyTranslationException(v, "NewMultiArrayExpr not supported");
 	}
 
 	@Override
@@ -85,7 +76,19 @@ public class ProgramExpressionExtractor extends PureExpressionExtractor {
 		if (t instanceof WhyReference ref) {
 			setExpression(new NewExpression(ref));
 		} else {
-			throw new IllegalStateException("new called with non-reference type: " + t);
+			throw new WhyTranslationException(v, "NewExpr has non-reference type: " + t);
 		}
+	}
+
+	protected Expression parseMethodCall(InvokeExpr call, List<Expression> argExpressions) {
+		final SootMethod method = call.getMethod();
+
+		final WhyFunctionSignature sig = VimpMethodParser.declaration(method)
+				.filter(WhyFunctionDeclaration::isProgram)
+				.map(decl -> methodSignatureParser.signature(method, decl))
+				.orElseThrow(() -> new WhyTranslationException(call,
+						"method '%s' is not callable from a program expression".formatted(method)));
+
+		return new FunctionCall(methodNameParser.methodName(sig), sig, argExpressions);
 	}
 }

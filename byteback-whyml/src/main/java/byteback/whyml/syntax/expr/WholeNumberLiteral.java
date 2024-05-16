@@ -17,6 +17,12 @@ public final class WholeNumberLiteral implements Expression {
 	);
 
 	private final WhyJVMType type;
+
+	@Override
+	public String toString() {
+		return "WholeNumberLiteral{type=%s, value=%d}".formatted(type, value);
+	}
+
 	private final long value;
 
 	public WholeNumberLiteral(WhyJVMType type, long value) {

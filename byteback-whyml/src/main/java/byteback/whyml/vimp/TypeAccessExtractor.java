@@ -1,6 +1,7 @@
 package byteback.whyml.vimp;
 
 import byteback.analysis.TypeSwitch;
+import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.syntax.type.WhyArrayType;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyReference;
@@ -13,6 +14,7 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.LongType;
+import soot.NullType;
 import soot.RefType;
 import soot.ShortType;
 import soot.Type;
@@ -90,6 +92,11 @@ public class TypeAccessExtractor extends TypeSwitch<WhyType> {
 	@Override
 	public void caseVoidType(VoidType t) {
 		type = WhyJVMType.UNIT;
+	}
+
+	@Override
+	public void caseNullType(NullType t) {
+		type = new WhyReference(Identifier.Special.OBJECT);
 	}
 
 	@Override

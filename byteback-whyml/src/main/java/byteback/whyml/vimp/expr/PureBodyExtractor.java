@@ -31,7 +31,7 @@ public class PureBodyExtractor extends JimpleStmtSwitch<Expression> {
 
 	@Override
 	public void caseDefault(final Unit unit) {
-		throw new IllegalStateException("Unable to convert statement " + unit);
+		throw new WhyTranslationException(unit, "Invalid Soot statement in spec method: " + unit.getClass().getName());
 	}
 
 	@Override

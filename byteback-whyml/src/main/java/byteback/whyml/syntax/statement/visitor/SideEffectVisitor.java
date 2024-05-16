@@ -1,6 +1,8 @@
 package byteback.whyml.syntax.statement.visitor;
 
 import byteback.whyml.identifiers.Identifier;
+import byteback.whyml.identifiers.IdentifierEscaper;
+import byteback.whyml.syntax.expr.ClassLiteralExpression;
 import byteback.whyml.syntax.expr.FunctionCall;
 import byteback.whyml.syntax.expr.NewArrayExpression;
 import byteback.whyml.syntax.expr.NewExpression;
@@ -81,9 +83,16 @@ public class SideEffectVisitor extends StatementVisitor {
 
 	@Override
 	public void visitStringLiteralExpression(StringLiteralExpression source) {
-		reads.add("Java.Lang.String.pointers'8");
+		reads.add("%s.pointers%s".formatted(Identifier.Special.STRING, IdentifierEscaper.PRELUDE_RESERVED));
 
 		super.visitStringLiteralExpression(source);
+	}
+
+	@Override
+	public void visitClassLiteralExpression(ClassLiteralExpression classLiteralExpression) {
+		reads.add("%s.pointers%s".formatted(Identifier.Special.CLASS, IdentifierEscaper.PRELUDE_RESERVED));
+
+		super.visitClassLiteralExpression(classLiteralExpression);
 	}
 
 	public WhySideEffects sideEffects() {

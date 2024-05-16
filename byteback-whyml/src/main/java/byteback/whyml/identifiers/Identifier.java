@@ -53,6 +53,7 @@ public sealed class Identifier implements Comparable<Identifier> permits Identif
 	public final static class Special {
 		public static final FQDN OBJECT = FQDN.special("Java", "Lang", "Object");
 		public static final FQDN STRING = FQDN.special("Java", "Lang", "String");
+		public static final FQDN CLASS = FQDN.special("Java", "Lang", "Class");
 		public static final FQDN NULL_POINTER_EXCEPTION = FQDN.special("Java", "Lang", "NullPointerException");
 		public static final FQDN ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION = FQDN.special("Java", "Lang", "ArrayIndexOutOfBoundsException");
 		public static final FQDN ARRAY_STORE_EXCEPTION = FQDN.special("Java", "Lang", "ArrayStoreException");

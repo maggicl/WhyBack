@@ -6,13 +6,7 @@ import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 
-public final class FloatLiteral implements Expression {
-	private final float value;
-
-	public FloatLiteral(float value) {
-		this.value = value;
-	}
-
+public record FloatLiteral(float value) implements Expression {
 	@Override
 	public SExpr toWhy() {
 		if (Float.isNaN(value)) return terminal("jfloat_nan");

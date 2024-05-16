@@ -2,6 +2,7 @@ package byteback.whyml.syntax.expr.transformer;
 
 import byteback.whyml.syntax.expr.BooleanLiteral;
 import byteback.whyml.syntax.expr.ClassCastExpression;
+import byteback.whyml.syntax.expr.ClassLiteralExpression;
 import byteback.whyml.syntax.expr.ConditionalExpression;
 import byteback.whyml.syntax.expr.DoubleLiteral;
 import byteback.whyml.syntax.expr.FloatLiteral;
@@ -66,9 +67,9 @@ public class ExpressionVisitor {
 	}
 
 	public void visitConditionalExpression(ConditionalExpression source) {
-		source.getConditional().accept(this);
-		source.getThenExpr().accept(this);
-		source.getElseExpr().accept(this);
+		source.conditional().accept(this);
+		source.thenExpr().accept(this);
+		source.elseExpr().accept(this);
 	}
 
 	public void visitBooleanLiteral(BooleanLiteral source) {
@@ -82,7 +83,7 @@ public class ExpressionVisitor {
 	}
 
 	public void visitPrimitiveCastExpression(PrimitiveCastExpression source) {
-		source.getInner().accept(this);
+		source.inner().accept(this);
 	}
 
 	public void visitNullLiteral(NullLiteral source) {
@@ -107,5 +108,8 @@ public class ExpressionVisitor {
 	}
 
 	public void visitNewExpression(NewExpression newExpression) {
+	}
+
+	public void visitClassLiteralExpression(ClassLiteralExpression classLiteralExpression) {
 	}
 }

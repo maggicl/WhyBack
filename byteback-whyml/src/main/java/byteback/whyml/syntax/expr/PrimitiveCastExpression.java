@@ -7,29 +7,15 @@ import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 import java.util.Locale;
 
-public class PrimitiveCastExpression implements Expression {
-	public Expression getInner() {
-		return inner;
-	}
-
-	public WhyJVMType getTargetType() {
-		return targetType;
-	}
-
-	private final Expression inner;
-	private final WhyJVMType targetType;
-
-	public PrimitiveCastExpression(Expression inner, WhyJVMType type) {
+public record PrimitiveCastExpression(Expression inner, WhyJVMType targetType) implements Expression {
+	public PrimitiveCastExpression {
 		if (inner.type().isMeta()) {
 			throw new IllegalArgumentException("inner expression of primitive cast operation must have primitive type");
 		}
 
-		if (type.isMeta()) {
+		if (targetType.isMeta()) {
 			throw new IllegalArgumentException("target type of primitive cast operation must be primitive");
 		}
-
-		this.inner = inner;
-		this.targetType = type;
 	}
 
 	private static String getCastTypeName(WhyJVMType type) {

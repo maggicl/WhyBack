@@ -50,7 +50,8 @@ public class CFGTerminatorExtractor extends JimpleStmtSwitch<Optional<CFGTermina
 		return result.orElseGet(() ->
 				new CFGTerminator.Goto(
 						toLabel(fallThrough.orElseThrow(() ->
-								new IllegalStateException("no BB terminator instruction or fall through")))));
+								new WhyTranslationException(unit, "non-terminating instruction '%s' cannot fall through"
+										.formatted(unit.getClass().getName()))))));
 	}
 
 	private CFGLabel toLabel(Unit unit) {
@@ -125,7 +126,7 @@ public class CFGTerminatorExtractor extends JimpleStmtSwitch<Optional<CFGTermina
 		final CFGLabel thenLabel = toLabel(thenBranch);
 
 		final Unit elseBranch = fallThrough.orElseThrow(() ->
-				new IllegalStateException("fall through must be possible when an if statement terminates a basic block"));
+				new WhyTranslationException(ifStatement, "IfStmt cannot fall through"));
 		final CFGLabel elseLabel = toLabel(elseBranch);
 
 		setResult(Optional.of(new CFGTerminator.If(key, thenLabel, elseLabel)));

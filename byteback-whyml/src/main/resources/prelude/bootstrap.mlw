@@ -19,7 +19,6 @@ module Bootstrap
   scope Java
   scope Lang
   scope String
-    (* the String class. This value is used for java.lang.String *)
     val constant class: Type.class
 
     type stringset = abstract {
@@ -34,6 +33,27 @@ module Bootstrap
     val literal'8 (s: string) : Ptr.t
       reads { pointers'8 }
       ensures { result = pointers'8.v[s] }
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Class
+    val constant class: Type.class
+
+    type classset = abstract {
+      v: Type.class -> Ptr.t
+    } invariant {
+      (forall c:Type.class. v[c] <> Ptr.null) /\
+      (forall c:Type.class, c2:Type.class. c <> c2 -> v[c] <> v[c2])
+    }
+
+    val pointers'8: classset
+
+    val literal'8 (c: Type.class) : Ptr.t
+      reads { pointers'8 }
+      ensures { result = pointers'8.v[c] }
   end
   end
   end

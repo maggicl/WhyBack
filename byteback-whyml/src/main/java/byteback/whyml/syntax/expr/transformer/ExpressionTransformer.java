@@ -2,6 +2,7 @@ package byteback.whyml.syntax.expr.transformer;
 
 import byteback.whyml.syntax.expr.BooleanLiteral;
 import byteback.whyml.syntax.expr.ClassCastExpression;
+import byteback.whyml.syntax.expr.ClassLiteralExpression;
 import byteback.whyml.syntax.expr.ConditionalExpression;
 import byteback.whyml.syntax.expr.DoubleLiteral;
 import byteback.whyml.syntax.expr.Expression;
@@ -76,9 +77,9 @@ public class ExpressionTransformer {
 
 	public Expression transformConditionalExpression(ConditionalExpression source) {
 		return new ConditionalExpression(
-				source.getConditional().accept(this),
-				source.getThenExpr().accept(this),
-				source.getElseExpr().accept(this)
+				source.conditional().accept(this),
+				source.thenExpr().accept(this),
+				source.elseExpr().accept(this)
 		);
 	}
 
@@ -100,7 +101,7 @@ public class ExpressionTransformer {
 	}
 
 	public Expression transformPrimitiveCastExpression(PrimitiveCastExpression source) {
-		return new PrimitiveCastExpression(source.getInner().accept(this), source.getTargetType());
+		return new PrimitiveCastExpression(source.inner().accept(this), source.targetType());
 	}
 
 	public Expression transformNullLiteral(NullLiteral source) {
@@ -131,5 +132,9 @@ public class ExpressionTransformer {
 
 	public Expression transformNewExpression(NewExpression newExpression) {
 		return newExpression;
+	}
+
+	public Expression transformClassLiteralExpression(ClassLiteralExpression classLiteralExpression) {
+		return classLiteralExpression;
 	}
 }

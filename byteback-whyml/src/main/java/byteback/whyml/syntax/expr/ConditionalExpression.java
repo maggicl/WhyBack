@@ -1,7 +1,7 @@
 package byteback.whyml.syntax.expr;
 
 import byteback.whyml.printer.SExpr;
-import byteback.whyml.syntax.expr.harmonization.BinaryOpTypeHarmonizer;
+import byteback.whyml.syntax.expr.harmonization.WhyTypeHarmonizer;
 import byteback.whyml.syntax.expr.harmonization.HarmonizationResult;
 import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
@@ -15,7 +15,7 @@ public record ConditionalExpression(Expression conditional,
 			throw new IllegalArgumentException("conditional in conditional expression should have BOOL type");
 		}
 
-		final HarmonizationResult hr = BinaryOpTypeHarmonizer.harmonize(thenExpr, elseExpr);
+		final HarmonizationResult hr = WhyTypeHarmonizer.harmonize(thenExpr, elseExpr);
 		this.conditional = conditional;
 		this.thenExpr = hr.getFirstOp();
 		this.elseExpr = hr.getSecondOp();

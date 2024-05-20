@@ -89,6 +89,6 @@ public class ProgramExpressionExtractor extends PureExpressionExtractor {
 				.orElseThrow(() -> new WhyTranslationException(call,
 						"method '%s' is not callable from a program expression".formatted(method)));
 
-		return new FunctionCall(methodNameParser.methodName(sig), sig, argExpressions);
+		return FunctionCall.build(methodNameParser.methodName(sig), sig, argExpressions);
 	}
 }

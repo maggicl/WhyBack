@@ -406,7 +406,7 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 	@Override
 	public void caseCastExpr(final CastExpr v) {
 		final Expression op = visit(v.getOp());
-		final WhyJVMType sourceType = op.type().jvm();
+		final WhyJVMType sourceType = op.type();
 
 		final WhyType targetType = typeResolver.resolveType(v.getCastType());
 		final WhyJVMType targetJVMType = targetType.jvm();
@@ -555,7 +555,7 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 				.orElseThrow(() -> new WhyTranslationException(call,
 						"method '%s' is not callable from a pure expression".formatted(method)));
 
-		return new FunctionCall(methodNameParser.methodName(sig), sig, argExpressions);
+		return FunctionCall.build(methodNameParser.methodName(sig), sig, argExpressions);
 	}
 
 	protected void setFunctionReference(final InvokeExpr call, final Iterable<Value> arguments) {

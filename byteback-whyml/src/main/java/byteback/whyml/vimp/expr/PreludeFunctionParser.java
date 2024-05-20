@@ -6,7 +6,7 @@ import byteback.whyml.syntax.expr.binary.BinaryExpression;
 import byteback.whyml.syntax.expr.binary.BinaryOperator;
 import byteback.whyml.syntax.expr.binary.Comparison;
 import byteback.whyml.syntax.expr.binary.LogicConnector;
-import byteback.whyml.syntax.expr.harmonization.BinaryOpTypeHarmonizer;
+import byteback.whyml.syntax.expr.harmonization.WhyTypeHarmonizer;
 import byteback.whyml.syntax.expr.harmonization.HarmonizationResult;
 import java.util.List;
 import soot.SootMethod;
@@ -46,7 +46,7 @@ public final class PreludeFunctionParser {
 					kind, arguments.size()));
 		}
 
-		final HarmonizationResult hr = BinaryOpTypeHarmonizer.harmonize(arguments.get(0), arguments.get(1));
+		final HarmonizationResult hr = WhyTypeHarmonizer.harmonize(arguments.get(0), arguments.get(1));
 		return new BinaryExpression(new Comparison(hr.getType(), kind), hr.getFirstOp(), hr.getSecondOp());
 	}
 

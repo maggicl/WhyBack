@@ -2,6 +2,7 @@ package byteback.whyml.vimp;
 
 import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.function.WhyLocal;
+import byteback.whyml.vimp.expr.ProgramExpressionExtractor;
 import soot.Local;
 
 public class VimpLocalParser {
@@ -15,7 +16,7 @@ public class VimpLocalParser {
 
 	public WhyLocal parse(Local local) {
 		return new WhyLocal(
-				identifierEscaper.escapeL(local.getName()),
+				identifierEscaper.escapeLocalVariable(local.getName()),
 				typeResolver.resolveType(local.getType())
 		);
 	}

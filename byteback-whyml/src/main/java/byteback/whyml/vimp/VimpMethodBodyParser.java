@@ -1,11 +1,9 @@
 package byteback.whyml.vimp;
 
 import byteback.analysis.util.SootBodies;
-import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.function.CFGBlock;
 import byteback.whyml.syntax.function.CFGLabel;
 import byteback.whyml.syntax.function.WhyFunctionBody;
-import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.function.WhyLocal;

@@ -21,6 +21,7 @@ import byteback.whyml.vimp.WhyResolver;
 import byteback.whyml.vimp.expr.ProgramExpressionExtractor;
 import byteback.whyml.vimp.expr.PureBodyExtractor;
 import byteback.whyml.vimp.expr.PureExpressionExtractor;
+import byteback.whyml.vimp.expr.PureProgramExpressionExtractor;
 
 public final class IOC {
 	public static final CaseInverter CASE_INVERTER = new CaseInverter();
@@ -35,9 +36,10 @@ public final class IOC {
 	public static final VimpLocalParser VIMP_LOCAL_PARSER = new VimpLocalParser(IDENTIFIER_ESCAPER, TYPE_RESOLVER);
 	public static final VimpMethodNameParser METHOD_NAME_PARSER = new VimpMethodNameParser(IDENTIFIER_ESCAPER);
 	public static final PureExpressionExtractor PURE_EXPRESSION_EXTRACTOR = new PureExpressionExtractor(VIMP_FIELD_PARSER, TYPE_RESOLVER, METHOD_PARSER, METHOD_NAME_PARSER, IDENTIFIER_ESCAPER);
+	public static final PureProgramExpressionExtractor PURE_PROGRAM_EXPRESSION_EXTRACTOR = new PureProgramExpressionExtractor(VIMP_FIELD_PARSER, TYPE_RESOLVER, METHOD_PARSER, METHOD_NAME_PARSER, IDENTIFIER_ESCAPER);
 	public static final PureBodyExtractor FUNCTION_BODY_EXTRACTOR = new PureBodyExtractor(PURE_EXPRESSION_EXTRACTOR);
 	public static final ProgramExpressionExtractor PROCEDURE_EXPRESSION_EXTRACTOR = new ProgramExpressionExtractor(METHOD_PARSER, METHOD_NAME_PARSER, TYPE_RESOLVER, VIMP_FIELD_PARSER, IDENTIFIER_ESCAPER);
-	public static final VimpBlockParser VIMP_BLOCK_PARSER = new VimpBlockParser(PROCEDURE_EXPRESSION_EXTRACTOR, PURE_EXPRESSION_EXTRACTOR, VIMP_LOCAL_PARSER, VIMP_FIELD_PARSER, TYPE_RESOLVER);
+	public static final VimpBlockParser VIMP_BLOCK_PARSER = new VimpBlockParser(PROCEDURE_EXPRESSION_EXTRACTOR, PURE_PROGRAM_EXPRESSION_EXTRACTOR, VIMP_LOCAL_PARSER, VIMP_FIELD_PARSER, TYPE_RESOLVER);
 	public static final VimpMethodBodyParser METHOD_BODY_PARSER = new VimpMethodBodyParser(VIMP_LOCAL_PARSER, FUNCTION_BODY_EXTRACTOR, VIMP_BLOCK_PARSER);
 	public static final WhyResolver WHY_RESOLVER = new WhyResolver(CLASS_PARSER, METHOD_PARSER, METHOD_BODY_PARSER);
 	public static final WhySignaturePrinter WHY_SIGNATURE_PRINTER = new WhySignaturePrinter(METHOD_NAME_PARSER);

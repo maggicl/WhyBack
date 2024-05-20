@@ -4,12 +4,14 @@ import byteback.analysis.Inline;
 import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Namespace;
 import byteback.analysis.QuantifierExpr;
+import byteback.analysis.transformer.QuantifierValueTransformer;
 import byteback.analysis.util.SootHosts;
 import byteback.analysis.vimp.LogicConstant;
 import byteback.analysis.vimp.LogicExistsExpr;
 import byteback.analysis.vimp.LogicForallExpr;
 import byteback.analysis.vimp.OldExpr;
 import byteback.analysis.vimp.VoidConstant;
+import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.syntax.expr.BooleanLiteral;
 import byteback.whyml.syntax.expr.ClassCastExpression;
@@ -102,6 +104,7 @@ import soot.jimple.UnopExpr;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
+import soot.jimple.toolkits.infoflow.FakeJimpleLocal;
 
 public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 	protected final VimpFieldParser fieldParser;
@@ -262,7 +265,7 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 
 	@Override
 	public void caseCmplExpr(final CmplExpr v) {
-		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getOp1().getType());
 		final BinaryOperator op = switch (opType) {
 			case FLOAT -> PrefixOperator.FCMPL;
 			case DOUBLE -> PrefixOperator.DCMPL;
@@ -273,7 +276,7 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 
 	@Override
 	public void caseCmpgExpr(final CmpgExpr v) {
-		final WhyJVMType opType = typeResolver.resolveJVMType(v.getType());
+		final WhyJVMType opType = typeResolver.resolveJVMType(v.getOp1().getType());
 		final BinaryOperator op = switch (opType) {
 			case FLOAT -> PrefixOperator.FCMPG;
 			case DOUBLE -> PrefixOperator.DCMPG;
@@ -447,11 +450,15 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 		}
 	}
 
+	protected Identifier.L localIdentifier(Local variable) {
+		return identifierEscaper.escapeParam(variable.getName());
+	}
+
 	@Override
 	public void caseLocal(final Local v) {
 		try {
 			setExpression(new LocalExpression(
-					identifierEscaper.escapeL(v.getName()),
+					localIdentifier(v),
 					typeResolver.resolveJVMType(v.getType())
 			));
 		} catch (IllegalArgumentException e) {
@@ -479,7 +486,7 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 	public QuantifierExpression quantifierExpression(final QuantifierExpression.Kind kind, final QuantifierExpr v) {
 		final List<WhyLocal> variables = v.getFreeLocals().stream()
 				.map(e -> new WhyLocal(
-						identifierEscaper.escapeL(e.getName()),
+						localIdentifier(e),
 						typeResolver.resolveType(e.getType()),
 						false))
 				.toList();

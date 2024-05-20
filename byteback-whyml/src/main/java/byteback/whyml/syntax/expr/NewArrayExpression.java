@@ -18,6 +18,10 @@ public record NewArrayExpression(WhyType baseType, Expression size) implements E
 	@Override
 	public SExpr toWhy() {
 		if (baseType instanceof WhyJVMType type) {
+			if (type.isMeta()) {
+				throw new IllegalArgumentException("An array base JVM type cannot be meta: " + type);
+			}
+
 			return prefix(
 					"R%s.newarray".formatted(type.getWhyAccessorScope()),
 					terminal(Identifier.Special.HEAP),

@@ -16,6 +16,19 @@ public class IdentifierEscaper {
 	 */
 	public static final String PRELUDE_RESERVED = "'8";
 	/**
+	 * Separates the method name from the parameter descriptor section, and the parameter descriptor section from the
+	 * return type descriptor
+	 */
+	public static final String DESCRIPTOR_SECTION_SEPARATOR = "'7";
+	/**
+	 * Separates scopes in a descriptor class name for a parameter
+	 */
+	static final String DESCRIPTOR_SEPARATOR = "'5";
+	/**
+	 * Terminates a descriptor class name
+	 */
+	static final String DESCRIPTOR_END = "'6";
+	/**
 	 * escapes non-alphanumerics with codepoint <= 255
 	 */
 	private static final String ESCAPE_LOW_CP = "'0";
@@ -40,20 +53,6 @@ public class IdentifierEscaper {
 	 */
 	private static final String SCOPE_SEPARATOR = "'4";
 	/**
-	 * Separates scopes in a descriptor class name for a parameter
-	 */
-	static final String DESCRIPTOR_SEPARATOR = "'5";
-	/**
-	 * Terminates a descriptor class name
-	 */
-	static final String DESCRIPTOR_END = "'6";
-
-	/**
-	 * Separates the method name from the parameter descriptor section, and the parameter descriptor section from the
-	 * return type descriptor
-	 */
-	public static final String DESCRIPTOR_SECTION_SEPARATOR = "'7";
-	/**
 	 * Denotes a prime
 	 */
 	private static final String PRIME = "'9";
@@ -63,6 +62,8 @@ public class IdentifierEscaper {
 			"module", "meta", "let", "lemma", "inductive", "import", "goal", "function", "exception", "eof", "end",
 			"constant", "coinductive", "clone", "axiom", "as", "old", "to", "returns", "ensures", "requires", "raises");
 
+	private static final String LOCAL_VARIABLE_PREFIX = "lv_";
+	private static final String PARAM_PREFIX = "p_";
 	private final CaseInverter caseInverter;
 
 	public IdentifierEscaper(CaseInverter caseInverter) {
@@ -107,18 +108,23 @@ public class IdentifierEscaper {
 				Character.toString(firstCharBiased) :
 				String.format("%s%s", type.getForceEscaper(), escapeChar(firstChar));
 
-		// and now map the remaining charactersÒ
+		// and now map the remaining characters
 		return input.codePoints().skip(1)
 				.mapToObj(IdentifierEscaper::escapeChar)
 				.collect(Collectors.joining("", firstIdentifierChar, ""));
 	}
 
-	public Identifier.L escapeL(String input) {
-		final String identifier = escape(input, IdentifierClass.LIDENT);
-		return new Identifier.L(RESERVED_L_KEYWORDS.contains(identifier.toLowerCase()) ? identifier + RESERVED : identifier);
+	public Identifier.L escapeLocalVariable(String input) {
+		// no need to check for reserved keywords thanks to prefix
+		return new Identifier.L(escape(LOCAL_VARIABLE_PREFIX + input, IdentifierClass.LIDENT));
 	}
 
-	public Identifier.L qualifiedMethod(Identifier.FQDN clazz, Identifier.L function) {
+	public Identifier.L escapeParam(String input) {
+		// no need to check for reserved keywords thanks to prefix
+		return new Identifier.L(escape(PARAM_PREFIX + input, IdentifierClass.LIDENT));
+	}
+
+	public Identifier.L escapeMethod(Identifier.FQDN clazz, String methodName, String descriptor) {
 		final List<Identifier.U> ids = clazz.getIdentifiers();
 		final int last = ids.size() - 1;
 
@@ -131,7 +137,7 @@ public class IdentifierEscaper {
 				.collect(Collectors.joining(SCOPE_SEPARATOR));
 
 		// no need to check if reserved or note as it contains CLASS_FUNC_SEPARATOR
-		return new Identifier.L(classPrefix + SCOPE_SEPARATOR + function.toString());
+		return new Identifier.L(classPrefix + SCOPE_SEPARATOR + escape(methodName, IdentifierClass.LIDENT) + descriptor);
 	}
 
 	public Identifier.U escapeU(String input) {

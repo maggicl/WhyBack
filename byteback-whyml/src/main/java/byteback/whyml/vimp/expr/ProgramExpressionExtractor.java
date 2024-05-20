@@ -23,7 +23,8 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.NewMultiArrayExpr;
 
-public class ProgramExpressionExtractor extends PureExpressionExtractor {
+public class ProgramExpressionExtractor extends PureProgramExpressionExtractor {
+
 	public ProgramExpressionExtractor(VimpMethodParser methodSignatureParser,
 									  VimpMethodNameParser methodNameParser,
 									  TypeResolver typeResolver,
@@ -54,7 +55,7 @@ public class ProgramExpressionExtractor extends PureExpressionExtractor {
 
 	@Override
 	public void caseNewArrayExpr(NewArrayExpr v) {
-		final WhyType t = typeResolver.resolveJVMType(v.getBaseType());
+		final WhyType t = typeResolver.resolveType(v.getBaseType());
 		final Expression size = visit(v.getSize());
 
 		if (size.type() != WhyJVMType.INT) {
@@ -84,7 +85,9 @@ public class ProgramExpressionExtractor extends PureExpressionExtractor {
 		final SootMethod method = call.getMethod();
 
 		final WhyFunctionSignature sig = VimpMethodParser.declaration(method)
-				.filter(WhyFunctionDeclaration::isProgram)
+				// TODO: check if allowing spec methods from program methods is correct. Needed because some
+				//  implementation methods are annotated as @Pure in order to define a spec
+//				.filter(WhyFunctionDeclaration::isProgram)
 				.map(decl -> methodSignatureParser.signature(method, decl))
 				.orElseThrow(() -> new WhyTranslationException(call,
 						"method '%s' is not callable from a program expression".formatted(method)));

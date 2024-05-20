@@ -54,10 +54,11 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 
 	@Override
 	public void visitEnsures(WhyCondition.Ensures r) {
-		ensuresList.add(
-				new BinaryExpression(LogicConnector.IMPLIES, caughtExceptionIsNull(true), r.value())
-						.toWhy()
-						.statement("ensures { ", " }"));
+		final Expression condition = function.contract().signature().declaration().isProgram()
+				? new BinaryExpression(LogicConnector.IMPLIES, caughtExceptionIsNull(true), r.value())
+				: r.value();
+
+		ensuresList.add(condition.toWhy().statement("ensures { ", " }"));
 	}
 
 	@Override

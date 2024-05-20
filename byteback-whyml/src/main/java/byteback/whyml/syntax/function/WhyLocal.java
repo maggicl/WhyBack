@@ -17,7 +17,6 @@ import java.util.Optional;
 public record WhyLocal(Identifier.L name, WhyType type, boolean isNotNull) {
 	public static final WhyLocal CAUGHT_EXCEPTION = new WhyLocal(Identifier.Special.CAUGHT_EXCEPTION, WhyJVMType.PTR);
 
-
 	public WhyLocal(Identifier.L name, WhyType type) {
 		this(name, type, false);
 	}

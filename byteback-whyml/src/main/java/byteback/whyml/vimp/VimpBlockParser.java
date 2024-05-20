@@ -7,7 +7,7 @@ import byteback.whyml.syntax.statement.CFGTerminator;
 import byteback.whyml.vimp.expr.CFGTerminatorExtractor;
 import byteback.whyml.vimp.expr.ProgramExpressionExtractor;
 import byteback.whyml.vimp.expr.ProgramStatementExtractor;
-import byteback.whyml.vimp.expr.PureExpressionExtractor;
+import byteback.whyml.vimp.expr.PureProgramExpressionExtractor;
 import java.util.Map;
 import java.util.Optional;
 import soot.Unit;
@@ -16,18 +16,18 @@ import soot.toolkits.graph.Block;
 public class VimpBlockParser {
 
 	private final ProgramExpressionExtractor programExpressionExtractor;
-	private final PureExpressionExtractor pureExpressionExtractor;
+	private final PureProgramExpressionExtractor pureProgramExpressionExtractor;
 	private final VimpLocalParser vimpLocalParser;
 	private final VimpFieldParser fieldParser;
 	private final TypeResolver typeResolver;
 
 	public VimpBlockParser(ProgramExpressionExtractor programExpressionExtractor,
-						   PureExpressionExtractor pureExpressionExtractor,
+						   PureProgramExpressionExtractor pureProgramExpressionExtractor,
 						   VimpLocalParser vimpLocalParser,
 						   VimpFieldParser fieldParser,
 						   TypeResolver typeResolver) {
 		this.programExpressionExtractor = programExpressionExtractor;
-		this.pureExpressionExtractor = pureExpressionExtractor;
+		this.pureProgramExpressionExtractor = pureProgramExpressionExtractor;
 		this.vimpLocalParser = vimpLocalParser;
 		this.fieldParser = fieldParser;
 		this.typeResolver = typeResolver;
@@ -36,7 +36,7 @@ public class VimpBlockParser {
 	public CFGBlock parse(WhyFunctionSignature s, Block block, Optional<Unit> fallThrough, Map<Unit, CFGLabel> labelMap) {
 		final ProgramStatementExtractor e = new ProgramStatementExtractor(
 				programExpressionExtractor,
-				pureExpressionExtractor,
+				pureProgramExpressionExtractor,
 				vimpLocalParser,
 				fieldParser,
 				typeResolver,

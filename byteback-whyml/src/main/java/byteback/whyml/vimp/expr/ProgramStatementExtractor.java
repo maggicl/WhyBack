@@ -46,7 +46,7 @@ import soot.tagkit.AbstractHost;
 
 public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatement>> {
 	private final ProgramExpressionExtractor programExpressionExtractor;
-	private final PureExpressionExtractor pureExpressionExtractor;
+	private final PureProgramExpressionExtractor pureProgramExpressionExtractor;
 	private final VimpLocalParser vimpLocalParser;
 	private final VimpFieldParser fieldParser;
 	private final TypeResolver typeResolver;
@@ -55,13 +55,13 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 	private final List<CFGStatement> statements = new ArrayList<>();
 
 	public ProgramStatementExtractor(ProgramExpressionExtractor programExpressionExtractor,
-									 PureExpressionExtractor pureExpressionExtractor,
+									 PureProgramExpressionExtractor pureProgramExpressionExtractor,
 									 VimpLocalParser vimpLocalParser,
 									 VimpFieldParser fieldParser,
 									 TypeResolver typeResolver,
 									 WhyFunctionSignature signature) {
 		this.programExpressionExtractor = programExpressionExtractor;
-		this.pureExpressionExtractor = pureExpressionExtractor;
+		this.pureProgramExpressionExtractor = pureProgramExpressionExtractor;
 		this.vimpLocalParser = vimpLocalParser;
 		this.fieldParser = fieldParser;
 		this.typeResolver = typeResolver;
@@ -114,6 +114,8 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 		left.apply(new JimpleValueSwitch<>() {
 			@Override
 			public void caseLocal(final Local local) {
+				// parameters are never re-assigned in Jimple, so we can assume the l-value is a local variable
+				// vimpLocalParser will add the local variable prefix to the variable name
 				addStatement(new LocalAssignment(vimpLocalParser.parse(local), rValue));
 			}
 
@@ -181,7 +183,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 
 	@Override
 	public void caseAssertionStmt(final AssertionStmt assertionStmt) {
-		final Expression condition = pureExpressionExtractor.visit(assertionStmt.getCondition());
+		final Expression condition = pureProgramExpressionExtractor.visit(assertionStmt.getCondition());
 		final Optional<String> position = positionAttribute(assertionStmt, "assertion");
 
 		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.ASSERT, position, condition));
@@ -189,7 +191,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 
 	@Override
 	public void caseAssumptionStmt(final AssumptionStmt assumptionStmt) {
-		final Expression condition = pureExpressionExtractor.visit(assumptionStmt.getCondition());
+		final Expression condition = pureProgramExpressionExtractor.visit(assumptionStmt.getCondition());
 		final Optional<String> position = positionAttribute(assumptionStmt, "assumption");
 
 		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.ASSUME, position, condition));
@@ -197,7 +199,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 
 	@Override
 	public void caseInvariantStmt(final InvariantStmt assumptionStmt) {
-		final Expression condition = pureExpressionExtractor.visit(assumptionStmt.getCondition());
+		final Expression condition = pureProgramExpressionExtractor.visit(assumptionStmt.getCondition());
 		final Optional<String> position = positionAttribute(assumptionStmt, "invariant");
 
 		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.INVARIANT, position, condition));

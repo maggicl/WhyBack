@@ -42,14 +42,6 @@ public sealed class Identifier implements Comparable<Identifier> permits Identif
 		return ('0' <= e && e <= '9') || ('a' <= e && e <= 'z') || ('A' <= e && e <= 'Z') || e == '_' || e == '\'';
 	}
 
-	public L append(String string) {
-		if (!string.codePoints().allMatch(Identifier::isLegalChar)) {
-			throw new IllegalArgumentException("\"" + string + "\" is not a valid identifier extension");
-		}
-
-		return new L(this.contents + string);
-	}
-
 	public final static class Special {
 		public static final FQDN OBJECT = FQDN.special("Java", "Lang", "Object");
 		public static final FQDN STRING = FQDN.special("Java", "Lang", "String");

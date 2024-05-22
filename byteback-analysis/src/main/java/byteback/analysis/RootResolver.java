@@ -7,6 +7,7 @@ import byteback.analysis.transformer.ExceptionInvariantTransformer;
 import byteback.analysis.transformer.ExpressionFolder;
 import byteback.analysis.transformer.GuardTransformer;
 import byteback.analysis.transformer.IndexCheckTransformer;
+import byteback.analysis.transformer.InvariantCheckerTransformer;
 import byteback.analysis.transformer.InvariantExpander;
 import byteback.analysis.transformer.LogicExpressionFolder;
 import byteback.analysis.transformer.LogicUnitTransformer;
@@ -129,8 +130,12 @@ public class RootResolver {
 			UnusedLocalEliminator.v().transform(body);
 			DynamicToStaticTransformer.v().transform(body);
 
-			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method) && !this.preserveInvariants) {
-				InvariantExpander.v().transform(body);
+			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+				if (this.preserveInvariants) {
+					InvariantCheckerTransformer.v().transform(body);
+				} else {
+					InvariantExpander.v().transform(body);
+				}
 			}
 
 			method.setActiveBody(body);

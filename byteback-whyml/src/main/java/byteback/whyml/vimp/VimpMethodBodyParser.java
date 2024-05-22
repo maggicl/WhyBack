@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import soot.Body;
 import soot.Printer;
 import soot.SootMethod;
 import soot.Unit;
+import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.BlockGraph;
 
@@ -78,6 +80,8 @@ public class VimpMethodBodyParser {
 			final List<WhyLocal> locals = body.getLocals().stream()
 					.map(vimpLocalParser::parse)
 					.toList();
+
+
 
 			final BlockGraph bg = SootBodies.getBlockGraph(method.getActiveBody());
 			final Map<Unit, CFGLabel> labelMap = CFGLabel.forBlocks(

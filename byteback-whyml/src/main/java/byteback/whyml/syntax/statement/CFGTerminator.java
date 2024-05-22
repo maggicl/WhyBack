@@ -2,16 +2,18 @@ package byteback.whyml.syntax.statement;
 
 import byteback.whyml.printer.Code;
 import byteback.whyml.printer.SExpr;
+import static byteback.whyml.printer.SExpr.natMapping;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.switchExpr;
 import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.Expression;
+import byteback.whyml.syntax.expr.WholeNumberLiteral;
 import byteback.whyml.syntax.function.CFGLabel;
 import byteback.whyml.syntax.statement.visitor.StatementVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public sealed abstract class CFGTerminator implements CFGStatement {
 	private static SExpr labelToWhy(CFGLabel label) {
@@ -144,23 +146,33 @@ public sealed abstract class CFGTerminator implements CFGStatement {
 
 		@Override
 		public Code toWhy() {
+			final boolean canUseShort = cases.size() <= 127;
+			final String prefix = canUseShort ? "BS" : "B";
+			final String branchFunc = canUseShort ? "branch_short" : "branch";
+
+			final List<Map.Entry<Integer, CFGLabel>> branches = cases.entrySet().stream()
+					.sorted(Map.Entry.comparingByKey())
+					.toList();
+
+			final SExpr natMapping = natMapping(branches.stream()
+					.map(e -> new WholeNumberLiteral(test.type(), e.getKey()).toWhy())
+					.toList());
+
+			final List<Map.Entry<String, SExpr>> branchStmts = new ArrayList<>();
+			for (int i = 0; i < branches.size(); i++) {
+				branchStmts.add(Map.entry("%s%d".formatted(prefix, i), CFGTerminator.labelToWhy(branches.get(i).getValue())));
+			}
+			branchStmts.add(Map.entry("%s%d".formatted(prefix, branches.size()), CFGTerminator.labelToWhy(defaultTarget)));
+
 			return switchExpr(
-					test.toWhy(),
-					Stream.concat(
-							cases.entrySet().stream()
-									.sorted(Map.Entry.comparingByKey())
-									.map(e -> Map.entry(
-											e.getKey().toString(),
-											CFGTerminator.labelToWhy(e.getValue())
-									)),
-							Stream.of(
-									Map.entry(
-											"_",
-											CFGTerminator.labelToWhy(defaultTarget)
-									)
-							)
-					).toList())
-					.statement();
+					prefix(
+							branchFunc,
+							test.toWhy(),
+							terminal("%d".formatted(branches.size())),
+							natMapping
+					),
+					branchStmts
+			).statement();
 		}
 
 		@Override

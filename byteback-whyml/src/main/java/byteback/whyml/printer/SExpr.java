@@ -63,6 +63,10 @@ public sealed abstract class SExpr {
 		return new Conditional(op, left, right);
 	}
 
+	public static SExpr natMapping(List<SExpr> elements) {
+		return new NatMapping(elements);
+	}
+
 	public static SExpr switchExpr(SExpr test, List<Map.Entry<String, SExpr>> branches) {
 		return new Switch(test, branches);
 	}
@@ -198,6 +202,37 @@ public sealed abstract class SExpr {
 		@Override
 		protected int opLength() {
 			return conditional.opLength() + thenBranch.opLength() + elseBranch.opLength() + "if then else ".length();
+		}
+	}
+
+	private static final class NatMapping extends SExpr {
+		private final List<SExpr> elements;
+
+		private NatMapping(List<SExpr> elements) {
+			this.elements = elements;
+		}
+
+		@Override
+		protected String toLine() {
+			return elements.stream()
+					.map(SExpr::toLine)
+					.collect(Collectors.joining("; ", "[|", "|]"));
+		}
+
+		@Override
+		protected Code withParens(String prefix, String postfix) {
+			return many(
+					line("[|"),
+					indent(many(elements.stream().map(SExpr::statement))),
+					line("|]")
+			);
+		}
+
+		@Override
+		protected int opLength() {
+			return elements.stream().mapToInt(SExpr::opLength).sum()
+					+ (elements.size() - 1) * "; ".length()
+					+ "[||]".length();
 		}
 	}
 

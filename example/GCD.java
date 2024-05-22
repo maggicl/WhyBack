@@ -75,10 +75,15 @@ public class GCD {
 			invariant(gt(r, 0) & gt(x, 0));
 			invariant(eq(gcd_recursive(r, x), gcd_recursive(a, b)));
 
-			if (r > x) {
-				r = (short) (r - x);
-			} else {
-				x = (short) (x - r);
+			switch (r > x ? 1 : 0) {
+				case 1:
+					r = (short) (r - x);
+					break;
+				case 0:
+					x = (short) (x - r);
+					break;
+				default:
+					break;
 			}
 		}
 

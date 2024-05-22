@@ -15,6 +15,7 @@ import byteback.whyml.syntax.statement.ArrayAssignment;
 import byteback.whyml.syntax.statement.CFGTerminator;
 import byteback.whyml.syntax.statement.FieldAssignment;
 import byteback.whyml.syntax.statement.LocalAssignment;
+import byteback.whyml.syntax.type.WhyJVMType;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,9 +51,11 @@ public class SideEffectVisitor extends StatementVisitor {
 	@Override
 	public void visitFieldAssignmentStatement(FieldAssignment fieldAssignment) {
 		final boolean isStatic = fieldAssignment.access() instanceof Access.Static;
-		writes.add("%s.%s".formatted(
+		final boolean isPtr = fieldAssignment.access().getField().getType().jvm() == WhyJVMType.PTR;
+		writes.add("%s.%s%s".formatted(
 				Identifier.Special.HEAP,
-				isStatic ? "staticptr" : "instptr"
+				isStatic ? "static" : "inst",
+				isPtr ? "ptr" : ""
 		));
 
 		super.visitFieldAssignmentStatement(fieldAssignment);

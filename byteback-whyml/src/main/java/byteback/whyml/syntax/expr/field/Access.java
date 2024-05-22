@@ -48,6 +48,14 @@ public sealed abstract class Access {
 		public SExpr referenceToWhy() {
 			return base.toWhy();
 		}
+
+		@Override
+		public String toString() {
+			return "Access.Instance{" +
+					"base=" + base +
+					", field=" + field +
+					'}';
+		}
 	}
 
 	public static final class Static extends Access {
@@ -65,6 +73,13 @@ public sealed abstract class Access {
 		@Override
 		public SExpr referenceToWhy() {
 			return terminal(field.getClazz().toString() + ".class");
+		}
+
+		@Override
+		public String toString() {
+			return "Access.Static{" +
+					"field=" + field +
+					'}';
 		}
 	}
 }

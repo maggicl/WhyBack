@@ -6,6 +6,7 @@ import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.field.Access;
+import byteback.whyml.syntax.expr.harmonization.WhyTypeHarmonizer;
 import byteback.whyml.syntax.statement.CFGStatement;
 import byteback.whyml.syntax.statement.visitor.StatementVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
@@ -18,6 +19,15 @@ public record FieldAssignment(Access access, Expression value) implements CFGSta
 		if (fieldType != valueType) {
 			throw new IllegalArgumentException("cannot assign to field %s with type %s an expression with type %s"
 					.formatted(access.getField(), fieldType, valueType));
+		}
+	}
+
+	public static FieldAssignment build(Access access, Expression value) {
+		try {
+			final Expression actualValue = WhyTypeHarmonizer.harmonizeExpression(access.getField().getType(), value);
+			return new FieldAssignment(access, actualValue);
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException("illegal field assignment on %s: %s".formatted(access, e.getMessage()), e);
 		}
 	}
 

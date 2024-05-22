@@ -34,7 +34,11 @@ public record FunctionCall(Identifier.L name,
 			final Expression argument = actualParams.get(i);
 			final WhyType paramType = paramTypes.get(i);
 
-			params.add(WhyTypeHarmonizer.harmonizeCall(i + 1, paramType, argument));
+			try {
+				params.add(WhyTypeHarmonizer.harmonizeExpression(paramType, argument));
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("wrong type on argument %d: %s".formatted(i + 1, e.getMessage()), e);
+			}
 		}
 
 		return new FunctionCall(name, signature, params);

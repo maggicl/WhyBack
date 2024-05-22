@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public record WhyFunction(WhyFunctionContract contract,
 						  Optional<WhyFunctionBody> body) implements Node<WhyFunctionSignature, WhyFunction> {
@@ -39,6 +40,12 @@ public record WhyFunction(WhyFunctionContract contract,
 
 	@Override
 	public List<WhyFunctionSignature> nearTo() {
-		return body.map(e -> e.sideEffects().calls().stream().sorted().toList()).orElse(List.of());
+		return Stream.concat(
+			contract.conditions().stream()
+					.map(WhyCondition::sideEffects)
+					.map(WhySideEffects::calls)
+					.flatMap(Set::stream),
+			body.stream().flatMap(e -> e.sideEffects().calls().stream())
+		).sorted().toList();
 	}
 }

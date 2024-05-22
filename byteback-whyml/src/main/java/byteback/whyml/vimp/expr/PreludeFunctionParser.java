@@ -46,7 +46,7 @@ public final class PreludeFunctionParser {
 					kind, arguments.size()));
 		}
 
-		final HarmonizationResult hr = WhyTypeHarmonizer.harmonize(arguments.get(0), arguments.get(1));
+		final HarmonizationResult hr = WhyTypeHarmonizer.harmonizeBinaryExpression(arguments.get(0), arguments.get(1));
 		return new BinaryExpression(new Comparison(hr.getType(), kind), hr.getFirstOp(), hr.getSecondOp());
 	}
 

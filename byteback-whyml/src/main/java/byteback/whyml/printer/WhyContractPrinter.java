@@ -12,12 +12,15 @@ import byteback.whyml.syntax.expr.binary.Comparison;
 import byteback.whyml.syntax.expr.binary.LogicConnector;
 import byteback.whyml.syntax.function.WhyCondition;
 import byteback.whyml.syntax.function.WhyFunction;
+import byteback.whyml.syntax.function.WhyFunctionBody;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.function.WhyLocal;
+import byteback.whyml.syntax.function.WhySideEffects;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class WhyContractPrinter implements WhyCondition.Visitor {
 	private final boolean isRecursive;
@@ -49,21 +52,21 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 
 	@Override
 	public void visitRequires(WhyCondition.Requires r) {
-		requiresList.add(r.value().toWhy().statement("requires { ", " }"));
+		requiresList.add(r.value().getExpression().toWhy().statement("requires { ", " }"));
 	}
 
 	@Override
 	public void visitEnsures(WhyCondition.Ensures r) {
 		final Expression condition = function.contract().signature().declaration().isProgram()
-				? new BinaryExpression(LogicConnector.IMPLIES, caughtExceptionIsNull(true), r.value())
-				: r.value();
+				? new BinaryExpression(LogicConnector.IMPLIES, caughtExceptionIsNull(true), r.value().getExpression())
+				: r.value().getExpression();
 
 		ensuresList.add(condition.toWhy().statement("ensures { ", " }"));
 	}
 
 	@Override
 	public void visitDecreases(WhyCondition.Decreases r) {
-		decreasesList.add(r.value().toWhy().statement("variant { ", " }"));
+		decreasesList.add(r.value().getExpression().toWhy().statement("variant { ", " }"));
 	}
 
 	@Override
@@ -75,7 +78,7 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 			returnsList.add(
 					new BinaryExpression(
 							LogicConnector.IMPLIES,
-							r.when(),
+							r.when().getExpression(),
 							caughtExceptionIsNull(false)
 					).toWhy().statement("ensures { ", " }")
 			);
@@ -94,7 +97,7 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 						new LocalExpression(Identifier.Special.CAUGHT_EXCEPTION, WhyJVMType.PTR),
 						new WhyReference(r.getException())
 				),
-				r.getWhen()
+				r.getWhen().getExpression()
 		);
 
 		raisesList.add(expr.toWhy().statement("ensures { ", " }"));
@@ -105,15 +108,15 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 
 		if (sig.declaration().isProgram()) {
 			// if this is a program function, require that the caught exception variable is null before calling the method
-			visit(new WhyCondition.Requires(caughtExceptionIsNull(true)));
+			visit(new WhyCondition.Requires(new WhyFunctionBody.SpecBody(caughtExceptionIsNull(true))));
 		}
 
 		for (final WhyLocal p : sig.params()) {
-			p.condition().ifPresent(c -> visit(new WhyCondition.Requires(c)));
+			p.condition().ifPresent(c -> visit(new WhyCondition.Requires(new WhyFunctionBody.SpecBody(c))));
 		}
 
 		sig.resultParam().condition()
-				.ifPresent(c -> visit(new WhyCondition.Ensures(c)));
+				.ifPresent(c -> visit(new WhyCondition.Ensures(new WhyFunctionBody.SpecBody(c))));
 
 		for (final WhyCondition c : function.contract().conditions()) {
 			visit(c);
@@ -124,11 +127,21 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 				decreasesList.add(line("variant { 0 } (* no variant on method *)"));
 			}
 
-			for (final String w : b.sideEffects().reads()) {
+			final WhySideEffects sideEffects = WhySideEffects.combine(
+					Stream.concat(
+							function.contract().conditions()
+							.stream()
+							.map(WhyCondition::sideEffects),
+							Stream.of(b.sideEffects())
+					).toList()
+			);
+
+
+			for (final String w : sideEffects.reads()) {
 				readsList.add(line("reads { %s }".formatted(w)));
 			}
 
-			for (final String w : b.sideEffects().writes()) {
+			for (final String w : sideEffects.writes()) {
 				writesList.add(line("writes { %s }".formatted(w)));
 			}
 		});

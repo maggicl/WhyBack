@@ -15,7 +15,6 @@ import byteback.whyml.vimp.graph.PostOrder;
 import byteback.whyml.vimp.graph.SCC;
 import byteback.whyml.vimp.graph.Tarjan;
 import java.util.ArrayDeque;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
@@ -67,7 +66,7 @@ public class WhyResolver {
 		return result;
 	}
 
-	public Expression getSpecBody(final SootMethod method) {
+	public WhyFunctionBody.SpecBody getSpecBody(final SootMethod method) {
 		resolveMethod(method);
 		final WhyFunctionBody body = bodies.get(method);
 
@@ -76,7 +75,7 @@ public class WhyResolver {
 		}
 
 		if (body instanceof WhyFunctionBody.SpecBody specBody) {
-			return specBody.getExpression();
+			return specBody;
 		} else {
 			throw new IllegalArgumentException("method is not a spec method: " + method);
 		}
@@ -101,12 +100,12 @@ public class WhyResolver {
 			if (Inline.parse(method).must()) {
 				// if the function must be inlined, it does not have a contract for decl
 				// also, it is a spec-function and not a program function
-				bodies.put(method, methodBodyParser.parseSpec(method));
+				bodies.put(method, methodBodyParser.parseSpecBody(method));
 			} else {
 				final WhyFunctionContract c = methodParser.contract(method, methodConditions, decl, this);
 
 				signatures.put(method, c);
-				methodBodyParser.parse(decl, c.signature(), method).ifPresent(e -> bodies.put(method, e));
+				methodBodyParser.parseBody(decl, c.signature(), method).ifPresent(e -> bodies.put(method, e));
 			}
 		});
 	}

@@ -8,8 +8,10 @@ import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.UnaryExpression;
 import byteback.whyml.syntax.expr.transformer.ParamActualizationTransformer;
 import byteback.whyml.syntax.function.WhyCondition;
-import byteback.whyml.syntax.function.WhyLocal;
+import byteback.whyml.syntax.function.WhyFunction;
+import byteback.whyml.syntax.function.WhyFunctionBody;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
+import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.type.WhyJVMType;
 import java.util.HashMap;
 import java.util.List;
@@ -33,15 +35,15 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 	}
 
 	private Expression resolveCondition(SootMethod method, boolean hasResult) {
-		final Expression expression = resolver.getSpecBody(method);
+		final WhyFunctionBody.SpecBody expression = resolver.getSpecBody(method);
 
 		final List<Identifier.L> condIdentifiers = paramParser.paramNames(method).toList();
 
 		List<WhyLocal> methodParams = hasResult && signature.returnType() != WhyJVMType.UNIT
 				? Stream.concat(
-					signature.params().stream(),
-					Stream.of(signature.resultParam())
-				).toList()
+				signature.params().stream(),
+				Stream.of(signature.resultParam())
+		).toList()
 				: signature.params();
 
 		if (condIdentifiers.size() != methodParams.size()) {
@@ -58,36 +60,44 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 			replacementMap.put(condIdentifiers.get(i), new LocalExpression(param.name(), param.type().jvm()));
 		}
 
-		return ParamActualizationTransformer.transform(replacementMap, expression);
+		return ParamActualizationTransformer.transform(
+				replacementMap,
+				expression.getExpression()
+		);
 	}
 
 	@Override
 	public WhyCondition.Requires transformRequires(VimpCondition.Requires r) {
-		return new WhyCondition.Requires(resolveCondition(r.getValue(), false));
+		return new WhyCondition.Requires(new WhyFunctionBody.SpecBody(resolveCondition(r.getValue(), false)));
 	}
 
 	@Override
 	public WhyCondition.Ensures transformEnsures(VimpCondition.Ensures r) {
-		return new WhyCondition.Ensures(resolveCondition(r.getValue(), true));
+		return new WhyCondition.Ensures(new WhyFunctionBody.SpecBody(resolveCondition(r.getValue(), true)));
 	}
 
 	@Override
 	public WhyCondition.Decreases transformDecreases(VimpCondition.Decreases r) {
-		return new WhyCondition.Decreases(resolveCondition(r.getValue(), false));
+		return new WhyCondition.Decreases(new WhyFunctionBody.SpecBody(resolveCondition(r.getValue(), false)));
 	}
 
 	@Override
 	public WhyCondition.Returns transformReturns(VimpCondition.Returns r) {
 		return new WhyCondition.Returns(r.getWhen()
-				.map(when -> (Expression) new UnaryExpression(
+				.map(when -> new WhyFunctionBody.SpecBody(new UnaryExpression(
 						UnaryExpression.Operator.NOT,
-						resolveCondition(when, false)))
-				.orElseGet(() -> new BooleanLiteral(true)));
+						resolveCondition(when, false))))
+				.orElseGet(() -> new WhyFunctionBody.SpecBody(new BooleanLiteral(true))));
 	}
 
 	@Override
 	public WhyCondition.Raises transformRaises(VimpCondition.Raises r) {
-		return new WhyCondition.Raises(r.getWhen().map(when -> resolveCondition(when, false))
-				.orElseGet(() -> new BooleanLiteral(true)), vimpClassNameParser.parse(r.getException()));
+		return new WhyCondition.Raises(
+				new WhyFunctionBody.SpecBody(
+						r.getWhen()
+							.map(when -> resolveCondition(when, false))
+							.orElseGet(() -> new BooleanLiteral(true))
+				), vimpClassNameParser.parse(r.getException())
+		);
 	}
 }

@@ -37,10 +37,10 @@ public class VimpMethodBodyParser {
 		this.blockParser = blockParser;
 	}
 
-	public Optional<? extends WhyFunctionBody> parse(WhyFunctionDeclaration decl, WhyFunctionSignature s, SootMethod method) {
+	public Optional<? extends WhyFunctionBody> parseBody(WhyFunctionDeclaration decl, WhyFunctionSignature s, SootMethod method) {
 		try {
 			if (decl.isSpec()) {
-				return Optional.of(parseSpec(method));
+				return Optional.of(parseSpecBody(method));
 			} else {
 				return parseProgram(s, method);
 			}
@@ -63,7 +63,7 @@ public class VimpMethodBodyParser {
 		}
 	}
 
-	public WhyFunctionBody.SpecBody parseSpec(SootMethod method) {
+	public WhyFunctionBody.SpecBody parseSpecBody(SootMethod method) {
 		if (!method.hasActiveBody()) {
 			throw new IllegalStateException("Spec method " + method.getSignature() + " has no active body");
 		}

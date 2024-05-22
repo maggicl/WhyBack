@@ -50,7 +50,8 @@ public class ProgramExpressionExtractor extends PureProgramExpressionExtractor {
 
 	@Override
 	protected Expression parsePrimitiveOpMethod(InvokeExpr call, List<Expression> argExpressions) {
-		throw new WhyTranslationException(call, "primitive operator method '%s' called in program code".formatted(call));
+		// Operator methods should be treated like program code if the
+		return parseMethodCall(call, argExpressions);
 	}
 
 	@Override

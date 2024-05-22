@@ -15,7 +15,7 @@ public record ConditionalExpression(Expression conditional,
 			throw new IllegalArgumentException("conditional in conditional expression should have BOOL type");
 		}
 
-		final HarmonizationResult hr = WhyTypeHarmonizer.harmonize(thenExpr, elseExpr);
+		final HarmonizationResult hr = WhyTypeHarmonizer.harmonizeBinaryExpression(thenExpr, elseExpr);
 		this.conditional = conditional;
 		this.thenExpr = hr.getFirstOp();
 		this.elseExpr = hr.getSecondOp();

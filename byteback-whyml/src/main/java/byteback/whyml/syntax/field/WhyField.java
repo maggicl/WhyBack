@@ -8,6 +8,11 @@ public abstract class WhyField {
 	private final Identifier.U name;
 	private final WhyType type;
 
+	@Override
+	public String toString() {
+		return "WhyField[clazz=%s, name=%s, type=%s, isStatic=%s]".formatted(clazz, name, type, isStatic());
+	}
+
 	protected WhyField(Identifier.FQDN clazz, Identifier.U name, WhyType type) {
 		this.clazz = clazz;
 		this.name = name;

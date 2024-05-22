@@ -10,6 +10,7 @@ import byteback.analysis.vimp.InvariantStmt;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.field.Access;
+import byteback.whyml.syntax.expr.harmonization.WhyTypeHarmonizer;
 import byteback.whyml.syntax.field.WhyField;
 import byteback.whyml.syntax.field.WhyInstanceField;
 import byteback.whyml.syntax.field.WhyStaticField;
@@ -91,7 +92,8 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 				final WhyLocal rValueLocal;
 				if (rValue instanceof ParameterRef paramRef) {
 					rValueLocal = signature.getParam(paramRef.getIndex()).orElseThrow(() ->
-							new WhyTranslationException(identity, "parameter " + paramRef + " missing from signature: " + signature));
+							new WhyTranslationException(identity, "parameter %s missing from signature: %s"
+									.formatted(paramRef, signature)));
 				} else {
 					rValueLocal = signature.getThisParam().orElseThrow(() ->
 							new WhyTranslationException(identity, "'this' parameter missing from signature: " + signature));
@@ -116,7 +118,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 			public void caseLocal(final Local local) {
 				// parameters are never re-assigned in Jimple, so we can assume the l-value is a local variable
 				// vimpLocalParser will add the local variable prefix to the variable name
-				addStatement(new LocalAssignment(vimpLocalParser.parse(local), rValue));
+				addStatement(LocalAssignment.build(vimpLocalParser.parse(local), rValue));
 			}
 
 			@Override
@@ -127,7 +129,11 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 				}
 
 				final Expression base = programExpressionExtractor.visit(v.getBase());
-				addStatement(new FieldAssignment(Access.instance(base, (WhyInstanceField) field), rValue));
+				try {
+					addStatement(FieldAssignment.build(Access.instance(base, (WhyInstanceField) field), rValue));
+				} catch (IllegalArgumentException e) {
+					throw new WhyTranslationException(assignment, e.getMessage());
+				}
 			}
 
 			@Override
@@ -137,7 +143,11 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 					throw new WhyTranslationException(v, "StaticFieldRef has a non-static field: " + field);
 				}
 
-				addStatement(new FieldAssignment(Access.staticAccess((WhyStaticField) field), rValue));
+				try {
+					addStatement(FieldAssignment.build(Access.staticAccess((WhyStaticField) field), rValue));
+				} catch (IllegalArgumentException e) {
+					throw new WhyTranslationException(assignment, e.getMessage());
+				}
 			}
 
 			@Override
@@ -151,7 +161,11 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 				final Expression base = programExpressionExtractor.visit(v.getBase());
 				final Expression index = programExpressionExtractor.visit(v.getIndex());
 
-				addStatement(new ArrayAssignment(base, elemType, index, rValue));
+				try {
+					addStatement(new ArrayAssignment(base, elemType, index, WhyTypeHarmonizer.harmonizeExpression(elemType, rValue)));
+				} catch (IllegalArgumentException e) {
+					throw new WhyTranslationException(assignment, "illegal array assignment:" + e.getMessage());
+				}
 			}
 
 			@Override

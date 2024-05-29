@@ -7,7 +7,7 @@ import byteback.whyml.syntax.statement.CFGTerminator;
 import byteback.whyml.vimp.expr.CFGTerminatorExtractor;
 import byteback.whyml.vimp.expr.ProgramExpressionExtractor;
 import byteback.whyml.vimp.expr.ProgramStatementExtractor;
-import byteback.whyml.vimp.expr.PureProgramExpressionExtractor;
+import byteback.whyml.vimp.expr.ProgramLogicalExpressionExtractor;
 import java.util.Map;
 import java.util.Optional;
 import soot.Unit;
@@ -16,13 +16,13 @@ import soot.toolkits.graph.Block;
 public class VimpBlockParser {
 
 	private final ProgramExpressionExtractor programExpressionExtractor;
-	private final PureProgramExpressionExtractor pureProgramExpressionExtractor;
+	private final ProgramLogicalExpressionExtractor pureProgramExpressionExtractor;
 	private final VimpLocalParser vimpLocalParser;
 	private final VimpFieldParser fieldParser;
 	private final TypeResolver typeResolver;
 
 	public VimpBlockParser(ProgramExpressionExtractor programExpressionExtractor,
-						   PureProgramExpressionExtractor pureProgramExpressionExtractor,
+						   ProgramLogicalExpressionExtractor pureProgramExpressionExtractor,
 						   VimpLocalParser vimpLocalParser,
 						   VimpFieldParser fieldParser,
 						   TypeResolver typeResolver) {

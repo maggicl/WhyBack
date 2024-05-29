@@ -17,7 +17,7 @@ public record FloatLiteral(float value) implements Expression {
 			boolean positive = (bits & 0x80000000) == 0;
 			int exponent = ((bits & 0x7f800000) >> 23) - 127;
 			boolean normalized = exponent > -127;
-			int mantissa = bits & 0x007fffff;
+			int mantissa = (bits & 0x007fffff) << 1;
 
 			// ceil(23 / 4) = 6 => 6 hex digits needed to print the mantissa
 			return terminal("(0x%s%d.%06X%s:jfloat) (* %s *)".formatted(

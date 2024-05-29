@@ -7,7 +7,6 @@ import byteback.whyml.syntax.expr.NewArrayExpression;
 import byteback.whyml.syntax.expr.NewExpression;
 import byteback.whyml.syntax.expr.field.ArrayOperation;
 import byteback.whyml.syntax.expr.field.Operation;
-import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyReference;
@@ -23,7 +22,7 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.NewMultiArrayExpr;
 
-public class ProgramExpressionExtractor extends PureProgramExpressionExtractor {
+public class ProgramExpressionExtractor extends ProgramLogicalExpressionExtractor {
 
 	public ProgramExpressionExtractor(VimpMethodParser methodSignatureParser,
 									  VimpMethodNameParser methodNameParser,
@@ -44,14 +43,13 @@ public class ProgramExpressionExtractor extends PureProgramExpressionExtractor {
 	}
 
 	@Override
-	protected Expression parseSpecialClassMethod(InvokeExpr call, List<Expression> argExpressions) {
-		throw new WhyTranslationException(call, "special class method '%s' called in program code".formatted(call));
+	protected boolean isCastPure() {
+		return false;
 	}
 
 	@Override
-	protected Expression parsePrimitiveOpMethod(InvokeExpr call, List<Expression> argExpressions) {
-		// Operator methods should be treated like program code if the
-		return parseMethodCall(call, argExpressions);
+	protected Expression parseSpecialClassMethod(InvokeExpr call, List<Expression> argExpressions) {
+		throw new WhyTranslationException(call, "special class method '%s' called in program code".formatted(call));
 	}
 
 	@Override

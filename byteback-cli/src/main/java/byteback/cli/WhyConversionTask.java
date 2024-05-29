@@ -7,16 +7,14 @@ import byteback.whyml.IOC;
 public class WhyConversionTask implements ConversionTask {
 
     private final RootResolver resolver;
-    private final boolean useMLCFG;
 
-    public WhyConversionTask(final RootResolver resolver, boolean useMLCFG) {
+	public WhyConversionTask(final RootResolver resolver) {
         this.resolver = resolver;
-		this.useMLCFG = useMLCFG;
 	}
 
     @Override
     public Printable run() {
-        return IOC.PROGRAM_CONVERTER.convert(resolver, useMLCFG);
+        return IOC.PROGRAM_CONVERTER.convert(resolver);
     }
 
 }

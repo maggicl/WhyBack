@@ -9,6 +9,7 @@ import byteback.whyml.syntax.function.WhyFunction;
 import byteback.whyml.syntax.function.WhyFunctionBody;
 import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
+import byteback.whyml.syntax.function.WhySideEffects;
 import byteback.whyml.syntax.type.ReferenceVisitor;
 import byteback.whyml.syntax.type.WhyType;
 import byteback.whyml.vimp.graph.PostOrder;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import soot.SootClass;
 import soot.SootMethod;
 
@@ -35,6 +37,7 @@ public class WhyResolver {
 
 	private final Map<Identifier.FQDN, WhyClass> classes = new HashMap<>();
 	private final Set<SootMethod> parsed = new HashSet<>();
+	private final Map<WhyFunctionSignature, SootMethod> fromSignature = new HashMap<>();
 	private final Map<SootMethod, WhyFunctionContract> signatures = new HashMap<>();
 	private final Map<SootMethod, WhyFunctionBody> bodies = new HashMap<>();
 	private final Map<SootMethod, List<VimpCondition>> conditions = new HashMap<>();
@@ -81,6 +84,12 @@ public class WhyResolver {
 		}
 	}
 
+	public Optional<WhySideEffects> getBodySideEffects(WhyFunctionSignature sig) {
+		return Optional.ofNullable(fromSignature.get(sig))
+				.flatMap(e -> Optional.ofNullable(bodies.get(e)))
+				.map(WhyFunctionBody::sideEffects);
+	}
+
 	public void resolveAllConditionData(final Map<SootMethod, List<VimpCondition>> data) {
 		conditions.putAll(data);
 	}
@@ -105,6 +114,7 @@ public class WhyResolver {
 				final WhyFunctionContract c = methodParser.contract(method, methodConditions, decl, this);
 
 				signatures.put(method, c);
+				fromSignature.put(c.signature(), method);
 				methodBodyParser.parseBody(decl, c.signature(), method).ifPresent(e -> bodies.put(method, e));
 			}
 		});

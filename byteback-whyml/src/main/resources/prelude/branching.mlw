@@ -33043,14 +33043,14 @@ module Branching
     B16382 => 16382;
     B16383 => 16383|] b
 
-  val function branch [@inline:trivial] (expr: 'a) (n_cases: int) (ghost cases: int -> 'a): t
+  val function branch [@inline:trivial] (expr: 'a) (n_cases: int) (cases: int -> 'a): t
     ensures {
       if (exists i:int. 0 <= i < n_cases && cases i = expr) (* if the expression is in the sequence cases *)
       then cases (from_b result) = expr (* the returned branch label is the one matching the case at the matching position *)
       else from_b result = n_cases (* otherwise, the branch label is b_<n_cases> *)
     }
 
-  val function branch_short [@inline:trivial] (expr: 'a) (n_cases: int) (ghost cases: int -> 'a): t_short
+  val function branch_short [@inline:trivial] (expr: 'a) (n_cases: int) (cases: int -> 'a): t_short
     ensures {
       if (exists i:int. 0 <= i < n_cases && cases i = expr) (* if the expression is in the sequence cases *)
       then cases (from_bs result) = expr (* the returned branch label is the one matching the case at the matching position *)

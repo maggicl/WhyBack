@@ -49,9 +49,9 @@ public class Main {
 			output = System.out;
 		}
 
-		final var task = configuration.useWhy() ?
-				new WhyConversionTask(resolver, configuration.useMLCFG()) :
-				new BoogieConversionTask(resolver, prelude);
+		final ConversionTask task = configuration.useWhy()
+				? new WhyConversionTask(resolver)
+				: new BoogieConversionTask(resolver, prelude);
 		output.print(task.run().print());
 		output.close();
 	}
@@ -100,7 +100,7 @@ public class Main {
 		injector.inject(scene.getClasses());
 		resolver.setCheckNullDereference(Configuration.v().getTransformNullCheck());
 		resolver.setCheckArrayDereference(Configuration.v().getTransformArrayCheck());
-		resolver.setTransformThrowStatements(!configuration.useMLCFG());
+		resolver.setMakeThrowStmtReturn(!configuration.useWhy());
 		resolver.setPreserveInvariants(configuration.useWhy());
 		resolver.resolve(startingClasses);
 

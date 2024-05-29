@@ -8,6 +8,7 @@ import byteback.whyml.syntax.function.WhyFunction;
 import byteback.whyml.syntax.function.WhyFunctionDeclaration;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.vimp.VimpMethodNameParser;
+import byteback.whyml.vimp.WhyResolver;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,16 +19,16 @@ public class WhySignaturePrinter {
 		this.vimpMethodNameParser = vimpMethodNameParser;
 	}
 
-	public Code toWhy(WhyFunction function, boolean withWith, boolean isRecursive) {
+	public Code toWhy(WhyFunction function, boolean withWith, boolean isRecursive, WhyResolver resolver) {
 		final WhyFunctionSignature sig = function.contract().signature();
 
 		final String params = Stream.concat(
-				Stream.of("(ghost %s: Heap.t)".formatted(Identifier.Special.HEAP)),
+				Stream.of("(%s: Heap.t)".formatted(Identifier.Special.HEAP)),
 				sig.params().stream()
 						.map(e -> "(%s: %s)".formatted(e.name(), e.type().getWhyType()))
 		).collect(Collectors.joining(" "));
 
-		final WhyContractPrinter p = new WhyContractPrinter(isRecursive, function);
+		final WhyContractPrinter p = new WhyContractPrinter(isRecursive, function, resolver);
 		p.visit();
 
 		final String declaration = function.body().isPresent()

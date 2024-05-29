@@ -127,29 +127,29 @@ module HeapOp
   val function ft_marker : ft
   val function ctor (field: op_ft) : contents
 
-  val function isf (ghost heap: t) (p: Ptr.t) (f: field) : op_ft
+  val function isf (heap: t) (p: Ptr.t) (f: field) : op_ft
     requires { f.ftype = ft_marker }
     requires { p <> Ptr.null }
     ensures { ctor result = heap.inst[(p, f)] }
 
-  val getf (ghost heap: t) (p: Ptr.t) (f: field) : op_ft
+  val getf (heap: t) (p: Ptr.t) (f: field) : op_ft
     requires { f.ftype = ft_marker }
     (* raises { JException e -> npe_if_null e p } *)
     ensures { ctor result = heap.inst[(p, f)] }
 
-  val putf (ghost heap: t) (p: Ptr.t) (f: field) (c: op_ft) : unit
+  val putf (heap: t) (p: Ptr.t) (f: field) (c: op_ft) : unit
     writes { heap.inst }
     (* raises { JException e -> npe_if_null e p } *)
     ensures { heap.inst[(p, f)] = ctor c }
     ensures { other_same_inst heap (old heap) p f }
 
-  val function gets (ghost heap: t) (p: Type.class) (f: field) : op_ft
+  val function gets (heap: t) (p: Type.class) (f: field) : op_ft
     requires { f.ftype = ft_marker }
     ensures { ctor result = heap.static[(p,f)] }
 
-  let function iss [@inline:trivial] (ghost heap: t) (p: Type.class) (f: field) = gets heap p f
+  let function iss [@inline:trivial] (heap: t) (p: Type.class) (f: field) = gets heap p f
 
-  val puts (ghost heap: t) (p: Type.class) (f: field) (c: op_ft) : unit
+  val puts (heap: t) (p: Type.class) (f: field) (c: op_ft) : unit
     writes { heap.static }
     ensures { heap.static[(p,f)] = ctor c }
     ensures { other_same_static heap (old heap) p f }
@@ -173,15 +173,15 @@ module HeapArrayOpRead
   predicate valid_ptr (heap: t) (p: Ptr.t) =
     p <> Ptr.null && valid_type heap p
 
-  val function is (ghost heap: t) (p: Ptr.t) : arr_t
+  val function is (heap: t) (p: Ptr.t) : arr_t
     requires { valid_ptr heap p }
     ensures { ctor result = heap.arr[p] }
 
-  val function arraylength (ghost heap: t) (p: Ptr.t) : jint
+  val function arraylength (heap: t) (p: Ptr.t) : jint
     requires { valid_ptr heap p }
     ensures { result = (is heap p).length }
 
-  val ghost function set (ghost heap: t) (p: Ptr.t) (i: int) (v: elem_t): arr_t
+  val function set (heap: t) (p: Ptr.t) (i: int) (v: elem_t): arr_t
     requires { valid_ptr heap p }
     requires { 0 <= i && i < arraylength heap p }
     ensures { result.length = arraylength heap p }
@@ -219,24 +219,24 @@ module HeapArrayOp
     type elem_t = elem_t,
     predicate valid_type = valid_type
 
-  val load (ghost heap: t) (p: Ptr.t) (i: jint) : elem_t
+  val load (heap: t) (p: Ptr.t) (i: jint) : elem_t
     requires { valid_type heap p }
     (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
     ensures { result = (is heap p).elts i }
 
-  val function iselem (ghost heap: t) (p: Ptr.t) (i: jint) : elem_t
+  val function iselem (heap: t) (p: Ptr.t) (i: jint) : elem_t
     requires { valid_type heap p }
     requires { valid_access heap p i }
     ensures { result = (is heap p).elts i }
 
-  val store (ghost heap: t) (p: Ptr.t) (i: jint) (c: elem_t) : unit
+  val store (heap: t) (p: Ptr.t) (i: jint) (c: elem_t) : unit
     writes { heap.arr }
     requires { valid_type heap p }
     (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
     ensures { is heap p = set (old heap) p i c }
     ensures { other_same_arr heap (old heap) p }
 
-  val newarray (ghost heap: t) (len: jint) : Ptr.t
+  val newarray (heap: t) (len: jint) : Ptr.t
     writes { heap.ptrs }
     writes { heap.arr }
     writes { heap.typeof }
@@ -261,13 +261,13 @@ module Heap
   type t = HeapDef.t
   type field_t = HeapDef.ft
 
-  val new (ghost heap: t) (id: Type.class) : Ptr.t
+  val new (heap: t) (id: Type.class) : Ptr.t
     writes { heap.ptrs }
     writes { heap.typeof }
     ensures { result <> Ptr.null && heap.ptrs[result] && not (old heap).ptrs[result] }
     ensures { heap.typeof[result] = Type.Class id }
 
-  val predicate instanceof (ghost heap: t) (p: Ptr.t) (typ: Type.t)
+  val predicate instanceof (heap: t) (p: Ptr.t) (typ: Type.t)
     ensures { result <-> p <> Ptr.null && heap.typeof[p] :> typ }
 
   predicate ofclass (heap: t) (p: Ptr.t) (typ: Type.class) =
@@ -276,12 +276,12 @@ module Heap
   predicate hastype (heap: t) (p: Ptr.t) (typ: Type.t) =
     p = Ptr.null || instanceof heap p typ
 
-  val checkcast (ghost heap: t) (p: Ptr.t) (t: Type.t) : Ptr.t
+  val checkcast (heap: t) (p: Ptr.t) (t: Type.t) : Ptr.t
     ensures { result = p }
     ensures { hastype heap result t }
     (* raises { JException e -> not (hastype heap p t) && e = Java.Lang.ClassCastException.class } *)
 
-  val function iscast (ghost heap: t) (p: Ptr.t) (t: Type.t) : Ptr.t
+  val function iscast (heap: t) (p: Ptr.t) (t: Type.t) : Ptr.t
     requires { hastype heap p t }
     ensures { result = p }
     ensures { hastype heap result t }
@@ -302,28 +302,28 @@ module Heap
     use HeapDef
     use map.Map
 
-    val function isf (ghost heap: t) (p: Ptr.t) (f: ptrfield) : Ptr.t
+    val function isf (heap: t) (p: Ptr.t) (f: ptrfield) : Ptr.t
       requires { p <> Ptr.null }
       ensures { result = heap.instptr[(p,f)] }
       ensures { hastype heap result f.fptype }
 
-    val getf (ghost heap: t) (p: Ptr.t) (f: ptrfield) : Ptr.t
+    val getf (heap: t) (p: Ptr.t) (f: ptrfield) : Ptr.t
       (* raises { JException e -> npe_if_null e p } *)
       ensures { result = heap.instptr[(p,f)] }
       ensures { hastype heap result f.fptype }
 
-    val putf (ghost heap: t) (p: Ptr.t) (f: ptrfield) (c: Ptr.t) : unit
+    val putf (heap: t) (p: Ptr.t) (f: ptrfield) (c: Ptr.t) : unit
       writes { heap.instptr }
       requires { hastype heap c f.fptype }
       (* raises { JException e -> npe_if_null e p } *)
       ensures { heap.instptr[(p,f)] = c }
       ensures { other_same_instptr heap (old heap) p f }
 
-    val function gets (ghost heap: t) (p: Type.class) (f: ptrfield) : Ptr.t
+    val function gets (heap: t) (p: Type.class) (f: ptrfield) : Ptr.t
       ensures { result = heap.staticptr[(p,f)] }
       ensures { hastype heap result f.fptype }
 
-    val puts (ghost heap: t) (p: Type.class) (f: ptrfield) (c: Ptr.t) : unit
+    val puts (heap: t) (p: Type.class) (f: ptrfield) (c: Ptr.t) : unit
       writes { heap.staticptr }
       requires { hastype heap c f.fptype }
       ensures { heap.staticptr[(p,f)] = c }
@@ -373,26 +373,26 @@ module Heap
     predicate invalid_store (e: Type.class) (heap: t) (p: Ptr.t) (z: Ptr.t) =
       not valid_elem heap p z && e = Java.Lang.ArrayStoreException.class
 
-    val load (ghost heap: t) (p: Ptr.t) (i: jint) : Ptr.t
+    val load (heap: t) (p: Ptr.t) (i: jint) : Ptr.t
       requires { valid_type heap p }
       (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
       ensures { result = (is heap p).elts i }
       ensures { valid_elem heap p result }
 
-    val function iselem (ghost heap: t) (p: Ptr.t) (i: jint) : Ptr.t
+    val function iselem (heap: t) (p: Ptr.t) (i: jint) : Ptr.t
       requires { valid_type heap p }
       requires { valid_access heap p i }
       ensures { result = (is heap p).elts i }
       ensures { valid_elem heap p result }
 
-    val store (ghost heap: t) (p: Ptr.t) (i: jint) (c: Ptr.t) : unit
+    val store (heap: t) (p: Ptr.t) (i: jint) (c: Ptr.t) : unit
       writes { heap.arr }
       requires { valid_type heap p }
       (* raises { JException e -> npe_if_null e p || out_of_bounds e (old heap) p i || invalid_store e (old heap) p c } *)
       ensures { is heap p = set (old heap) p i c }
       ensures { other_same_arr heap (old heap) p }
 
-    val anewarray (ghost heap: t) (typ: Type.t) (len: jint) : Ptr.t
+    val anewarray (heap: t) (typ: Type.t) (len: jint) : Ptr.t
       writes { heap.ptrs }
       writes { heap.arr }
       writes { heap.typeof }

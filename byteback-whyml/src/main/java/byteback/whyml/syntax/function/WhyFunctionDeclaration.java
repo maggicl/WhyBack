@@ -4,8 +4,8 @@ import java.util.StringJoiner;
 
 public enum WhyFunctionDeclaration {
 	PROGRAM("cfg", null),
-	PREDICATE(null, "ghost predicate"),
-	FUNCTION(null, "ghost function");
+	PREDICATE(null, "predicate"),
+	FUNCTION(null, "function");
 
 	private final String implOnlyToken;
 	private final String token;

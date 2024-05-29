@@ -42,11 +42,7 @@ public class Configuration {
 
 	public boolean useWhy() {
 		final String fileName = getOutputPath().getFileName().toString();
-		return fileName.endsWith(".mlw") || fileName.endsWith(".mlcfg");
-	}
-
-	public boolean useMLCFG() {
-		return getOutputPath().getFileName().toString().endsWith(".mlcfg");
+		return fileName.endsWith(".mlcfg");
 	}
 
 	public boolean getHelp() {

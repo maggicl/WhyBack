@@ -4,7 +4,6 @@ import byteback.analysis.Inline;
 import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Namespace;
 import byteback.analysis.QuantifierExpr;
-import byteback.analysis.transformer.QuantifierValueTransformer;
 import byteback.analysis.util.SootHosts;
 import byteback.analysis.vimp.LogicConstant;
 import byteback.analysis.vimp.LogicExistsExpr;
@@ -104,7 +103,6 @@ import soot.jimple.UnopExpr;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
-import soot.jimple.toolkits.infoflow.FakeJimpleLocal;
 
 public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 	protected final VimpFieldParser fieldParser;
@@ -406,6 +404,10 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 		setExpression(NullLiteral.INSTANCE);
 	}
 
+	protected boolean isCastPure() {
+		return true;
+	}
+
 	@Override
 	public void caseCastExpr(final CastExpr v) {
 		final Expression op = visit(v.getOp());
@@ -417,7 +419,7 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 		if (!sourceType.isMeta() && !targetJVMType.isMeta()) {
 			setExpression(new PrimitiveCastExpression(op, targetJVMType));
 		} else if (sourceType == WhyJVMType.PTR && targetJVMType == WhyJVMType.PTR) {
-			setExpression(new ClassCastExpression(op, targetType, true));
+			setExpression(new ClassCastExpression(op, targetType, isCastPure()));
 		} else {
 			throw new WhyTranslationException(v, "CastExpr not supported on types: %s, %s".formatted(op.type(), targetType));
 		}
@@ -549,10 +551,6 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 		};
 	}
 
-	protected Expression parsePrimitiveOpMethod(InvokeExpr call, List<Expression> argExpressions) {
-		return PreludeFunctionParser.parse(call, argExpressions);
-	}
-
 	protected Expression parseMethodCall(InvokeExpr call, List<Expression> argExpressions) {
 		final SootMethod method = call.getMethod();
 
@@ -580,7 +578,10 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 						+ e.getMessage());
 			}
 		} else if (SootHosts.hasAnnotation(method, Namespace.PRIMITIVE_ANNOTATION)) {
-			setExpression(parsePrimitiveOpMethod(call, argExpressions));
+			// NOTE: operators may also be used in program code. The operator methods' Java implementation matches
+			// their semantics, so for simplicity we simply swap operator method calls with their matching operator
+			// expression no matter if the method is a spec or program method
+			setExpression(PreludeFunctionParser.parse(call, argExpressions));
 		} else {
 			if (Inline.parse(method).must()) {
 				throw new WhyTranslationException(call, "method '%s' MUST be inlined and cannot be called".formatted(method));

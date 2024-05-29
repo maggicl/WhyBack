@@ -47,7 +47,7 @@ import soot.tagkit.AbstractHost;
 
 public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatement>> {
 	private final ProgramExpressionExtractor programExpressionExtractor;
-	private final PureProgramExpressionExtractor pureProgramExpressionExtractor;
+	private final ProgramLogicalExpressionExtractor pureProgramExpressionExtractor;
 	private final VimpLocalParser vimpLocalParser;
 	private final VimpFieldParser fieldParser;
 	private final TypeResolver typeResolver;
@@ -56,7 +56,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 	private final List<CFGStatement> statements = new ArrayList<>();
 
 	public ProgramStatementExtractor(ProgramExpressionExtractor programExpressionExtractor,
-									 PureProgramExpressionExtractor pureProgramExpressionExtractor,
+									 ProgramLogicalExpressionExtractor pureProgramExpressionExtractor,
 									 VimpLocalParser vimpLocalParser,
 									 VimpFieldParser fieldParser,
 									 TypeResolver typeResolver,

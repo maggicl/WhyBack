@@ -4,4 +4,6 @@ includeBuild('./conventions')
 
 include(':byteback-cli', ':byteback-util', 'byteback-frontend:boogie', ':byteback-annotations', ':byteback-test', ':byteback-test:test-scala-2.13.8', ':byteback-test:test-java-8', ':byteback-test:test-java-17', ':byteback-test:test-kotlin-1.8.0', ':byteback-analysis', ':byteback-converter')
 include 'byteback-whyml'
+include 'byteback-test:delta'
+findProject(':byteback-test:delta')?.name = 'delta'
 

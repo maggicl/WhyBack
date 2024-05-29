@@ -1,7 +1,6 @@
 package byteback.whyml;
 
 import byteback.analysis.RootResolver;
-import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.printer.Code;
 import static byteback.whyml.printer.Code.block;
 import static byteback.whyml.printer.Code.line;
@@ -9,7 +8,6 @@ import static byteback.whyml.printer.Code.many;
 import byteback.whyml.printer.WhyClassDeclaration;
 import byteback.whyml.printer.WhyClassPrinter;
 import byteback.whyml.printer.WhyFunctionPrinter;
-import byteback.whyml.printer.WhySignaturePrinter;
 import byteback.whyml.syntax.WhyProgram;
 import byteback.whyml.vimp.WhyResolver;
 import java.util.List;
@@ -42,7 +40,7 @@ public class ProgramConverter {
 		}
 	}
 
-	public WhyProgram convert(final RootResolver resolver, final boolean useMLCFG) {
+	public WhyProgram convert(final RootResolver resolver) {
 		resolveAll(resolver);
 
 		final List<WhyClassDeclaration> decls = whyResolver.classes().stream()
@@ -50,7 +48,7 @@ public class ProgramConverter {
 				.toList();
 
 		final List<Code> functionDecls = whyResolver.functions().stream()
-				.map(whyFunctionPrinter::toWhy)
+				.map(e -> whyFunctionPrinter.toWhy(e, whyResolver))
 				.toList();
 
 		return new WhyProgram(many(

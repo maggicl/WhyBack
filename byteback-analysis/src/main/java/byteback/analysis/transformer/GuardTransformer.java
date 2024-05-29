@@ -2,7 +2,6 @@ package byteback.analysis.transformer;
 
 import byteback.analysis.Vimp;
 import byteback.analysis.vimp.VoidConstant;
-import byteback.util.Lazy;
 import byteback.util.ListHashMap;
 import byteback.util.Stacks;
 import java.util.HashSet;
@@ -25,10 +24,10 @@ import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
 public class GuardTransformer extends BodyTransformer {
-	private final boolean transformThrowStmt;
+	private final boolean makeThrowStmtReturn;
 
-	public GuardTransformer(boolean transformThrowStmt) {
-		this.transformThrowStmt = transformThrowStmt;
+	public GuardTransformer(boolean makeThrowStmtReturn) {
+		this.makeThrowStmtReturn = makeThrowStmtReturn;
 	}
 
 	@Override
@@ -77,8 +76,13 @@ public class GuardTransformer extends BodyTransformer {
 				Stacks.pushAll(activeTraps, startToTraps.get(unit));
 			}
 
-			if (this.transformThrowStmt && unit instanceof ThrowStmt throwUnit) {
-				final Unit retUnit = Grimp.v().newReturnVoidStmt();
+			if (unit instanceof ThrowStmt throwUnit) {
+				// if the flag is false, simply make sure the throw statement throws the special caught exception
+				// variable and not an arbitrary expression. This is needed to make the conditional statements modelling
+				// traps (catch blocks) to reference the thrown exception
+				final Unit retUnit = this.makeThrowStmtReturn
+						? Grimp.v().newReturnVoidStmt()
+						: Grimp.v().newThrowStmt(Vimp.v().newCaughtExceptionRef());
 
 				units.insertBefore(retUnit, throwUnit);
 				throwUnit.redirectJumpsToThisTo(retUnit);

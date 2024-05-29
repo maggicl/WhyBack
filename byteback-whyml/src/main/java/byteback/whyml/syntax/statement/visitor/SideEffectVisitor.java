@@ -2,6 +2,7 @@ package byteback.whyml.syntax.statement.visitor;
 
 import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.identifiers.IdentifierEscaper;
+import byteback.whyml.syntax.expr.ClassCastExpression;
 import byteback.whyml.syntax.expr.ClassLiteralExpression;
 import byteback.whyml.syntax.expr.FunctionCall;
 import byteback.whyml.syntax.expr.NewArrayExpression;

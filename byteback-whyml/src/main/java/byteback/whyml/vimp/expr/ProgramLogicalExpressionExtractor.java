@@ -11,12 +11,12 @@ import soot.Local;
 /**
  * Like a ProgramExpressionExtractor but identifiers are local variables
  */
-public class PureProgramExpressionExtractor extends PureExpressionExtractor {
-	public PureProgramExpressionExtractor(VimpFieldParser fieldParser,
-										  TypeResolver typeResolver,
-										  VimpMethodParser methodSignatureParser,
-										  VimpMethodNameParser methodNameParser,
-										  IdentifierEscaper identifierEscaper) {
+public class ProgramLogicalExpressionExtractor extends PureExpressionExtractor {
+	public ProgramLogicalExpressionExtractor(VimpFieldParser fieldParser,
+											 TypeResolver typeResolver,
+											 VimpMethodParser methodSignatureParser,
+											 VimpMethodNameParser methodNameParser,
+											 IdentifierEscaper identifierEscaper) {
 		super(fieldParser, typeResolver, methodSignatureParser, methodNameParser, identifierEscaper);
 	}
 

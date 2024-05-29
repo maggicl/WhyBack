@@ -18,13 +18,19 @@ import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.function.WhySideEffects;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyReference;
+import byteback.whyml.vimp.WhyResolver;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class WhyContractPrinter implements WhyCondition.Visitor {
 	private final boolean isRecursive;
 	private final WhyFunction function;
+	private final WhyResolver resolver;
 
 	private final List<Code> requiresList = new ArrayList<>();
 	private final List<Code> ensuresList = new ArrayList<>();
@@ -34,9 +40,10 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 	private final List<Code> readsList = new ArrayList<>();
 	private final List<Code> writesList = new ArrayList<>();
 
-	public WhyContractPrinter(boolean isRecursive, WhyFunction function) {
+	public WhyContractPrinter(boolean isRecursive, WhyFunction function, WhyResolver resolver) {
 		this.isRecursive = isRecursive;
 		this.function = function;
+		this.resolver = resolver;
 	}
 
 	private static Expression caughtExceptionIsNull(boolean isNull) {
@@ -127,15 +134,30 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 				decreasesList.add(line("variant { 0 } (* no variant on method *)"));
 			}
 
+			final Deque<WhySideEffects> effectsQueue = new ArrayDeque<>(List.of(b.sideEffects()));
+			for (final WhyCondition c : function.contract().conditions()) {
+				effectsQueue.add(c.sideEffects());
+			}
+
+			final Set<WhySideEffects> effectsSet = new HashSet<>();
+
+			while (!effectsQueue.isEmpty()) {
+				final WhySideEffects s = effectsQueue.removeLast();
+				if (!effectsSet.add(s)) continue;
+
+				for (final WhyFunctionSignature sign : s.calls()) {
+					resolver.getBodySideEffects(sign).ifPresent(effectsQueue::add);
+				}
+			}
+
 			final WhySideEffects sideEffects = WhySideEffects.combine(
 					Stream.concat(
 							function.contract().conditions()
 							.stream()
 							.map(WhyCondition::sideEffects),
-							Stream.of(b.sideEffects())
+							effectsSet.stream()
 					).toList()
 			);
-
 
 			for (final String w : sideEffects.reads()) {
 				readsList.add(line("reads { %s }".formatted(w)));

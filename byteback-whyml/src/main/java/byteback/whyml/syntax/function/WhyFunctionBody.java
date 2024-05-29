@@ -8,7 +8,10 @@ import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.statement.visitor.SideEffectVisitor;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public sealed abstract class WhyFunctionBody {
 	private volatile WhySideEffects sideEffects = null;

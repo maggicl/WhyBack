@@ -9,7 +9,8 @@ import byteback.whyml.vimp.VimpMethodParser;
 import soot.Local;
 
 /**
- * Like a ProgramExpressionExtractor but identifiers are local variables
+ * Like a ProgramExpressionExtractor but identifiers are local variables. Used to parse expression in
+ * "logical statements" (i.e. assertions, assumes, and invariants) in program code
  */
 public class ProgramLogicalExpressionExtractor extends PureExpressionExtractor {
 	public ProgramLogicalExpressionExtractor(VimpFieldParser fieldParser,

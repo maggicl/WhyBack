@@ -83,10 +83,9 @@ public class ProgramExpressionExtractor extends ProgramLogicalExpressionExtracto
 	protected Expression parseMethodCall(InvokeExpr call, List<Expression> argExpressions) {
 		final SootMethod method = call.getMethod();
 
+		// NOTE: any non-inlined method, including spec methods, may be called by program code. So we don't check here
+		// for function kind
 		final WhyFunctionSignature sig = VimpMethodParser.declaration(method)
-				// TODO: check if allowing spec methods from program methods is correct. Needed because some
-				//  implementation methods are annotated as @Pure in order to define a spec
-//				.filter(WhyFunctionDeclaration::isProgram)
 				.map(decl -> methodSignatureParser.signature(method, decl))
 				.orElseThrow(() -> new WhyTranslationException(call,
 						"method '%s' is not callable from a program expression".formatted(method)));

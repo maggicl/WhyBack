@@ -41,8 +41,4 @@ public class StatementVisitor extends ExpressionVisitor {
 	public void visitIfStatement(CFGTerminator.If anIf) {
 		anIf.expression().accept(this);
 	}
-
-	public void visitSwitchStatement(CFGTerminator.Switch aSwitch) {
-		aSwitch.test().accept(this);
-	}
 }

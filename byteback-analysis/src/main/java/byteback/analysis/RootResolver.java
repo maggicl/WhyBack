@@ -16,6 +16,7 @@ import byteback.analysis.transformer.NullCheckTransformer;
 import byteback.analysis.transformer.PositionTagTransformer;
 import byteback.analysis.transformer.PureTransformer;
 import byteback.analysis.transformer.QuantifierValueTransformer;
+import byteback.analysis.transformer.SwitchToIfTransformer;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootBodies;
 import byteback.analysis.util.SootClasses;
@@ -59,11 +60,7 @@ public class RootResolver {
 	private boolean checkArrayDereference;
 	private boolean checkNullDereference;
 	private boolean makeThrowStmtReturn;
-
-	public void setPreserveInvariants(boolean preserveInvariants) {
-		this.preserveInvariants = preserveInvariants;
-	}
-
+	private boolean transformSwitchToIf;
 	private boolean preserveInvariants;
 
 	private RootResolver() {
@@ -73,6 +70,7 @@ public class RootResolver {
 		this.checkNullDereference = false;
 		this.makeThrowStmtReturn = true;
 		this.preserveInvariants = false;
+		this.transformSwitchToIf = false;
 		conditions = new HashMap<>();
 	}
 
@@ -121,6 +119,7 @@ public class RootResolver {
 
 				CallCheckTransformer.v().transform(body);
 				new GuardTransformer(this.makeThrowStmtReturn).transform(body);
+				if (this.transformSwitchToIf) SwitchToIfTransformer.v().transform(body);
 			} else {
 				PureTransformer.v().transform(body);
 				new ExpressionFolder().transform(body);
@@ -152,6 +151,14 @@ public class RootResolver {
 
 	public void setMakeThrowStmtReturn(boolean f) {
 		makeThrowStmtReturn = f;
+	}
+
+	public void setPreserveInvariants(boolean preserveInvariants) {
+		this.preserveInvariants = preserveInvariants;
+	}
+
+	public void setTransformSwitchToIf(boolean transformSwitchToIf) {
+		this.transformSwitchToIf = transformSwitchToIf;
 	}
 
 	public boolean classIsValid(final SootClass clazz) {

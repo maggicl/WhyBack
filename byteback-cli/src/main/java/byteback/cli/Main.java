@@ -102,6 +102,7 @@ public class Main {
 		resolver.setCheckArrayDereference(Configuration.v().getTransformArrayCheck());
 		resolver.setMakeThrowStmtReturn(!configuration.useWhy());
 		resolver.setPreserveInvariants(configuration.useWhy());
+		resolver.setTransformSwitchToIf(configuration.useWhy());
 		resolver.resolve(startingClasses);
 
 		if (!configuration.useWhy()) {

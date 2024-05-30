@@ -75,38 +75,12 @@ public class CFGTerminatorExtractor extends JimpleStmtSwitch<Optional<CFGTermina
 
 	@Override
 	public void caseLookupSwitchStmt(final LookupSwitchStmt switchStatement) {
-		final Iterator<Unit> targets = switchStatement.getTargets().iterator();
-		final Iterator<IntConstant> values = switchStatement.getLookupValues().iterator();
-		final Expression key = expressionExtractor.visit(switchStatement.getKey());
-		final Map<Integer, CFGLabel> targetMap = new HashMap<>();
-
-		while (targets.hasNext() && values.hasNext()) {
-			final Unit target = targets.next();
-			final CFGLabel label = toLabel(target);
-
-			final IntConstant value = values.next();
-			targetMap.put(value.value, label);
-		}
-
-		final CFGLabel defaultTarget = toLabel(switchStatement.getDefaultTarget());
-		setResult(Optional.of(new CFGTerminator.Switch(key, targetMap, defaultTarget)));
+		throw new WhyTranslationException(switchStatement, "switch statements should not be present in MLCFG-ready Vimp");
 	}
 
 	@Override
 	public void caseTableSwitchStmt(final TableSwitchStmt switchStatement) {
-		final Expression key = expressionExtractor.visit(switchStatement.getKey());
-		final Map<Integer, CFGLabel> targetMap = new HashMap<>();
-
-		for (int i = 0; i <= switchStatement.getHighIndex() - switchStatement.getLowIndex(); ++i) {
-			final Unit target = switchStatement.getTarget(i);
-			final CFGLabel label = Objects.requireNonNull(labelMap.get(target));
-
-			final int offsetIndex = switchStatement.getLowIndex() + i;
-			targetMap.put(offsetIndex, label);
-		}
-
-		final CFGLabel defaultTarget = toLabel(switchStatement.getDefaultTarget());
-		setResult(Optional.of(new CFGTerminator.Switch(key, targetMap, defaultTarget)));
+		throw new WhyTranslationException(switchStatement, "switch statements should not be present in MLCFG-ready Vimp");
 	}
 
 	@Override

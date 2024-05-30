@@ -8,4 +8,3 @@
   use export prelude.logic.Operators
   use export prelude.machine.Operators
   use export prelude.ptr.Operators
-  use export prelude.branching.Branching

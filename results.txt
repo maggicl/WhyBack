@@ -3694,3 +3694,1888 @@ For more on this, please refer to https://docs.gradle.org/8.7/userguide/command_
 
 BUILD FAILED in 23m 15s
 33 actionable tasks: 1 executed, 32 up-to-date
+> Task :conventions:extractPluginRequests UP-TO-DATE
+> Task :conventions:generatePluginAdapters UP-TO-DATE
+> Task :conventions:compileJava UP-TO-DATE
+> Task :conventions:compileGroovy NO-SOURCE
+> Task :conventions:compileGroovyPlugins UP-TO-DATE
+> Task :conventions:pluginDescriptors UP-TO-DATE
+> Task :conventions:processResources UP-TO-DATE
+> Task :conventions:classes UP-TO-DATE
+> Task :conventions:jar UP-TO-DATE
+> Task :byteback-util:compileJava UP-TO-DATE
+> Task :byteback-util:processResources NO-SOURCE
+> Task :byteback-util:classes UP-TO-DATE
+> Task :byteback-util:jar UP-TO-DATE
+> Task :byteback-frontend:boogie:generateAst UP-TO-DATE
+> Task :byteback-frontend:boogie:preprocessParser UP-TO-DATE
+> Task :byteback-frontend:boogie:generateParser UP-TO-DATE
+> Task :byteback-frontend:boogie:generateScanner UP-TO-DATE
+> Task :byteback-frontend:boogie:compileJava UP-TO-DATE
+> Task :byteback-frontend:boogie:buildInfo UP-TO-DATE
+> Task :byteback-frontend:boogie:processResources NO-SOURCE
+> Task :byteback-frontend:boogie:classes UP-TO-DATE
+> Task :byteback-frontend:boogie:jar UP-TO-DATE
+> Task :byteback-analysis:compileJava UP-TO-DATE
+> Task :byteback-analysis:processResources NO-SOURCE
+> Task :byteback-analysis:classes UP-TO-DATE
+> Task :byteback-analysis:jar UP-TO-DATE
+> Task :byteback-annotations:compileJava UP-TO-DATE
+> Task :byteback-annotations:processResources NO-SOURCE
+> Task :byteback-annotations:classes UP-TO-DATE
+> Task :byteback-annotations:jar UP-TO-DATE
+> Task :byteback-converter:compileJava UP-TO-DATE
+> Task :byteback-converter:processResources NO-SOURCE
+> Task :byteback-converter:classes UP-TO-DATE
+> Task :byteback-converter:jar UP-TO-DATE
+> Task :byteback-whyml:compileJava UP-TO-DATE
+> Task :byteback-whyml:processResources UP-TO-DATE
+> Task :byteback-whyml:classes UP-TO-DATE
+> Task :byteback-whyml:jar UP-TO-DATE
+> Task :byteback-cli:compileJava UP-TO-DATE
+> Task :byteback-cli:processResources UP-TO-DATE
+> Task :byteback-cli:classes UP-TO-DATE
+> Task :byteback-cli:jar UP-TO-DATE
+> Task :byteback-cli:startScripts UP-TO-DATE
+> Task :byteback-cli:installDist UP-TO-DATE
+> Task :byteback-test:test-java-17:compileJava FROM-CACHE
+> Task :byteback-test:test-java-17:processResources NO-SOURCE
+> Task :byteback-test:test-java-17:classes UP-TO-DATE
+> Task :byteback-test:test-java-17:shadowJar FROM-CACHE
+
+> Task :byteback-test:test-java-17:system
+-- Testing: 7 tests, 1 workers --
+UNRESOLVED: ByteBack :: test-java-17/src/main/java/byteback/test/record/Basic.java (1 of 7)
+******************** TEST 'ByteBack :: test-java-17/src/main/java/byteback/test/record/Basic.java' FAILED ********************
+Test has no 'RUN:' line
+********************
+FAIL: ByteBack :: test-java-17/src/main/java/byteback/test/examples/ReadResource.java (2 of 7)
+******************** TEST 'ByteBack :: test-java-17/src/main/java/byteback/test/examples/ReadResource.java' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/ReadResource.java /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp --npe --iobe
+: 'RUN: at line 137';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/ReadResource.java" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp" "--npe" "--iobe"
+# command stderr:
+1822 [main] INFO byteback.cli.Main - Converting classes
+2198 [main] INFO byteback.cli.Main - Conversion completed in 370ms, total time 2115ms
+
+$ ":" "RUN: at line 137"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal
+byteback_test_examples_ReadResource_r'3is'3open'7LByteback_Test_Examples_ReadResource'4Resource'6RI'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal byteback_test_examples_ReadResource'4Resource_is'3open'7'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal
+byteback_test_examples_ReadResource_readInto'7LByteback_Test_Examples_ReadResource'4Resource'6RI'7V'vc.
+Prover result is: Valid (0.08s, 563076 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal
+byteback_test_examples_ReadResource_a'3is'3empty'7LByteback_Test_Examples_ReadResource'4Resource'6RII'7Z'vc.
+Prover result is: Valid (0.04s, 234847 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal
+byteback_test_examples_ReadResource_r'3or'3a'3is'3null'7LByteback_Test_Examples_ReadResource'4Resource'6RI'7Z'vc.
+Prover result is: Valid (0.03s, 206684 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal byteback_test_examples_ReadResource'4Resource_has'3no'3next'7'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal byteback_test_examples_ReadResource_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.02s, 17021 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal
+byteback_test_examples_ReadResource_r'3is'3null'7LByteback_Test_Examples_ReadResource'4Resource'6RI'7Z'vc.
+Prover result is: Valid (0.04s, 206010 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal byteback_test_examples_ReadResource'4Resource_close'7'7V'vc.
+Prover result is: Valid (0.04s, 223027 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal byteback_test_examples_ReadResource'4Resource_has'3next'7'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal byteback_test_examples_ReadResource'4Resource_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.02s, 17119 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal
+byteback_test_examples_ReadResource_r'3is'3closed'7LByteback_Test_Examples_ReadResource'4Resource'6RI'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal
+byteback_test_examples_ReadResource_r'3and'3a'3are'3not'3null'7LByteback_Test_Examples_ReadResource'4Resource'6RI'7Z'vc.
+Prover result is: Valid (0.04s, 212425 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal
+byteback_test_examples_ReadResource_a'3is'3null'7LByteback_Test_Examples_ReadResource'4Resource'6RI'7Z'vc.
+Prover result is: Valid (0.04s, 211244 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg:
+Goal byteback_test_examples_ReadResource'4Resource_is'3closed'7'7Z'vc.
+Prover result is: Valid (0.04s, 258513 steps).
+
+
+# command stderr:
+Warning, file "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/ReadResource.java.tmp.mlcfg", line 295, character 62 to line 328, character 85: variable heap is used under `old` but is not modified by the function
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-java-17/src/main/java/byteback/test/examples/Summary.java (3 of 7)
+******************** TEST 'ByteBack :: test-java-17/src/main/java/byteback/test/examples/Summary.java' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Summary.java /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/Summary.java.tmp
+: 'RUN: at line 58';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/Summary.java.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Summary.java" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/Summary.java.tmp"
+# command stderr:
+1771 [main] INFO byteback.cli.Main - Converting classes
+2026 [main] INFO byteback.cli.Main - Conversion completed in 251ms, total time 1941ms
+
+$ ":" "RUN: at line 58"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/Summary.java.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/Summary.java.tmp.mlcfg:
+Goal byteback_test_examples_Summary_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16499 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/Summary.java.tmp.mlcfg:
+Goal byteback_test_examples_Summary_contains'7RIIII'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/examples/Output/Summary.java.tmp.mlcfg:
+Goal byteback_test_examples_Summary_summary'7RI'7I'vc.
+Prover result is: Timeout (5.00s).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-java-17/src/main/java/byteback/test/exceptions/TryWithResources.java (4 of 7)
+******************** TEST 'ByteBack :: test-java-17/src/main/java/byteback/test/exceptions/TryWithResources.java' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/TryWithResources.java /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp
+: 'RUN: at line 57';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/TryWithResources.java" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp"
+# command stderr:
+1648 [main] INFO byteback.cli.Main - Converting classes
+1995 [main] INFO byteback.cli.Main - Conversion completed in 342ms, total time 1902ms
+
+$ ":" "RUN: at line 57"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp.mlcfg:
+Goal byteback_test_exceptions_TryWithResources'4Resource_isClosed'7'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp.mlcfg:
+Goal
+byteback_test_exceptions_TryWithResources_tryWithResourcesOnExistingResourceClosesResource'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp.mlcfg:
+Goal
+byteback_test_exceptions_TryWithResources'4Resource_i'2'5init'5'7LByteback_Test_Exceptions_TryWithResources'6'7V'vc.
+Prover result is: Valid (0.04s, 233763 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp.mlcfg:
+Goal byteback_test_exceptions_TryWithResources'4Resource_close'7'7V'vc.
+Prover result is: Valid (0.03s, 217777 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp.mlcfg:
+Goal
+byteback_test_exceptions_TryWithResources_tryWithResourcesFinallyOnExistingResourceClosesResource'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp.mlcfg:
+Goal byteback_test_exceptions_TryWithResources_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.02s, 16583 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+PASS: ByteBack :: test-java-17/src/main/java/byteback/test/switchexpression/Basic.java (5 of 7)
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/switchexpression/Basic.java /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/switchexpression/Output/Basic.java.tmp
+: 'RUN: at line 29';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/switchexpression/Output/Basic.java.tmp
+--
+Exit Code: 0
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/switchexpression/Basic.java" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/switchexpression/Output/Basic.java.tmp"
+# command stderr:
+1574 [main] INFO byteback.cli.Main - Converting classes
+1825 [main] INFO byteback.cli.Main - Conversion completed in 246ms, total time 1744ms
+
+$ ":" "RUN: at line 29"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/switchexpression/Output/Basic.java.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/switchexpression/Output/Basic.java.tmp.mlcfg:
+Goal byteback_test_switchexpression_Basic_switchInteger'7'7V'vc.
+Prover result is: Valid (0.04s, 221991 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/switchexpression/Output/Basic.java.tmp.mlcfg:
+Goal byteback_test_switchexpression_Basic_switchYieldInteger'7'7V'vc.
+Prover result is: Valid (0.04s, 221991 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/switchexpression/Output/Basic.java.tmp.mlcfg:
+Goal byteback_test_switchexpression_Basic_i'2'5clinit'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16508 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/switchexpression/Output/Basic.java.tmp.mlcfg:
+Goal byteback_test_switchexpression_Basic_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16508 steps).
+
+
+
+--
+
+********************
+PASS: ByteBack :: test-java-17/src/main/java/byteback/test/typeinference/Basic.java (6 of 7)
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/typeinference/Basic.java /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/typeinference/Output/Basic.java.tmp
+: 'RUN: at line 35';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/typeinference/Output/Basic.java.tmp
+--
+Exit Code: 0
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/typeinference/Basic.java" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/typeinference/Output/Basic.java.tmp"
+# command stderr:
+1501 [main] INFO byteback.cli.Main - Converting classes
+1763 [main] INFO byteback.cli.Main - Conversion completed in 258ms, total time 1684ms
+
+$ ":" "RUN: at line 35"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/typeinference/Output/Basic.java.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/typeinference/Output/Basic.java.tmp.mlcfg:
+Goal byteback_test_typeinference_Basic_inferPrimitives'7'7V'vc.
+Prover result is: Valid (0.01s, 16588 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/typeinference/Output/Basic.java.tmp.mlcfg:
+Goal byteback_test_typeinference_Basic_inferReftypes'7'7V'vc.
+Prover result is: Valid (0.04s, 265220 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/typeinference/Output/Basic.java.tmp.mlcfg:
+Goal byteback_test_typeinference_Basic_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16499 steps).
+
+
+
+--
+
+********************
+PASS: ByteBack :: test-java-17/src/main/java/byteback/test/patternmatching/Basic.java (7 of 7)
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/patternmatching/Basic.java /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/patternmatching/Output/Basic.java.tmp
+: 'RUN: at line 22';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/patternmatching/Output/Basic.java.tmp
+--
+Exit Code: 0
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-java-17/build/libs/test-java-17-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/patternmatching/Basic.java" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/patternmatching/Output/Basic.java.tmp"
+# command stderr:
+1489 [main] INFO byteback.cli.Main - Converting classes
+1713 [main] INFO byteback.cli.Main - Conversion completed in 219ms, total time 1635ms
+
+$ ":" "RUN: at line 22"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/patternmatching/Output/Basic.java.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/patternmatching/Output/Basic.java.tmp.mlcfg:
+Goal byteback_test_patternmatching_Basic_test'7'7I'vc.
+Prover result is: Valid (0.04s, 219299 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-java-17/src/main/java/byteback/test/patternmatching/Output/Basic.java.tmp.mlcfg:
+Goal byteback_test_patternmatching_Basic_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16499 steps).
+
+
+
+--
+
+********************
+********************
+Unresolved Tests (1):
+  ByteBack :: test-java-17/src/main/java/byteback/test/record/Basic.java
+
+********************
+Failed Tests (3):
+  ByteBack :: test-java-17/src/main/java/byteback/test/examples/ReadResource.java
+  ByteBack :: test-java-17/src/main/java/byteback/test/examples/Summary.java
+  ByteBack :: test-java-17/src/main/java/byteback/test/exceptions/TryWithResources.java
+
+
+Testing Time: 68.77s
+  Passed    : 3
+  Unresolved: 1
+  Failed    : 3
+
+> Task :byteback-test:test-java-17:system FAILED
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.7/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+33 actionable tasks: 1 executed, 2 from cache, 30 up-to-date
+> Task :conventions:extractPluginRequests UP-TO-DATE
+> Task :conventions:generatePluginAdapters UP-TO-DATE
+> Task :conventions:compileJava UP-TO-DATE
+> Task :conventions:compileGroovy NO-SOURCE
+> Task :conventions:compileGroovyPlugins UP-TO-DATE
+> Task :conventions:pluginDescriptors UP-TO-DATE
+> Task :conventions:processResources UP-TO-DATE
+> Task :conventions:classes UP-TO-DATE
+> Task :conventions:jar UP-TO-DATE
+> Task :byteback-util:compileJava UP-TO-DATE
+> Task :byteback-util:processResources NO-SOURCE
+> Task :byteback-util:classes UP-TO-DATE
+> Task :byteback-util:jar UP-TO-DATE
+> Task :byteback-frontend:boogie:generateAst UP-TO-DATE
+> Task :byteback-frontend:boogie:preprocessParser UP-TO-DATE
+> Task :byteback-frontend:boogie:generateParser UP-TO-DATE
+> Task :byteback-frontend:boogie:generateScanner UP-TO-DATE
+> Task :byteback-frontend:boogie:compileJava UP-TO-DATE
+> Task :byteback-frontend:boogie:buildInfo UP-TO-DATE
+> Task :byteback-frontend:boogie:processResources NO-SOURCE
+> Task :byteback-frontend:boogie:classes UP-TO-DATE
+> Task :byteback-frontend:boogie:jar UP-TO-DATE
+> Task :byteback-analysis:compileJava UP-TO-DATE
+> Task :byteback-analysis:processResources NO-SOURCE
+> Task :byteback-analysis:classes UP-TO-DATE
+> Task :byteback-analysis:jar UP-TO-DATE
+> Task :byteback-annotations:compileJava UP-TO-DATE
+> Task :byteback-annotations:processResources NO-SOURCE
+> Task :byteback-annotations:classes UP-TO-DATE
+> Task :byteback-annotations:jar UP-TO-DATE
+> Task :byteback-converter:compileJava UP-TO-DATE
+> Task :byteback-converter:processResources NO-SOURCE
+> Task :byteback-converter:classes UP-TO-DATE
+> Task :byteback-converter:jar UP-TO-DATE
+> Task :byteback-whyml:compileJava UP-TO-DATE
+> Task :byteback-whyml:processResources UP-TO-DATE
+> Task :byteback-whyml:classes UP-TO-DATE
+> Task :byteback-whyml:jar UP-TO-DATE
+> Task :byteback-cli:compileJava UP-TO-DATE
+> Task :byteback-cli:processResources UP-TO-DATE
+> Task :byteback-cli:classes UP-TO-DATE
+> Task :byteback-cli:jar UP-TO-DATE
+> Task :byteback-cli:startScripts UP-TO-DATE
+> Task :byteback-cli:installDist UP-TO-DATE
+> Task :byteback-test:test-kotlin-1.8.0:compileKotlin FROM-CACHE
+> Task :byteback-test:test-kotlin-1.8.0:compileJava NO-SOURCE
+> Task :byteback-test:test-kotlin-1.8.0:processResources NO-SOURCE
+> Task :byteback-test:test-kotlin-1.8.0:classes UP-TO-DATE
+> Task :byteback-test:test-kotlin-1.8.0:jar
+> Task :byteback-test:test-kotlin-1.8.0:inspectClassesForKotlinIC
+> Task :byteback-test:test-kotlin-1.8.0:shadowJar FROM-CACHE
+
+> Task :byteback-test:test-kotlin-1.8.0:system
+-- Testing: 13 tests, 1 workers --
+UNRESOLVED: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception1.kt (1 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception1.kt' FAILED ********************
+Test has no 'RUN:' line
+********************
+UNRESOLVED: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception4.kt (2 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception4.kt' FAILED ********************
+Test has no 'RUN:' line
+********************
+UNRESOLVED: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception2.kt (3 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception2.kt' FAILED ********************
+Test has no 'RUN:' line
+********************
+UNRESOLVED: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception3.kt (4 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception3.kt' FAILED ********************
+Test has no 'RUN:' line
+********************
+FAIL: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/TryFinally.kt (5 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/TryFinally.kt' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/TryFinally.kt /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp
+: 'RUN: at line 117';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/TryFinally.kt" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp"
+# command output:
+inserting dud invariant for loop [$stack2 := @caughtexception, @caughtexception = voidc]
+inserting dud invariant for loop [$stack2 := @caughtexception, @caughtexception = voidc]
+inserting dud invariant for loop [$stack2 := @caughtexception, @caughtexception = voidc]
+inserting dud invariant for loop [$stack3 := @caughtexception, @caughtexception = voidc]
+inserting dud invariant for loop [$stack4 := @caughtexception, @caughtexception = voidc]
+inserting dud invariant for loop [$stack5 := @caughtexception, @caughtexception = voidc]
+
+# command stderr:
+1979 [main] INFO byteback.cli.Main - Converting classes
+2338 [main] INFO byteback.cli.Main - Conversion completed in 355ms, total time 2258ms
+
+$ ":" "RUN: at line 117"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_unreachableCatch'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal
+byteback_test_exceptions_TryFinally_finallyOverrides1NestedFinally'7'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception2_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_finallyOverridesThrows'7'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_catchFinallyBlock'7'7V'vc.
+Prover result is: Valid (0.01s, 16537 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_emptyFinallyBlock'7'7V'vc.
+Prover result is: Valid (0.01s, 16537 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal
+byteback_test_exceptions_TryFinally_finallyIsExecutedAfterThrowInCatch'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_alwaysThrows1'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_finallyIsExecuted'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16537 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_finallyOverridesReturn'7'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception1_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/TryFinally.kt.tmp.mlcfg:
+Goal
+byteback_test_exceptions_TryFinally_finallyOverrides2NestedFinally'7'7I'vc.
+Prover result is: Timeout (5.00s).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/ArrayReverse.kt (6 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/ArrayReverse.kt' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/ArrayReverse.kt /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp
+: 'RUN: at line 71';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/ArrayReverse.kt" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp"
+# command stderr:
+1791 [main] INFO byteback.cli.Main - Converting classes
+2166 [main] INFO byteback.cli.Main - Conversion completed in 372ms, total time 2085ms
+
+$ ":" "RUN: at line 71"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_ArrayReverse_swap'7RIII'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_ArrayReverse_array'020is'020null'7RI'7Z'vc.
+Prover result is: Valid (0.03s, 200368 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_ArrayReverse_reverse'020of'7RIRI'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_ArrayReverse_reverse'7RI'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp.mlcfg:
+Goal
+byteback_test_algorithm_ArrayReverse_array'020is'020not'020null'7RIII'7Z'vc.
+Prover result is: Valid (0.03s, 204652 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp.mlcfg:
+Goal
+kotlin_jvm_internal_Intrinsics_parameter'3is'3not'3null'7LJava_Lang_Object'6LJava_Lang_String'6'7Z'vc.
+Prover result is: Valid (0.03s, 197011 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_ArrayReverse_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 17254 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/ArrayReverse.kt.tmp.mlcfg:
+Goal
+kotlin_jvm_internal_Intrinsics_parameter'3is'3null'7LJava_Lang_Object'6LJava_Lang_String'6'7Z'vc.
+Prover result is: Valid (0.03s, 197601 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Basic.kt (7 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Basic.kt' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Basic.kt /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp
+: 'RUN: at line 130';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Basic.kt" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp"
+# command stderr:
+1830 [main] INFO byteback.cli.Main - Converting classes
+2253 [main] INFO byteback.cli.Main - Conversion completed in 419ms, total time 2172ms
+
+$ ":" "RUN: at line 130"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_f'020is'0201'7'7Z'vc.
+Prover result is: Valid (0.03s, 191002 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16621 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_alwaysCatches'7'7V'vc.
+Prover result is: Valid (0.01s, 16621 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception2_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception4_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_neverCatches'7'7V'vc.
+Prover result is: Valid (0.01s, 16621 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_f'020is'020gt'0204'7'7Z'vc.
+Prover result is: Valid (0.03s, 191566 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_callsAlwaysThrows'7'7V'vc.
+Prover result is: Valid (0.03s, 219814 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_f'020is'0202'7'7Z'vc.
+Prover result is: Valid (0.03s, 192225 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_getF'7'7I'vc.
+Prover result is: Valid (0.03s, 192951 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_f'020is'0204'7'7Z'vc.
+Prover result is: Valid (0.03s, 193466 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_f'020is'0203'7'7Z'vc.
+Prover result is: Valid (0.03s, 194192 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_catchesIfEven'7'7V'vc.
+Prover result is: Valid (0.03s, 222768 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_alwaysThrows'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal
+byteback_test_exceptions_Basic_tryCatchBlock'7'7LJava_Lang_Exception'6'vc.
+Prover result is: Valid (1.56s, 10762670 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception1_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception3_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_throwsMultiple'7'7V'vc.
+Prover result is: Valid (0.23s, 1600216 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_throwsIfEven'7I'7V'vc.
+Prover result is: Valid (0.40s, 2758835 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_neverThrows'7'7V'vc.
+Prover result is: Valid (0.03s, 222860 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/PotentialIndexOutOfBounds.kt (8 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/PotentialIndexOutOfBounds.kt' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/PotentialIndexOutOfBounds.kt /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp --iobe-o /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp.bpl
+: 'RUN: at line 56';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/PotentialIndexOutOfBounds.kt" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp" "--iobe-o" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp.bpl"
+# command stderr:
+1638 [main] INFO byteback.cli.Main - Converting classes
+1969 [main] INFO byteback.cli.Main - Conversion completed in 326ms, total time 1893ms
+
+$ ":" "RUN: at line 56"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialIndexOutOfBounds_expectedIndexOutOfBounds'7RI'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp.mlcfg:
+Goal
+kotlin_jvm_internal_Intrinsics_parameter'3is'3null'7LJava_Lang_Object'6LJava_Lang_String'6'7Z'vc.
+Prover result is: Valid (0.03s, 192213 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_PotentialIndexOutOfBounds_passedIndex'7I'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_PotentialIndexOutOfBounds_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16770 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialIndexOutOfBounds_passedTarget'7RI'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialIndexOutOfBounds_constrainedTarget'7RI'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.kt.tmp.mlcfg:
+Goal
+kotlin_jvm_internal_Intrinsics_parameter'3is'3not'3null'7LJava_Lang_Object'6LJava_Lang_String'6'7Z'vc.
+Prover result is: Valid (0.03s, 192756 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/GCD.kt (9 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/GCD.kt' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/GCD.kt /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/GCD.kt.tmp
+: 'RUN: at line 60';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/GCD.kt.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/GCD.kt" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/GCD.kt.tmp"
+# command stderr:
+1699 [main] INFO byteback.cli.Main - Converting classes
+2034 [main] INFO byteback.cli.Main - Conversion completed in 329ms, total time 1958ms
+
+$ ":" "RUN: at line 60"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/GCD.kt.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/GCD.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_GCD_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16707 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/GCD.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_GCD_arguments'020are'020negative'7II'7Z'vc.
+Prover result is: Valid (0.01s, 16707 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/GCD.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_GCD_gcd'020recursive'7II'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/GCD.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_GCD_apply'7II'7I'vc.
+Prover result is: Valid (0.05s, 337127 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/GCD.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_GCD_result'020is'020gcd'7III'7Z'vc.
+Prover result is: Valid (0.01s, 16893 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/LinearSearch.kt (10 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/LinearSearch.kt' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/LinearSearch.kt /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/LinearSearch.kt.tmp
+: 'RUN: at line 52';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/LinearSearch.kt.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/LinearSearch.kt" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/LinearSearch.kt.tmp"
+# command stderr:
+1669 [main] INFO byteback.cli.Main - Converting classes
+1991 [main] INFO byteback.cli.Main - Conversion completed in 316ms, total time 1913ms
+
+$ ":" "RUN: at line 52"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/LinearSearch.kt.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/LinearSearch.kt.tmp.mlcfg:
+Goal
+kotlin_jvm_internal_Intrinsics_parameter'3is'3null'7LJava_Lang_Object'6LJava_Lang_String'6'7Z'vc.
+Prover result is: Valid (0.03s, 191975 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/LinearSearch.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_LinearSearch_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16752 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/LinearSearch.kt.tmp.mlcfg:
+Goal
+byteback_test_algorithm_LinearSearch_search'7RLJava_Lang_Object'6LJava_Lang_Object'6II'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/LinearSearch.kt.tmp.mlcfg:
+Goal
+kotlin_jvm_internal_Intrinsics_parameter'3is'3not'3null'7LJava_Lang_Object'6LJava_Lang_String'6'7Z'vc.
+Prover result is: Valid (0.03s, 192518 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/PotentialNullDereference.kt (11 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/PotentialNullDereference.kt' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/PotentialNullDereference.kt /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp --npe
+: 'RUN: at line 52';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/PotentialNullDereference.kt" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp" "--npe"
+# command stderr:
+1635 [main] INFO byteback.cli.Main - Converting classes
+1994 [main] INFO byteback.cli.Main - Conversion completed in 354ms, total time 1917ms
+
+$ ":" "RUN: at line 52"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialNullDereference_passedTarget'7LByteback_Test_Exceptions_A'6'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_PotentialNullDereference_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16707 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp.mlcfg:
+Goal
+kotlin_jvm_internal_Intrinsics_parameter'3is'3null'7LJava_Lang_Object'6LJava_Lang_String'6'7Z'vc.
+Prover result is: Valid (0.03s, 191975 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_A_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_PotentialNullDereference_freshTarget'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp.mlcfg:
+Goal
+kotlin_jvm_internal_Intrinsics_parameter'3is'3not'3null'7LJava_Lang_Object'6LJava_Lang_String'6'7Z'vc.
+Prover result is: Valid (0.03s, 192518 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp.mlcfg:
+Goal byteback_test_exceptions_A_method'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialNullDereference_passedArrayTarget'7RLByteback_Test_Exceptions_A'6'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/PotentialNullDereference.kt.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialNullDereference_constrainedPassedArrayTarget'7RI'7V'vc.
+Prover result is: Timeout (5.00s).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Counter.kt (12 of 13)
+******************** TEST 'ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Counter.kt' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Counter.kt /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/Counter.kt.tmp
+: 'RUN: at line 54';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/Counter.kt.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Counter.kt" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/Counter.kt.tmp"
+# command stderr:
+1647 [main] INFO byteback.cli.Main - Converting classes
+1934 [main] INFO byteback.cli.Main - Conversion completed in 282ms, total time 1861ms
+
+$ ":" "RUN: at line 54"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/Counter.kt.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/Counter.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_Counter_incrementTo10'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/Counter.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_Counter_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16508 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/Counter.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_Counter_getCount'7'7I'vc.
+Prover result is: Valid (0.03s, 190218 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/Counter.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_Counter_increment'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Output/Counter.kt.tmp.mlcfg:
+Goal byteback_test_algorithm_Counter_setCount'7I'7V'vc.
+Prover result is: Timeout (5.00s).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+PASS: ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Basic.kt (13 of 13)
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Basic.kt /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Output/Basic.kt.tmp
+: 'RUN: at line 39';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Output/Basic.kt.tmp
+--
+Exit Code: 0
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/build/libs/test-kotlin-1.8.0-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Basic.kt" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Output/Basic.kt.tmp"
+# command output:
+inserting dud invariant for loop [if (int) a != 0 goto (branch)]
+inserting dud invariant for loop [if (int) a != 0 goto (branch)]
+
+# command stderr:
+1601 [main] INFO byteback.cli.Main - Converting classes
+1878 [main] INFO byteback.cli.Main - Conversion completed in 272ms, total time 1803ms
+
+$ ":" "RUN: at line 39"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Output/Basic.kt.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_emptyWhile'7Z'7V'vc.
+Prover result is: Valid (0.01s, 16575 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_doubleAssignment'7'7V'vc.
+Prover result is: Valid (0.01s, 16499 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_emptyDoWhile'7Z'7V'vc.
+Prover result is: Valid (0.01s, 16575 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16499 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_empty'7'7V'vc.
+Prover result is: Valid (0.01s, 16499 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_sum'7II'7I'vc.
+Prover result is: Valid (0.02s, 16499 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-kotlin-1.8.0/src/main/kotlin/byteback/test/controlflow/Output/Basic.kt.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_emptyIf'7Z'7V'vc.
+Prover result is: Valid (0.01s, 16499 steps).
+
+
+
+--
+
+********************
+********************
+Unresolved Tests (4):
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception1.kt
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception2.kt
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception3.kt
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Exception4.kt
+
+********************
+Failed Tests (8):
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/ArrayReverse.kt
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/Counter.kt
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/GCD.kt
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/algorithm/LinearSearch.kt
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Basic.kt
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/PotentialIndexOutOfBounds.kt
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/PotentialNullDereference.kt
+  ByteBack :: test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/TryFinally.kt
+
+
+Testing Time: 197.37s
+  Passed    : 1
+  Unresolved: 4
+  Failed    : 8
+
+> Task :byteback-test:test-kotlin-1.8.0:system FAILED
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.7/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+35 actionable tasks: 3 executed, 2 from cache, 30 up-to-date
+> Task :conventions:extractPluginRequests UP-TO-DATE
+> Task :conventions:generatePluginAdapters UP-TO-DATE
+> Task :conventions:compileJava UP-TO-DATE
+> Task :conventions:compileGroovy NO-SOURCE
+> Task :conventions:compileGroovyPlugins UP-TO-DATE
+> Task :conventions:pluginDescriptors UP-TO-DATE
+> Task :conventions:processResources UP-TO-DATE
+> Task :conventions:classes UP-TO-DATE
+> Task :conventions:jar UP-TO-DATE
+> Task :byteback-util:compileJava UP-TO-DATE
+> Task :byteback-util:processResources NO-SOURCE
+> Task :byteback-util:classes UP-TO-DATE
+> Task :byteback-util:jar UP-TO-DATE
+> Task :byteback-frontend:boogie:generateAst UP-TO-DATE
+> Task :byteback-frontend:boogie:preprocessParser UP-TO-DATE
+> Task :byteback-frontend:boogie:generateParser UP-TO-DATE
+> Task :byteback-frontend:boogie:generateScanner UP-TO-DATE
+> Task :byteback-frontend:boogie:compileJava UP-TO-DATE
+> Task :byteback-frontend:boogie:buildInfo UP-TO-DATE
+> Task :byteback-frontend:boogie:processResources NO-SOURCE
+> Task :byteback-frontend:boogie:classes UP-TO-DATE
+> Task :byteback-frontend:boogie:jar UP-TO-DATE
+> Task :byteback-analysis:compileJava UP-TO-DATE
+> Task :byteback-analysis:processResources NO-SOURCE
+> Task :byteback-analysis:classes UP-TO-DATE
+> Task :byteback-analysis:jar UP-TO-DATE
+> Task :byteback-annotations:compileJava UP-TO-DATE
+> Task :byteback-annotations:processResources NO-SOURCE
+> Task :byteback-annotations:classes UP-TO-DATE
+> Task :byteback-annotations:jar UP-TO-DATE
+> Task :byteback-converter:compileJava UP-TO-DATE
+> Task :byteback-converter:processResources NO-SOURCE
+> Task :byteback-converter:classes UP-TO-DATE
+> Task :byteback-converter:jar UP-TO-DATE
+> Task :byteback-whyml:compileJava UP-TO-DATE
+> Task :byteback-whyml:processResources UP-TO-DATE
+> Task :byteback-whyml:classes UP-TO-DATE
+> Task :byteback-whyml:jar UP-TO-DATE
+> Task :byteback-cli:compileJava UP-TO-DATE
+> Task :byteback-cli:processResources UP-TO-DATE
+> Task :byteback-cli:classes UP-TO-DATE
+> Task :byteback-cli:jar UP-TO-DATE
+> Task :byteback-cli:startScripts UP-TO-DATE
+> Task :byteback-cli:installDist UP-TO-DATE
+> Task :byteback-test:test-scala-2.13.8:compileJava NO-SOURCE
+> Task :byteback-test:test-scala-2.13.8:compileScala FROM-CACHE
+> Task :byteback-test:test-scala-2.13.8:processResources NO-SOURCE
+> Task :byteback-test:test-scala-2.13.8:classes UP-TO-DATE
+> Task :byteback-test:test-scala-2.13.8:shadowJar FROM-CACHE
+
+> Task :byteback-test:test-scala-2.13.8:system
+-- Testing: 16 tests, 1 workers --
+UNRESOLVED: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception1.scala (1 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception1.scala' FAILED ********************
+Test has no 'RUN:' line
+********************
+UNRESOLVED: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception4.scala (2 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception4.scala' FAILED ********************
+Test has no 'RUN:' line
+********************
+UNRESOLVED: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception3.scala (3 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception3.scala' FAILED ********************
+Test has no 'RUN:' line
+********************
+UNRESOLVED: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception2.scala (4 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception2.scala' FAILED ********************
+Test has no 'RUN:' line
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Basic.scala (5 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Basic.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Basic.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp
+: 'RUN: at line 57';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Basic.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp"
+# command output:
+inserting dud invariant for loop [assert @caughtexception == voidc, assert @caughtexception == voidc, if (int) a == 0 goto assert @caughtexception == voidc, assert @caughtexception == voidc, goto [?= assert @caughtexception == voidc]]
+inserting dud invariant for loop [assert @caughtexception == voidc, assert @caughtexception == voidc, if (int) a == 0 goto assert @caughtexception == voidc, assert @caughtexception == voidc, goto [?= assert @caughtexception == voidc]]
+
+# command stderr:
+3039 [main] INFO byteback.cli.Main - Converting classes
+3501 [main] INFO byteback.cli.Main - Conversion completed in 458ms, total time 3415ms
+
+$ ":" "RUN: at line 57"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal
+byteback_test_controlflow_Basic_i'2'4deserializeLambda'4'7LJava_Lang_Invoke_SerializedLambda'6'7LJava_Lang_Object'6'vc.
+Prover result is: Valid (0.03s, 203915 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_returnsNull'7'7LJava_Lang_Object'6'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_emptyWhile'7Z'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 17122 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal
+byteback_test_controlflow_Basic'4'3anonfun'3emptyFor'31'3'31_bootstrap'4'7'7LScala_Runtime_Java8_JFunction1'4mcVI'4sp'6'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_emptyFor'7'7V'vc.
+Prover result is: Valid (0.04s, 235114 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_emptyDoWhile'7Z'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_empty'7'7V'vc.
+Prover result is: Valid (0.02s, 17122 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_i'2'4anonfun'4emptyFor'41'7I'7V'vc.
+Prover result is: Valid (0.01s, 17122 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal
+byteback_test_controlflow_Basic'4'3anonfun'3emptyFor'31'3'31_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 17122 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_emptyIf'7Z'7V'vc.
+Prover result is: Valid (0.01s, 17122 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_doubleAssignment'7I'7I'vc.
+Prover result is: Valid (0.01s, 17131 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_controlflow_Basic_realEmptyCondition'7D'7V'vc.
+Prover result is: Valid (0.01s, 17122 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Output/Basic.scala.tmp.mlcfg:
+Goal
+byteback_test_controlflow_Basic'4'3anonfun'3emptyFor'31'3'31_apply'4mcVI'4sp'7I'7V'vc.
+Prover result is: Valid (0.01s, 17122 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/algorithm/GCD.scala (6 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/algorithm/GCD.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/GCD.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/GCD.scala.tmp
+: 'RUN: at line 61';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/GCD.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/GCD.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/GCD.scala.tmp"
+# command stderr:
+1620 [main] INFO byteback.cli.Main - Converting classes
+1966 [main] INFO byteback.cli.Main - Conversion completed in 341ms, total time 1894ms
+
+$ ":" "RUN: at line 61"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/GCD.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/GCD.scala.tmp.mlcfg:
+Goal byteback_test_algorithm_GCD_arguments'3are'3negative'7II'7Z'vc.
+Prover result is: Valid (0.01s, 16707 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/GCD.scala.tmp.mlcfg:
+Goal byteback_test_algorithm_GCD_gcd'3recursive'7II'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/GCD.scala.tmp.mlcfg:
+Goal byteback_test_algorithm_GCD_result'3is'3gcd'7III'7Z'vc.
+Prover result is: Valid (0.01s, 16893 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/GCD.scala.tmp.mlcfg:
+Goal byteback_test_algorithm_GCD_apply'7II'7I'vc.
+Prover result is: Valid (0.06s, 384060 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/GCD.scala.tmp.mlcfg:
+Goal byteback_test_algorithm_GCD_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16966 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Basic.scala (7 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Basic.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Basic.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp
+: 'RUN: at line 127';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Basic.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp"
+# command output:
+inserting dud invariant for loop [throw @caughtexception, $stack3 = new byteback.test.exceptions.Exception4, $stack3.<byteback.test.exceptions.Exception4: void <init>()>(), if @caughtexception == voidc goto @caughtexception = $stack3, @caughtexception = $stack3]
+inserting dud invariant for loop [throw @caughtexception, $stack3 = new byteback.test.exceptions.Exception4, $stack3.<byteback.test.exceptions.Exception4: void <init>()>(), if @caughtexception == voidc goto @caughtexception = $stack3]
+inserting dud invariant for loop [$stack3.<byteback.test.exceptions.Exception4: void <init>()>(), $stack3 = new byteback.test.exceptions.Exception4]
+inserting dud invariant for loop [if @caughtexception == voidc goto @caughtexception = $stack3, $stack3 = new byteback.test.exceptions.Exception4, $stack3.<byteback.test.exceptions.Exception4: void <init>()>()]
+inserting dud invariant for loop [@caughtexception = $stack3, $stack3 = new byteback.test.exceptions.Exception4, $stack3.<byteback.test.exceptions.Exception4: void <init>()>(), if @caughtexception == voidc goto @caughtexception = $stack3]
+
+# command stderr:
+1794 [main] INFO byteback.cli.Main - Converting classes
+2168 [main] INFO byteback.cli.Main - Conversion completed in 369ms, total time 2092ms
+
+$ ":" "RUN: at line 127"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_f'7'7I'vc.
+Prover result is: Valid (0.03s, 191002 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_f'3is'3gt'34'7'7Z'vc.
+Prover result is: Valid (0.01s, 16609 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_alwaysCatches'7'7V'vc.
+Prover result is: Valid (0.03s, 219755 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_tryCatchBlock'7'7V'vc.
+Prover result is: Valid (0.01s, 16686 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception3_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception2_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_throwsMultiple'7'7V'vc.
+Prover result is: Valid (0.36s, 2561676 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_catchesIfEven'7'7V'vc.
+Prover result is: Valid (0.03s, 219755 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_f'3is'32'7'7Z'vc.
+Prover result is: Valid (0.01s, 16686 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_neverThrows'7'7V'vc.
+Prover result is: Valid (0.03s, 220631 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_callsAlwaysThrows'7'7V'vc.
+Prover result is: Valid (0.03s, 220989 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_i'2'5init'5'7I'7V'vc.
+Prover result is: Valid (0.01s, 16845 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_f'3is'31'7'7Z'vc.
+Prover result is: Valid (0.01s, 16752 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_f'3is'34'7'7Z'vc.
+Prover result is: Valid (0.01s, 16809 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception4_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception1_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_neverCatches'7'7V'vc.
+Prover result is: Valid (0.02s, 33201 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_f'3is'33'7'7Z'vc.
+Prover result is: Valid (0.01s, 16875 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_alwaysThrows'7'7V'vc.
+Prover result is: Valid (0.26s, 1914615 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Basic_throwsIfEven'7I'7V'vc.
+Prover result is: Valid (0.15s, 1082606 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/PotentialIndexOutOfBounds.scala (8 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/PotentialIndexOutOfBounds.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/PotentialIndexOutOfBounds.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.scala.tmp --iobe
+: 'RUN: at line 55';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/PotentialIndexOutOfBounds.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.scala.tmp" "--iobe"
+# command stderr:
+1542 [main] INFO byteback.cli.Main - Converting classes
+1823 [main] INFO byteback.cli.Main - Conversion completed in 279ms, total time 1749ms
+
+$ ":" "RUN: at line 55"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_PotentialIndexOutOfBounds_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16557 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.scala.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialIndexOutOfBounds_expectedIndexOutOfBounds'7RI'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.scala.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialIndexOutOfBounds_passedTarget'7RI'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.scala.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialIndexOutOfBounds_constrainedTarget'7RI'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialIndexOutOfBounds.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_PotentialIndexOutOfBounds_passedIndex'7I'7V'vc.
+Prover result is: Timeout (5.00s).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/instance/Dice.scala (9 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/instance/Dice.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Dice.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp
+: 'RUN: at line 56';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Dice.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp"
+# command stderr:
+1679 [main] INFO byteback.cli.Main - Converting classes
+1964 [main] INFO byteback.cli.Main - Conversion completed in 280ms, total time 1887ms
+
+$ ":" "RUN: at line 56"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp.mlcfg:
+Goal byteback_test_instance_Die_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.02s, 16512 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp.mlcfg:
+Goal byteback_test_instance_FixedDie_roll'7I'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp.mlcfg:
+Goal byteback_test_instance_Dice_main'7'7V'vc.
+Prover result is: Valid (0.04s, 234666 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp.mlcfg:
+Goal byteback_test_instance_FixedDie_result'3is'3max'7II'7Z'vc.
+Prover result is: Valid (0.01s, 16512 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp.mlcfg:
+Goal byteback_test_instance_Dice_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16565 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp.mlcfg:
+Goal byteback_test_instance_FixedDie_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16565 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp.mlcfg:
+Goal byteback_test_instance_Die_outcome'3is'3positive'7II'7Z'vc.
+Prover result is: Valid (0.01s, 16565 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Dice.scala.tmp.mlcfg:
+Goal byteback_test_instance_Die_outcome'3is'3leq'3than'3max'7II'7Z'vc.
+Prover result is: Valid (0.01s, 16622 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/TryFinally.scala (10 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/TryFinally.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/TryFinally.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp
+: 'RUN: at line 127';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/TryFinally.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp"
+# command stderr:
+1743 [main] INFO byteback.cli.Main - Converting classes
+2092 [main] INFO byteback.cli.Main - Conversion completed in 345ms, total time 2016ms
+
+$ ":" "RUN: at line 127"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_alwaysThrows1'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_finallyOverridesReturn'7'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_finallyBlock'7'7V'vc.
+Prover result is: Valid (0.01s, 16537 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception1_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal
+byteback_test_exceptions_TryFinally_finallyOverrides1NestedFinally'7'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_finallyIsExecuted'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal
+byteback_test_exceptions_TryFinally_finallyOverrides2NestedFinally'7'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_finallyOverridesThrows'7'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_unreachableCatch'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception2_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal
+byteback_test_exceptions_TryFinally_finallyIsExecutedAfterThrowInCatch'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_catchFinallyBlock'7'7V'vc.
+Prover result is: Valid (0.01s, 16537 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/TryFinally.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_TryFinally_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16537 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/MultiCatch.scala (11 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/MultiCatch.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/MultiCatch.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/MultiCatch.scala.tmp
+: 'RUN: at line 45';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/MultiCatch.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/MultiCatch.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/MultiCatch.scala.tmp"
+# command stderr:
+1608 [main] INFO byteback.cli.Main - Converting classes
+1939 [main] INFO byteback.cli.Main - Conversion completed in 328ms, total time 1863ms
+
+$ ":" "RUN: at line 45"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/MultiCatch.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/MultiCatch.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_MultiCatch_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16577 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/MultiCatch.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_MultiCatch_alwaysThrowsMultiple'7'7V'vc.
+Prover result is: Valid (0.01s, 16577 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/MultiCatch.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception1_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/MultiCatch.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_MultiCatch_multiCatchUnionAssertion'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/MultiCatch.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_MultiCatch_emptyMulticatch'7'7V'vc.
+Prover result is: Valid (0.01s, 16955 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/MultiCatch.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_Exception2_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/instance/Counter.scala (12 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/instance/Counter.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Counter.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Counter.scala.tmp
+: 'RUN: at line 57';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Counter.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Counter.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Counter.scala.tmp"
+# command stderr:
+1628 [main] INFO byteback.cli.Main - Converting classes
+1923 [main] INFO byteback.cli.Main - Conversion completed in 291ms, total time 1845ms
+
+$ ":" "RUN: at line 57"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Counter.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Counter.scala.tmp.mlcfg:
+Goal byteback_test_instance_Counter_count'7'7I'vc.
+Prover result is: Valid (0.03s, 190218 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Counter.scala.tmp.mlcfg:
+Goal byteback_test_instance_Counter_incrementTo10'7'7V'vc.
+Prover result is: Valid (0.04s, 259251 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Counter.scala.tmp.mlcfg:
+Goal byteback_test_instance_Counter_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16553 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Counter.scala.tmp.mlcfg:
+Goal byteback_test_instance_Counter_increment'7'7V'vc.
+Prover result is: Valid (0.03s, 218705 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Counter.scala.tmp.mlcfg:
+Goal byteback_test_instance_Counter_count'3'4eq'7I'7V'vc.
+Prover result is: Timeout (5.00s).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/algorithm/ArrayReverse.scala (13 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/algorithm/ArrayReverse.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/ArrayReverse.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/ArrayReverse.scala.tmp
+: 'RUN: at line 76';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/ArrayReverse.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/ArrayReverse.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/ArrayReverse.scala.tmp"
+# command stderr:
+1709 [main] INFO byteback.cli.Main - Converting classes
+2064 [main] INFO byteback.cli.Main - Conversion completed in 351ms, total time 1986ms
+
+$ ":" "RUN: at line 76"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/ArrayReverse.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/ArrayReverse.scala.tmp.mlcfg:
+Goal byteback_test_algorithm_ArrayReverse_array'3is'3null'7RI'7Z'vc.
+Prover result is: Valid (0.03s, 200368 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/ArrayReverse.scala.tmp.mlcfg:
+Goal byteback_test_algorithm_ArrayReverse_reverse'3of'7RIRI'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/ArrayReverse.scala.tmp.mlcfg:
+Goal byteback_test_algorithm_ArrayReverse_apply'7RI'7V'vc.
+Prover result is: Valid (0.06s, 383771 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/ArrayReverse.scala.tmp.mlcfg:
+Goal byteback_test_algorithm_ArrayReverse_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 17120 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/ArrayReverse.scala.tmp.mlcfg:
+Goal byteback_test_algorithm_ArrayReverse_swap'7RIII'7V'vc.
+Prover result is: Timeout (5.00s).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/PotentialNullDereference.scala (14 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/PotentialNullDereference.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/PotentialNullDereference.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp --npe
+: 'RUN: at line 54';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/PotentialNullDereference.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp" "--npe"
+# command stderr:
+1553 [main] INFO byteback.cli.Main - Converting classes
+1861 [main] INFO byteback.cli.Main - Conversion completed in 304ms, total time 1785ms
+
+$ ":" "RUN: at line 54"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialNullDereference_constrainedPassedArrayTarget'7RI'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_PotentialNullDereference_freshTarget'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialNullDereference_passedTarget'7LByteback_Test_Exceptions_A'6'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_PotentialNullDereference_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.02s, 16499 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_A_method'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp.mlcfg:
+Goal
+byteback_test_exceptions_PotentialNullDereference_passedArrayTarget'7RI'7V'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp.mlcfg:
+Goal byteback_test_exceptions_A_i'2'5init'5'7'7V'vc.
+Prover result is: Timeout (5.00s).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/instance/Comparator.scala (15 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/instance/Comparator.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Comparator.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp
+: 'RUN: at line 69';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Comparator.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp"
+# command stderr:
+1616 [main] INFO byteback.cli.Main - Converting classes
+1946 [main] INFO byteback.cli.Main - Conversion completed in 325ms, total time 1869ms
+
+$ ":" "RUN: at line 69"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp.mlcfg:
+Goal byteback_test_instance_GreaterThanComparator_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16523 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp.mlcfg:
+Goal byteback_test_instance_Comparator_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16523 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp.mlcfg:
+Goal byteback_test_instance_GreaterThanComparator_compare'7II'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp.mlcfg:
+Goal byteback_test_instance_LessThanComparator_compare'7II'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp.mlcfg:
+Goal byteback_test_instance_Comparator_main'7'7V'vc.
+Prover result is: Valid (0.04s, 264554 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp.mlcfg:
+Goal byteback_test_instance_DefaultComparator_compare'7II'7Z'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp.mlcfg:
+Goal byteback_test_instance_LessThanComparator_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16523 steps).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/instance/Output/Comparator.scala.tmp.mlcfg:
+Goal byteback_test_instance_DefaultComparator_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16523 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+FAIL: ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/algorithm/LinearSearch.scala (16 of 16)
+******************** TEST 'ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/algorithm/LinearSearch.scala' FAILED ********************
+Script:
+--
+: 'RUN: at line 2';   /Users/maggicl/git/byteback/byteback-test/translate.sh /Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/LinearSearch.scala /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/LinearSearch.scala.tmp
+: 'RUN: at line 58';   /Users/maggicl/git/byteback/byteback-test/verify.sh /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/LinearSearch.scala.tmp
+--
+Exit Code: 2
+
+Command Output (stdout):
+--
+$ ":" "RUN: at line 2"
+$ "/Users/maggicl/git/byteback/byteback-test/translate.sh" "/Users/maggicl/git/byteback/byteback-cli/build/install/byteback-cli/bin/byteback-cli" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/build/libs/test-scala-2.13.8-all.jar" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/LinearSearch.scala" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/LinearSearch.scala.tmp"
+# command stderr:
+1592 [main] INFO byteback.cli.Main - Converting classes
+1856 [main] INFO byteback.cli.Main - Conversion completed in 261ms, total time 1786ms
+
+$ ":" "RUN: at line 58"
+$ "/Users/maggicl/git/byteback/byteback-test/verify.sh" "/Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/LinearSearch.scala.tmp"
+# command output:
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/LinearSearch.scala.tmp.mlcfg:
+Goal
+byteback_test_algorithm_LinearSearch_search'7RLJava_Lang_Object'6LJava_Lang_Object'6II'7I'vc.
+Prover result is: Timeout (5.00s).
+
+File /Users/maggicl/git/byteback/byteback-test/test-scala-2.13.8/src/main/scala/byteback/test/algorithm/Output/LinearSearch.scala.tmp.mlcfg:
+Goal byteback_test_algorithm_LinearSearch_i'2'5init'5'7'7V'vc.
+Prover result is: Valid (0.01s, 16499 steps).
+
+
+error: command failed with exit status: 2
+
+--
+
+********************
+********************
+Unresolved Tests (4):
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception1.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception2.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception3.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Exception4.scala
+
+********************
+Failed Tests (12):
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/algorithm/ArrayReverse.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/algorithm/GCD.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/algorithm/LinearSearch.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/controlflow/Basic.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Basic.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/MultiCatch.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/PotentialIndexOutOfBounds.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/PotentialNullDereference.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/exceptions/TryFinally.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/instance/Comparator.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/instance/Counter.scala
+  ByteBack :: test-scala-2.13.8/src/main/scala/byteback/test/instance/Dice.scala
+
+
+Testing Time: 240.54s
+  Unresolved:  4
+  Failed    : 12
+
+> Task :byteback-test:test-scala-2.13.8:system FAILED
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.7/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+33 actionable tasks: 1 executed, 2 from cache, 30 up-to-date

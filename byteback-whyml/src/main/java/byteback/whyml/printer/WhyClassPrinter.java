@@ -52,7 +52,7 @@ public class WhyClassPrinter {
 		final Code hierarchy = hierarchyStatements == null
 				? many()
 				: many(
-				line("axiom hierarchy" + IdentifierEscaper.PRELUDE_RESERVED + ":"),
+				line("axiom hierarchy:"),
 				indent(lines(Arrays.stream(hierarchyStatements.split("\n"))))
 		);
 

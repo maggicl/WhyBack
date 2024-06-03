@@ -87,14 +87,14 @@ public class SideEffectVisitor extends StatementVisitor {
 
 	@Override
 	public void visitStringLiteralExpression(StringLiteralExpression source) {
-		reads.add("%s.pointers%s".formatted(Identifier.Special.STRING, IdentifierEscaper.PRELUDE_RESERVED));
+		reads.add("%s.pointers".formatted(Identifier.Special.STRING));
 
 		super.visitStringLiteralExpression(source);
 	}
 
 	@Override
 	public void visitClassLiteralExpression(ClassLiteralExpression classLiteralExpression) {
-		reads.add("%s.pointers%s".formatted(Identifier.Special.CLASS, IdentifierEscaper.PRELUDE_RESERVED));
+		reads.add("%s.pointers".formatted(Identifier.Special.CLASS));
 
 		super.visitClassLiteralExpression(classLiteralExpression);
 	}

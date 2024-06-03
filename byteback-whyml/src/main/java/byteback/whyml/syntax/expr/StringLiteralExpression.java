@@ -44,7 +44,7 @@ public class StringLiteralExpression implements Expression {
 		sb.append("\"");
 
 		return prefix(
-				"%s.literal%s".formatted(Identifier.Special.STRING, IdentifierEscaper.PRELUDE_RESERVED),
+				"%s.literal".formatted(Identifier.Special.STRING),
 				terminal(sb.toString())
 		);
 	}

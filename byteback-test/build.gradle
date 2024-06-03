@@ -61,6 +61,8 @@ subprojects { test ->
 
 				doLast {
 						sourceDirs.each { dir ->
+								// NOTE: make sure kotlin and scala test subprojects do not contain empty src/main/java
+								// folders or the suite fails
 								if (testDirs.contains(dir.getName()) && dir.exists()) {
 										sourceDir = dir
 
@@ -108,7 +110,7 @@ subprojects { test ->
 
 				outputs.files fileTree(experimentsDir).matching {
 						include '*.csv'
-				} 
+				}
 		}
 
 }
@@ -132,6 +134,6 @@ def results = tasks.register('results') {
 		outputs.files fileTree(experimentsDir).matching {
 				include '*.csv'
 				include '*.tex'
-		} 
-		
+		}
+
 }

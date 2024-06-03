@@ -39,7 +39,7 @@ public sealed class Identifier implements Comparable<Identifier> permits Identif
 	}
 
 	public static boolean isLegalChar(int e) {
-		return ('0' <= e && e <= '9') || ('a' <= e && e <= 'z') || ('A' <= e && e <= 'Z') || e == '_' || e == '\'';
+		return ('0' <= e && e <= '9') || ('a' <= e && e <= 'z') || ('A' <= e && e <= 'Z');
 	}
 
 	public final static class Special {
@@ -53,8 +53,8 @@ public sealed class Identifier implements Comparable<Identifier> permits Identif
 		public static final FQDN CLASS_CAST_EXCEPTION = FQDN.special("Java", "Lang", "ClassCastException");
 		public static final Identifier.U DEFAULT_PACKAGE = new U("Default" + IdentifierEscaper.PRELUDE_RESERVED);
 		public static final Identifier.L RESULT = new L("result");
-		public static final Identifier.L HEAP = new L("heap" + IdentifierEscaper.PRELUDE_RESERVED);
-		public static final Identifier.L CAUGHT_EXCEPTION = new L("caughtexception" + IdentifierEscaper.PRELUDE_RESERVED);
+		public static final Identifier.L HEAP = new L("heap");
+		public static final Identifier.L CAUGHT_EXCEPTION = new L("caughtexception");
 		/**
 		 * Generate an MLCFG label given a label number
 		 */

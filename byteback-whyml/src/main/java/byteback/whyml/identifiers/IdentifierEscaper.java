@@ -12,7 +12,6 @@ public class IdentifierEscaper {
 
 	/**
 	 * Used by the prelude to use a separate identifier class for reserved variables (e.g. heap)
-	 * TODO: check if a constant is needed
 	 */
 	public static final String PRELUDE_RESERVED = "'8";
 	/**
@@ -23,7 +22,7 @@ public class IdentifierEscaper {
 	/**
 	 * Separates scopes in a descriptor class name for a parameter
 	 */
-	static final String DESCRIPTOR_SEPARATOR = "'5";
+	static final String DESCRIPTOR_SEPARATOR = "_";
 	/**
 	 * Terminates a descriptor class name
 	 */
@@ -44,23 +43,20 @@ public class IdentifierEscaper {
 	 * Added at the start of the identifier when the first letter must be uppercase
 	 */
 	private static final String FORCE_UPPERCASE = "I'2";
+	private static final String UNDERSCORE = "'3";
+	private static final String DOLLAR = "'4";
 	/**
-	 * Added at the end of the identifier if the identifier matches with one of the reserved identifiers
+	 * Both '<' and '>'. Used only for '<init>' and '<clinit>' method identifiers.
 	 */
-	private static final String RESERVED = "'3";
+	private static final String ANGULAR_BRACKET = "'5";
 	/**
 	 * Separates scopes in a function name
 	 */
-	private static final String SCOPE_SEPARATOR = "'4";
+	private static final String SCOPE_SEPARATOR = "_";
 	/**
 	 * Denotes a prime
 	 */
 	private static final String PRIME = "'9";
-
-	// source: src/parser/handcrafted.messages, lines 18-21
-	private static final Set<String> RESERVED_L_KEYWORDS = Set.of("val", "user", "type", "theory", "scope", "predicate",
-			"module", "meta", "let", "lemma", "inductive", "import", "goal", "function", "exception", "eof", "end",
-			"constant", "coinductive", "clone", "axiom", "as", "old", "to", "returns", "ensures", "requires", "raises");
 
 	private static final String LOCAL_VARIABLE_PREFIX = "lv_";
 	private static final String PARAM_PREFIX = "p_";
@@ -73,6 +69,22 @@ public class IdentifierEscaper {
 	private static String escapeChar(int e) {
 		if (e == '\'') {
 			return PRIME;
+		}
+
+		if (e == '_') {
+			return UNDERSCORE;
+		}
+
+		if (e == '$') {
+			return DOLLAR;
+		}
+
+		if (e == '<' || e == '>') {
+			return ANGULAR_BRACKET;
+		}
+
+		if (e == '.') {
+			return "_";
 		}
 
 		if (Identifier.isLegalChar(e)) {

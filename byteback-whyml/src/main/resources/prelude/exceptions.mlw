@@ -39,9 +39,9 @@ module Result
   use prelude.ptr.Ptr
   use prelude.machine.Operators
 
-  let ref caughtexception'8: Ptr.t = Ptr.null
+  let ref caughtexception: Ptr.t = Ptr.null
 
   val jthrow (exc: Ptr.t) : 'a
-    writes { caughtexception'8 }
-    ensures { caughtexception'8 = exc }
+    writes { caughtexception }
+    ensures { caughtexception = exc }
 end

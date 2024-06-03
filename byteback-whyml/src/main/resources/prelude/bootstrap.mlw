@@ -28,11 +28,11 @@ module Bootstrap
       (forall s:string, s2:string. s <> s2 -> v[s] <> v[s2])
     }
 
-    val pointers'8: stringset
+    val pointers: stringset
 
-    val literal'8 (s: string) : Ptr.t
-      reads { pointers'8 }
-      ensures { result = pointers'8.v[s] }
+    val literal (s: string) : Ptr.t
+      reads { pointers }
+      ensures { result = pointers.v[s] }
   end
   end
   end
@@ -49,11 +49,11 @@ module Bootstrap
       (forall c:Type.class, c2:Type.class. c <> c2 -> v[c] <> v[c2])
     }
 
-    val pointers'8: classset
+    val pointers: classset
 
-    val literal'8 (c: Type.class) : Ptr.t
-      reads { pointers'8 }
-      ensures { result = pointers'8.v[c] }
+    val literal (c: Type.class) : Ptr.t
+      reads { pointers }
+      ensures { result = pointers.v[c] }
   end
   end
   end

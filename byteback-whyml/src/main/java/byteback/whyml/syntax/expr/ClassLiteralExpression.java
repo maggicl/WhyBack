@@ -15,7 +15,7 @@ public record ClassLiteralExpression(WhyReference classType) implements Expressi
 	@Override
 	public SExpr toWhy() {
 		return prefix(
-				"%s.literal%s".formatted(Identifier.Special.CLASS, IdentifierEscaper.PRELUDE_RESERVED),
+				"%s.literal".formatted(Identifier.Special.CLASS),
 				terminal("%s.class".formatted(classType.fqdn()))
 		);
 	}

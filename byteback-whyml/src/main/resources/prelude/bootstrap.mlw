@@ -3,8 +3,6 @@ module Bootstrap
   use export prelude.exceptions.Exceptions
   use prelude.ptr.Ptr
   use prelude.typing.Type
-  use prelude.heap.HeapDef
-  use prelude.heap.Heap
   use string.String
   use map.Map
 

@@ -4,7 +4,6 @@
 
 module Operators
   use bool.Bool
-  use prelude.heap.Heap
   use prelude.ptr.Ptr
 
   val function (->.) (a: bool) (b: bool) : bool
@@ -19,9 +18,9 @@ module Operators
   val function (\/.) (a: bool) (b: bool) : bool
     ensures { result = a \/ b }
 
-  val function q_forall (heap: Heap.t) (clause: Heap.t -> 'a -> bool) : bool
+  val function q_forall (heap: 'b) (clause: 'b -> 'a -> bool) : bool
     ensures { result = forall x. (clause heap x) }
 
-  val function q_exists (heap: Heap.t) (clause: Heap.t -> 'a -> bool) : bool
+  val function q_exists (heap: 'b) (clause: 'b -> 'a -> bool) : bool
     ensures { result = exists x. (clause heap x) }
 end

@@ -6,6 +6,6 @@
   use prelude.exceptions.Throw
   use export prelude.bootstrap.Bootstrap
   use export prelude.logic.Operators
-  use export prelude.machine.Operators
+  use export prelude.numeric.Operators
   use export prelude.boolean.Operators
   use export prelude.ptr.Operators

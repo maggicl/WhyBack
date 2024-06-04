@@ -46,18 +46,18 @@ module Operators
   let function j2int [@inline:trivial] (x: jlong) : int = x
   let function int2j [@inline:trivial] (x: int) : jlong = x
   let function f2d [@inline:trivial] (x: jfloat) : jdouble = x
-  let function f2int [@inline:trivial] (x: jfloat) : int = truncate x
-  let function int2f [@inline:trivial] (x: int) : jfloat = from_int x
+  val function f2int (x: jfloat) : int ensures { result = truncate x }
+  val function int2f (x: int) : jfloat ensures { result = from_int x }
   let function d2f [@inline:trivial] (x: jdouble) : jfloat = x
-  let function d2int [@inline:trivial] (x: jdouble) : int = truncate x
-  let function int2d [@inline:trivial] (x: int) : jdouble = from_int x
+  let function d2int [@inline:trivial] (x: jdouble) : int = f2int x
+  let function int2d [@inline:trivial] (x: int) : jdouble = int2f x
   
   let function dneg [@inline:trivial] (x: jdouble) : jdouble = Real.(-_) x
   let function dadd [@inline:trivial] (x y: jdouble) : jdouble = Real.(+) x y
   let function dsub [@inline:trivial] (x y: jdouble) : jdouble = Real.(-) x y
   let function dmul [@inline:trivial] (x y: jdouble) : jdouble = Real.(*) x y
   let function ddiv [@inline:trivial] (x y: jdouble) : jdouble = Real.(/) x y
-  let function drem [@inline:trivial] (x y: jdouble) : jdouble = from_int (mod (truncate x) (truncate y))
+  let function drem [@inline:trivial] (x y: jdouble) : jdouble = int2f (mod (f2int x) (f2int y))
   let function dcmpl [@inline:trivial] (x y: jdouble) : jint = if Real.(=) x y then 0 else if Real.(<) x y then -1 else 1
   let function dcmpg [@inline:trivial] (x y: jdouble) : jint = dcmpl x y
 
@@ -74,7 +74,7 @@ module Operators
   let function iadd [@inline:trivial] (x y: jint) : jint = Int.(+) x y
   let function isub [@inline:trivial] (x y: jint) : jint = Int.(-) x y
   let function imul [@inline:trivial] (x y: jint) : jint = Int.(*) x y
-  let function idiv [@inline:trivial] (x y: jint) : jint = Int.(/) x y
+  let function idiv [@inline:trivial] (x y: jint) : jint = div x y
   let function irem [@inline:trivial] (x y: jint) : jint = mod x y
   val function iand [@inline:trivial] (x y: jint) : jint
   val function ior [@inline:trivial] (x y: jint) : jint
@@ -84,13 +84,13 @@ module Operators
   val function iushr [@inline:trivial] (x y: jint) : jint
 
   let function l2i [@inline:trivial] (x: jlong) : jint = x
-  let function l2f [@inline:trivial] (x: jlong) : jfloat = from_int x
-  let function l2d [@inline:trivial] (x: jlong) : jdouble = from_int x
+  let function l2f [@inline:trivial] (x: jlong) : jfloat = int2f x
+  let function l2d [@inline:trivial] (x: jlong) : jdouble = int2f x
   let function lneg [@inline:trivial] (x: jlong) : jlong = Int.(-_) x
   let function ladd [@inline:trivial] (x y: jlong) : jlong = Int.(+) x y
   let function lsub [@inline:trivial] (x y: jlong) : jlong = Int.(-) x y
   let function lmul [@inline:trivial] (x y: jlong) : jlong = Int.(*) x y
-  let function ldiv [@inline:trivial] (x y: jlong) : jlong = Int.(/) x y
+  let function ldiv [@inline:trivial] (x y: jlong) : jlong = div x y
   let function lrem [@inline:trivial] (x y: jlong) : jlong = mod x y
   val function land [@inline:trivial] (x y: jlong) : jlong
   val function lor [@inline:trivial] (x y: jlong) : jlong

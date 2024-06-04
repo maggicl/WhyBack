@@ -12,7 +12,7 @@ subprojects { test ->
         def sourceDirs = sourceSet.allSource.srcDirs
         def testDirs = ["java", "scala", "kotlin"]
         def targetProperty = project.findProperty("TEST_TARGET")
-        def jobsProperty = project.findProperty("TEST_JOBS") ?: "1"
+        def jobsProperty = project.findProperty("TEST_JOBS") ?: "4"
 
         def execute = { target ->
             exec {

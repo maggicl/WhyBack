@@ -8,5 +8,6 @@ java {
 
     compileJava {
         options.debug = true
+        options.compilerArgs << '-g'
     }
 }

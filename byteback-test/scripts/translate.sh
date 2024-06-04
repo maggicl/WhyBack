@@ -11,7 +11,8 @@ shift 4
 extension=".mlcfg"
 
 # strip extension, replace '/' with '.'
-class="$(realpath "$source" --relative-to="$0" | sed 's/\.[a-z]*$//;s/\//\./g;s/.*\.src\.main\.[a-z][a-z]*\.//')"
+class="$(realpath "$source" --relative-to="$(dirname "$0")/.." | \
+  sed 's/\.[a-z]*$//;s/\//\./g;s/.*\.src\.main\.[a-z][a-z]*\.//')"
 
 # TODO: handle --npe and --iobe options in "$@"
 

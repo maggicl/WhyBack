@@ -1,5 +1,6 @@
 package byteback.analysis.transformer;
 
+import byteback.analysis.tags.PositionTag;
 import byteback.analysis.util.SootBodies;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.analysis.vimp.LogicConstant;
@@ -10,7 +11,9 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
 import soot.grimp.GrimpBody;
+import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
+import soot.tagkit.AbstractHost;
 import soot.util.Chain;
 
 public class InvariantCheckerTransformer extends BodyTransformer {
@@ -40,8 +43,14 @@ public class InvariantCheckerTransformer extends BodyTransformer {
 		for (final Loop loop : loops) {
 			// if the loop does not have a loop invariant add a dummy loop invariant
 			if (loop.getLoopStatements().stream().noneMatch(e -> e instanceof InvariantStmt)) {
-				System.out.println("inserting dud invariant for loop " + loop.getLoopStatements());
-				// TODO: consider adding detailed warning message
+				final Stmt stmt = loop.getHead();
+				if (stmt.hasTag("PositionTag")) {
+					final PositionTag tag = (PositionTag) stmt.getTag("PositionTag");
+					System.out.printf("Missing invariant: %s, line %d%n", tag.file, tag.lineNumber);
+				} else {
+					System.out.println("Missing invariant: " + loop.getLoopStatements());
+				}
+
 				units.insertBefore(new InvariantStmt(LogicConstant.v(true)), loop.getHead());
 			}
 		}

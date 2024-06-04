@@ -417,7 +417,9 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 		final WhyJVMType targetJVMType = targetType.jvm();
 
 		if (!sourceType.isMeta() && !targetJVMType.isMeta()) {
-			setExpression(new PrimitiveCastExpression(op, targetJVMType));
+			setExpression(sourceType == targetType
+					? op
+					: new PrimitiveCastExpression(op, targetJVMType));
 		} else if (sourceType == WhyJVMType.PTR && targetJVMType == WhyJVMType.PTR) {
 			setExpression(new ClassCastExpression(op, targetType, isCastPure()));
 		} else {

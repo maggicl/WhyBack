@@ -1,0 +1,158 @@
+module Operators
+  use int.Int
+  use int.ComputerDivision
+  use real.Real
+  use real.FromInt
+  use real.Truncate
+  use prelude.boolean.Operators
+
+  type jbyte = int
+  type jchar = int
+  type jshort = int
+  type jint = int
+  type jlong = int
+  type jfloat = real
+  type jdouble = real
+
+  scope Default
+    let constant b: jbyte = 0
+    let constant s: jshort = 0
+    let constant c: jchar = 0
+    let constant i: jint = 0
+    let constant j: jlong = 0
+    let constant f: jfloat = (0.0:real)
+    let constant d: jdouble = (0.0:real)
+  end
+
+  val constant jfloat_inf: jfloat
+  val constant jfloat_minf: jfloat
+  val constant jfloat_nan: jfloat
+
+  val constant jdouble_inf: jdouble
+  val constant jdouble_minf: jdouble
+  val constant jdouble_nan: jdouble
+
+  (* casting operators *)
+  let function z2int [@inline:trivial] (x: jbool) : int = if x then 1 else 0
+  let function int2z [@inline:trivial] (x: int) : jbool = if Int.(=) x 0 then false else true
+  let function b2int [@inline:trivial] (x: jbyte) : int = x
+  let function int2b [@inline:trivial] (x: int) : jbyte = x
+  let function s2int [@inline:trivial] (x: jshort) : int = x
+  let function int2s [@inline:trivial] (x: int) : jshort = x
+  let function c2int [@inline:trivial] (x: jchar) : int = x
+  let function int2c [@inline:trivial] (x: int) : jchar = x
+  let function i2int [@inline:trivial] (x: jint) : int = x
+  let function int2i [@inline:trivial] (x: int) : jint = x
+  let function j2int [@inline:trivial] (x: jlong) : int = x
+  let function int2j [@inline:trivial] (x: int) : jlong = x
+  let function f2d [@inline:trivial] (x: jfloat) : jdouble = x
+  let function f2int [@inline:trivial] (x: jfloat) : int = truncate x
+  let function int2f [@inline:trivial] (x: int) : jfloat = from_int x
+  let function d2f [@inline:trivial] (x: jdouble) : jfloat = x
+  let function d2int [@inline:trivial] (x: jdouble) : int = truncate x
+  let function int2d [@inline:trivial] (x: int) : jdouble = from_int x
+  
+  let function dneg [@inline:trivial] (x: jdouble) : jdouble = Real.(-_) x
+  let function dadd [@inline:trivial] (x y: jdouble) : jdouble = Real.(+) x y
+  let function dsub [@inline:trivial] (x y: jdouble) : jdouble = Real.(-) x y
+  let function dmul [@inline:trivial] (x y: jdouble) : jdouble = Real.(*) x y
+  let function ddiv [@inline:trivial] (x y: jdouble) : jdouble = Real.(/) x y
+  let function drem [@inline:trivial] (x y: jdouble) : jdouble = from_int (mod (truncate x) (truncate y))
+  let function dcmpl [@inline:trivial] (x y: jdouble) : jint = if Real.(=) x y then 0 else if Real.(<) x y then -1 else 1
+  let function dcmpg [@inline:trivial] (x y: jdouble) : jint = dcmpl x y
+
+  let function fneg [@inline:trivial] (x: jfloat) : jfloat = Real.(-_) x
+  let function fadd [@inline:trivial] (x y: jfloat) : jfloat = Real.(+) x y
+  let function fsub [@inline:trivial] (x y: jfloat) : jfloat = Real.(-) x y
+  let function fmul [@inline:trivial] (x y: jfloat) : jfloat = Real.(*) x y
+  let function fdiv [@inline:trivial] (x y: jfloat) : jfloat = Real.(/) x y
+  let function frem [@inline:trivial] (x y: jfloat) : jfloat = drem x y
+  let function fcmpl [@inline:trivial] (x y: jfloat) : jint = dcmpl x y
+  let function fcmpg [@inline:trivial] (x y: jfloat) : jint = dcmpg x y
+
+  let function ineg [@inline:trivial] (x: jint) : jint = Int.(-_) x
+  let function iadd [@inline:trivial] (x y: jint) : jint = Int.(+) x y
+  let function isub [@inline:trivial] (x y: jint) : jint = Int.(-) x y
+  let function imul [@inline:trivial] (x y: jint) : jint = Int.(*) x y
+  let function idiv [@inline:trivial] (x y: jint) : jint = Int.(/) x y
+  let function irem [@inline:trivial] (x y: jint) : jint = mod x y
+  val function iand [@inline:trivial] (x y: jint) : jint
+  val function ior [@inline:trivial] (x y: jint) : jint
+  val function ixor [@inline:trivial] (x y: jint) : jint
+  val function ishl [@inline:trivial] (x y: jint) : jint
+  val function ishr [@inline:trivial] (x y: jint) : jint
+  val function iushr [@inline:trivial] (x y: jint) : jint
+
+  let function l2i [@inline:trivial] (x: jlong) : jint = x
+  let function l2f [@inline:trivial] (x: jlong) : jfloat = from_int x
+  let function l2d [@inline:trivial] (x: jlong) : jdouble = from_int x
+  let function lneg [@inline:trivial] (x: jlong) : jlong = Int.(-_) x
+  let function ladd [@inline:trivial] (x y: jlong) : jlong = Int.(+) x y
+  let function lsub [@inline:trivial] (x y: jlong) : jlong = Int.(-) x y
+  let function lmul [@inline:trivial] (x y: jlong) : jlong = Int.(*) x y
+  let function ldiv [@inline:trivial] (x y: jlong) : jlong = Int.(/) x y
+  let function lrem [@inline:trivial] (x y: jlong) : jlong = mod x y
+  val function land [@inline:trivial] (x y: jlong) : jlong
+  val function lor [@inline:trivial] (x y: jlong) : jlong
+  val function lxor [@inline:trivial] (x y: jlong) : jlong
+  val function lshl [@inline:trivial] (x: jlong) (y: jint) : jlong
+  val function lshr [@inline:trivial] (x: jlong) (y: jint) : jlong
+  val function lushr [@inline:trivial] (x: jlong) (y: jint) : jlong
+  let function lcmp [@inline:trivial] (x y: jlong) : jint = if Int.(=) x y then 0 else if Int.(<) x y then -1 else 1
+
+  clone prelude.primitive.support.Logic as BCMP with
+    type t = jbyte,
+    val feq = Int.(=),
+    val flt = Int.(<),
+    val fgt = Int.(>),
+    val fle = Int.(<=),
+    val fge = Int.(>=)
+
+  clone prelude.primitive.support.Logic as SCMP with
+    type t = jshort,
+    val feq = Int.(=),
+    val flt = Int.(<),
+    val fgt = Int.(>),
+    val fle = Int.(<=),
+    val fge = Int.(>=)
+
+  clone prelude.primitive.support.Logic as CCMP with
+    type t = jchar,
+    val feq = Int.(=),
+    val flt = Int.(<),
+    val fgt = Int.(>),
+    val fle = Int.(<=),
+    val fge = Int.(>=)
+
+  clone prelude.primitive.support.Logic as ICMP with
+    type t = jint,
+    val feq = Int.(=),
+    val flt = Int.(<),
+    val fgt = Int.(>),
+    val fle = Int.(<=),
+    val fge = Int.(>=)
+
+  clone prelude.primitive.support.Logic as JCMP with
+    type t = jlong,
+    val feq = Int.(=),
+    val flt = Int.(<),
+    val fgt = Int.(>),
+    val fle = Int.(<=),
+    val fge = Int.(>=)
+
+  clone prelude.primitive.support.Logic as FCMP with
+    type t = jfloat,
+    val feq = Real.(=),
+    val flt = Real.(<),
+    val fgt = Real.(>),
+    val fle = Real.(<=),
+    val fge = Real.(>=)
+
+  clone prelude.primitive.support.Logic as DCMP with
+    type t = jdouble,
+    val feq = Real.(=),
+    val flt = Real.(<),
+    val fgt = Real.(>),
+    val fle = Real.(<=),
+    val fge = Real.(>=)
+end

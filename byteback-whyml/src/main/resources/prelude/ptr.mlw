@@ -6,7 +6,7 @@ end
 
 module Operators
   use Ptr
-  use prelude.machine.Operators
+  use prelude.boolean.Operators
 
   val function not_null (x: Ptr.t) : jbool
     ensures { result <-> x <> Ptr.null }

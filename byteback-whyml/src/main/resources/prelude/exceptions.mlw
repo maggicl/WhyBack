@@ -35,9 +35,8 @@ module Exceptions
   predicate npe_if_null (e: Type.class) (p: Ptr.t) = p = Ptr.null && e = Java.Lang.NullPointerException.class
 end
 
-module Result
+module Throw
   use prelude.ptr.Ptr
-  use prelude.machine.Operators
 
   let ref caughtexception: Ptr.t = Ptr.null
 

@@ -6,7 +6,6 @@ module Operators
   use bool.Bool
   use prelude.heap.Heap
   use prelude.ptr.Ptr
-  use prelude.machine.Operators
 
   val function (->.) (a: bool) (b: bool) : bool
     ensures { result = a -> b }
@@ -25,9 +24,4 @@ module Operators
 
   val function q_exists (heap: Heap.t) (clause: Heap.t -> 'a -> bool) : bool
     ensures { result = exists x. (clause heap x) }
-
-  scope ZCMP
-    let function eq [@inline:trivial] (x y: jbool) : jbool = not (xorb x y)
-    let function ne [@inline:trivial] (x y: jbool) : jbool = xorb x y
-  end
 end

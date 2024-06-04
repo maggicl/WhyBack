@@ -1,5 +1,6 @@
 module HeapDef
   use export prelude.machine.Operators
+  use export prelude.boolean.Operators
 
   use prelude.ptr.Ptr
   use prelude.typing.Type
@@ -254,6 +255,7 @@ module Heap
   use prelude.typing.Type
   use export prelude.exceptions.Exceptions
   use export prelude.machine.Operators
+  use export prelude.boolean.Operators
   use prelude.ptr.Ptr
   use array.Array
   use map.Map

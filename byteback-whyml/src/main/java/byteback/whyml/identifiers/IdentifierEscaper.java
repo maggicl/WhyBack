@@ -102,23 +102,29 @@ public class IdentifierEscaper {
 	 * @param type  the WhyML identifier class
 	 * @return the valid WhyML identifier for the chosen class
 	 */
-	private String escape(String input, IdentifierClass type) {
+	private String escape(String input, IdentifierClass type, boolean firstCharSafe) {
 		final int firstChar = input.codePointAt(0);
-		final int firstCharBiased;
+		final String firstIdentifierChar;
 
-		// invert the letter case for uident identifiers as we expect package names, which usually start with a lowercase
-		// letter
-		if (type == IdentifierClass.UIDENT) {
-			firstCharBiased = caseInverter.invertCase(firstChar);
+		if (firstCharSafe) {
+			firstIdentifierChar = escapeChar(firstChar);
 		} else {
-			firstCharBiased = firstChar;
-		}
+			final int firstCharBiased;
 
-		// use the first code point as-is if valid for the current identifier class, otherwise escape with the
-		// matching force-case escape sequence
-		final String firstIdentifierChar = type.validStart(firstCharBiased) ?
-				Character.toString(firstCharBiased) :
-				String.format("%s%s", type.getForceEscaper(), escapeChar(firstChar));
+			// invert the letter case for uident identifiers as we expect package names, which usually start with a lowercase
+			// letter
+			if (type == IdentifierClass.UIDENT) {
+				firstCharBiased = caseInverter.invertCase(firstChar);
+			} else {
+				firstCharBiased = firstChar;
+			}
+
+			// use the first code point as-is if valid for the current identifier class, otherwise escape with the
+			// matching force-case escape sequence
+			firstIdentifierChar = type.validStart(firstCharBiased) ?
+					Character.toString(firstCharBiased) :
+					String.format("%s%s", type.getForceEscaper(), escapeChar(firstChar));
+		}
 
 		// and now map the remaining characters
 		return input.codePoints().skip(1)
@@ -128,12 +134,12 @@ public class IdentifierEscaper {
 
 	public Identifier.L escapeLocalVariable(String input) {
 		// no need to check for reserved keywords thanks to prefix
-		return new Identifier.L(escape(LOCAL_VARIABLE_PREFIX + input, IdentifierClass.LIDENT));
+		return new Identifier.L(LOCAL_VARIABLE_PREFIX + escape(input, IdentifierClass.LIDENT, true));
 	}
 
 	public Identifier.L escapeParam(String input) {
 		// no need to check for reserved keywords thanks to prefix
-		return new Identifier.L(escape(PARAM_PREFIX + input, IdentifierClass.LIDENT));
+		return new Identifier.L(PARAM_PREFIX + escape(input, IdentifierClass.LIDENT, true));
 	}
 
 	public Identifier.L escapeMethod(Identifier.FQDN clazz, String methodName, String descriptor) {
@@ -149,11 +155,11 @@ public class IdentifierEscaper {
 				.collect(Collectors.joining(SCOPE_SEPARATOR));
 
 		// no need to check if reserved or note as it contains CLASS_FUNC_SEPARATOR
-		return new Identifier.L(classPrefix + SCOPE_SEPARATOR + escape(methodName, IdentifierClass.LIDENT) + descriptor);
+		return new Identifier.L(classPrefix + SCOPE_SEPARATOR + escape(methodName, IdentifierClass.LIDENT, true) + descriptor);
 	}
 
 	public Identifier.U escapeU(String input) {
-		return new Identifier.U(escape(input, IdentifierClass.UIDENT));
+		return new Identifier.U(escape(input, IdentifierClass.UIDENT, false));
 	}
 
 	/**

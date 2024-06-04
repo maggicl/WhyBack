@@ -39,6 +39,8 @@ import byteback.whyml.syntax.expr.field.ArrayExpression;
 import byteback.whyml.syntax.expr.field.ArrayOperation;
 import byteback.whyml.syntax.expr.field.FieldExpression;
 import byteback.whyml.syntax.expr.field.Operation;
+import byteback.whyml.syntax.expr.harmonization.HarmonizationResult;
+import byteback.whyml.syntax.expr.harmonization.WhyTypeHarmonizer;
 import byteback.whyml.syntax.field.WhyField;
 import byteback.whyml.syntax.field.WhyInstanceField;
 import byteback.whyml.syntax.field.WhyStaticField;
@@ -299,13 +301,16 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 		final Expression v1 = visit(expr.getOp1());
 		final Expression v2 = visit(expr.getOp2());
 
-		if (v1.type() != v2.type()) {
+		final HarmonizationResult hr;
+		try {
+			hr = WhyTypeHarmonizer.harmonizeBinaryExpression(v1, v2);
+		} catch (IllegalArgumentException e) {
 			throw new WhyTranslationException(expr, "ConditionExpr has operands '%s' and '%s' with incompatible types: %s, %s"
 					.formatted(v1, v2, v1.type(), v2.type()));
 		}
 
 		try {
-			setExpression(new BinaryExpression(new Comparison(v1.type(), kind), v1, v2));
+			setExpression(new BinaryExpression(new Comparison(hr.getType(), kind), hr.getFirstOp(), hr.getSecondOp()));
 		} catch (IllegalArgumentException e) {
 			throw new WhyTranslationException(expr, "Cannot build comparison binary expression: " + e.getMessage());
 		}

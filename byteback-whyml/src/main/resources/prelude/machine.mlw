@@ -9,11 +9,11 @@ module Operators
   use prelude.primitive.machine.Int64BV
   use ieee_float.Float32
   use ieee_float.Float64
+  use prelude.boolean.Operators
 
   (* importing custom machine type operations *)
   use export prelude.primitive.machine.MachineSupport
 
-  type jbool = bool
   type jbyte = Int8.int8
   type jchar = UInt16.uint16
   type jshort = Int16.int16
@@ -23,7 +23,6 @@ module Operators
   type jdouble = Float64.t
 
   scope Default
-    let constant z: jbool = false
     let constant b: jbyte = 0
     let constant s: jshort = 0
     let constant c: jchar = 0

@@ -42,6 +42,7 @@ public class ProgramConverter {
 
 	public WhyProgram convert(final RootResolver resolver) {
 		resolveAll(resolver);
+		whyResolver.printStats();
 
 		final List<WhyClassDeclaration> decls = whyResolver.classes().stream()
 				.map(e -> whyClassPrinter.toWhy(e, whyResolver))

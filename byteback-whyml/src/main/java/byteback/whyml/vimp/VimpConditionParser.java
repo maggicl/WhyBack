@@ -87,7 +87,7 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 				.map(when -> new WhyFunctionBody.SpecBody(new UnaryExpression(
 						UnaryExpression.Operator.NOT,
 						resolveCondition(when, false))))
-				.orElseGet(() -> new WhyFunctionBody.SpecBody(new BooleanLiteral(true))));
+				.orElseGet(() -> new WhyFunctionBody.SpecBody(BooleanLiteral.of(true))));
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class VimpConditionParser implements VimpCondition.Transformer<WhyConditi
 				new WhyFunctionBody.SpecBody(
 						r.getWhen()
 							.map(when -> resolveCondition(when, false))
-							.orElseGet(() -> new BooleanLiteral(true))
+							.orElseGet(() -> BooleanLiteral.of(true))
 				), vimpClassNameParser.parse(r.getException())
 		);
 	}

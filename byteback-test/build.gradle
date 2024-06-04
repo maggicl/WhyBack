@@ -29,10 +29,8 @@ subprojects { test ->
                 // last condition is to make sure that for 'test-kotlin-...' and 'test-scala-...' the 'kotlin' and 'scala'
                 // respective source directories are used
                 if (testDirs.contains(dir.getName()) && dir.exists() && absPath.contains("-${dir.getName()}-")) {
-                    print targetProperty
                     if (targetProperty) {
                         def targetPath = Paths.get(bytebackTestRoot.getCanonicalPath(), targetProperty.toString()).normalize()
-                        println targetPath
                         if (targetPath.startsWith(test.projectDir.getCanonicalPath())) {
                             execute(targetPath)
                         }

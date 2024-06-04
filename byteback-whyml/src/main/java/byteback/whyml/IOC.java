@@ -41,7 +41,7 @@ public final class IOC {
 	public static final ProgramExpressionExtractor PROCEDURE_EXPRESSION_EXTRACTOR = new ProgramExpressionExtractor(METHOD_PARSER, METHOD_NAME_PARSER, TYPE_RESOLVER, VIMP_FIELD_PARSER, IDENTIFIER_ESCAPER);
 	public static final VimpBlockParser VIMP_BLOCK_PARSER = new VimpBlockParser(PROCEDURE_EXPRESSION_EXTRACTOR, PURE_PROGRAM_EXPRESSION_EXTRACTOR, VIMP_LOCAL_PARSER, VIMP_FIELD_PARSER, TYPE_RESOLVER);
 	public static final VimpMethodBodyParser METHOD_BODY_PARSER = new VimpMethodBodyParser(VIMP_LOCAL_PARSER, FUNCTION_BODY_EXTRACTOR, VIMP_BLOCK_PARSER);
-	public static final WhyResolver WHY_RESOLVER = new WhyResolver(CLASS_PARSER, METHOD_PARSER, METHOD_BODY_PARSER);
+	public static final WhyResolver WHY_RESOLVER = new WhyResolver(CLASS_PARSER, METHOD_PARSER, METHOD_BODY_PARSER, METHOD_NAME_PARSER);
 	public static final WhySignaturePrinter WHY_SIGNATURE_PRINTER = new WhySignaturePrinter(METHOD_NAME_PARSER);
 	public static final WhyFunctionPrinter WHY_FUNCTION_PRINTER = new WhyFunctionPrinter(WHY_SIGNATURE_PRINTER);
 	public static final WhyFieldPrinter WHY_FIELD_PRINTER = new WhyFieldPrinter();

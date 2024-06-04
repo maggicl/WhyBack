@@ -1,10 +1,12 @@
 package byteback.whyml.syntax.function;
 
 import byteback.whyml.identifiers.Identifier;
+import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 
 public sealed abstract class WhyCondition {
 
 	public abstract void visit(WhyCondition.Visitor visitor);
+	public abstract void visit(ExpressionVisitor visitor);
 
 	public abstract WhySideEffects sideEffects();
 
@@ -41,6 +43,11 @@ public sealed abstract class WhyCondition {
 		}
 
 		@Override
+		public void visit(ExpressionVisitor visitor) {
+			value.accept(visitor);
+		}
+
+		@Override
 		public WhySideEffects sideEffects() {
 			return value.sideEffects();
 		}
@@ -60,6 +67,11 @@ public sealed abstract class WhyCondition {
 		@Override
 		public void visit(Visitor visitor) {
 			visitor.visitEnsures(this);
+		}
+
+		@Override
+		public void visit(ExpressionVisitor visitor) {
+			value.accept(visitor);
 		}
 
 		@Override
@@ -85,6 +97,11 @@ public sealed abstract class WhyCondition {
 		}
 
 		@Override
+		public void visit(ExpressionVisitor visitor) {
+			value.accept(visitor);
+		}
+
+		@Override
 		public WhySideEffects sideEffects() {
 			return value.sideEffects();
 		}
@@ -104,6 +121,11 @@ public sealed abstract class WhyCondition {
 		@Override
 		public void visit(Visitor visitor) {
 			visitor.visitReturns(this);
+		}
+
+		@Override
+		public void visit(ExpressionVisitor visitor) {
+			when.accept(visitor);
 		}
 
 		@Override
@@ -132,6 +154,11 @@ public sealed abstract class WhyCondition {
 		@Override
 		public void visit(Visitor visitor) {
 			visitor.visitRaises(this);
+		}
+
+		@Override
+		public void visit(ExpressionVisitor visitor) {
+			when.accept(visitor);
 		}
 
 		@Override

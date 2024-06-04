@@ -4,12 +4,13 @@ import byteback.analysis.Inline;
 import byteback.analysis.VimpCondition;
 import byteback.whyml.identifiers.Identifier;
 import byteback.whyml.syntax.WhyClass;
-import byteback.whyml.syntax.expr.Expression;
+import byteback.whyml.syntax.function.WhyCondition;
 import byteback.whyml.syntax.function.WhyFunction;
 import byteback.whyml.syntax.function.WhyFunctionBody;
 import byteback.whyml.syntax.function.WhyFunctionContract;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.function.WhySideEffects;
+import byteback.whyml.syntax.statement.visitor.StatsVisitor;
 import byteback.whyml.syntax.type.ReferenceVisitor;
 import byteback.whyml.syntax.type.WhyType;
 import byteback.whyml.vimp.graph.PostOrder;
@@ -26,7 +27,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import soot.SootClass;
 import soot.SootMethod;
 
@@ -34,6 +34,7 @@ public class WhyResolver {
 	private final VimpClassParser classParser;
 	private final VimpMethodParser methodParser;
 	private final VimpMethodBodyParser methodBodyParser;
+	private final VimpMethodNameParser methodNameParser;
 
 	private final Map<Identifier.FQDN, WhyClass> classes = new HashMap<>();
 	private final Set<SootMethod> parsed = new HashSet<>();
@@ -44,10 +45,12 @@ public class WhyResolver {
 
 	public WhyResolver(VimpClassParser classParser,
 					   VimpMethodParser methodParser,
-					   VimpMethodBodyParser methodBodyParser) {
+					   VimpMethodBodyParser methodBodyParser,
+					   VimpMethodNameParser methodNameParser) {
 		this.classParser = classParser;
 		this.methodParser = methodParser;
 		this.methodBodyParser = methodBodyParser;
+		this.methodNameParser = methodNameParser;
 	}
 
 	private Set<WhyClass> getAllSuper(WhyClass from) {
@@ -147,5 +150,27 @@ public class WhyResolver {
 		}
 
 		return Tarjan.compute(functionMap);
+	}
+
+	public void printStats() {
+		System.err.println("Stats format: descriptor,heap_access_count,missing_invariant_count");
+		for (final SootMethod method : bodies.keySet()) {
+			if (!signatures.containsKey(method)) continue;
+
+			final WhyFunctionContract s = signatures.get(method);
+			final StatsVisitor sv = new StatsVisitor();
+
+			bodies.get(method).accept(sv);
+			for (final WhyCondition cond : s.conditions()) {
+				cond.visit(sv);
+			}
+
+			System.err.printf(
+					"STATS: %s,%d,%d\n",
+					methodNameParser.methodName(s.signature()),
+					sv.getHeapAccessCount(),
+					sv.getMissingInvariantCount()
+			);
+		}
 	}
 }

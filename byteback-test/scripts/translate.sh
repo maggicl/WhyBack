@@ -16,4 +16,4 @@ class="$(realpath "$source" --relative-to="$(dirname "$0")/.." | \
 
 # TODO: handle --npe and --iobe options in "$@"
 
-exec "$byteback" -cp "$jar" -c "$class" -o "$file$extension"
+exec "$byteback" -cp "$jar" -c "$class" -o "$file$extension" 2>&1 | tee "$file.whyback"

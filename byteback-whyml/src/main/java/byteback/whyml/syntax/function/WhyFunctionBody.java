@@ -5,18 +5,17 @@ import static byteback.whyml.printer.Code.indent;
 import static byteback.whyml.printer.Code.line;
 import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.expr.Expression;
+import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.statement.visitor.SideEffectVisitor;
+import byteback.whyml.syntax.statement.visitor.StatementVisitor;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 public sealed abstract class WhyFunctionBody {
 	private volatile WhySideEffects sideEffects = null;
 
-	protected abstract void visit(SideEffectVisitor v);
+	public abstract void accept(StatementVisitor v);
 
 	public abstract Set<WhyFunctionDeclaration> forDecls();
 
@@ -25,7 +24,7 @@ public sealed abstract class WhyFunctionBody {
 			synchronized (this) {
 				if (sideEffects == null) {
 					final SideEffectVisitor v = new SideEffectVisitor();
-					visit(v);
+					accept(v);
 					sideEffects = v.sideEffects();
 				}
 			}
@@ -47,8 +46,12 @@ public sealed abstract class WhyFunctionBody {
 			return expression;
 		}
 
+		public void accept(ExpressionVisitor v) {
+			expression.accept(v);
+		}
+
 		@Override
-		protected void visit(SideEffectVisitor v) {
+		public void accept(StatementVisitor v) {
 			expression.accept(v);
 		}
 
@@ -81,7 +84,7 @@ public sealed abstract class WhyFunctionBody {
 		}
 
 		@Override
-		protected void visit(SideEffectVisitor v) {
+		public void accept(StatementVisitor v) {
 			for (final CFGBlock b : blocks) {
 				b.allStatements().forEach(e -> e.accept(v));
 			}

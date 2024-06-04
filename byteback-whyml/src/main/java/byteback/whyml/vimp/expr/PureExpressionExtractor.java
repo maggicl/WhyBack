@@ -386,7 +386,7 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 
 	@Override
 	public void caseLogicConstant(final LogicConstant v) {
-		setExpression(new BooleanLiteral(v.value));
+		setExpression(BooleanLiteral.of(v.value));
 	}
 
 	@Override

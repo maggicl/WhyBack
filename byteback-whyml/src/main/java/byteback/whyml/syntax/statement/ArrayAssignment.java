@@ -35,7 +35,7 @@ public record ArrayAssignment(Expression base,
 
 		return prefix(
 				accessor + ".store",
-				terminal(Identifier.Special.HEAP),
+				terminal(Identifier.Special.getArrayHeap(elementType)),
 				base.toWhy(),
 				index.toWhy(),
 				value.toWhy()

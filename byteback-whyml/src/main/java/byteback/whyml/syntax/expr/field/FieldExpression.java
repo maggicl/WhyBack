@@ -19,7 +19,7 @@ public record FieldExpression(Operation operation, Access access) implements Exp
 
 		return prefix(
 				"%s.%s%s".formatted(accessor, operation.whyKeyword(), instanceOrStatic),
-				terminal(Identifier.Special.HEAP),
+				terminal(Identifier.Special.getHeap(field.getType().jvm())),
 				access.referenceToWhy(),
 				terminal("%s.%s".formatted(field.getClazz(), field.getName()))
 		);

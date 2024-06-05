@@ -22,25 +22,26 @@ public record ArrayExpression(Expression base, WhyJVMType elementType, ArrayOper
 	@Override
 	public SExpr toWhy() {
 		final String accessor = "R" + elementType.getWhyAccessorScope();
+		final Identifier.L heap = Identifier.Special.getArrayHeap(elementType);
 
 		if (operation instanceof ArrayOperation.Load load) {
 			return prefix(
 					accessor + ".load",
-					terminal(Identifier.Special.HEAP),
+					terminal(heap),
 					base.toWhy(),
 					load.getIndex().toWhy()
 			);
 		} else if (operation instanceof ArrayOperation.IsElem isElem) {
 			return prefix(
 					accessor + ".iselem",
-					terminal(Identifier.Special.HEAP),
+					terminal(heap),
 					base.toWhy(),
 					isElem.getIndex().toWhy()
 			);
 		} else {
 			return prefix(
 					accessor + ".arraylength",
-					terminal(Identifier.Special.HEAP),
+					terminal(heap),
 					base.toWhy()
 			);
 		}

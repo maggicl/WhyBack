@@ -27,17 +27,23 @@ public class SideEffectVisitor extends StatementVisitor {
 
 	@Override
 	public void visitNewArrayExpression(NewArrayExpression newArrayExpression) {
-		writes.add("%s.ptrs".formatted(Identifier.Special.HEAP));
-		writes.add("%s.arr".formatted(Identifier.Special.HEAP));
-		writes.add("%s.typeof".formatted(Identifier.Special.HEAP));
+		final WhyJVMType elemType = newArrayExpression.baseType().jvm();
+
+		writes.add("%s.pointers".formatted(Identifier.Special.getHeap(WhyJVMType.PTR)));
+		writes.add("%s.typeof".formatted(Identifier.Special.getHeap(WhyJVMType.PTR)));
+		writes.add("%s.arrays".formatted(Identifier.Special.getArrayHeap(elemType)));
+
+		if (elemType == WhyJVMType.PTR) {
+			writes.add("%s.element_type".formatted(Identifier.Special.getArrayHeap(WhyJVMType.PTR)));
+		}
 
 		super.visitNewArrayExpression(newArrayExpression);
 	}
 
 	@Override
 	public void visitNewExpression(NewExpression newExpression) {
-		writes.add("%s.ptrs".formatted(Identifier.Special.HEAP));
-		writes.add("%s.typeof".formatted(Identifier.Special.HEAP));
+		writes.add("%s.pointers".formatted(Identifier.Special.getHeap(WhyJVMType.PTR)));
+		writes.add("%s.typeof".formatted(Identifier.Special.getHeap(WhyJVMType.PTR)));
 
 		super.visitNewExpression(newExpression);
 	}

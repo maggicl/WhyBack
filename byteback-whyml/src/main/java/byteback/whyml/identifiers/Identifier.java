@@ -1,10 +1,13 @@
 package byteback.whyml.identifiers;
 
 import byteback.whyml.ListComparator;
+import byteback.whyml.syntax.type.WhyJVMType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,6 +58,15 @@ public sealed class Identifier implements Comparable<Identifier> permits Identif
 		public static final Identifier.L RESULT = new L("result");
 		public static final Identifier.L HEAP = new L("heap");
 		public static final Identifier.L CAUGHT_EXCEPTION = new L("caughtexception");
+
+		public static Identifier.L getHeap(WhyJVMType type) {
+			return new L("heap.%s".formatted(type.getWhyAccessorScope().toLowerCase(Locale.ROOT)));
+		}
+
+		public static Identifier.L getArrayHeap(WhyJVMType type) {
+			return new L("heap.r%s".formatted(type.getWhyAccessorScope().toLowerCase(Locale.ROOT)));
+		}
+
 		/**
 		 * Generate an MLCFG label given a label number
 		 */

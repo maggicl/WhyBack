@@ -40,7 +40,7 @@ public record FieldAssignment(Access access, Expression value) implements CFGSta
 
 		return prefix(
 				"%s.put%s".formatted(accessor, instanceOrStatic),
-				terminal(Identifier.Special.HEAP),
+				terminal(Identifier.Special.getHeap(field.getType().jvm())),
 				access.referenceToWhy(),
 				terminal("%s.%s".formatted(field.getClazz(), field.getName())),
 				value.toWhy()

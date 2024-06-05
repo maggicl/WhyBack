@@ -7,20 +7,21 @@ import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
+import byteback.whyml.syntax.field.WhyField;
 import byteback.whyml.syntax.type.WhyJVMType;
 
 public record FieldExpression(Operation operation, Access access) implements Expression {
 	@Override
 	public SExpr toWhy() {
-		final String accessor = access.getField().getType().jvm().getWhyAccessorScope();
+		final WhyField field = access.getField();
+		final String accessor = field.getType().jvm().getWhyAccessorScope();
 		final String instanceOrStatic = access instanceof Access.Instance ? "f" : "s";
-		final Identifier.FQDN fieldFqdn = access.getField().getClazz().qualify(access.getField().getName());
 
 		return prefix(
 				"%s.%s%s".formatted(accessor, operation.whyKeyword(), instanceOrStatic),
 				terminal(Identifier.Special.HEAP),
 				access.referenceToWhy(),
-				terminal(fieldFqdn + ".v")
+				terminal("%s.%s".formatted(field.getClazz(), field.getName()))
 		);
 	}
 

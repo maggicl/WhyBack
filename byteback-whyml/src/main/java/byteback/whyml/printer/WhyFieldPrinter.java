@@ -2,7 +2,6 @@ package byteback.whyml.printer;
 
 import byteback.whyml.identifiers.Identifier;
 import static byteback.whyml.printer.Code.block;
-import static byteback.whyml.printer.Code.indent;
 import static byteback.whyml.printer.Code.line;
 import byteback.whyml.syntax.field.WhyField;
 import byteback.whyml.syntax.type.WhyJVMType;
@@ -11,27 +10,32 @@ import byteback.whyml.vimp.WhyResolver;
 
 public class WhyFieldPrinter {
 	public Code toWhy(WhyField field, WhyResolver resolver) {
-		final Identifier.U name = field.getName();
+		final Identifier.L name = field.getName();
 		final WhyType fieldType = field.getType();
+		final WhyJVMType jvmType = field.getType().jvm();
 
-		if (fieldType instanceof WhyJVMType) {
-			return block(fieldType.getPreludeType()
-					.statement("clone prelude.heap.Field as %s with val f = ".formatted(name), ", axiom of"));
-		} else {
-			final String declaration = "let constant f: Type.t = ";
+		final Code decl = line("val constant %s: %s.%s".formatted(
+				name,
+				jvmType.getWhyAccessorScope(),
+				field.isStatic() ? "static_field" : "instance_field"
+		));
 
+		if (jvmType == WhyJVMType.PTR) {
 			final boolean notResolved = !resolver.isClassResolved(field.getType());
-			final String prefix = declaration + (notResolved ? "Type.unknown (* " : "");
-			final String postfix = notResolved ? " *)" : "";
 
 			return block(
-					line("scope %s".formatted(name)),
-					indent(
-							fieldType.getPreludeType().statement(prefix, postfix),
-							line("clone export prelude.heap.PtrField with val f = f, axiom of")
-					),
-					line("end")
+					decl,
+					line("axiom %s_type: %s.field_type = %s".formatted(
+							name,
+							name,
+							fieldType.getPreludeType().statement(
+									notResolved ? "Type.unknown (* " : "",
+									notResolved ? " *)" : ""
+							)
+					))
 			);
+		} else {
+			return block(decl);
 		}
 	}
 }

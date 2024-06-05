@@ -90,10 +90,6 @@ public sealed class Identifier implements Comparable<Identifier> permits Identif
 			return new FQDN(Arrays.stream(identifiers).map(U::new).toList());
 		}
 
-		public FQDN qualify(Identifier.U... identifier) {
-			return new FQDN(Stream.concat(identifiers.stream(), Stream.of(identifier)).toList());
-		}
-
 		public List<U> getIdentifiers() {
 			return identifiers;
 		}

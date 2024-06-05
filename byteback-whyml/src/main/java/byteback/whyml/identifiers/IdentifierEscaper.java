@@ -58,6 +58,7 @@ public class IdentifierEscaper {
 	 */
 	private static final String PRIME = "'9";
 
+	private static final String FIELD_PREFIX = "f_";
 	private static final String LOCAL_VARIABLE_PREFIX = "lv_";
 	private static final String PARAM_PREFIX = "p_";
 	private final CaseInverter caseInverter;
@@ -130,6 +131,11 @@ public class IdentifierEscaper {
 		return input.codePoints().skip(1)
 				.mapToObj(IdentifierEscaper::escapeChar)
 				.collect(Collectors.joining("", firstIdentifierChar, ""));
+	}
+
+	public Identifier.L escapeField(String input) {
+		// no need to check for reserved keywords thanks to prefix
+		return new Identifier.L(FIELD_PREFIX + escape(input, IdentifierClass.LIDENT, true));
 	}
 
 	public Identifier.L escapeLocalVariable(String input) {

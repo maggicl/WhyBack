@@ -2,16 +2,104 @@ module Program
   (* prelude import *)
   use prelude.ptr.Ptr
   use prelude.typing.Type
-  use prelude.heap.Heap
-  use prelude.heap.HeapDef
   use prelude.exceptions.Throw
   use export prelude.bootstrap.Bootstrap
   use export prelude.logic.Operators
   use export prelude.machine.Operators
   use export prelude.boolean.Operators
   use export prelude.ptr.Operators
+  use prelude.heap.Z
+  use prelude.heap.B
+  use prelude.heap.S
+  use prelude.heap.C
+  use prelude.heap.I
+  use prelude.heap.J
+  use prelude.heap.F
+  use prelude.heap.D
+  use prelude.heap.L
+  use prelude.heap.RZ
+  use prelude.heap.RB
+  use prelude.heap.RS
+  use prelude.heap.RC
+  use prelude.heap.RI
+  use prelude.heap.RJ
+  use prelude.heap.RF
+  use prelude.heap.RD
+  use prelude.heap.RL
+  use prelude.heap.Heap
 
   (* class type hierarchy declaration *)
+
+  scope Java
+  scope Lang
+  scope AutoCloseable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope Closeable
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Lang.AutoCloseable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope Flushable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope OutputStream
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Io.Closeable.class) &&
+      (Class class :> Class Java.Io.Flushable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope FilterOutputStream
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Io.OutputStream.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Appendable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope PrintStream
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Io.FilterOutputStream.class) &&
+      (Class class :> Class Java.Lang.Appendable.class) &&
+      (Class class :> Class Java.Io.Closeable.class)
+  end
+  end
+  end
 
   scope Java
   scope Io
@@ -39,17 +127,6 @@ module Program
 
     axiom hierarchy:
       (Class class :> Class Java.Lang.Throwable.class)
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope RuntimeException
-    val constant class: Type.class
-
-    axiom hierarchy:
-      (Class class :> Class Java.Lang.Exception.class)
   end
   end
   end
@@ -105,54 +182,12 @@ module Program
 
   scope Java
   scope Lang
-  scope AutoCloseable
-    val constant class: Type.class
-  end
-  end
-  end
-
-  scope Java
-  scope Io
-  scope Closeable
+  scope RuntimeException
     val constant class: Type.class
 
     axiom hierarchy:
-      (Class class :> Class Java.Lang.AutoCloseable.class)
+      (Class class :> Class Java.Lang.Exception.class)
   end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope Appendable
-    val constant class: Type.class
-  end
-  end
-  end
-
-  scope Java
-  scope Io
-  scope Flushable
-    val constant class: Type.class
-  end
-  end
-  end
-
-  scope Java
-  scope Io
-  scope OutputStream
-    val constant class: Type.class
-
-    axiom hierarchy:
-      (Class class :> Class Java.Io.Closeable.class) &&
-      (Class class :> Class Java.Io.Flushable.class)
-  end
-  end
-  end
-
-  scope Default'8
-  scope GCD
-    val constant class: Type.class
   end
   end
 
@@ -167,34 +202,16 @@ module Program
   end
   end
 
+  scope Default'8
+  scope GCD
+    val constant class: Type.class
+  end
+  end
+
   scope Java
   scope Lang
   scope System
     val constant class: Type.class
-  end
-  end
-  end
-
-  scope Java
-  scope Io
-  scope FilterOutputStream
-    val constant class: Type.class
-
-    axiom hierarchy:
-      (Class class :> Class Java.Io.OutputStream.class)
-  end
-  end
-  end
-
-  scope Java
-  scope Io
-  scope PrintStream
-    val constant class: Type.class
-
-    axiom hierarchy:
-      (Class class :> Class Java.Io.FilterOutputStream.class) &&
-      (Class class :> Class Java.Lang.Appendable.class) &&
-      (Class class :> Class Java.Io.Closeable.class)
   end
   end
   end
@@ -202,213 +219,15 @@ module Program
   (* class field declaration *)
 
   scope Java
-  scope Lang
-  scope Throwable
-    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
-
-    scope Backtrace
-      let constant f: Type.t = Class Java.Lang.Object.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope DetailMessage
-      let constant f: Type.t = Class Java.Lang.String.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope I'2UNASSIGNED'3STACK
-      let constant f: Type.t = Type.unknown (* Type.ArrayOf
-        (Class Java.Lang.StackTraceElement.class) *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope Cause
-      let constant f: Type.t = Class Java.Lang.Throwable.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope StackTrace
-      let constant f: Type.t = Type.unknown (* Type.ArrayOf
-        (Class Java.Lang.StackTraceElement.class) *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    clone prelude.heap.Field as Depth with val f = HeapDef.Int, axiom of
-
-    scope I'2SUPPRESSED'3SENTINEL
-      let constant f: Type.t = Type.unknown (* Class Java.Util.List.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope SuppressedExceptions
-      let constant f: Type.t = Type.unknown (* Class Java.Util.List.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope I'2NULL'3CAUSE'3MESSAGE
-      let constant f: Type.t = Class Java.Lang.String.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope I'2SELF'3SUPPRESSION'3MESSAGE
-      let constant f: Type.t = Class Java.Lang.String.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope I'2CAUSE'3CAPTION
-      let constant f: Type.t = Class Java.Lang.String.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope I'2SUPPRESSED'3CAPTION
-      let constant f: Type.t = Class Java.Lang.String.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope I'2EMPTY'3THROWABLE'3ARRAY
-      let constant f: Type.t = Type.ArrayOf (Class Java.Lang.Throwable.class)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    clone prelude.heap.Field as I'2'4assertionsDisabled with val f = HeapDef.Int, axiom of
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope Exception
-    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope RuntimeException
-    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope String
-    scope Value
-      let constant f: Type.t = ByteArray
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    clone prelude.heap.Field as Coder with val f = HeapDef.Byte, axiom of
-
-    clone prelude.heap.Field as Hash with val f = HeapDef.Int, axiom of
-
-    clone prelude.heap.Field as HashIsZero with val f = HeapDef.Int, axiom of
-
-    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
-
-    clone prelude.heap.Field as I'2COMPACT'3STRINGS with val f = HeapDef.Int, axiom of
-
-    scope SerialPersistentFields
-      let constant f: Type.t = Type.unknown (* Type.ArrayOf
-        (Class Java.Io.ObjectStreamField.class) *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    clone prelude.heap.Field as I'2REPL with val f = HeapDef.Char, axiom of
-
-    scope I'2CASE'3INSENSITIVE'3ORDER
-      let constant f: Type.t = Type.unknown (* Class Java.Util.Comparator.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    clone prelude.heap.Field as I'2LATIN1 with val f = HeapDef.Byte, axiom of
-
-    clone prelude.heap.Field as I'2UTF16 with val f = HeapDef.Byte, axiom of
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope IllegalArgumentException
-    clone prelude.heap.Field as SerialVersionUID with val f = HeapDef.Long, axiom of
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope System
-    scope In
-      let constant f: Type.t = Type.unknown (* Class Java.Io.InputStream.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope Out
-      let constant f: Type.t = Class Java.Io.PrintStream.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope Err
-      let constant f: Type.t = Class Java.Io.PrintStream.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    clone prelude.heap.Field as I'2NEVER with val f = HeapDef.Int, axiom of
-
-    clone prelude.heap.Field as I'2MAYBE with val f = HeapDef.Int, axiom of
-
-    clone prelude.heap.Field as AllowSecurityManager with val f = HeapDef.Int, axiom of
-
-    scope Security
-      let constant f: Type.t = Type.unknown (* Class
-        (Java.Lang.SecurityManager.class) *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope Cons
-      let constant f: Type.t = Type.unknown (* Class Java.Io.Console.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope InitialErrStream
-      let constant f: Type.t = Class Java.Io.PrintStream.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope Props
-      let constant f: Type.t = Type.unknown (* Class Java.Util.Properties.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope LineSeparator
-      let constant f: Type.t = Class Java.Lang.String.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-
-    scope BootLayer
-      let constant f: Type.t = Type.unknown (* Class Java.Lang.ModuleLayer.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
-  end
-  end
-  end
-
-  scope Java
   scope Io
   scope FilterOutputStream
-    scope Out
-      let constant f: Type.t = Class Java.Io.OutputStream.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
+    val constant f_out: L.instance_field
+    axiom f_out_type: f_out.field_type = Class Java.Io.OutputStream.class
 
-    clone prelude.heap.Field as Closed with val f = HeapDef.Int, axiom of
+    val constant f_closed: Z.instance_field
 
-    scope CloseLock
-      let constant f: Type.t = Class Java.Lang.Object.class
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
+    val constant f_closeLock: L.instance_field
+    axiom f_closeLock_type: f_closeLock.field_type = Class Java.Lang.Object.class
   end
   end
   end
@@ -416,27 +235,162 @@ module Program
   scope Java
   scope Io
   scope PrintStream
-    clone prelude.heap.Field as AutoFlush with val f = HeapDef.Int, axiom of
+    val constant f_autoFlush: Z.instance_field
 
-    clone prelude.heap.Field as Trouble with val f = HeapDef.Int, axiom of
+    val constant f_trouble: Z.instance_field
 
-    scope Formatter
-      let constant f: Type.t = Type.unknown (* Class Java.Util.Formatter.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
+    val constant f_formatter: L.instance_field
+    axiom f_formatter_type: f_formatter.field_type = Type.unknown (* Class Java.Util.Formatter.class *)
 
-    scope TextOut
-      let constant f: Type.t = Type.unknown (* Class Java.Io.BufferedWriter.class *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
+    val constant f_textOut: L.instance_field
+    axiom f_textOut_type: f_textOut.field_type = Type.unknown (* Class Java.Io.BufferedWriter.class *)
 
-    scope CharOut
-      let constant f: Type.t = Type.unknown (* Class
-        (Java.Io.OutputStreamWriter.class) *)
-      clone export prelude.heap.PtrField with val f = f, axiom of
-    end
+    val constant f_charOut: L.instance_field
+    axiom f_charOut_type: f_charOut.field_type = Type.unknown (* Class Java.Io.OutputStreamWriter.class *)
 
-    clone prelude.heap.Field as Closing with val f = HeapDef.Int, axiom of
+    val constant f_closing: Z.instance_field
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Throwable
+    val constant f_serialVersionUID: J.static_field
+
+    val constant f_backtrace: L.instance_field
+    axiom f_backtrace_type: f_backtrace.field_type = Class Java.Lang.Object.class
+
+    val constant f_detailMessage: L.instance_field
+    axiom f_detailMessage_type: f_detailMessage.field_type = Class Java.Lang.String.class
+
+    val constant f_UNASSIGNED'3STACK: L.static_field
+    axiom f_UNASSIGNED'3STACK_type: f_UNASSIGNED'3STACK.field_type = Type.unknown (* Type.ArrayOf (Class Java.Lang.StackTraceElement.class) *)
+
+    val constant f_cause: L.instance_field
+    axiom f_cause_type: f_cause.field_type = Class Java.Lang.Throwable.class
+
+    val constant f_stackTrace: L.instance_field
+    axiom f_stackTrace_type: f_stackTrace.field_type = Type.unknown (* Type.ArrayOf (Class Java.Lang.StackTraceElement.class) *)
+
+    val constant f_depth: I.instance_field
+
+    val constant f_SUPPRESSED'3SENTINEL: L.static_field
+    axiom f_SUPPRESSED'3SENTINEL_type: f_SUPPRESSED'3SENTINEL.field_type = Type.unknown (* Class Java.Util.List.class *)
+
+    val constant f_suppressedExceptions: L.instance_field
+    axiom f_suppressedExceptions_type: f_suppressedExceptions.field_type = Type.unknown (* Class Java.Util.List.class *)
+
+    val constant f_NULL'3CAUSE'3MESSAGE: L.static_field
+    axiom f_NULL'3CAUSE'3MESSAGE_type: f_NULL'3CAUSE'3MESSAGE.field_type = Class Java.Lang.String.class
+
+    val constant f_SELF'3SUPPRESSION'3MESSAGE: L.static_field
+    axiom f_SELF'3SUPPRESSION'3MESSAGE_type: f_SELF'3SUPPRESSION'3MESSAGE.field_type = Class Java.Lang.String.class
+
+    val constant f_CAUSE'3CAPTION: L.static_field
+    axiom f_CAUSE'3CAPTION_type: f_CAUSE'3CAPTION.field_type = Class Java.Lang.String.class
+
+    val constant f_SUPPRESSED'3CAPTION: L.static_field
+    axiom f_SUPPRESSED'3CAPTION_type: f_SUPPRESSED'3CAPTION.field_type = Class Java.Lang.String.class
+
+    val constant f_EMPTY'3THROWABLE'3ARRAY: L.static_field
+    axiom f_EMPTY'3THROWABLE'3ARRAY_type: f_EMPTY'3THROWABLE'3ARRAY.field_type = Type.ArrayOf (Class Java.Lang.Throwable.class)
+
+    val constant f_'4assertionsDisabled: Z.static_field
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Exception
+    val constant f_serialVersionUID: J.static_field
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope String
+    val constant f_value: L.instance_field
+    axiom f_value_type: f_value.field_type = ByteArray
+
+    val constant f_coder: B.instance_field
+
+    val constant f_hash: I.instance_field
+
+    val constant f_hashIsZero: Z.instance_field
+
+    val constant f_serialVersionUID: J.static_field
+
+    val constant f_COMPACT'3STRINGS: Z.static_field
+
+    val constant f_serialPersistentFields: L.static_field
+    axiom f_serialPersistentFields_type: f_serialPersistentFields.field_type = Type.unknown (* Type.ArrayOf (Class Java.Io.ObjectStreamField.class) *)
+
+    val constant f_REPL: C.static_field
+
+    val constant f_CASE'3INSENSITIVE'3ORDER: L.static_field
+    axiom f_CASE'3INSENSITIVE'3ORDER_type: f_CASE'3INSENSITIVE'3ORDER.field_type = Type.unknown (* Class Java.Util.Comparator.class *)
+
+    val constant f_LATIN1: B.static_field
+
+    val constant f_UTF16: B.static_field
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope RuntimeException
+    val constant f_serialVersionUID: J.static_field
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope IllegalArgumentException
+    val constant f_serialVersionUID: J.static_field
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope System
+    val constant f_in: L.static_field
+    axiom f_in_type: f_in.field_type = Type.unknown (* Class Java.Io.InputStream.class *)
+
+    val constant f_out: L.static_field
+    axiom f_out_type: f_out.field_type = Class Java.Io.PrintStream.class
+
+    val constant f_err: L.static_field
+    axiom f_err_type: f_err.field_type = Class Java.Io.PrintStream.class
+
+    val constant f_NEVER: I.static_field
+
+    val constant f_MAYBE: I.static_field
+
+    val constant f_allowSecurityManager: I.static_field
+
+    val constant f_security: L.static_field
+    axiom f_security_type: f_security.field_type = Type.unknown (* Class Java.Lang.SecurityManager.class *)
+
+    val constant f_cons: L.static_field
+    axiom f_cons_type: f_cons.field_type = Type.unknown (* Class Java.Io.Console.class *)
+
+    val constant f_initialErrStream: L.static_field
+    axiom f_initialErrStream_type: f_initialErrStream.field_type = Class Java.Io.PrintStream.class
+
+    val constant f_props: L.static_field
+    axiom f_props_type: f_props.field_type = Type.unknown (* Class Java.Util.Properties.class *)
+
+    val constant f_lineSeparator: L.static_field
+    axiom f_lineSeparator_type: f_lineSeparator.field_type = Class Java.Lang.String.class
+
+    val constant f_bootLayer: L.static_field
+    axiom f_bootLayer_type: f_bootLayer.field_type = Type.unknown (* Class Java.Lang.ModuleLayer.class *)
   end
   end
   end

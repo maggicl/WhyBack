@@ -23,13 +23,13 @@ public record NewArrayExpression(WhyType baseType, Expression size) implements E
 			}
 
 			return prefix(
-					"R%s.newarray".formatted(type.getWhyAccessorScope()),
+					"%snewarray".formatted(type.getWhyAccessorScope()),
 					terminal(Identifier.Special.HEAP),
 					size.toWhy()
 			);
 		} else {
 			return prefix(
-					"RL.anewarray",
+					"lnewarray",
 					terminal(Identifier.Special.HEAP),
 					baseType.getPreludeType(),
 					size.toWhy()

@@ -23,7 +23,7 @@ public class VimpFieldParser {
 
 	public WhyField parse(SootField f) {
 		final Identifier.FQDN clazz = classNameParser.parse(f.getDeclaringClass());
-		final Identifier.U fieldName = identifierEscaper.escapeU(f.getName());
+		final Identifier.L fieldName = identifierEscaper.escapeField(f.getName());
 		final WhyType fieldType = typeResolver.resolveType(f.getType());
 
 		return f.isStatic()

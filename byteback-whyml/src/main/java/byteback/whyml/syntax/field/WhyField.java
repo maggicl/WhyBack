@@ -5,7 +5,7 @@ import byteback.whyml.syntax.type.WhyType;
 
 public abstract class WhyField {
 	private final Identifier.FQDN clazz;
-	private final Identifier.U name;
+	private final Identifier.L name;
 	private final WhyType type;
 
 	@Override
@@ -13,7 +13,7 @@ public abstract class WhyField {
 		return "WhyField[clazz=%s, name=%s, type=%s, isStatic=%s]".formatted(clazz, name, type, isStatic());
 	}
 
-	protected WhyField(Identifier.FQDN clazz, Identifier.U name, WhyType type) {
+	protected WhyField(Identifier.FQDN clazz, Identifier.L name, WhyType type) {
 		this.clazz = clazz;
 		this.name = name;
 		this.type = type;
@@ -21,7 +21,7 @@ public abstract class WhyField {
 
 	public abstract boolean isStatic();
 
-	public Identifier.U getName() {
+	public Identifier.L getName() {
 		return name;
 	}
 

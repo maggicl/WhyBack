@@ -31,4 +31,6 @@ module Type
 
   axiom root_is_top: forall x:t. x :> Class root
   axiom array_covariance: forall x:t, x2:t. x :> x2 <-> ArrayOf x :> ArrayOf x2
+
+  let function instanceof (x: Ptr.t) (tmap: Ptr.t -> Type.t) (t: Type.t) = x = Ptr.null \/ tmap x :> t
 end

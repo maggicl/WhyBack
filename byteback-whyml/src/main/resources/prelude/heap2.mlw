@@ -1,0 +1,220 @@
+module Primitive
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+
+  type value 
+
+  type static_field = abstract { } 
+  type instance_field = abstract { } 
+  
+  type t = {
+    (* Static fields have only one value per field declaration, as they are static *)
+    mutable static_fmap: static_field -> value;
+    mutable instance_fmap: (Ptr.t, instance_field) -> value;
+  }
+
+  predicate other_same_static (heap: t) (old_heap: t) (f: static_field) =
+    forall f'. f <> f' -> 
+      heap.static_fmap f' = old_heap.static_fmap f'
+  
+  predicate other_same_instance (heap: t) (old_heap: t) (p: Ptr.t) (f: instance_field) =
+    forall p',f'. (p <> p' || f <> f') -> 
+      heap.instance_fmap (p',f') = old_heap.instance_fmap (p',f')
+  
+  val function isf (heap: t) (p: Ptr.t) (f: instance_field) : value
+    requires { p <> Ptr.null }
+    ensures { result = heap.instance_fmap (p, f) }
+
+  val getf (heap: t) (p: Ptr.t) (f: instance_field) : value
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> result = isf heap p f }
+
+  val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: value) : unit
+    writes { heap.instance_fmap }
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> heap.instance_map (p, f) = v }
+    ensures { other_same_instance heap (old heap) p f }
+
+  val function iss (heap: t) (f: static_field) =
+    ensures { result = heap.static_fmap f }
+  
+  let function gets [@inline:trivial] (heap: t) (f: static_field) : value =
+    iss heap f
+
+  val puts (heap: t) (f: field) (c: value) : unit
+    writes { heap.static_fmap }
+    ensures { heap.static_fmap f = c }
+    ensures { other_same_static heap (old heap) f }
+end
+
+module Z
+  use export prelude.boolean.Operators
+  clone export Primitive with type value = jbool
+end
+
+module B
+  use export prelude.machine.Operators
+  clone export Primitive with type value = jbyte
+end
+
+module S
+  use export prelude.machine.Operators
+  clone export Primitive with type value = jshort
+end
+
+module C
+  use export prelude.machine.Operators
+  clone export Primitive with type value = jchar
+end
+
+module I
+  use export prelude.machine.Operators
+  clone export Primitive with type value = jint
+end
+
+module J
+  use export prelude.machine.Operators
+  clone export Primitive with type value = jlong
+end
+
+module F
+  use export prelude.machine.Operators
+  clone export Primitive with type value = jfloat
+end
+
+module D
+  use export prelude.machine.Operators
+  clone export Primitive with type value = jdouble
+end
+
+module L
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use set.Set
+
+  type static_field = abstract { field_type: Type.t; } 
+  type instance_field = abstract { field_type: Type.t; } 
+  
+  type t = {
+    mutable pointers: set Ptr.t;
+    (* TODO: make sure anewarray ensures the corresponding value here is set to ArrayOf ... *)
+    typeof: Ptr.t -> Type.t; 
+    mutable static_fmap: static_field -> Ptr.t;
+    mutable instance_fmap: (Type.class, instance_field) -> Ptr.t;
+  } invariant {
+    (not (mem Ptr.null pointers)) &&
+    (forall s:static_field. static_fmap s = Ptr.null \/ typeof (static_fmap s) :> s.field_type) &&
+    (forall p:Ptr.t, s:instance_field. instanceof (instance_fmap (p,s)) typeof s.field_type)
+  }
+
+  predicate other_same_static (heap: t) (old_heap: t) (f: static_field ) =
+    forall f'. f <> f' -> 
+      heap.static_fmap f' = old_heap.static_fmap f'
+  
+  predicate other_same_instance (heap: t) (old_heap: t) (p: Ptr.t) (f: ptrfield) =
+    forall p',f'. p <> p' || f <> f' -> 
+      heap.instance_fmap (p',f') = old_heap.instance_fmap (p',f')
+
+  val function isf (heap: t) (p: Ptr.t) (f: instance_field) : Ptr.t
+    requires { p <> Ptr.null }
+    ensures { result = heap.instance_fmap (p,f) }
+    ensures { instanceof result heap.typeof f.field_type }
+
+  val getf (heap: t) (p: Ptr.t) (f: instance_field) : Ptr.t
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> result = isf heap p f }
+    ensures { p <> Ptr.null -> instanceof result heap.typeof f.field_type }
+
+  val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: Ptr.t) : unit
+    writes { heap.instance_fmap }
+    requires { instanceof v heap.typeof f.field_type }
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> heap.instance_fmap (p,f) = v }
+    ensures { other_same_instance heap (old heap) p f }
+
+  val function iss (heap: t) (f: static_field) : Ptr.t
+    ensures { result = heap.static_fmap f }
+    ensures { instanceof result heap.typeof f.field_type }
+  
+  let function gets [@inline:trivial] (heap: t) (f: static_field) : Ptr.t =
+    iss heap f
+
+  val puts (heap: t) (f: static_field) (v: Ptr.t) : unit
+    writes { heap.static_fmap }
+    requires { instanceof v heap.typeof f.field_type }
+    ensures { heap.static_fmap (p,f) = v }
+    ensures { other_same_static heap (old heap) f }
+end
+
+module PrimitiveArray
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use array.Array
+
+  type elem
+  
+  type t = {
+    mutable arrays: set Ptr.t;
+    elements: Ptr.t -> array elem 
+  }
+end
+
+(* TODO: primitive array operation modules *)
+
+module RL
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use int.Int
+
+  type t = {
+    mutable arrays: set Ptr.t;
+    element_type: Ptr.t -> Type.t;
+    elements: Ptr.t -> array Ptr.t
+  } invariant {
+    (not (mem Ptr.null arrays)) &&
+    (forall e:Ptr.t, i:int. (mem e arrays && (0 <= i < elements[e].length)) -> instanceof elements[e] element_type[e])
+  }
+end
+
+module Heap
+  use Z
+  use B
+  use S
+  use C
+  use I
+  use J
+  use F
+  use D
+  use L
+
+  clone PrimitiveArray as ZArray with type elem = jbool
+  clone PrimitiveArray as BArray with type elem = jbyte
+  clone PrimitiveArray as SArray with type elem = jshort
+  clone PrimitiveArray as CArray with type elem = jchar
+  clone PrimitiveArray as IArray with type elem = jint
+  clone PrimitiveArray as JArray with type elem = jlong
+  clone PrimitiveArray as FArray with type elem = jfloat
+  clone PrimitiveArray as DArray with type elem = jdouble
+  use PtrArray
+
+  type t = {
+    z: Z.t;
+    b: B.t;
+    s: S.t;
+    c: C.t;
+    i: I.t;
+    j: J.t;
+    f: F.t;
+    d: D.t;
+    l: L.t;
+    rz: ZArray.t;
+    rb: BArray.t;
+    rs: SArray.t;
+    rc: CArray.t;
+    ri: IArray.t;
+    rj: LArray.t;
+    rf: FArray.t;
+    rd: DArray.t;
+    rl: PtrArray.t;
+  } 
+end

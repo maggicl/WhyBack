@@ -25,9 +25,10 @@ public class WhyFieldPrinter {
 
 			return block(
 					decl,
-					line("axiom %s_type: %s.field_type = %s".formatted(
+					line("axiom %s_type: %s.%s = %s".formatted(
 							name,
 							name,
+							field.isStatic() ? "s_type" : "i_type",
 							fieldType.getPreludeType().statement(
 									notResolved ? "Type.unknown (* " : "",
 									notResolved ? " *)" : ""

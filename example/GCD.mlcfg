@@ -25,7 +25,6 @@ module Program
   use prelude.heap.RJ
   use prelude.heap.RF
   use prelude.heap.RD
-  use prelude.heap.RL
   use prelude.heap.Heap
 
   (* class type hierarchy declaration *)
@@ -222,12 +221,12 @@ module Program
   scope Io
   scope FilterOutputStream
     val constant f_out: L.instance_field
-    axiom f_out_type: f_out.field_type = Class Java.Io.OutputStream.class
+    axiom f_out_type: f_out.i_type = Class Java.Io.OutputStream.class
 
     val constant f_closed: Z.instance_field
 
     val constant f_closeLock: L.instance_field
-    axiom f_closeLock_type: f_closeLock.field_type = Class Java.Lang.Object.class
+    axiom f_closeLock_type: f_closeLock.i_type = Class Java.Lang.Object.class
   end
   end
   end
@@ -240,13 +239,13 @@ module Program
     val constant f_trouble: Z.instance_field
 
     val constant f_formatter: L.instance_field
-    axiom f_formatter_type: f_formatter.field_type = Type.unknown (* Class Java.Util.Formatter.class *)
+    axiom f_formatter_type: f_formatter.i_type = Type.unknown (* Class Java.Util.Formatter.class *)
 
     val constant f_textOut: L.instance_field
-    axiom f_textOut_type: f_textOut.field_type = Type.unknown (* Class Java.Io.BufferedWriter.class *)
+    axiom f_textOut_type: f_textOut.i_type = Type.unknown (* Class Java.Io.BufferedWriter.class *)
 
     val constant f_charOut: L.instance_field
-    axiom f_charOut_type: f_charOut.field_type = Type.unknown (* Class Java.Io.OutputStreamWriter.class *)
+    axiom f_charOut_type: f_charOut.i_type = Type.unknown (* Class Java.Io.OutputStreamWriter.class *)
 
     val constant f_closing: Z.instance_field
   end
@@ -259,42 +258,42 @@ module Program
     val constant f_serialVersionUID: J.static_field
 
     val constant f_backtrace: L.instance_field
-    axiom f_backtrace_type: f_backtrace.field_type = Class Java.Lang.Object.class
+    axiom f_backtrace_type: f_backtrace.i_type = Class Java.Lang.Object.class
 
     val constant f_detailMessage: L.instance_field
-    axiom f_detailMessage_type: f_detailMessage.field_type = Class Java.Lang.String.class
+    axiom f_detailMessage_type: f_detailMessage.i_type = Class Java.Lang.String.class
 
     val constant f_UNASSIGNED'3STACK: L.static_field
-    axiom f_UNASSIGNED'3STACK_type: f_UNASSIGNED'3STACK.field_type = Type.unknown (* Type.ArrayOf (Class Java.Lang.StackTraceElement.class) *)
+    axiom f_UNASSIGNED'3STACK_type: f_UNASSIGNED'3STACK.s_type = Type.unknown (* Type.ArrayOf (Class Java.Lang.StackTraceElement.class) *)
 
     val constant f_cause: L.instance_field
-    axiom f_cause_type: f_cause.field_type = Class Java.Lang.Throwable.class
+    axiom f_cause_type: f_cause.i_type = Class Java.Lang.Throwable.class
 
     val constant f_stackTrace: L.instance_field
-    axiom f_stackTrace_type: f_stackTrace.field_type = Type.unknown (* Type.ArrayOf (Class Java.Lang.StackTraceElement.class) *)
+    axiom f_stackTrace_type: f_stackTrace.i_type = Type.unknown (* Type.ArrayOf (Class Java.Lang.StackTraceElement.class) *)
 
     val constant f_depth: I.instance_field
 
     val constant f_SUPPRESSED'3SENTINEL: L.static_field
-    axiom f_SUPPRESSED'3SENTINEL_type: f_SUPPRESSED'3SENTINEL.field_type = Type.unknown (* Class Java.Util.List.class *)
+    axiom f_SUPPRESSED'3SENTINEL_type: f_SUPPRESSED'3SENTINEL.s_type = Type.unknown (* Class Java.Util.List.class *)
 
     val constant f_suppressedExceptions: L.instance_field
-    axiom f_suppressedExceptions_type: f_suppressedExceptions.field_type = Type.unknown (* Class Java.Util.List.class *)
+    axiom f_suppressedExceptions_type: f_suppressedExceptions.i_type = Type.unknown (* Class Java.Util.List.class *)
 
     val constant f_NULL'3CAUSE'3MESSAGE: L.static_field
-    axiom f_NULL'3CAUSE'3MESSAGE_type: f_NULL'3CAUSE'3MESSAGE.field_type = Class Java.Lang.String.class
+    axiom f_NULL'3CAUSE'3MESSAGE_type: f_NULL'3CAUSE'3MESSAGE.s_type = Class Java.Lang.String.class
 
     val constant f_SELF'3SUPPRESSION'3MESSAGE: L.static_field
-    axiom f_SELF'3SUPPRESSION'3MESSAGE_type: f_SELF'3SUPPRESSION'3MESSAGE.field_type = Class Java.Lang.String.class
+    axiom f_SELF'3SUPPRESSION'3MESSAGE_type: f_SELF'3SUPPRESSION'3MESSAGE.s_type = Class Java.Lang.String.class
 
     val constant f_CAUSE'3CAPTION: L.static_field
-    axiom f_CAUSE'3CAPTION_type: f_CAUSE'3CAPTION.field_type = Class Java.Lang.String.class
+    axiom f_CAUSE'3CAPTION_type: f_CAUSE'3CAPTION.s_type = Class Java.Lang.String.class
 
     val constant f_SUPPRESSED'3CAPTION: L.static_field
-    axiom f_SUPPRESSED'3CAPTION_type: f_SUPPRESSED'3CAPTION.field_type = Class Java.Lang.String.class
+    axiom f_SUPPRESSED'3CAPTION_type: f_SUPPRESSED'3CAPTION.s_type = Class Java.Lang.String.class
 
     val constant f_EMPTY'3THROWABLE'3ARRAY: L.static_field
-    axiom f_EMPTY'3THROWABLE'3ARRAY_type: f_EMPTY'3THROWABLE'3ARRAY.field_type = Type.ArrayOf (Class Java.Lang.Throwable.class)
+    axiom f_EMPTY'3THROWABLE'3ARRAY_type: f_EMPTY'3THROWABLE'3ARRAY.s_type = Type.ArrayOf (Class Java.Lang.Throwable.class)
 
     val constant f_'4assertionsDisabled: Z.static_field
   end
@@ -313,7 +312,7 @@ module Program
   scope Lang
   scope String
     val constant f_value: L.instance_field
-    axiom f_value_type: f_value.field_type = ByteArray
+    axiom f_value_type: f_value.i_type = ByteArray
 
     val constant f_coder: B.instance_field
 
@@ -326,12 +325,12 @@ module Program
     val constant f_COMPACT'3STRINGS: Z.static_field
 
     val constant f_serialPersistentFields: L.static_field
-    axiom f_serialPersistentFields_type: f_serialPersistentFields.field_type = Type.unknown (* Type.ArrayOf (Class Java.Io.ObjectStreamField.class) *)
+    axiom f_serialPersistentFields_type: f_serialPersistentFields.s_type = Type.unknown (* Type.ArrayOf (Class Java.Io.ObjectStreamField.class) *)
 
     val constant f_REPL: C.static_field
 
     val constant f_CASE'3INSENSITIVE'3ORDER: L.static_field
-    axiom f_CASE'3INSENSITIVE'3ORDER_type: f_CASE'3INSENSITIVE'3ORDER.field_type = Type.unknown (* Class Java.Util.Comparator.class *)
+    axiom f_CASE'3INSENSITIVE'3ORDER_type: f_CASE'3INSENSITIVE'3ORDER.s_type = Type.unknown (* Class Java.Util.Comparator.class *)
 
     val constant f_LATIN1: B.static_field
 
@@ -360,13 +359,13 @@ module Program
   scope Lang
   scope System
     val constant f_in: L.static_field
-    axiom f_in_type: f_in.field_type = Type.unknown (* Class Java.Io.InputStream.class *)
+    axiom f_in_type: f_in.s_type = Type.unknown (* Class Java.Io.InputStream.class *)
 
     val constant f_out: L.static_field
-    axiom f_out_type: f_out.field_type = Class Java.Io.PrintStream.class
+    axiom f_out_type: f_out.s_type = Class Java.Io.PrintStream.class
 
     val constant f_err: L.static_field
-    axiom f_err_type: f_err.field_type = Class Java.Io.PrintStream.class
+    axiom f_err_type: f_err.s_type = Class Java.Io.PrintStream.class
 
     val constant f_NEVER: I.static_field
 
@@ -375,22 +374,22 @@ module Program
     val constant f_allowSecurityManager: I.static_field
 
     val constant f_security: L.static_field
-    axiom f_security_type: f_security.field_type = Type.unknown (* Class Java.Lang.SecurityManager.class *)
+    axiom f_security_type: f_security.s_type = Type.unknown (* Class Java.Lang.SecurityManager.class *)
 
     val constant f_cons: L.static_field
-    axiom f_cons_type: f_cons.field_type = Type.unknown (* Class Java.Io.Console.class *)
+    axiom f_cons_type: f_cons.s_type = Type.unknown (* Class Java.Io.Console.class *)
 
     val constant f_initialErrStream: L.static_field
-    axiom f_initialErrStream_type: f_initialErrStream.field_type = Class Java.Io.PrintStream.class
+    axiom f_initialErrStream_type: f_initialErrStream.s_type = Class Java.Io.PrintStream.class
 
     val constant f_props: L.static_field
-    axiom f_props_type: f_props.field_type = Type.unknown (* Class Java.Util.Properties.class *)
+    axiom f_props_type: f_props.s_type = Type.unknown (* Class Java.Util.Properties.class *)
 
     val constant f_lineSeparator: L.static_field
-    axiom f_lineSeparator_type: f_lineSeparator.field_type = Class Java.Lang.String.class
+    axiom f_lineSeparator_type: f_lineSeparator.s_type = Class Java.Lang.String.class
 
     val constant f_bootLayer: L.static_field
-    axiom f_bootLayer_type: f_bootLayer.field_type = Type.unknown (* Class Java.Lang.ModuleLayer.class *)
+    axiom f_bootLayer_type: f_bootLayer.s_type = Type.unknown (* Class Java.Lang.ModuleLayer.class *)
   end
   end
   end
@@ -482,8 +481,7 @@ module Program
     ->. ((ICMP.le (int2i (s2int p_l0)) (0:jint))
     \/. (ICMP.le (int2i (s2int p_l1)) (0:jint))) }
     reads { Java.Lang.String.pointers }
-    writes { heap.typeof }
-    writes { heap.ptrs }
+    writes { heap.l.pointers }
     writes { caughtexception }
   =
     var lv_l0: jshort;

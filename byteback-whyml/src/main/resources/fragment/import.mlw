@@ -24,5 +24,4 @@
   use prelude.heap.RJ
   use prelude.heap.RF
   use prelude.heap.RD
-  use prelude.heap.RL
   use prelude.heap.Heap

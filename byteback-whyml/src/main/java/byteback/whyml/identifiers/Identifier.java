@@ -64,6 +64,12 @@ public sealed class Identifier implements Comparable<Identifier> permits Identif
 		}
 
 		public static Identifier.L getArrayHeap(WhyJVMType type) {
+			if (type == WhyJVMType.PTR) {
+				// heap.rl_* data is part of heap itself to allow type assertions on elements (which
+				// are references and thus their type is in l.typeof)
+				return HEAP;
+			}
+
 			return new L("heap.r%s".formatted(type.getWhyAccessorScope().toLowerCase(Locale.ROOT)));
 		}
 

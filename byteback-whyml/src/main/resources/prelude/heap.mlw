@@ -164,12 +164,12 @@ module PrimitiveArray
 
   type t = {
     mutable arrays: set Ptr.t;
-    elements: Ptr.t -> array elem
+    mutable elements: Ptr.t -> {array elem}
   }
 
   predicate other_same_array (heap: t) (old_heap: t) (p: Ptr.t) =
     forall p'. p <> p' ->
-      (heap.elements p).elts = (heap.elements p').elts
+      (heap.elements p).elts = (old_heap.elements p').elts
 
   predicate valid_access (heap: t) (p: Ptr.t) (i: jint) =
     mem p heap.arrays && 0 <= i < (heap.elements p).length
@@ -183,8 +183,9 @@ module PrimitiveArray
     ensures { valid_access heap p i -> result = iselem heap p i }
 
   val store (heap: t) (p: Ptr.t) (i: jint) (v: elem) : unit
+    writes { heap.elements }
     ensures { valid_access heap p i -> (heap.elements p).elts = Map.set (old (heap.elements p)).elts i v }
-    ensures { valid_access heap p i -> (heap.elements p) = (old (heap.elements p))[i <- v] }
+    ensures { valid_access heap p i -> (heap.elements p) = (old (heap.elements p)[i <- v]) }
     (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
     ensures { other_same_array heap (old heap) p }
 
@@ -240,56 +241,14 @@ module RD
   clone export PrimitiveArray with type elem = jdouble, val default_value = Default.d
 end
 
-module RL
+module Heap
+  use int.Int
   use prelude.ptr.Ptr
   use prelude.typing.Type
-  use prelude.machine.Operators
+  use prelude.ptr.Operators
   use array.Array
   use int.Int
   use set.Set
-
-  type t = {
-    mutable arrays: set Ptr.t;
-    element_type: Ptr.t -> Type.t;
-    elements: Ptr.t -> array Ptr.t
-  } invariant {
-    (not (mem Ptr.null arrays)) &&
-    (forall e:Ptr.t, i:int. (mem e arrays && (0 <= i < (elements e).length)) ->
-      compatible (elements e)[i] (element_type e))
-  }
-
-  predicate valid_access (heap: t) (p: Ptr.t) (i: jint) =
-    mem p heap.arrays && 0 <= i < (heap.elements p).length
-
-  val function iselem (heap: t) (p: Ptr.t) (i: jint) : elem
-    requires { valid_access heap p i }
-    ensures { result = (heap.elements p)[i] }
-
-  val load (heap: t) (p: Ptr.t) (i: jint) : elem
-    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
-    ensures { valid_access heap p i -> result = iselem heap p i }
-
-  val store (heap: t) (p: Ptr.t) (i: jint) (v: elem) : unit
-    writes { heap.elements p }
-    ensures { valid_access heap p i -> (heap.elements p).elts = Map.set (old (heap.elements p)).elts i v }
-    ensures { valid_access heap p i -> (heap.elements p) = (old (heap.elements p))[i <- v] }``
-    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
-    ensures { other_same_array heap (old heap) p }
-
-  val function arraylength (heap: t) (p: Ptr.t) : jint
-    requires { mem p heap.arrays }
-    ensures { result = int2i (heap.elements p).length }
-
-  predicate is_new_array (result: Ptr.t) (len: int) (of_elem_type: Type.t) (heap: t) (old_heap: t) =
-    result <> Ptr.null /\
-    mem result heap.arrays /\
-    not (mem result old_heap.arrays) /\
-    heap.element_type result = of_elem_type /\
-    (heap.elements result).length = len /\
-    forall i:int. 0 <= i < len -> (heap.elements result)[i] = default_value
-end
-
-module Heap
   use Z
   use B
   use S
@@ -307,7 +266,6 @@ module Heap
   use RJ
   use RF
   use RD
-  use RL
 
   type t = {
     z: Z.t;
@@ -324,71 +282,125 @@ module Heap
     rs: RS.t;
     rc: RC.t;
     ri: RI.t;
-    rj: RL.t;
+    rj: RJ.t;
     rf: RF.t;
     rd: RD.t;
-    rl: RL.t;
+    mutable rl_arrays: set Ptr.t;
+    rl_element_type: Ptr.t -> Type.t;
+    mutable rl_elements: Ptr.t -> {array Ptr.t};
+  } invariant {
+     (not (mem Ptr.null rl_arrays)) &&
+     (forall e:Ptr.t, i:int. (mem e rl_arrays && (0 <= i < (rl_elements e).length)) ->
+       compatible (rl_elements e)[i] l.typeof (rl_element_type e))
   }
 
-  let predicate instanceof [@inline:trivial] (heap: t) (p: Ptr.t) (t: Type.t) =
-    p <> Ptr.null /\ compatible p heap.z.typeof t
+  type ht = t
 
-  val checkcast (heap: t) (p: Ptr.t) (t: Type.t) : Ptr.t
+  use L
+
+  let predicate instanceof [@inline:trivial] (heap: ht) (p: Ptr.t) (t: Type.t) =
+    not_null p && compatible p heap.l.typeof t
+
+  val checkcast (heap: ht) (p: Ptr.t) (t: Type.t) : Ptr.t
     ensures { compatible p heap.l.typeof t -> result = p }
     (* raises { JException e -> not (hastype heap p t) && e = Java.Lang.ClassCastException.class } *)
 
-  val function iscast (heap: t) (p: Ptr.t) (t: Type.t) : Ptr.t
+  val function iscast (heap: ht) (p: Ptr.t) (t: Type.t) : Ptr.t
     requires { compatible p heap.l.typeof t }
     ensures { result = p }
 
-  val new (heap: t) (id: Type.class) : Ptr.t
-    writes { heap.l.∂ƒ, heap.l.typeof }
+  val new (heap: ht) (id: Type.class) : Ptr.t
+    writes { heap.l.pointers }
     ensures { L.is_new_ptr result (Type.Class id) heap.l (old heap.l) }
 
   (* TODO: when re-introducing PEI behaviour, here is the place for NegativeArraySize and ArrayStore *)
 
-  val znewarray (heap: t) (len: jint)
-    writes { heap.l.pointers, heap.l.typeof, heap.rz.arrays }
+  use RZ
+  val znewarray (heap: ht) (len: jint) : Ptr.t
+    writes { heap.l.pointers, heap.rz.arrays }
     ensures { len >= 0 -> L.is_new_ptr result Type.BoolArray heap.l (old heap.l) }
     ensures { len >= 0 -> RZ.is_new_array result len heap.rz (old heap.rz) }
 
-  val bnewarray (heap: t) (len: jint)
-    writes { heap.l.pointers, heap.l.typeof, heap.rb.arrays }
+  use RB
+  val bnewarray (heap: ht) (len: jint) : Ptr.t
+    writes { heap.l.pointers, heap.rb.arrays }
     ensures { len >= 0 -> L.is_new_ptr result Type.ByteArray heap.l (old heap.l) }
     ensures { len >= 0 -> RB.is_new_array result len heap.rb (old heap.rb) }
 
-  val snewarray (heap: t) (len: jint)
-    writes { heap.l.pointers, heap.l.typeof, heap.rs.arrays }
+  use RS
+  val snewarray (heap: ht) (len: jint) : Ptr.t
+    writes { heap.l.pointers, heap.rs.arrays }
     ensures { len >= 0 -> L.is_new_ptr result Type.ShortArray heap.l (old heap.l) }
     ensures { len >= 0 -> RS.is_new_array result len heap.rs (old heap.rs) }
 
-  val cnewarray (heap: t) (len: jint)
-    writes { heap.l.pointers, heap.l.typeof, heap.rc.arrays }
+  use RC
+  val cnewarray (heap: ht) (len: jint) : Ptr.t
+    writes { heap.l.pointers, heap.rc.arrays }
     ensures { len >= 0 -> L.is_new_ptr result Type.CharArray heap.l (old heap.l) }
     ensures { len >= 0 -> RC.is_new_array result len heap.rc (old heap.rc) }
 
-  val inewarray (heap: t) (len: jint)
-    writes { heap.l.pointers, heap.l.typeof, heap.ri.arrays }
+  use RI
+  val inewarray (heap: ht) (len: jint) : Ptr.t
+    writes { heap.l.pointers, heap.ri.arrays }
     ensures { len >= 0 -> L.is_new_ptr result Type.IntArray heap.l (old heap.l) }
     ensures { len >= 0 -> RI.is_new_array result len heap.ri (old heap.ri) }
 
-  val jnewarray (heap: t) (len: jint)
-    writes { heap.l.pointers, heap.l.typeof, heap.rj.arrays }
+  use RJ
+  val jnewarray (heap: ht) (len: jint) : Ptr.t
+    writes { heap.l.pointers, heap.rj.arrays }
     ensures { len >= 0 -> L.is_new_ptr result Type.LongArray heap.l (old heap.l) }
     ensures { len >= 0 -> RJ.is_new_array result len heap.rj (old heap.rj) }
 
-  val fnewarray (heap: t) (len: jint)
-    writes { heap.l.pointers, heap.l.typeof, heap.rf.arrays }
+  use RF
+  val fnewarray (heap: ht) (len: jint) : Ptr.t
+    writes { heap.l.pointers, heap.rf.arrays }
     ensures { len >= 0 -> L.is_new_ptr result Type.FloatArray heap.l (old heap.l) }
     ensures { len >= 0 -> RF.is_new_array result len heap.rf (old heap.rf) }
 
-  val dnewarray (heap: t) (len: jint)
-    writes { heap.l.pointers, heap.l.typeof, heap.rd.arrays }
+  use RD
+  val dnewarray (heap: ht) (len: jint) : Ptr.t
+    writes { heap.l.pointers, heap.rd.arrays }
     ensures { len >= 0 -> L.is_new_ptr result Type.DoubleArray heap.l (old heap.l) }
     ensures { len >= 0 -> RD.is_new_array result len heap.rd (old heap.rd) }
 
-  val lnewarray (heap: t) (elem_type: Type.t) (len: jint)
-    writes { heap.l.pointers, heap.l.typeof, heap.rl.arrays, heap.rl.element_type }
+  scope RL
+    predicate other_same_array (heap: ht) (old_heap: ht) (p: Ptr.t) =
+      forall p'. p <> p' ->
+        (heap.rl_elements p).elts = (old_heap.rl_elements p').elts
+
+    predicate valid_access (heap: ht) (p: Ptr.t) (i: jint) =
+      mem p heap.rl_arrays && 0 <= i < (heap.rl_elements p).length
+
+    val function iselem (heap: ht) (p: Ptr.t) (i: jint) : Ptr.t
+      requires { valid_access heap p i }
+      ensures { result = (heap.rl_elements p)[i] }
+
+    val load (heap: ht) (p: Ptr.t) (i: jint) : Ptr.t
+      (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+      ensures { valid_access heap p i -> result = iselem heap p i }
+
+    val store (heap: ht) (p: Ptr.t) (i: jint) (v: Ptr.t) : unit
+      writes { heap.rl_elements }
+      ensures { valid_access heap p i -> (heap.rl_elements p).elts = Map.set (old (heap.rl_elements p)).elts i v }
+      ensures { valid_access heap p i -> (heap.rl_elements p) = (old (heap.rl_elements p))[i <- v] }
+      (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+      ensures { other_same_array heap (old heap) p }
+
+    val function arraylength (heap: ht) (p: Ptr.t) : jint
+      requires { mem p heap.rl_arrays }
+      ensures { result = int2i (heap.rl_elements p).length }
+
+    predicate is_new_array (result: Ptr.t) (len: int) (of_elem_type: Type.t) (heap: ht) (old_heap: ht) =
+      result <> Ptr.null /\
+      mem result heap.rl_arrays /\
+      not (mem result old_heap.rl_arrays) /\
+      heap.rl_element_type result = of_elem_type /\
+      (heap.rl_elements result).length = len /\
+      forall i:int. 0 <= i < len -> (heap.rl_elements result)[i] = Ptr.null
+  end
+
+  val lnewarray (heap: ht) (elem_type: Type.t) (len: jint) : Ptr.t
+    writes { heap.l.pointers, heap.rl_arrays }
     ensures { len >= 0 -> L.is_new_ptr result (ArrayOf elem_type) heap.l (old heap.l) }
-    ensures { len >= 0 -> RL.is_new_array result elem_type len heap.rl (old heap.rl) }
+    ensures { len >= 0 -> RL.is_new_array result len elem_type heap (old heap) }
 end

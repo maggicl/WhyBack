@@ -21,5 +21,6 @@ shift 1
 
 # Run prover
 exec why3 --config "$conf" prove -P Z3,4.8.17, -L "$prelude" \
+  --timelimit=20 \
   --warn-off=unused_expression --warn-off=unused_variable --warn-off=useless_at \
   "$file$extension" "$@" 2>&1 | tee "$file.out"

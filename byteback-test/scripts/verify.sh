@@ -15,11 +15,11 @@ extension=".mlcfg"
 shift 1
 
 # Check syntax only
-exec why3 --config "$conf" prove -L "$prelude" \
-  --warn-off=unused_expression --warn-off=unused_variable --warn-off=useless_at \
-  "$file$extension" "$@" >/dev/null
+#exec why3 --config "$conf" prove -L "$prelude" \
+#  --warn-off=unused_expression --warn-off=unused_variable --warn-off=useless_at \
+#  "$file$extension" "$@" >/dev/null
 
 # Run prover
-#exec why3 --config "$conf" prove -P Z3,4.8.17, -L "$prelude" \
-#  --warn-off=unused_expression --warn-off=unused_variable --warn-off=useless_at \
-#  "$file$extension" "$@" 2>&1 | tee "$file.out"
+exec why3 --config "$conf" prove -P Z3,4.8.17, -L "$prelude" \
+  --warn-off=unused_expression --warn-off=unused_variable --warn-off=useless_at \
+  "$file$extension" "$@" 2>&1 | tee "$file.out"

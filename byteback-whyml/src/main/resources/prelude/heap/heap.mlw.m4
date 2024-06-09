@@ -131,7 +131,7 @@ module Heap
   use prelude.ptr.Ptr
   use prelude.typing.Type
   use prelude.ptr.Operators
-  use prelude.machine.Operators
+  use TYPES
   use array.Array
   use int.Int
   use set.Set

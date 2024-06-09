@@ -6,7 +6,7 @@ module MELEM
   use prelude.ptr.Ptr
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.machine.Operators
+  use TYPES
   use array.Array
   use int.Int
   use set.Set

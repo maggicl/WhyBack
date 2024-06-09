@@ -15,14 +15,21 @@ public record FieldExpression(Operation operation, Access access) implements Exp
 	public SExpr toWhy() {
 		final WhyField field = access.getField();
 		final String accessor = field.getType().jvm().getWhyAccessorScope();
-		final String instanceOrStatic = access instanceof Access.Instance ? "f" : "s";
 
-		return prefix(
-				"%s.%s%s".formatted(accessor, operation.whyKeyword(), instanceOrStatic),
-				terminal(Identifier.Special.getHeap(field.getType().jvm())),
-				access.referenceToWhy(),
-				terminal("%s.%s".formatted(field.getClazz(), field.getName()))
-		);
+		if (access instanceof Access.Instance) {
+			return prefix(
+					"%s.%sf".formatted(accessor, operation.whyKeyword()),
+					terminal(Identifier.Special.getHeap(field.getType().jvm())),
+					access.referenceToWhy(),
+					terminal("%s.%s".formatted(field.getClazz(), field.getName()))
+			);
+		} else {
+			return prefix(
+					"%s.%ss".formatted(accessor, operation.whyKeyword()),
+					terminal(Identifier.Special.getHeap(field.getType().jvm())),
+					terminal("%s.%s".formatted(field.getClazz(), field.getName()))
+			);
+		}
 	}
 
 	@Override

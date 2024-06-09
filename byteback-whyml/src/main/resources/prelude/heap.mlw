@@ -1,90 +1,393 @@
-module Primitive
+module Z
   use prelude.ptr.Ptr
   use prelude.typing.Type
-
-  type value
+  use prelude.boolean.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
 
   type t = {
-    (* Static fields have only one value per field declaration, as they are static *)
-    mutable static_fmap: static_field -> value;
-    mutable instance_fmap: (Ptr.t, instance_field) -> value;
+    (* Static fields have only one jbool per field declaration, as they are static *)
+    mutable z_static_fmap: static_field -> jbool;
+    mutable z_instance_fmap: (Ptr.t, instance_field) -> jbool;
   }
 
   predicate other_same_static (heap: t) (old_heap: t) (f: static_field) =
-    forall f'. f <> f' ->
-      heap.static_fmap f' = old_heap.static_fmap f'
+    forall ff. f <> ff ->
+      heap.z_static_fmap ff = old_heap.z_static_fmap ff
 
   predicate other_same_instance (heap: t) (old_heap: t) (p: Ptr.t) (f: instance_field) =
-    forall p',f'. (p <> p' || f <> f') ->
-      heap.instance_fmap (p',f') = old_heap.instance_fmap (p',f')
+    forall pp,ff. (p <> pp || f <> ff) ->
+      heap.z_instance_fmap (pp,ff) = old_heap.z_instance_fmap (pp,ff)
 
-  val function isf (heap: t) (p: Ptr.t) (f: instance_field) : value
+  val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jbool
     requires { p <> Ptr.null }
-    ensures { result = heap.instance_fmap (p, f) }
+    ensures { result = heap.z_instance_fmap (p, f) }
 
-  val getf (heap: t) (p: Ptr.t) (f: instance_field) : value
+  val getf (heap: t) (p: Ptr.t) (f: instance_field) : jbool
     (* raises { JException e -> npe_if_null e p } *)
     ensures { p <> Ptr.null -> result = isf heap p f }
 
-  val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: value) : unit
-    writes { heap.instance_fmap }
+  val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jbool) : unit
+    writes { heap.z_instance_fmap }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.instance_fmap (p, f) = v }
+    ensures { p <> Ptr.null -> heap.z_instance_fmap (p, f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
-  let function iss [@inline:trivial] (heap: t) (f: static_field) : value =
-    heap.static_fmap f
+  let function iss [@inline:trivial] (heap: t) (f: static_field) : jbool =
+    heap.z_static_fmap f
 
-  let function gets [@inline:trivial] (heap: t) (f: static_field) : value =
+  let function gets [@inline:trivial] (heap: t) (f: static_field) : jbool =
     iss heap f
 
-  val puts (heap: t) (f: static_field) (c: value) : unit
-    writes { heap.static_fmap }
-    ensures { heap.static_fmap f = c }
+  val puts (heap: t) (f: static_field) (c: jbool) : unit
+    writes { heap.z_static_fmap }
+    ensures { heap.z_static_fmap f = c }
     ensures { other_same_static heap (old heap) f }
 end
 
-module Z
-  use export prelude.boolean.Operators
-  clone export Primitive with type value = jbool
-end
-
 module B
-  use export prelude.machine.Operators
-  clone export Primitive with type value = jbyte
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
+  use prelude.machine.Operators
+
+  type static_field = abstract { }
+  type instance_field = abstract { }
+
+  type t = {
+    (* Static fields have only one jbyte per field declaration, as they are static *)
+    mutable b_static_fmap: static_field -> jbyte;
+    mutable b_instance_fmap: (Ptr.t, instance_field) -> jbyte;
+  }
+
+  predicate other_same_static (heap: t) (old_heap: t) (f: static_field) =
+    forall ff. f <> ff ->
+      heap.b_static_fmap ff = old_heap.b_static_fmap ff
+
+  predicate other_same_instance (heap: t) (old_heap: t) (p: Ptr.t) (f: instance_field) =
+    forall pp,ff. (p <> pp || f <> ff) ->
+      heap.b_instance_fmap (pp,ff) = old_heap.b_instance_fmap (pp,ff)
+
+  val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jbyte
+    requires { p <> Ptr.null }
+    ensures { result = heap.b_instance_fmap (p, f) }
+
+  val getf (heap: t) (p: Ptr.t) (f: instance_field) : jbyte
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> result = isf heap p f }
+
+  val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jbyte) : unit
+    writes { heap.b_instance_fmap }
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> heap.b_instance_fmap (p, f) = v }
+    ensures { other_same_instance heap (old heap) p f }
+
+  let function iss [@inline:trivial] (heap: t) (f: static_field) : jbyte =
+    heap.b_static_fmap f
+
+  let function gets [@inline:trivial] (heap: t) (f: static_field) : jbyte =
+    iss heap f
+
+  val puts (heap: t) (f: static_field) (c: jbyte) : unit
+    writes { heap.b_static_fmap }
+    ensures { heap.b_static_fmap f = c }
+    ensures { other_same_static heap (old heap) f }
 end
 
 module S
-  use export prelude.machine.Operators
-  clone export Primitive with type value = jshort
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
+  use prelude.machine.Operators
+
+  type static_field = abstract { }
+  type instance_field = abstract { }
+
+  type t = {
+    (* Static fields have only one jshort per field declaration, as they are static *)
+    mutable s_static_fmap: static_field -> jshort;
+    mutable s_instance_fmap: (Ptr.t, instance_field) -> jshort;
+  }
+
+  predicate other_same_static (heap: t) (old_heap: t) (f: static_field) =
+    forall ff. f <> ff ->
+      heap.s_static_fmap ff = old_heap.s_static_fmap ff
+
+  predicate other_same_instance (heap: t) (old_heap: t) (p: Ptr.t) (f: instance_field) =
+    forall pp,ff. (p <> pp || f <> ff) ->
+      heap.s_instance_fmap (pp,ff) = old_heap.s_instance_fmap (pp,ff)
+
+  val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jshort
+    requires { p <> Ptr.null }
+    ensures { result = heap.s_instance_fmap (p, f) }
+
+  val getf (heap: t) (p: Ptr.t) (f: instance_field) : jshort
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> result = isf heap p f }
+
+  val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jshort) : unit
+    writes { heap.s_instance_fmap }
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> heap.s_instance_fmap (p, f) = v }
+    ensures { other_same_instance heap (old heap) p f }
+
+  let function iss [@inline:trivial] (heap: t) (f: static_field) : jshort =
+    heap.s_static_fmap f
+
+  let function gets [@inline:trivial] (heap: t) (f: static_field) : jshort =
+    iss heap f
+
+  val puts (heap: t) (f: static_field) (c: jshort) : unit
+    writes { heap.s_static_fmap }
+    ensures { heap.s_static_fmap f = c }
+    ensures { other_same_static heap (old heap) f }
 end
 
 module C
-  use export prelude.machine.Operators
-  clone export Primitive with type value = jchar
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
+  use prelude.machine.Operators
+
+  type static_field = abstract { }
+  type instance_field = abstract { }
+
+  type t = {
+    (* Static fields have only one jchar per field declaration, as they are static *)
+    mutable c_static_fmap: static_field -> jchar;
+    mutable c_instance_fmap: (Ptr.t, instance_field) -> jchar;
+  }
+
+  predicate other_same_static (heap: t) (old_heap: t) (f: static_field) =
+    forall ff. f <> ff ->
+      heap.c_static_fmap ff = old_heap.c_static_fmap ff
+
+  predicate other_same_instance (heap: t) (old_heap: t) (p: Ptr.t) (f: instance_field) =
+    forall pp,ff. (p <> pp || f <> ff) ->
+      heap.c_instance_fmap (pp,ff) = old_heap.c_instance_fmap (pp,ff)
+
+  val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jchar
+    requires { p <> Ptr.null }
+    ensures { result = heap.c_instance_fmap (p, f) }
+
+  val getf (heap: t) (p: Ptr.t) (f: instance_field) : jchar
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> result = isf heap p f }
+
+  val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jchar) : unit
+    writes { heap.c_instance_fmap }
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> heap.c_instance_fmap (p, f) = v }
+    ensures { other_same_instance heap (old heap) p f }
+
+  let function iss [@inline:trivial] (heap: t) (f: static_field) : jchar =
+    heap.c_static_fmap f
+
+  let function gets [@inline:trivial] (heap: t) (f: static_field) : jchar =
+    iss heap f
+
+  val puts (heap: t) (f: static_field) (c: jchar) : unit
+    writes { heap.c_static_fmap }
+    ensures { heap.c_static_fmap f = c }
+    ensures { other_same_static heap (old heap) f }
 end
 
 module I
-  use export prelude.machine.Operators
-  clone export Primitive with type value = jint
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
+  use prelude.machine.Operators
+
+  type static_field = abstract { }
+  type instance_field = abstract { }
+
+  type t = {
+    (* Static fields have only one jint per field declaration, as they are static *)
+    mutable i_static_fmap: static_field -> jint;
+    mutable i_instance_fmap: (Ptr.t, instance_field) -> jint;
+  }
+
+  predicate other_same_static (heap: t) (old_heap: t) (f: static_field) =
+    forall ff. f <> ff ->
+      heap.i_static_fmap ff = old_heap.i_static_fmap ff
+
+  predicate other_same_instance (heap: t) (old_heap: t) (p: Ptr.t) (f: instance_field) =
+    forall pp,ff. (p <> pp || f <> ff) ->
+      heap.i_instance_fmap (pp,ff) = old_heap.i_instance_fmap (pp,ff)
+
+  val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jint
+    requires { p <> Ptr.null }
+    ensures { result = heap.i_instance_fmap (p, f) }
+
+  val getf (heap: t) (p: Ptr.t) (f: instance_field) : jint
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> result = isf heap p f }
+
+  val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jint) : unit
+    writes { heap.i_instance_fmap }
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> heap.i_instance_fmap (p, f) = v }
+    ensures { other_same_instance heap (old heap) p f }
+
+  let function iss [@inline:trivial] (heap: t) (f: static_field) : jint =
+    heap.i_static_fmap f
+
+  let function gets [@inline:trivial] (heap: t) (f: static_field) : jint =
+    iss heap f
+
+  val puts (heap: t) (f: static_field) (c: jint) : unit
+    writes { heap.i_static_fmap }
+    ensures { heap.i_static_fmap f = c }
+    ensures { other_same_static heap (old heap) f }
 end
 
 module J
-  use export prelude.machine.Operators
-  clone export Primitive with type value = jlong
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
+  use prelude.machine.Operators
+
+  type static_field = abstract { }
+  type instance_field = abstract { }
+
+  type t = {
+    (* Static fields have only one jlong per field declaration, as they are static *)
+    mutable j_static_fmap: static_field -> jlong;
+    mutable j_instance_fmap: (Ptr.t, instance_field) -> jlong;
+  }
+
+  predicate other_same_static (heap: t) (old_heap: t) (f: static_field) =
+    forall ff. f <> ff ->
+      heap.j_static_fmap ff = old_heap.j_static_fmap ff
+
+  predicate other_same_instance (heap: t) (old_heap: t) (p: Ptr.t) (f: instance_field) =
+    forall pp,ff. (p <> pp || f <> ff) ->
+      heap.j_instance_fmap (pp,ff) = old_heap.j_instance_fmap (pp,ff)
+
+  val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jlong
+    requires { p <> Ptr.null }
+    ensures { result = heap.j_instance_fmap (p, f) }
+
+  val getf (heap: t) (p: Ptr.t) (f: instance_field) : jlong
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> result = isf heap p f }
+
+  val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jlong) : unit
+    writes { heap.j_instance_fmap }
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> heap.j_instance_fmap (p, f) = v }
+    ensures { other_same_instance heap (old heap) p f }
+
+  let function iss [@inline:trivial] (heap: t) (f: static_field) : jlong =
+    heap.j_static_fmap f
+
+  let function gets [@inline:trivial] (heap: t) (f: static_field) : jlong =
+    iss heap f
+
+  val puts (heap: t) (f: static_field) (c: jlong) : unit
+    writes { heap.j_static_fmap }
+    ensures { heap.j_static_fmap f = c }
+    ensures { other_same_static heap (old heap) f }
 end
 
 module F
-  use export prelude.machine.Operators
-  clone export Primitive with type value = jfloat
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
+  use prelude.machine.Operators
+
+  type static_field = abstract { }
+  type instance_field = abstract { }
+
+  type t = {
+    (* Static fields have only one jfloat per field declaration, as they are static *)
+    mutable f_static_fmap: static_field -> jfloat;
+    mutable f_instance_fmap: (Ptr.t, instance_field) -> jfloat;
+  }
+
+  predicate other_same_static (heap: t) (old_heap: t) (f: static_field) =
+    forall ff. f <> ff ->
+      heap.f_static_fmap ff = old_heap.f_static_fmap ff
+
+  predicate other_same_instance (heap: t) (old_heap: t) (p: Ptr.t) (f: instance_field) =
+    forall pp,ff. (p <> pp || f <> ff) ->
+      heap.f_instance_fmap (pp,ff) = old_heap.f_instance_fmap (pp,ff)
+
+  val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jfloat
+    requires { p <> Ptr.null }
+    ensures { result = heap.f_instance_fmap (p, f) }
+
+  val getf (heap: t) (p: Ptr.t) (f: instance_field) : jfloat
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> result = isf heap p f }
+
+  val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jfloat) : unit
+    writes { heap.f_instance_fmap }
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> heap.f_instance_fmap (p, f) = v }
+    ensures { other_same_instance heap (old heap) p f }
+
+  let function iss [@inline:trivial] (heap: t) (f: static_field) : jfloat =
+    heap.f_static_fmap f
+
+  let function gets [@inline:trivial] (heap: t) (f: static_field) : jfloat =
+    iss heap f
+
+  val puts (heap: t) (f: static_field) (c: jfloat) : unit
+    writes { heap.f_static_fmap }
+    ensures { heap.f_static_fmap f = c }
+    ensures { other_same_static heap (old heap) f }
 end
 
 module D
-  use export prelude.machine.Operators
-  clone export Primitive with type value = jdouble
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
+  use prelude.machine.Operators
+
+  type static_field = abstract { }
+  type instance_field = abstract { }
+
+  type t = {
+    (* Static fields have only one jdouble per field declaration, as they are static *)
+    mutable d_static_fmap: static_field -> jdouble;
+    mutable d_instance_fmap: (Ptr.t, instance_field) -> jdouble;
+  }
+
+  predicate other_same_static (heap: t) (old_heap: t) (f: static_field) =
+    forall ff. f <> ff ->
+      heap.d_static_fmap ff = old_heap.d_static_fmap ff
+
+  predicate other_same_instance (heap: t) (old_heap: t) (p: Ptr.t) (f: instance_field) =
+    forall pp,ff. (p <> pp || f <> ff) ->
+      heap.d_instance_fmap (pp,ff) = old_heap.d_instance_fmap (pp,ff)
+
+  val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jdouble
+    requires { p <> Ptr.null }
+    ensures { result = heap.d_instance_fmap (p, f) }
+
+  val getf (heap: t) (p: Ptr.t) (f: instance_field) : jdouble
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> result = isf heap p f }
+
+  val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jdouble) : unit
+    writes { heap.d_instance_fmap }
+    (* raises { JException e -> npe_if_null e p } *)
+    ensures { p <> Ptr.null -> heap.d_instance_fmap (p, f) = v }
+    ensures { other_same_instance heap (old heap) p f }
+
+  let function iss [@inline:trivial] (heap: t) (f: static_field) : jdouble =
+    heap.d_static_fmap f
+
+  let function gets [@inline:trivial] (heap: t) (f: static_field) : jdouble =
+    iss heap f
+
+  val puts (heap: t) (f: static_field) (c: jdouble) : unit
+    writes { heap.d_static_fmap }
+    ensures { heap.d_static_fmap f = c }
+    ensures { other_same_static heap (old heap) f }
 end
 
 module L
@@ -98,25 +401,25 @@ module L
   type t = {
     mutable pointers: set Ptr.t;
     typeof: Ptr.t -> Type.t;
-    mutable static_fmap: static_field -> Ptr.t;
-    mutable instance_fmap: (Ptr.t, instance_field) -> Ptr.t;
+    mutable l_static_fmap: static_field -> Ptr.t;
+    mutable l_instance_fmap: (Ptr.t, instance_field) -> Ptr.t;
   } invariant {
     (not (mem Ptr.null pointers)) &&
-    (forall s:static_field. static_fmap s = Ptr.null \/ typeof (static_fmap s) :> s.s_type) &&
-    (forall p:Ptr.t, s:instance_field. compatible (instance_fmap (p,s)) typeof s.i_type)
+    (forall s:static_field. l_static_fmap s = Ptr.null \/ typeof (l_static_fmap s) :> s.s_type) &&
+    (forall p:Ptr.t, s:instance_field. compatible (l_instance_fmap (p,s)) typeof s.i_type)
   }
 
   predicate other_same_static (heap: t) (old_heap: t) (f: static_field) =
-    forall f'. f <> f' ->
-      heap.static_fmap f' = old_heap.static_fmap f'
+    forall ff. f <> ff ->
+      heap.l_static_fmap ff = old_heap.l_static_fmap ff
 
   predicate other_same_instance (heap: t) (old_heap: t) (p: Ptr.t) (f: instance_field) =
-    forall p',f'. p <> p' || f <> f' ->
-      heap.instance_fmap (p',f') = old_heap.instance_fmap (p',f')
+    forall pp,ff. p <> pp || f <> ff ->
+      heap.l_instance_fmap (pp,ff) = old_heap.l_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : Ptr.t
     requires { p <> Ptr.null }
-    ensures { result = heap.instance_fmap (p,f) }
+    ensures { result = heap.l_instance_fmap (p,f) }
     ensures { compatible result heap.typeof f.i_type }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : Ptr.t
@@ -125,23 +428,23 @@ module L
     ensures { p <> Ptr.null -> compatible result heap.typeof f.i_type }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: Ptr.t) : unit
-    writes { heap.instance_fmap }
+    writes { heap.l_instance_fmap }
     requires { compatible v heap.typeof f.i_type }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.instance_fmap (p,f) = v }
+    ensures { p <> Ptr.null -> heap.l_instance_fmap (p,f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   val function iss (heap: t) (f: static_field) : Ptr.t
-    ensures { result = heap.static_fmap f }
+    ensures { result = heap.l_static_fmap f }
     ensures { compatible result heap.typeof f.s_type }
 
   let function gets [@inline:trivial] (heap: t) (f: static_field) : Ptr.t =
     iss heap f
 
   val puts (heap: t) (f: static_field) (v: Ptr.t) : unit
-    writes { heap.static_fmap }
+    writes { heap.l_static_fmap }
     requires { compatible v heap.typeof f.s_type }
-    ensures { heap.static_fmap f = v }
+    ensures { heap.l_static_fmap f = v }
     ensures { other_same_static heap (old heap) f }
 
   predicate is_new_ptr (result: Ptr.t) (of_type: Type.t) (heap: t) (old_heap: t) =
@@ -151,94 +454,388 @@ module L
     heap.typeof result = of_type
 end
 
-module PrimitiveArray
+module RZ
   use prelude.ptr.Ptr
   use prelude.typing.Type
+  use prelude.boolean.Operators
   use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
 
-  type elem
-  val function default_value : elem
-
   type t = {
-    mutable arrays: set Ptr.t;
-    mutable elements: Ptr.t -> {array elem}
+    mutable rz_arrays: set Ptr.t;
+    mutable rz_elements: Ptr.t -> {array jbool}
   }
 
   predicate other_same_array (heap: t) (old_heap: t) (p: Ptr.t) =
     forall p'. p <> p' ->
-      (heap.elements p).elts = (old_heap.elements p').elts
+      (heap.rz_elements p).elts = (old_heap.rz_elements p').elts
 
   predicate valid_access (heap: t) (p: Ptr.t) (i: jint) =
-    mem p heap.arrays && 0 <= i < (heap.elements p).length
+    mem p heap.rz_arrays && 0 <= i < (heap.rz_elements p).length
 
-  val function iselem (heap: t) (p: Ptr.t) (i: jint) : elem
+  val function iselem (heap: t) (p: Ptr.t) (i: jint) : jbool
     requires { valid_access heap p i }
-    ensures { result = (heap.elements p)[i] }
+    ensures { result = (heap.rz_elements p)[i] }
 
-  val load (heap: t) (p: Ptr.t) (i: jint) : elem
+  val load (heap: t) (p: Ptr.t) (i: jint) : jbool
     (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
     ensures { valid_access heap p i -> result = iselem heap p i }
 
-  val store (heap: t) (p: Ptr.t) (i: jint) (v: elem) : unit
-    writes { heap.elements }
-    ensures { valid_access heap p i -> (heap.elements p).elts = Map.set (old (heap.elements p)).elts i v }
-    ensures { valid_access heap p i -> (heap.elements p) = (old (heap.elements p)[i <- v]) }
+  val store (heap: t) (p: Ptr.t) (i: jint) (v: jbool) : unit
+    writes { heap.rz_elements }
+    ensures { valid_access heap p i -> (heap.rz_elements p).elts = Map.set (old (heap.rz_elements p)).elts i v }
+    ensures { valid_access heap p i -> (heap.rz_elements p) = (old (heap.rz_elements p)[i <- v]) }
     (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
     ensures { other_same_array heap (old heap) p }
 
   val function arraylength (heap: t) (p: Ptr.t) : jint
-    requires { mem p heap.arrays }
-    ensures { result = int2i (heap.elements p).length }
+    requires { mem p heap.rz_arrays }
+    ensures { result = int2i (heap.rz_elements p).length }
 
   predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
     result <> Ptr.null /\
-    mem result heap.arrays /\
-    not (mem result old_heap.arrays) /\
-    (heap.elements result).length = len /\
-    forall i:int. 0 <= i < len -> (heap.elements result)[i] = default_value
-end
-
-module RZ
-  use prelude.boolean.Operators
-  clone export PrimitiveArray with type elem = jbool, val default_value = Default.z
+    mem result heap.rz_arrays /\
+    not (mem result old_heap.rz_arrays) /\
+    (heap.rz_elements result).length = len /\
+    forall i:int. 0 <= i < len -> (heap.rz_elements result)[i] = Default.z
 end
 
 module RB
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
   use prelude.machine.Operators
-  clone export PrimitiveArray with type elem = jbyte, val default_value = Default.b
+  use array.Array
+  use int.Int
+  use set.Set
+
+  type t = {
+    mutable rb_arrays: set Ptr.t;
+    mutable rb_elements: Ptr.t -> {array jbyte}
+  }
+
+  predicate other_same_array (heap: t) (old_heap: t) (p: Ptr.t) =
+    forall p'. p <> p' ->
+      (heap.rb_elements p).elts = (old_heap.rb_elements p').elts
+
+  predicate valid_access (heap: t) (p: Ptr.t) (i: jint) =
+    mem p heap.rb_arrays && 0 <= i < (heap.rb_elements p).length
+
+  val function iselem (heap: t) (p: Ptr.t) (i: jint) : jbyte
+    requires { valid_access heap p i }
+    ensures { result = (heap.rb_elements p)[i] }
+
+  val load (heap: t) (p: Ptr.t) (i: jint) : jbyte
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { valid_access heap p i -> result = iselem heap p i }
+
+  val store (heap: t) (p: Ptr.t) (i: jint) (v: jbyte) : unit
+    writes { heap.rb_elements }
+    ensures { valid_access heap p i -> (heap.rb_elements p).elts = Map.set (old (heap.rb_elements p)).elts i v }
+    ensures { valid_access heap p i -> (heap.rb_elements p) = (old (heap.rb_elements p)[i <- v]) }
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { other_same_array heap (old heap) p }
+
+  val function arraylength (heap: t) (p: Ptr.t) : jint
+    requires { mem p heap.rb_arrays }
+    ensures { result = int2i (heap.rb_elements p).length }
+
+  predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
+    result <> Ptr.null /\
+    mem result heap.rb_arrays /\
+    not (mem result old_heap.rb_arrays) /\
+    (heap.rb_elements result).length = len /\
+    forall i:int. 0 <= i < len -> (heap.rb_elements result)[i] = Default.b
 end
 
 module RS
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
   use prelude.machine.Operators
-  clone export PrimitiveArray with type elem = jshort, val default_value = Default.s
+  use array.Array
+  use int.Int
+  use set.Set
+
+  type t = {
+    mutable rs_arrays: set Ptr.t;
+    mutable rs_elements: Ptr.t -> {array jshort}
+  }
+
+  predicate other_same_array (heap: t) (old_heap: t) (p: Ptr.t) =
+    forall p'. p <> p' ->
+      (heap.rs_elements p).elts = (old_heap.rs_elements p').elts
+
+  predicate valid_access (heap: t) (p: Ptr.t) (i: jint) =
+    mem p heap.rs_arrays && 0 <= i < (heap.rs_elements p).length
+
+  val function iselem (heap: t) (p: Ptr.t) (i: jint) : jshort
+    requires { valid_access heap p i }
+    ensures { result = (heap.rs_elements p)[i] }
+
+  val load (heap: t) (p: Ptr.t) (i: jint) : jshort
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { valid_access heap p i -> result = iselem heap p i }
+
+  val store (heap: t) (p: Ptr.t) (i: jint) (v: jshort) : unit
+    writes { heap.rs_elements }
+    ensures { valid_access heap p i -> (heap.rs_elements p).elts = Map.set (old (heap.rs_elements p)).elts i v }
+    ensures { valid_access heap p i -> (heap.rs_elements p) = (old (heap.rs_elements p)[i <- v]) }
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { other_same_array heap (old heap) p }
+
+  val function arraylength (heap: t) (p: Ptr.t) : jint
+    requires { mem p heap.rs_arrays }
+    ensures { result = int2i (heap.rs_elements p).length }
+
+  predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
+    result <> Ptr.null /\
+    mem result heap.rs_arrays /\
+    not (mem result old_heap.rs_arrays) /\
+    (heap.rs_elements result).length = len /\
+    forall i:int. 0 <= i < len -> (heap.rs_elements result)[i] = Default.s
 end
 
 module RC
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
   use prelude.machine.Operators
-  clone export PrimitiveArray with type elem = jchar, val default_value = Default.c
+  use array.Array
+  use int.Int
+  use set.Set
+
+  type t = {
+    mutable rc_arrays: set Ptr.t;
+    mutable rc_elements: Ptr.t -> {array jchar}
+  }
+
+  predicate other_same_array (heap: t) (old_heap: t) (p: Ptr.t) =
+    forall p'. p <> p' ->
+      (heap.rc_elements p).elts = (old_heap.rc_elements p').elts
+
+  predicate valid_access (heap: t) (p: Ptr.t) (i: jint) =
+    mem p heap.rc_arrays && 0 <= i < (heap.rc_elements p).length
+
+  val function iselem (heap: t) (p: Ptr.t) (i: jint) : jchar
+    requires { valid_access heap p i }
+    ensures { result = (heap.rc_elements p)[i] }
+
+  val load (heap: t) (p: Ptr.t) (i: jint) : jchar
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { valid_access heap p i -> result = iselem heap p i }
+
+  val store (heap: t) (p: Ptr.t) (i: jint) (v: jchar) : unit
+    writes { heap.rc_elements }
+    ensures { valid_access heap p i -> (heap.rc_elements p).elts = Map.set (old (heap.rc_elements p)).elts i v }
+    ensures { valid_access heap p i -> (heap.rc_elements p) = (old (heap.rc_elements p)[i <- v]) }
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { other_same_array heap (old heap) p }
+
+  val function arraylength (heap: t) (p: Ptr.t) : jint
+    requires { mem p heap.rc_arrays }
+    ensures { result = int2i (heap.rc_elements p).length }
+
+  predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
+    result <> Ptr.null /\
+    mem result heap.rc_arrays /\
+    not (mem result old_heap.rc_arrays) /\
+    (heap.rc_elements result).length = len /\
+    forall i:int. 0 <= i < len -> (heap.rc_elements result)[i] = Default.c
 end
 
 module RI
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
   use prelude.machine.Operators
-  clone export PrimitiveArray with type elem = jint, val default_value = Default.i
+  use array.Array
+  use int.Int
+  use set.Set
+
+  type t = {
+    mutable ri_arrays: set Ptr.t;
+    mutable ri_elements: Ptr.t -> {array jint}
+  }
+
+  predicate other_same_array (heap: t) (old_heap: t) (p: Ptr.t) =
+    forall p'. p <> p' ->
+      (heap.ri_elements p).elts = (old_heap.ri_elements p').elts
+
+  predicate valid_access (heap: t) (p: Ptr.t) (i: jint) =
+    mem p heap.ri_arrays && 0 <= i < (heap.ri_elements p).length
+
+  val function iselem (heap: t) (p: Ptr.t) (i: jint) : jint
+    requires { valid_access heap p i }
+    ensures { result = (heap.ri_elements p)[i] }
+
+  val load (heap: t) (p: Ptr.t) (i: jint) : jint
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { valid_access heap p i -> result = iselem heap p i }
+
+  val store (heap: t) (p: Ptr.t) (i: jint) (v: jint) : unit
+    writes { heap.ri_elements }
+    ensures { valid_access heap p i -> (heap.ri_elements p).elts = Map.set (old (heap.ri_elements p)).elts i v }
+    ensures { valid_access heap p i -> (heap.ri_elements p) = (old (heap.ri_elements p)[i <- v]) }
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { other_same_array heap (old heap) p }
+
+  val function arraylength (heap: t) (p: Ptr.t) : jint
+    requires { mem p heap.ri_arrays }
+    ensures { result = int2i (heap.ri_elements p).length }
+
+  predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
+    result <> Ptr.null /\
+    mem result heap.ri_arrays /\
+    not (mem result old_heap.ri_arrays) /\
+    (heap.ri_elements result).length = len /\
+    forall i:int. 0 <= i < len -> (heap.ri_elements result)[i] = Default.i
 end
 
 module RJ
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
   use prelude.machine.Operators
-  clone export PrimitiveArray with type elem = jlong, val default_value = Default.j
+  use array.Array
+  use int.Int
+  use set.Set
+
+  type t = {
+    mutable rj_arrays: set Ptr.t;
+    mutable rj_elements: Ptr.t -> {array jlong}
+  }
+
+  predicate other_same_array (heap: t) (old_heap: t) (p: Ptr.t) =
+    forall p'. p <> p' ->
+      (heap.rj_elements p).elts = (old_heap.rj_elements p').elts
+
+  predicate valid_access (heap: t) (p: Ptr.t) (i: jint) =
+    mem p heap.rj_arrays && 0 <= i < (heap.rj_elements p).length
+
+  val function iselem (heap: t) (p: Ptr.t) (i: jint) : jlong
+    requires { valid_access heap p i }
+    ensures { result = (heap.rj_elements p)[i] }
+
+  val load (heap: t) (p: Ptr.t) (i: jint) : jlong
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { valid_access heap p i -> result = iselem heap p i }
+
+  val store (heap: t) (p: Ptr.t) (i: jint) (v: jlong) : unit
+    writes { heap.rj_elements }
+    ensures { valid_access heap p i -> (heap.rj_elements p).elts = Map.set (old (heap.rj_elements p)).elts i v }
+    ensures { valid_access heap p i -> (heap.rj_elements p) = (old (heap.rj_elements p)[i <- v]) }
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { other_same_array heap (old heap) p }
+
+  val function arraylength (heap: t) (p: Ptr.t) : jint
+    requires { mem p heap.rj_arrays }
+    ensures { result = int2i (heap.rj_elements p).length }
+
+  predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
+    result <> Ptr.null /\
+    mem result heap.rj_arrays /\
+    not (mem result old_heap.rj_arrays) /\
+    (heap.rj_elements result).length = len /\
+    forall i:int. 0 <= i < len -> (heap.rj_elements result)[i] = Default.j
 end
 
 module RF
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
   use prelude.machine.Operators
-  clone export PrimitiveArray with type elem = jfloat, val default_value = Default.f
+  use array.Array
+  use int.Int
+  use set.Set
+
+  type t = {
+    mutable rf_arrays: set Ptr.t;
+    mutable rf_elements: Ptr.t -> {array jfloat}
+  }
+
+  predicate other_same_array (heap: t) (old_heap: t) (p: Ptr.t) =
+    forall p'. p <> p' ->
+      (heap.rf_elements p).elts = (old_heap.rf_elements p').elts
+
+  predicate valid_access (heap: t) (p: Ptr.t) (i: jint) =
+    mem p heap.rf_arrays && 0 <= i < (heap.rf_elements p).length
+
+  val function iselem (heap: t) (p: Ptr.t) (i: jint) : jfloat
+    requires { valid_access heap p i }
+    ensures { result = (heap.rf_elements p)[i] }
+
+  val load (heap: t) (p: Ptr.t) (i: jint) : jfloat
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { valid_access heap p i -> result = iselem heap p i }
+
+  val store (heap: t) (p: Ptr.t) (i: jint) (v: jfloat) : unit
+    writes { heap.rf_elements }
+    ensures { valid_access heap p i -> (heap.rf_elements p).elts = Map.set (old (heap.rf_elements p)).elts i v }
+    ensures { valid_access heap p i -> (heap.rf_elements p) = (old (heap.rf_elements p)[i <- v]) }
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { other_same_array heap (old heap) p }
+
+  val function arraylength (heap: t) (p: Ptr.t) : jint
+    requires { mem p heap.rf_arrays }
+    ensures { result = int2i (heap.rf_elements p).length }
+
+  predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
+    result <> Ptr.null /\
+    mem result heap.rf_arrays /\
+    not (mem result old_heap.rf_arrays) /\
+    (heap.rf_elements result).length = len /\
+    forall i:int. 0 <= i < len -> (heap.rf_elements result)[i] = Default.f
 end
 
 module RD
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.boolean.Operators
   use prelude.machine.Operators
-  clone export PrimitiveArray with type elem = jdouble, val default_value = Default.d
+  use array.Array
+  use int.Int
+  use set.Set
+
+  type t = {
+    mutable rd_arrays: set Ptr.t;
+    mutable rd_elements: Ptr.t -> {array jdouble}
+  }
+
+  predicate other_same_array (heap: t) (old_heap: t) (p: Ptr.t) =
+    forall p'. p <> p' ->
+      (heap.rd_elements p).elts = (old_heap.rd_elements p').elts
+
+  predicate valid_access (heap: t) (p: Ptr.t) (i: jint) =
+    mem p heap.rd_arrays && 0 <= i < (heap.rd_elements p).length
+
+  val function iselem (heap: t) (p: Ptr.t) (i: jint) : jdouble
+    requires { valid_access heap p i }
+    ensures { result = (heap.rd_elements p)[i] }
+
+  val load (heap: t) (p: Ptr.t) (i: jint) : jdouble
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { valid_access heap p i -> result = iselem heap p i }
+
+  val store (heap: t) (p: Ptr.t) (i: jint) (v: jdouble) : unit
+    writes { heap.rd_elements }
+    ensures { valid_access heap p i -> (heap.rd_elements p).elts = Map.set (old (heap.rd_elements p)).elts i v }
+    ensures { valid_access heap p i -> (heap.rd_elements p) = (old (heap.rd_elements p)[i <- v]) }
+    (* raises { JException e -> npe_if_null e p || out_of_bounds e heap p i } *)
+    ensures { other_same_array heap (old heap) p }
+
+  val function arraylength (heap: t) (p: Ptr.t) : jint
+    requires { mem p heap.rd_arrays }
+    ensures { result = int2i (heap.rd_elements p).length }
+
+  predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
+    result <> Ptr.null /\
+    mem result heap.rd_arrays /\
+    not (mem result old_heap.rd_arrays) /\
+    (heap.rd_elements result).length = len /\
+    forall i:int. 0 <= i < len -> (heap.rd_elements result)[i] = Default.d
 end
 
 module Heap
@@ -246,6 +843,7 @@ module Heap
   use prelude.ptr.Ptr
   use prelude.typing.Type
   use prelude.ptr.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -315,58 +913,50 @@ module Heap
 
   (* TODO: when re-introducing PEI behaviour, here is the place for NegativeArraySize and ArrayStore *)
 
-  use RZ
   val znewarray (heap: ht) (len: jint) : Ptr.t
-    writes { heap.l.pointers, heap.rz.arrays }
+    writes { heap.l.pointers, heap.rz.rz_arrays, heap.rz.rz_elements }
     ensures { len >= 0 -> L.is_new_ptr result Type.BoolArray heap.l (old heap.l) }
     ensures { len >= 0 -> RZ.is_new_array result len heap.rz (old heap.rz) }
-
-  use RB
+    
   val bnewarray (heap: ht) (len: jint) : Ptr.t
-    writes { heap.l.pointers, heap.rb.arrays }
+    writes { heap.l.pointers, heap.rb.rb_arrays, heap.rb.rb_elements }
     ensures { len >= 0 -> L.is_new_ptr result Type.ByteArray heap.l (old heap.l) }
     ensures { len >= 0 -> RB.is_new_array result len heap.rb (old heap.rb) }
-
-  use RS
+        
   val snewarray (heap: ht) (len: jint) : Ptr.t
-    writes { heap.l.pointers, heap.rs.arrays }
+    writes { heap.l.pointers, heap.rs.rs_arrays, heap.rs.rs_elements }
     ensures { len >= 0 -> L.is_new_ptr result Type.ShortArray heap.l (old heap.l) }
     ensures { len >= 0 -> RS.is_new_array result len heap.rs (old heap.rs) }
-
-  use RC
+              
   val cnewarray (heap: ht) (len: jint) : Ptr.t
-    writes { heap.l.pointers, heap.rc.arrays }
+    writes { heap.l.pointers, heap.rc.rc_arrays, heap.rc.rc_elements }
     ensures { len >= 0 -> L.is_new_ptr result Type.CharArray heap.l (old heap.l) }
     ensures { len >= 0 -> RC.is_new_array result len heap.rc (old heap.rc) }
 
-  use RI
   val inewarray (heap: ht) (len: jint) : Ptr.t
-    writes { heap.l.pointers, heap.ri.arrays }
+    writes { heap.l.pointers, heap.ri.ri_arrays, heap.ri.ri_elements }
     ensures { len >= 0 -> L.is_new_ptr result Type.IntArray heap.l (old heap.l) }
     ensures { len >= 0 -> RI.is_new_array result len heap.ri (old heap.ri) }
-
-  use RJ
+    
   val jnewarray (heap: ht) (len: jint) : Ptr.t
-    writes { heap.l.pointers, heap.rj.arrays }
+    writes { heap.l.pointers, heap.rj.rj_arrays, heap.rj.rj_elements }
     ensures { len >= 0 -> L.is_new_ptr result Type.LongArray heap.l (old heap.l) }
     ensures { len >= 0 -> RJ.is_new_array result len heap.rj (old heap.rj) }
-
-  use RF
+        
   val fnewarray (heap: ht) (len: jint) : Ptr.t
-    writes { heap.l.pointers, heap.rf.arrays }
+    writes { heap.l.pointers, heap.rf.rf_arrays, heap.rf.rf_elements }
     ensures { len >= 0 -> L.is_new_ptr result Type.FloatArray heap.l (old heap.l) }
     ensures { len >= 0 -> RF.is_new_array result len heap.rf (old heap.rf) }
-
-  use RD
+    
   val dnewarray (heap: ht) (len: jint) : Ptr.t
-    writes { heap.l.pointers, heap.rd.arrays }
+    writes { heap.l.pointers, heap.rd.rd_arrays, heap.rd.rd_elements }
     ensures { len >= 0 -> L.is_new_ptr result Type.DoubleArray heap.l (old heap.l) }
     ensures { len >= 0 -> RD.is_new_array result len heap.rd (old heap.rd) }
 
   scope RL
     predicate other_same_array (heap: ht) (old_heap: ht) (p: Ptr.t) =
-      forall p'. p <> p' ->
-        (heap.rl_elements p).elts = (old_heap.rl_elements p').elts
+      forall pp. p <> pp ->
+        (heap.rl_elements p).elts = (old_heap.rl_elements pp).elts
 
     predicate valid_access (heap: ht) (p: Ptr.t) (i: jint) =
       mem p heap.rl_arrays && 0 <= i < (heap.rl_elements p).length

@@ -8,6 +8,7 @@ import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
+import java.util.Locale;
 
 public record NewArrayExpression(WhyType baseType, Expression size) implements Expression {
 	@Override
@@ -23,7 +24,7 @@ public record NewArrayExpression(WhyType baseType, Expression size) implements E
 			}
 
 			return prefix(
-					"%snewarray".formatted(type.getWhyAccessorScope()),
+					"%snewarray".formatted(type.getWhyAccessorScope().toLowerCase(Locale.ROOT)),
 					terminal(Identifier.Special.HEAP),
 					size.toWhy()
 			);

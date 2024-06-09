@@ -8,7 +8,6 @@ import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.field.Access;
 import byteback.whyml.syntax.expr.harmonization.WhyTypeHarmonizer;
 import byteback.whyml.syntax.field.WhyField;
-import byteback.whyml.syntax.statement.CFGStatement;
 import byteback.whyml.syntax.statement.visitor.StatementVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 
@@ -36,15 +35,20 @@ public record FieldAssignment(Access access, Expression value) implements CFGSta
 	public Code toWhy() {
 		final WhyField field = access.getField();
 		final String accessor = field.getType().jvm().getWhyAccessorScope();
-		final String instanceOrStatic = access instanceof Access.Instance ? "f" : "s";
 
-		return prefix(
-				"%s.put%s".formatted(accessor, instanceOrStatic),
+		return (access instanceof Access.Instance
+				? prefix(
+				"%s.putf".formatted(accessor),
 				terminal(Identifier.Special.getHeap(field.getType().jvm())),
 				access.referenceToWhy(),
 				terminal("%s.%s".formatted(field.getClazz(), field.getName())),
 				value.toWhy()
-		).statement("", ";");
+		) : prefix(
+				"%s.puts".formatted(accessor),
+				terminal(Identifier.Special.getHeap(field.getType().jvm())),
+				terminal("%s.%s".formatted(field.getClazz(), field.getName())),
+				value.toWhy()
+		)).statement("", ";");
 	}
 
 	@Override

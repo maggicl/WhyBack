@@ -16,6 +16,7 @@ import byteback.whyml.syntax.statement.FieldAssignment;
 import byteback.whyml.syntax.statement.LocalAssignment;
 import byteback.whyml.syntax.type.WhyJVMType;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 public class SideEffectVisitor extends StatementVisitor {
@@ -31,9 +32,15 @@ public class SideEffectVisitor extends StatementVisitor {
 
 		if (elemType == WhyJVMType.PTR) {
 			writes.add("%s.rl_arrays".formatted(Identifier.Special.HEAP));
-			writes.add("%s.rl_element_type".formatted(Identifier.Special.HEAP));
 		} else {
-			writes.add("%s.arrays".formatted(Identifier.Special.getArrayHeap(elemType)));
+			writes.add("%s.r%s_arrays".formatted(
+					Identifier.Special.getArrayHeap(elemType),
+					elemType.getWhyAccessorScope().toLowerCase(Locale.ROOT)
+			));
+			writes.add("%s.r%s_elements".formatted(
+					Identifier.Special.getArrayHeap(elemType),
+					elemType.getWhyAccessorScope().toLowerCase(Locale.ROOT)
+			));
 		}
 
 		super.visitNewArrayExpression(newArrayExpression);
@@ -48,7 +55,12 @@ public class SideEffectVisitor extends StatementVisitor {
 
 	@Override
 	public void visitArrayAssignmentStatement(ArrayAssignment arrayAssignment) {
-		writes.add("%s.arr".formatted(Identifier.Special.HEAP));
+		final WhyJVMType elemType = arrayAssignment.elementType().jvm();
+
+		writes.add("%s.r%s_elements".formatted(
+				Identifier.Special.getArrayHeap(elemType),
+				elemType.getWhyAccessorScope().toLowerCase(Locale.ROOT)
+		));
 
 		super.visitArrayAssignmentStatement(arrayAssignment);
 	}
@@ -56,11 +68,11 @@ public class SideEffectVisitor extends StatementVisitor {
 	@Override
 	public void visitFieldAssignmentStatement(FieldAssignment fieldAssignment) {
 		final boolean isStatic = fieldAssignment.access() instanceof Access.Static;
-		final boolean isPtr = fieldAssignment.access().getField().getType().jvm() == WhyJVMType.PTR;
-		writes.add("%s.%s%s".formatted(
-				Identifier.Special.HEAP,
-				isStatic ? "static" : "inst",
-				isPtr ? "ptr" : ""
+		final WhyJVMType fieldType = fieldAssignment.access().getField().getType().jvm();
+		writes.add("%s.%s_%s_fmap".formatted(
+				Identifier.Special.getHeap(fieldType),
+				fieldType.getWhyAccessorScope().toLowerCase(Locale.ROOT),
+				isStatic ? "static" : "instance"
 		));
 
 		super.visitFieldAssignmentStatement(fieldAssignment);

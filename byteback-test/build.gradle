@@ -8,6 +8,8 @@ subprojects { test ->
     def bytebackRoot = cli.installDist.destinationDir
 
     tasks.register('system') {
+        dependsOn test.clean
+
         def sourceSet = project.sourceSets.main
         def sourceDirs = sourceSet.allSource.srcDirs
         def testDirs = ["java", "scala", "kotlin"]

@@ -42,10 +42,7 @@ public record UnaryExpression(UnaryExpression.Operator operator,
 
 		// Logic operation
 		NOT("not", WhyJVMType.BOOL, WhyJVMType.BOOL),
-
-		/**
-		 * Used exclusively for asserting that the parameter matching 'this' is not null
-		 */
+		IS_NULL("is_null", WhyJVMType.PTR, WhyJVMType.BOOL),
 		NOT_NULL("not_null", WhyJVMType.PTR, WhyJVMType.BOOL);
 
 		private final String opName;

@@ -9,7 +9,7 @@ import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
 
-public record InstanceOfExpression(Expression reference, WhyType checkType) implements Expression {
+public record InstanceOfExpression(Expression reference, WhyType checkType, boolean assertNotNull) implements Expression {
 	public InstanceOfExpression {
 		if (reference.type() != WhyJVMType.PTR) {
 			throw new IllegalArgumentException("instanceof expression must have type PTR, given " + reference.type());
@@ -23,7 +23,7 @@ public record InstanceOfExpression(Expression reference, WhyType checkType) impl
 	@Override
 	public SExpr toWhy(boolean useLogicOps) {
 		return prefix(
-				"instanceof",
+				assertNotNull ? "instanceof" : "isinstance",
 				terminal(Identifier.Special.HEAP),
 				reference.toWhy(useLogicOps),
 				checkType.getPreludeType()

@@ -9,7 +9,7 @@ module Operators
   use prelude.boolean.Operators
 
   val function is_null (x: Ptr.t) : jbool
-    ensures { result <-> x <> Ptr.null }
+    ensures { result <-> x = Ptr.null }
 
   val function not_null (x: Ptr.t) : jbool
     ensures { result <-> x <> Ptr.null }

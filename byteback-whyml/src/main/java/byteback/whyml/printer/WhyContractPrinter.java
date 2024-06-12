@@ -1,14 +1,10 @@
 package byteback.whyml.printer;
 
-import byteback.whyml.identifiers.Identifier;
 import static byteback.whyml.printer.Code.line;
 import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
-import byteback.whyml.syntax.expr.LocalExpression;
-import byteback.whyml.syntax.expr.NullLiteral;
 import byteback.whyml.syntax.expr.binary.BinaryExpression;
-import byteback.whyml.syntax.expr.binary.Comparison;
 import byteback.whyml.syntax.expr.binary.LogicConnector;
 import byteback.whyml.syntax.function.WhyCondition;
 import byteback.whyml.syntax.function.WhyFunction;
@@ -16,7 +12,6 @@ import byteback.whyml.syntax.function.WhyFunctionBody;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.function.WhySideEffects;
-import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyReference;
 import byteback.whyml.vimp.WhyResolver;
 import java.util.ArrayDeque;
@@ -46,14 +41,6 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 		this.resolver = resolver;
 	}
 
-	private static Expression doesNotThrow() {
-		return new BinaryExpression(
-				new Comparison(WhyJVMType.PTR, Comparison.Kind.EQ),
-				new LocalExpression(WhyLocal.CAUGHT_EXCEPTION),
-				NullLiteral.INSTANCE
-		);
-	}
-
 	@Override
 	public void visitRequires(WhyCondition.Requires r) {
 		requiresList.add(r.value().getExpression().toWhy(true).statement("requires { ", " }"));
@@ -61,8 +48,13 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 
 	@Override
 	public void visitEnsures(WhyCondition.Ensures r) {
-		final Expression condition = function.contract().signature().declaration().isProgram() && !r.hasExceptionParam()
-				? new BinaryExpression(LogicConnector.IMPLIES, doesNotThrow(), r.value().getExpression())
+		final Expression condition;
+		condition = function.contract().signature().declaration().isProgram() && !r.hasExceptionParam()
+				? new BinaryExpression(
+						LogicConnector.IMPLIES,
+						WhyLocal.CAUGHT_EXCEPTION.isNullExpression(),
+						r.value().getExpression()
+				)
 				: r.value().getExpression();
 
 		ensuresList.add(condition.toWhy(true).statement("ensures { ", " }"));
@@ -83,7 +75,7 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 					new BinaryExpression(
 							LogicConnector.IMPLIES,
 							r.when().getExpression(),
-							doesNotThrow()
+							WhyLocal.CAUGHT_EXCEPTION.isNullExpression()
 					).toWhy(true).statement("ensures { ", " }")
 			);
 		}
@@ -98,8 +90,9 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 		final Expression expr = new BinaryExpression(
 				LogicConnector.IMPLIES,
 				new InstanceOfExpression(
-						new LocalExpression(Identifier.Special.CAUGHT_EXCEPTION, WhyJVMType.PTR),
-						new WhyReference(r.getException())
+						WhyLocal.CAUGHT_EXCEPTION.expression(),
+						new WhyReference(r.getException()),
+						true
 				),
 				r.getWhen().getExpression()
 		);
@@ -112,7 +105,7 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 
 		if (sig.declaration().isProgram()) {
 			// if this is a program function, require that the caught exception variable is null before calling the method
-			visit(new WhyCondition.Requires(new WhyFunctionBody.SpecBody(doesNotThrow())));
+			visit(new WhyCondition.Requires(new WhyFunctionBody.SpecBody(WhyLocal.CAUGHT_EXCEPTION.isNullExpression())));
 		}
 
 		for (final WhyLocal p : sig.params()) {

@@ -38,7 +38,7 @@ public class ExpressionTransformer {
 	}
 
 	public Expression transformInstanceOfExpression(InstanceOfExpression source) {
-		return new InstanceOfExpression(source.reference().accept(this), source.checkType());
+		return new InstanceOfExpression(source.reference().accept(this), source.checkType(), source.assertNotNull());
 	}
 
 	public Expression transformClassCastExpression(ClassCastExpression source) {

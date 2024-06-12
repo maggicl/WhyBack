@@ -52,12 +52,15 @@ public class Basic {
 
 	public static void emptyFor() {
 		for (int i = 0; i < 10; ++i) {
+			invariant(lte(i, 10));
 		}
 	}
 
 	public static void emptyNestedFor() {
 		for (int i = 0; i < 10; ++i) {
+			invariant(lte(i, 10));
 			for (int j = 0; j < 10; ++j) {
+				invariant(lte(j, 10));
 			}
 		}
 	}

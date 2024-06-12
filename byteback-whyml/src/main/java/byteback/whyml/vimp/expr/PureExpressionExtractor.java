@@ -452,7 +452,8 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 		try {
 			setExpression(new InstanceOfExpression(
 					visit(v.getOp()),
-					typeResolver.resolveType(v.getCheckType())
+					typeResolver.resolveType(v.getCheckType()),
+					true // instanceof JVM operational semantics state the check fails when null
 			));
 		} catch (IllegalArgumentException e) {
 			throw new WhyTranslationException(v, "Cannot build Why InstanceOfExpression: " + e.getMessage());

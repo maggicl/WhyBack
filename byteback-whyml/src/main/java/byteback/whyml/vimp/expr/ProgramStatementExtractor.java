@@ -9,6 +9,8 @@ import byteback.analysis.vimp.AssumptionStmt;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.LocalExpression;
+import byteback.whyml.syntax.expr.binary.BinaryExpression;
+import byteback.whyml.syntax.expr.binary.LogicConnector;
 import byteback.whyml.syntax.expr.field.Access;
 import byteback.whyml.syntax.expr.harmonization.WhyTypeHarmonizer;
 import byteback.whyml.syntax.field.WhyField;
@@ -216,7 +218,20 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 		final Expression condition = pureProgramExpressionExtractor.visit(assumptionStmt.getCondition());
 		final Optional<String> position = positionAttribute(assumptionStmt, "invariant");
 
-		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.INVARIANT, position, condition));
+		// for each invariant we also assert that no exception has been thrown. This is to capture the operational
+		// semantics of a loop
+
+		addStatement(
+				new CFGLogicalStatement(
+						CFGLogicalStatement.Kind.INVARIANT,
+						position,
+						new BinaryExpression(
+								LogicConnector.AND,
+								WhyLocal.CAUGHT_EXCEPTION.isNullExpression(),
+								condition
+						)
+				)
+		);
 	}
 
 	// TODO: variants

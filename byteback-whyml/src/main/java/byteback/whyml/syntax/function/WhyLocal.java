@@ -7,8 +7,6 @@ import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
 import byteback.whyml.syntax.expr.LocalExpression;
 import byteback.whyml.syntax.expr.UnaryExpression;
-import byteback.whyml.syntax.expr.binary.BinaryExpression;
-import byteback.whyml.syntax.expr.binary.LogicConnector;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
 import java.util.Locale;
@@ -25,19 +23,17 @@ public record WhyLocal(Identifier.L name, WhyType type, boolean isNotNull) {
 		return new LocalExpression(name, type.jvm());
 	}
 
+	public Expression isNullExpression() {
+		return new UnaryExpression(UnaryExpression.Operator.IS_NULL, expression());
+	}
+
 	public Optional<Expression> condition() {
 		if (type.jvm() != WhyJVMType.PTR) {
 			return Optional.empty();
 		}
 
 		final Expression var = new LocalExpression(name, type.jvm());
-		final Expression isType = new InstanceOfExpression(var, type);
-
-		return Optional.of(isNotNull
-				? new BinaryExpression(LogicConnector.AND,
-				new UnaryExpression(UnaryExpression.Operator.NOT_NULL, var),
-				isType)
-				: isType);
+		return Optional.of(new InstanceOfExpression(var, type, isNotNull));
 	}
 
 	public Code toWhy() {

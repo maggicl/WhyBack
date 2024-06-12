@@ -899,6 +899,9 @@ module Heap
   let predicate instanceof [@inline:trivial] (heap: ht) (p: Ptr.t) (t: Type.t) =
     not_null p && compatible p heap.l.typeof t
 
+  let predicate isinstance [@inline:trivial] (heap: ht) (p: Ptr.t) (t: Type.t) =
+    is_null p || compatible p heap.l.typeof t
+
   val checkcast (heap: ht) (p: Ptr.t) (t: Type.t) : Ptr.t
     ensures { compatible p heap.l.typeof t -> result = p }
     (* raises { JException e -> not (hastype heap p t) && e = Java.Lang.ClassCastException.class } *)

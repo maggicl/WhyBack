@@ -20,7 +20,7 @@ public record ArrayExpression(Expression base, WhyJVMType elementType, ArrayOper
 	}
 
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		final String accessor = "R" + elementType.getWhyAccessorScope();
 		final Identifier.L heap = Identifier.Special.getArrayHeap(elementType);
 
@@ -28,21 +28,21 @@ public record ArrayExpression(Expression base, WhyJVMType elementType, ArrayOper
 			return prefix(
 					accessor + ".load",
 					terminal(heap),
-					base.toWhy(),
-					load.getIndex().toWhy()
+					base.toWhy(useLogicOps),
+					load.getIndex().toWhy(useLogicOps)
 			);
 		} else if (operation instanceof ArrayOperation.IsElem isElem) {
 			return prefix(
 					accessor + ".iselem",
 					terminal(heap),
-					base.toWhy(),
-					isElem.getIndex().toWhy()
+					base.toWhy(useLogicOps),
+					isElem.getIndex().toWhy(useLogicOps)
 			);
 		} else {
 			return prefix(
 					accessor + ".arraylength",
 					terminal(heap),
-					base.toWhy()
+					base.toWhy(useLogicOps)
 			);
 		}
 	}

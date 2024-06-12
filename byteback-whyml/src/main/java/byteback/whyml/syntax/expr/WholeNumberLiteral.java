@@ -56,7 +56,7 @@ public final class WholeNumberLiteral implements Expression {
 	}
 
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		return terminal("(%d:%s)".formatted(value, type.getWhyType()));
 	}
 

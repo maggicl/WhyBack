@@ -20,7 +20,7 @@ public sealed abstract class Access {
 
 	public abstract WhyField getField();
 
-	public abstract SExpr referenceToWhy();
+	public abstract SExpr referenceToWhy(boolean useLogicOps);
 
 	public static final class Instance extends Access {
 		private final Expression base;
@@ -45,8 +45,8 @@ public sealed abstract class Access {
 		}
 
 		@Override
-		public SExpr referenceToWhy() {
-			return base.toWhy();
+		public SExpr referenceToWhy(boolean useLogicOps) {
+			return base.toWhy(useLogicOps);
 		}
 
 		@Override
@@ -71,7 +71,7 @@ public sealed abstract class Access {
 		}
 
 		@Override
-		public SExpr referenceToWhy() {
+		public SExpr referenceToWhy(boolean useLogicOps) {
 			return terminal(field.getClazz().toString() + ".class");
 		}
 

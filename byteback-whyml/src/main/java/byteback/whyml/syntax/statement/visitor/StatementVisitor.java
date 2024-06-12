@@ -2,6 +2,7 @@ package byteback.whyml.syntax.statement.visitor;
 
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.statement.ArrayAssignment;
+import byteback.whyml.syntax.statement.CFGInvokeStmt;
 import byteback.whyml.syntax.statement.CFGLogicalStatement;
 import byteback.whyml.syntax.statement.CFGTerminator;
 import byteback.whyml.syntax.statement.FieldAssignment;
@@ -40,5 +41,9 @@ public class StatementVisitor extends ExpressionVisitor {
 
 	public void visitIfStatement(CFGTerminator.If anIf) {
 		anIf.expression().accept(this);
+	}
+
+	public void visitInvokeStmt(CFGInvokeStmt cfgInvokeStmt) {
+		cfgInvokeStmt.invokeExpr().accept(this);
 	}
 }

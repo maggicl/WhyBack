@@ -7,7 +7,6 @@ import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.statement.visitor.StatementVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
-import java.util.Set;
 
 /**
  * @param elementType We need to know the element type of the array as the array expression only has a JVM type of "ref" no matter what
@@ -36,9 +35,9 @@ public record ArrayAssignment(Expression base,
 		return prefix(
 				accessor + ".store",
 				terminal(Identifier.Special.getArrayHeap(elementType)),
-				base.toWhy(),
-				index.toWhy(),
-				value.toWhy()
+				base.toWhy(false),
+				index.toWhy(false),
+				value.toWhy(false)
 		).statement("", ";");
 	}
 

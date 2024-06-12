@@ -7,7 +7,7 @@ import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
 
 public interface Expression {
-	SExpr toWhy();
+	SExpr toWhy(boolean useLogicOps);
 
 	WhyJVMType type();
 

@@ -6,17 +6,10 @@ module Operators
   use bool.Bool
   use prelude.ptr.Ptr
 
-  val function (->.) (a: bool) (b: bool) : bool
-    ensures { result = a -> b }
-
-  val function (<->.) (a: bool) (b: bool) : bool
-    ensures { result = a <-> b }
-
-  val function (/\.) (a: bool) (b: bool) : bool
-    ensures { result = a /\ b }
-
-  val function (\/.) (a: bool) (b: bool) : bool
-    ensures { result = a \/ b }
+  let function (->.) [@inline:trivial] (a: bool) (b: bool) : bool = (not a) || b
+  let function (<->.) [@inline:trivial] (a: bool) (b: bool) : bool = if a then b else (not b)
+  let function (/\.) [@inline:trivial] (a: bool) (b: bool) : bool = a && b
+  let function (\/.) [@inline:trivial] (a: bool) (b: bool) : bool = a || b
 
   val function q_forall (heap: 'b) (clause: 'b -> 'a -> bool) : bool
     ensures { result = forall x. (clause heap x) }

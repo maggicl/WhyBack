@@ -6,6 +6,7 @@ import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 public sealed abstract class WhyCondition {
 
 	public abstract void visit(WhyCondition.Visitor visitor);
+
 	public abstract void visit(ExpressionVisitor visitor);
 
 	public abstract WhySideEffects sideEffects();
@@ -55,9 +56,15 @@ public sealed abstract class WhyCondition {
 
 	public static final class Ensures extends WhyCondition {
 		private final WhyFunctionBody.SpecBody value;
+		private final boolean hasExceptionParam;
 
-		public Ensures(WhyFunctionBody.SpecBody value) {
+		public Ensures(WhyFunctionBody.SpecBody value, boolean hasExceptionParam) {
 			this.value = value;
+			this.hasExceptionParam = hasExceptionParam;
+		}
+
+		public boolean hasExceptionParam() {
+			return hasExceptionParam;
 		}
 
 		public WhyFunctionBody.SpecBody value() {

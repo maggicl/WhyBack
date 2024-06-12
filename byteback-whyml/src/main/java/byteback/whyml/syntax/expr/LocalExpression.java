@@ -14,7 +14,7 @@ public record LocalExpression(Identifier.L name, WhyJVMType type) implements Exp
 	}
 
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		return terminal(name.toString());
 	}
 

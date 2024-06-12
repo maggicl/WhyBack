@@ -2,16 +2,13 @@ package byteback.whyml.syntax.statement;
 
 import byteback.whyml.printer.Code;
 import byteback.whyml.printer.SExpr;
-import static byteback.whyml.printer.SExpr.natMapping;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.switchExpr;
 import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.WholeNumberLiteral;
 import byteback.whyml.syntax.function.CFGLabel;
 import byteback.whyml.syntax.statement.visitor.StatementVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +32,7 @@ public sealed abstract class CFGTerminator implements CFGStatement {
 
 		@Override
 		public Code toWhy() {
-			return prefix("return", value.toWhy()).statement();
+			return prefix("return", value.toWhy(false)).statement();
 		}
 
 		@Override
@@ -62,7 +59,7 @@ public sealed abstract class CFGTerminator implements CFGStatement {
 		@Override
 		public Code toWhy() {
 			return prefix("return",
-					prefix("jthrow", value.toWhy())
+					prefix("jthrow", value.toWhy(false))
 			).statement();
 		}
 
@@ -112,7 +109,7 @@ public sealed abstract class CFGTerminator implements CFGStatement {
 
 		@Override
 		public Code toWhy() {
-			return switchExpr(expression.toWhy(), List.of(
+			return switchExpr(expression.toWhy(false), List.of(
 					Map.entry("True", CFGTerminator.labelToWhy(trueBranch)),
 					Map.entry("False", CFGTerminator.labelToWhy(falseBranch))
 			)).statement();

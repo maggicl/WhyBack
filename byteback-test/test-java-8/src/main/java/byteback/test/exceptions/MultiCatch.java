@@ -14,9 +14,7 @@ public class MultiCatch {
 		return e instanceof Exception1;
 	}
 
-	// TODO: re-enable with test when exception postconditions will be supported. Not supported now due to WhyML native
-	//  exception handling limitations
-//	@Ensure("always_throws_exception1_exception2")
+	@Ensure("always_throws_exception1_exception2")
 	public void alwaysThrowsMultiple() throws Exception {
 		throw new Exception1();
 	}

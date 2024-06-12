@@ -46,12 +46,9 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 		this.resolver = resolver;
 	}
 
-	private static Expression caughtExceptionIsNull(boolean isNull) {
+	private static Expression doesNotThrow() {
 		return new BinaryExpression(
-				new Comparison(
-						WhyJVMType.PTR,
-						isNull ? Comparison.Kind.EQ : Comparison.Kind.NE
-				),
+				new Comparison(WhyJVMType.PTR, Comparison.Kind.EQ),
 				new LocalExpression(WhyLocal.CAUGHT_EXCEPTION),
 				NullLiteral.INSTANCE
 		);
@@ -59,21 +56,21 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 
 	@Override
 	public void visitRequires(WhyCondition.Requires r) {
-		requiresList.add(r.value().getExpression().toWhy().statement("requires { ", " }"));
+		requiresList.add(r.value().getExpression().toWhy(true).statement("requires { ", " }"));
 	}
 
 	@Override
 	public void visitEnsures(WhyCondition.Ensures r) {
-		final Expression condition = function.contract().signature().declaration().isProgram()
-				? new BinaryExpression(LogicConnector.IMPLIES, caughtExceptionIsNull(true), r.value().getExpression())
+		final Expression condition = function.contract().signature().declaration().isProgram() && !r.hasExceptionParam()
+				? new BinaryExpression(LogicConnector.IMPLIES, doesNotThrow(), r.value().getExpression())
 				: r.value().getExpression();
 
-		ensuresList.add(condition.toWhy().statement("ensures { ", " }"));
+		ensuresList.add(condition.toWhy(true).statement("ensures { ", " }"));
 	}
 
 	@Override
 	public void visitDecreases(WhyCondition.Decreases r) {
-		decreasesList.add(r.value().getExpression().toWhy().statement("variant { ", " }"));
+		decreasesList.add(r.value().getExpression().toWhy(true).statement("variant { ", " }"));
 	}
 
 	@Override
@@ -86,8 +83,8 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 					new BinaryExpression(
 							LogicConnector.IMPLIES,
 							r.when().getExpression(),
-							caughtExceptionIsNull(false)
-					).toWhy().statement("ensures { ", " }")
+							doesNotThrow()
+					).toWhy(true).statement("ensures { ", " }")
 			);
 		}
 	}
@@ -107,7 +104,7 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 				r.getWhen().getExpression()
 		);
 
-		raisesList.add(expr.toWhy().statement("ensures { ", " }"));
+		raisesList.add(expr.toWhy(true).statement("ensures { ", " }"));
 	}
 
 	public void visit() {
@@ -115,7 +112,7 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 
 		if (sig.declaration().isProgram()) {
 			// if this is a program function, require that the caught exception variable is null before calling the method
-			visit(new WhyCondition.Requires(new WhyFunctionBody.SpecBody(caughtExceptionIsNull(true))));
+			visit(new WhyCondition.Requires(new WhyFunctionBody.SpecBody(doesNotThrow())));
 		}
 
 		for (final WhyLocal p : sig.params()) {
@@ -123,7 +120,7 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 		}
 
 		sig.resultParam().condition()
-				.ifPresent(c -> visit(new WhyCondition.Ensures(new WhyFunctionBody.SpecBody(c))));
+				.ifPresent(c -> visit(new WhyCondition.Ensures(new WhyFunctionBody.SpecBody(c), false)));
 
 		for (final WhyCondition c : function.contract().conditions()) {
 			visit(c);

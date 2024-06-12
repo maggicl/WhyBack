@@ -15,8 +15,8 @@ public record UnaryExpression(UnaryExpression.Operator operator,
 	}
 
 	@Override
-	public SExpr toWhy() {
-		return prefix(operator.opName, operand.toWhy());
+	public SExpr toWhy(boolean useLogicOps) {
+		return prefix(operator.opName, operand.toWhy(useLogicOps));
 	}
 
 	@Override

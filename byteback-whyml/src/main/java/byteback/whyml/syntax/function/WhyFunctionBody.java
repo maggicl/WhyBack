@@ -62,7 +62,7 @@ public sealed abstract class WhyFunctionBody {
 
 		@Override
 		public Code toWhy() {
-			return expression.toWhy().statement("= ", "");
+			return expression.toWhy(false).statement("= ", "");
 		}
 	}
 

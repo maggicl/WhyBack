@@ -17,6 +17,7 @@ import byteback.whyml.syntax.field.WhyStaticField;
 import byteback.whyml.syntax.function.WhyFunctionSignature;
 import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.statement.ArrayAssignment;
+import byteback.whyml.syntax.statement.CFGInvokeStmt;
 import byteback.whyml.syntax.statement.CFGLogicalStatement;
 import byteback.whyml.syntax.statement.CFGStatement;
 import byteback.whyml.syntax.statement.FieldAssignment;
@@ -182,8 +183,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 
 	@Override
 	public void caseInvokeStmt(final InvokeStmt invokeStatement) {
-		final var invoke = invokeStatement.getInvokeExpr();
-		programExpressionExtractor.visit(invoke);
+		addStatement(new CFGInvokeStmt(programExpressionExtractor.visit(invokeStatement.getInvokeExpr())));
 	}
 
 	private Optional<String> positionAttribute(AbstractHost stmt, String string) {

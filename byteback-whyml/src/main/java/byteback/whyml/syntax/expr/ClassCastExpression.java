@@ -21,11 +21,11 @@ public record ClassCastExpression(Expression reference, WhyType exactType, boole
 	}
 
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		return prefix(
 				forSpec ? "iscast" : "checkcast",
 				terminal(Identifier.Special.HEAP),
-				reference.toWhy(),
+				reference.toWhy(useLogicOps),
 				exactType.getPreludeType()
 		);
 	}

@@ -8,7 +8,7 @@ import byteback.whyml.syntax.type.WhyJVMType;
 
 public record FloatLiteral(float value) implements Expression {
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		if (Float.isNaN(value)) return terminal("jfloat_nan");
 		else if (Float.isInfinite(value)) return terminal(value > 0 ? "jfloat_inf" : "jfloat_minf");
 		else {

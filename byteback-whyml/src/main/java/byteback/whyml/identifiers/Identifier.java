@@ -58,6 +58,7 @@ public sealed class Identifier implements Comparable<Identifier> permits Identif
 		public static final Identifier.L RESULT = new L("result");
 		public static final Identifier.L HEAP = new L("heap");
 		public static final Identifier.L CAUGHT_EXCEPTION = new L("caughtexception");
+		public static final Identifier.L VOID = new L("void");
 
 		public static Identifier.L getHeap(WhyJVMType type) {
 			return new L("heap.%s".formatted(type.getWhyAccessorScope().toLowerCase(Locale.ROOT)));

@@ -13,6 +13,7 @@ import soot.CharType;
 import soot.DoubleType;
 import soot.IntType;
 import soot.LongType;
+import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
 import soot.SootClass;
@@ -42,11 +43,28 @@ public sealed abstract class VimpCondition {
 				if (m != null) return m;
 			}
 
-			throw new RuntimeException("Class %s doesn't have any of:\n%s".formatted(
+			throw new RuntimeException("Cannot resolve BB-Lib condition: Class %s doesn't have any of:\n%s".formatted(
 					clazz.getName(),
 					returnTypes.stream()
 							.map(e -> SootMethod.getSubSignature(name, parameters, e))
 							.collect(Collectors.joining("\n"))));
+		} else if (hasResult) {
+			final SootMethod m = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
+			if (m != null) return m;
+
+			// Try adding the exception parameter, must be throwable
+			final RefType throwable = Scene.v().getSootClass(Throwable.class.getName()).getType();
+			final List<Type> paramsWithThrowable = new ArrayList<>(parameters);
+			paramsWithThrowable.add(throwable);
+
+			final SootMethod withThrowable = clazz.getMethodUnsafe(name, paramsWithThrowable, BooleanType.v());
+			if (withThrowable != null) return withThrowable;
+
+			throw new RuntimeException("Cannot resolve BB-Lib condition: Class %s doesn't have any of:\n%s\n%s".formatted(
+					clazz.getName(),
+					SootMethod.getSubSignature(name, parameters, returnType),
+					SootMethod.getSubSignature(name, paramsWithThrowable, returnType)
+			));
 		} else {
 			return clazz.getMethod(name, parameters, BooleanType.v());
 		}

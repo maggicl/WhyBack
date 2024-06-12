@@ -8,8 +8,8 @@ import byteback.whyml.syntax.type.WhyJVMType;
 
 public record OldReference(Expression inner) implements Expression {
 	@Override
-	public SExpr toWhy() {
-		return prefix("old", inner.toWhy());
+	public SExpr toWhy(boolean useLogicOps) {
+		return prefix("old", inner.toWhy(useLogicOps));
 	}
 
 	@Override

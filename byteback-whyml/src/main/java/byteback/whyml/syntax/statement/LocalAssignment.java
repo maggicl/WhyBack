@@ -2,7 +2,6 @@ package byteback.whyml.syntax.statement;
 
 import byteback.whyml.printer.Code;
 import byteback.whyml.syntax.expr.Expression;
-import byteback.whyml.syntax.expr.field.Access;
 import byteback.whyml.syntax.expr.harmonization.WhyTypeHarmonizer;
 import byteback.whyml.syntax.function.WhyLocal;
 import byteback.whyml.syntax.statement.visitor.StatementVisitor;
@@ -20,7 +19,7 @@ public record LocalAssignment(WhyLocal lValue, Expression rValue) implements CFG
 
 	@Override
 	public Code toWhy() {
-		return rValue.toWhy().statement("%s <- ".formatted(lValue.name()), ";");
+		return rValue.toWhy(false).statement("%s <- ".formatted(lValue.name()), ";");
 	}
 
 	@Override

@@ -34,4 +34,7 @@ module Type
   axiom array_covariance: forall x:t, x2:t. x :> x2 <-> ArrayOf x :> ArrayOf x2
 
   let predicate compatible (x: Ptr.t) (tmap: Ptr.t -> t) (typ: t) = is_null x || tmap x :> typ
+
+  (* do not inline this as the expression to consume needs to be evaluated for its side effects *)
+  let function void (to_consume: 'a) : unit = ()
 end

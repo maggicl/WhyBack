@@ -17,7 +17,7 @@ public record NewArrayExpression(WhyType baseType, Expression size) implements E
 	}
 
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		if (baseType instanceof WhyJVMType type) {
 			if (type.isMeta()) {
 				throw new IllegalArgumentException("An array base JVM type cannot be meta: " + type);
@@ -26,14 +26,14 @@ public record NewArrayExpression(WhyType baseType, Expression size) implements E
 			return prefix(
 					"%snewarray".formatted(type.getWhyAccessorScope().toLowerCase(Locale.ROOT)),
 					terminal(Identifier.Special.HEAP),
-					size.toWhy()
+					size.toWhy(useLogicOps)
 			);
 		} else {
 			return prefix(
 					"lnewarray",
 					terminal(Identifier.Special.HEAP),
 					baseType.getPreludeType(),
-					size.toWhy()
+					size.toWhy(useLogicOps)
 			);
 		}
 	}

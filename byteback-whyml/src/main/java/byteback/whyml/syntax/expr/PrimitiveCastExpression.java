@@ -23,15 +23,18 @@ public record PrimitiveCastExpression(Expression inner, WhyJVMType targetType) i
 	}
 
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		final WhyJVMType sourceType = inner.type();
 		if (sourceType.isWholeNumber() || targetType.isWholeNumber()) {
 			return prefix("int2" + getCastTypeName(targetType),
 					prefix(getCastTypeName(sourceType) + "2int",
-							inner.toWhy())
+							inner.toWhy(useLogicOps))
 			);
 		} else {
-			return prefix("%s2%s".formatted(getCastTypeName(sourceType), getCastTypeName(targetType)), inner.toWhy());
+			return prefix(
+					"%s2%s".formatted(getCastTypeName(sourceType), getCastTypeName(targetType)),
+					inner.toWhy(useLogicOps)
+			);
 		}
 	}
 

@@ -9,18 +9,6 @@ import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
 
 public final class BinaryExpression implements Expression {
-	public BinaryOperator getOperator() {
-		return operator;
-	}
-
-	public Expression getFirstOperand() {
-		return firstOperand;
-	}
-
-	public Expression getSecondOperand() {
-		return secondOperand;
-	}
-
 	private final BinaryOperator operator;
 	private final Expression firstOperand;
 	private final Expression secondOperand;
@@ -34,21 +22,27 @@ public final class BinaryExpression implements Expression {
 		this.secondOperand = secondOperand;
 	}
 
+	public BinaryOperator getOperator() {
+		return operator;
+	}
+
+	public Expression getFirstOperand() {
+		return firstOperand;
+	}
+
+	public Expression getSecondOperand() {
+		return secondOperand;
+	}
+
 	@Override
-	public SExpr toWhy() {
-		if (operator.isInfix()) {
-			return infix(
-					operator.opName(),
-					firstOperand.toWhy(),
-					secondOperand.toWhy()
-			);
-		} else {
-			return prefix(
-					operator.opName(),
-					firstOperand.toWhy(),
-					secondOperand.toWhy()
-			);
-		}
+	public SExpr toWhy(boolean useLogicOps) {
+		final String opName = useLogicOps ? operator.logicalOpName() : operator.opName();
+		final SExpr firstOp = firstOperand.toWhy(useLogicOps);
+		final SExpr secondOp = secondOperand.toWhy(useLogicOps);
+
+		return operator.isInfix()
+				? infix(opName, firstOp, secondOp)
+				: prefix(opName, firstOp, secondOp);
 	}
 
 	@Override

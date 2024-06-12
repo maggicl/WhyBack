@@ -40,14 +40,14 @@ public record FieldAssignment(Access access, Expression value) implements CFGSta
 				? prefix(
 				"%s.putf".formatted(accessor),
 				terminal(Identifier.Special.getHeap(field.getType().jvm())),
-				access.referenceToWhy(),
+				access.referenceToWhy(false),
 				terminal("%s.%s".formatted(field.getClazz(), field.getName())),
-				value.toWhy()
+				value.toWhy(false)
 		) : prefix(
 				"%s.puts".formatted(accessor),
 				terminal(Identifier.Special.getHeap(field.getType().jvm())),
 				terminal("%s.%s".formatted(field.getClazz(), field.getName())),
-				value.toWhy()
+				value.toWhy(false)
 		)).statement("", ";");
 	}
 

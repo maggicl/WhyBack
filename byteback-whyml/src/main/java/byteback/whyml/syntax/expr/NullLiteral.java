@@ -13,7 +13,7 @@ public final class NullLiteral implements Expression {
 	}
 
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		return terminal("Ptr.null");
 	}
 

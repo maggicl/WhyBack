@@ -8,7 +8,7 @@ import byteback.whyml.syntax.type.WhyJVMType;
 
 public record DoubleLiteral(double value) implements Expression {
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		if (Double.isNaN(value)) return terminal("jdouble_nan");
 		else if (Double.isInfinite(value)) return terminal(value > 0 ? "jdouble_inf" : "jdouble_minf");
 		else {

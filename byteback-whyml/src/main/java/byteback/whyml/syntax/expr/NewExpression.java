@@ -10,7 +10,7 @@ import byteback.whyml.syntax.type.WhyReference;
 
 public record NewExpression(WhyReference objType) implements Expression {
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		return SExpr.prefix("new", terminal(Identifier.Special.HEAP), objType.getPreludeClassType());
 	}
 

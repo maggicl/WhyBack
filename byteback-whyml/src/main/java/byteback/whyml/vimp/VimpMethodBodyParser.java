@@ -81,8 +81,6 @@ public class VimpMethodBodyParser {
 					.map(vimpLocalParser::parse)
 					.toList();
 
-
-
 			final BlockGraph bg = SootBodies.getBlockGraph(method.getActiveBody());
 			final Map<Unit, CFGLabel> labelMap = CFGLabel.forBlocks(
 					bg.getBlocks().stream()

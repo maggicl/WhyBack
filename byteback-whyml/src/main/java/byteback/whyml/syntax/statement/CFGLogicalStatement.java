@@ -20,7 +20,7 @@ public record CFGLogicalStatement(CFGLogicalStatement.Kind kind,
 
 	@Override
 	public Code toWhy() {
-		return expression.toWhy().statement(
+		return expression.toWhy(true).statement(
 				"%s { %s".formatted(kind.keyword, annotation.map("[@expl:%s] "::formatted).orElse("")),
 				" };"
 		);

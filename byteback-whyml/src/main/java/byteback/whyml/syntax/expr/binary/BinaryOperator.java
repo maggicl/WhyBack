@@ -5,6 +5,10 @@ import byteback.whyml.syntax.type.WhyJVMType;
 public interface BinaryOperator {
 	String opName();
 
+	default String logicalOpName() {
+		return opName();
+	}
+
 	WhyJVMType firstOpType();
 
 	WhyJVMType secondOpType();

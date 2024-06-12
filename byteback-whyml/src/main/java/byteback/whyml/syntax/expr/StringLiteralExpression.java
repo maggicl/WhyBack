@@ -1,7 +1,6 @@
 package byteback.whyml.syntax.expr;
 
 import byteback.whyml.identifiers.Identifier;
-import byteback.whyml.identifiers.IdentifierEscaper;
 import byteback.whyml.printer.SExpr;
 import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
@@ -36,7 +35,7 @@ public class StringLiteralExpression implements Expression {
 	}
 
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		final StringBuilder sb = new StringBuilder("\"");
 		for (final byte b : str.getBytes(Charsets.UTF_8)) {
 			sb.append(mapChar(b));

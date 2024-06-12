@@ -14,22 +14,32 @@ public record QuantifierExpression(QuantifierExpression.Kind kind,
 								   WhyLocal variable,
 								   Expression inner) implements Expression {
 	@Override
-	public SExpr toWhy() {
-		final SExpr body = variable.condition().map(Expression::toWhy)
-				.map(sExpr -> infix("->", sExpr, inner.toWhy()))
-				.orElseGet(inner::toWhy);
+	public SExpr toWhy(boolean useLogicOps) {
+		final SExpr innerBody = inner.toWhy(useLogicOps);
 
-		return prefix(
-				kind.symbol,
-				terminal(Identifier.Special.HEAP),
-				prefix(
-						"fun",
-						terminal("(%s: Heap.t)".formatted(Identifier.Special.HEAP)),
-						terminal("(%s: %s)".formatted(variable.name(), variable.type().getWhyType())),
-						terminal("->"),
-						body
-				)
-		);
+		final SExpr body = variable.condition().map(expression -> expression.toWhy(useLogicOps))
+				.map(sExpr -> infix("->", sExpr, innerBody))
+				.orElse(innerBody);
+
+		if (useLogicOps) {
+			return prefix(
+					kind.logicalSymbol,
+					terminal("%s: %s.".formatted(variable.name(), variable.type().getWhyType())),
+					body
+			);
+		} else {
+			return prefix(
+					kind.symbol,
+					terminal(Identifier.Special.HEAP),
+					prefix(
+							"fun",
+							terminal("(%s: Heap.t)".formatted(Identifier.Special.HEAP)),
+							terminal("(%s: %s)".formatted(variable.name(), variable.type().getWhyType())),
+							terminal("->"),
+							body
+					)
+			);
+		}
 	}
 
 	@Override
@@ -48,13 +58,15 @@ public record QuantifierExpression(QuantifierExpression.Kind kind,
 	}
 
 	public enum Kind {
-		EXISTS("q_exists"),
-		FORALL("q_forall");
+		EXISTS("q_exists", "exists"),
+		FORALL("q_forall", "forall");
 
 		private final String symbol;
+		private final String logicalSymbol;
 
-		Kind(String symbol) {
+		Kind(String symbol, String logicalSymbol) {
 			this.symbol = symbol;
+			this.logicalSymbol = logicalSymbol;
 		}
 	}
 }

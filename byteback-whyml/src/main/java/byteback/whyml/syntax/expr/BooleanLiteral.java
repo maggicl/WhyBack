@@ -22,7 +22,7 @@ public final class BooleanLiteral implements Expression {
 	}
 
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		return terminal(value ? "true" : "false");
 	}
 

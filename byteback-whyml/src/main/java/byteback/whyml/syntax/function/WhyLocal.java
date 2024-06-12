@@ -21,6 +21,10 @@ public record WhyLocal(Identifier.L name, WhyType type, boolean isNotNull) {
 		this(name, type, false);
 	}
 
+	public LocalExpression expression() {
+		return new LocalExpression(name, type.jvm());
+	}
+
 	public Optional<Expression> condition() {
 		if (type.jvm() != WhyJVMType.PTR) {
 			return Optional.empty();

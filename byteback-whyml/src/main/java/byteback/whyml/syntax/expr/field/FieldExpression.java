@@ -12,7 +12,7 @@ import byteback.whyml.syntax.type.WhyJVMType;
 
 public record FieldExpression(Operation operation, Access access) implements Expression {
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		final WhyField field = access.getField();
 		final String accessor = field.getType().jvm().getWhyAccessorScope();
 
@@ -20,7 +20,7 @@ public record FieldExpression(Operation operation, Access access) implements Exp
 			return prefix(
 					"%s.%sf".formatted(accessor, operation.whyKeyword()),
 					terminal(Identifier.Special.getHeap(field.getType().jvm())),
-					access.referenceToWhy(),
+					access.referenceToWhy(useLogicOps),
 					terminal("%s.%s".formatted(field.getClazz(), field.getName()))
 			);
 		} else {

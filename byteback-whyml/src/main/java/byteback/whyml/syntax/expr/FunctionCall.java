@@ -50,12 +50,12 @@ public record FunctionCall(Identifier.L name,
 	}
 
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		return prefix(
 				name.toString(),
 				Stream.concat(
 						Stream.of(terminal(Identifier.Special.HEAP)),
-						actualParams.stream().map(Expression::toWhy)
+						actualParams.stream().map(expression -> expression.toWhy(useLogicOps))
 				)
 		);
 	}

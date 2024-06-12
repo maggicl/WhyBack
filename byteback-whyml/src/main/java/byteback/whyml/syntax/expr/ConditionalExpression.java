@@ -22,8 +22,8 @@ public record ConditionalExpression(Expression conditional,
 	}
 
 	@Override
-	public SExpr toWhy() {
-		return SExpr.conditional(conditional.toWhy(), thenExpr.toWhy(), elseExpr.toWhy());
+	public SExpr toWhy(boolean useLogicOps) {
+		return SExpr.conditional(conditional.toWhy(useLogicOps), thenExpr.toWhy(useLogicOps), elseExpr.toWhy(useLogicOps));
 	}
 
 	@Override

@@ -21,11 +21,11 @@ public record InstanceOfExpression(Expression reference, WhyType checkType) impl
 	}
 
 	@Override
-	public SExpr toWhy() {
+	public SExpr toWhy(boolean useLogicOps) {
 		return prefix(
 				"instanceof",
 				terminal(Identifier.Special.HEAP),
-				reference.toWhy(),
+				reference.toWhy(useLogicOps),
 				checkType.getPreludeType()
 		);
 	}

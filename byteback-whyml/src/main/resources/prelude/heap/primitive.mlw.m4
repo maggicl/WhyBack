@@ -3,6 +3,7 @@ define(`STATICFMAP', `'ELEM`_static_fmap')dnl
 define(`INSTANCEFMAP', `'ELEM`_instance_fmap')dnl
 module MELEM
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use TYPES
@@ -30,12 +31,12 @@ module MELEM
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : ELEMTYPE
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> result = isf heap p f }
+    ensures { not_null p -> result = isf heap p f }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: ELEMTYPE) : unit
     writes { heap.INSTANCEFMAP }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.INSTANCEFMAP (p, f) = v }
+    ensures { not_null p -> heap.INSTANCEFMAP (p, f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   let function iss [@inline:trivial] (heap: t) (f: static_field) : ELEMTYPE =

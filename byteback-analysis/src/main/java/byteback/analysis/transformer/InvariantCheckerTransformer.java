@@ -1,9 +1,11 @@
 package byteback.analysis.transformer;
 
+import byteback.analysis.Vimp;
 import byteback.analysis.tags.PositionTag;
 import byteback.analysis.util.SootBodies;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.analysis.vimp.LogicConstant;
+import byteback.analysis.vimp.VoidConstant;
 import byteback.util.Lazy;
 import java.util.Collection;
 import java.util.Map;
@@ -11,9 +13,11 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
 import soot.grimp.GrimpBody;
+import soot.jimple.AssignStmt;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.Stmt;
+import soot.jimple.ThrowStmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
-import soot.tagkit.AbstractHost;
 import soot.util.Chain;
 
 public class InvariantCheckerTransformer extends BodyTransformer {
@@ -41,6 +45,14 @@ public class InvariantCheckerTransformer extends BodyTransformer {
 		final Collection<Loop> loops = SootBodies.getLoops(body);
 
 		for (final Loop loop : loops) {
+			// do not falsely detect try-finally blocks as non-exception-throwing loops:
+			// https://github.com/soot-oss/soot/issues/982
+			final boolean nothingThrown = loop.getLoopStatements().stream().noneMatch(e ->
+					e instanceof ThrowStmt
+							|| (e instanceof AssignStmt a
+									&& a.getLeftOp() instanceof CaughtExceptionRef
+									&& a.getRightOp() != VoidConstant.v()));
+
 			// if the loop does not have a loop invariant add a dummy loop invariant
 			if (loop.getLoopStatements().stream().noneMatch(e -> e instanceof InvariantStmt)) {
 				final Stmt stmt = loop.getHead();
@@ -51,7 +63,12 @@ public class InvariantCheckerTransformer extends BodyTransformer {
 					System.out.println("Missing invariant: " + loop.getLoopStatements());
 				}
 
-				units.insertBefore(new InvariantStmt(LogicConstant.v(true)), loop.getHead());
+				units.insertBefore(
+						new InvariantStmt(nothingThrown
+								? Vimp.v().newEqExpr(Vimp.v().newCaughtExceptionRef(), VoidConstant.v())
+								: LogicConstant.v(true)),
+						loop.getHead()
+				);
 			}
 		}
 	}

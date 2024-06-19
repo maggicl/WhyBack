@@ -96,7 +96,7 @@ public class TypeAccessExtractor extends TypeSwitch<WhyType> {
 
 	@Override
 	public void caseNullType(NullType t) {
-		type = new WhyReference(Identifier.Special.OBJECT);
+		type = WhyReference.OBJECT;
 	}
 
 	@Override

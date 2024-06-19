@@ -6,6 +6,8 @@ import static byteback.whyml.printer.SExpr.prefix;
 import static byteback.whyml.printer.SExpr.terminal;
 
 public record WhyReference(Identifier.FQDN fqdn) implements WhyPtrType {
+	public static final WhyReference OBJECT = new WhyReference(Identifier.Special.OBJECT);
+
 	@Override
 	public String getWhyAccessorScope() {
 		return "L";

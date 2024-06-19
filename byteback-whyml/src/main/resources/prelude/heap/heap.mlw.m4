@@ -32,6 +32,7 @@ include(`primitive.mlw.m4')dnl
 
 module L
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use set.Set
 
@@ -64,14 +65,14 @@ module L
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : Ptr.t
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> result = isf heap p f }
-    ensures { p <> Ptr.null -> compatible result heap.typeof f.i_type }
+    ensures { not_null p -> result = isf heap p f }
+    ensures { not_null p -> compatible result heap.typeof f.i_type }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: Ptr.t) : unit
     writes { heap.l_instance_fmap }
     requires { compatible v heap.typeof f.i_type }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.l_instance_fmap (p,f) = v }
+    ensures { not_null p -> heap.l_instance_fmap (p,f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   val function iss (heap: t) (f: static_field) : Ptr.t
@@ -184,11 +185,27 @@ module Heap
 
   use L
 
+  let predicate check_ptr_mem [@inline:trivial] (heap: ht) (p: Ptr.t) (typ: Type.t)
+    requires { not_null p }
+  =
+    heap.l.pointers p && match (typ) with
+      | BoolArray ->      heap.rz.rz_arrays p
+      | ByteArray ->      heap.rb.rb_arrays p
+      | ShortArray ->     heap.rs.rs_arrays p
+      | CharArray ->      heap.rc.rc_arrays p
+      | IntArray ->       heap.ri.ri_arrays p
+      | LongArray ->      heap.rj.rj_arrays p
+      | FloatArray ->     heap.rf.rf_arrays p
+      | DoubleArray ->    heap.rd.rd_arrays p
+      | Class _ ->        true
+      | ArrayOf _ ->      heap.rl_arrays p
+    end
+
   let predicate instanceof [@inline:trivial] (heap: ht) (p: Ptr.t) (t: Type.t) =
-    not_null p && compatible p heap.l.typeof t
+    not_null p && compatible p heap.l.typeof t && check_ptr_mem heap p t
 
   let predicate isinstance [@inline:trivial] (heap: ht) (p: Ptr.t) (t: Type.t) =
-    is_null p || compatible p heap.l.typeof t
+    is_null p || instanceof heap p t
 
   val checkcast (heap: ht) (p: Ptr.t) (t: Type.t) : Ptr.t
     ensures { compatible p heap.l.typeof t -> result = p }

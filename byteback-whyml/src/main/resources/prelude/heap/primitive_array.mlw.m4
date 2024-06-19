@@ -4,6 +4,7 @@ define(`ARRAYS', `r'ELEM`_arrays')dnl
 define(`ELEMS', `r'ELEM`_elements')dnl
 module MELEM
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use TYPES
@@ -39,8 +40,7 @@ module MELEM
     ensures { other_same_array heap (old heap) p }
 
   val function arraylength (heap: t) (p: Ptr.t) : jint
-    requires { mem p heap.ARRAYS }
-    ensures { result = int2i (heap.ELEMS p).length }
+    ensures { mem p heap.ARRAYS -> result = int2i (heap.ELEMS p).length }
 
   predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
     result <> Ptr.null /\

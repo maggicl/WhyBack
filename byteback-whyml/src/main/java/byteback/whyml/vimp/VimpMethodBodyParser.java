@@ -78,6 +78,7 @@ public class VimpMethodBodyParser {
 			final Body body = method.getActiveBody();
 
 			final List<WhyLocal> locals = body.getLocals().stream()
+					.filter(e -> !e.getName().equals("this"))
 					.map(vimpLocalParser::parse)
 					.toList();
 

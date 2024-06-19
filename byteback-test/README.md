@@ -23,3 +23,11 @@ To collect the Why3 output in a single csv file run the command:
 ```shell
 scripts/results.sh
 ```
+
+cvc4 cvc5 alt-ergo gappa? z3 (different versions 2-3) 
+
+alt-ergo polynomial
+floating point/machine integer examples (gappa)
+vampire abstract method with complex quantifier in the spec. Other method calls that method
+    (forall x. x > a -> result > x) (maybe with types ? partial order)
+method that returns the minimum element in an array and postcondition (exists k. 0 <= k < length && a[k] = result)

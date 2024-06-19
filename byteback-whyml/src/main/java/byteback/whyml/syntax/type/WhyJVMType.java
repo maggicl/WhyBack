@@ -73,7 +73,7 @@ public enum WhyJVMType implements WhyType {
 
 	@Override
 	public String getDescriptor() {
-		if (this == PTR) return "L" + Identifier.Special.OBJECT.descriptor();
+		if (this == PTR) return WhyReference.OBJECT.getDescriptor();
 		if (this == UNIT) return "V";
 		return accessorScope;
 	}

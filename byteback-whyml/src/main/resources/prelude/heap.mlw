@@ -1,5 +1,6 @@
 module Z
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -22,17 +23,17 @@ module Z
       heap.z_instance_fmap (pp,ff) = old_heap.z_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jbool
-    requires { p <> Ptr.null }
+    requires { not_null p }
     ensures { result = heap.z_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jbool
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> result = isf heap p f }
+    ensures { not_null p -> result = isf heap p f }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jbool) : unit
     writes { heap.z_instance_fmap }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.z_instance_fmap (p, f) = v }
+    ensures { not_null p -> heap.z_instance_fmap (p, f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   let function iss [@inline:trivial] (heap: t) (f: static_field) : jbool =
@@ -49,6 +50,7 @@ end
 
 module B
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -71,17 +73,17 @@ module B
       heap.b_instance_fmap (pp,ff) = old_heap.b_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jbyte
-    requires { p <> Ptr.null }
+    requires { not_null p }
     ensures { result = heap.b_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jbyte
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> result = isf heap p f }
+    ensures { not_null p -> result = isf heap p f }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jbyte) : unit
     writes { heap.b_instance_fmap }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.b_instance_fmap (p, f) = v }
+    ensures { not_null p -> heap.b_instance_fmap (p, f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   let function iss [@inline:trivial] (heap: t) (f: static_field) : jbyte =
@@ -98,6 +100,7 @@ end
 
 module S
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -120,17 +123,17 @@ module S
       heap.s_instance_fmap (pp,ff) = old_heap.s_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jshort
-    requires { p <> Ptr.null }
+    requires { not_null p }
     ensures { result = heap.s_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jshort
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> result = isf heap p f }
+    ensures { not_null p -> result = isf heap p f }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jshort) : unit
     writes { heap.s_instance_fmap }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.s_instance_fmap (p, f) = v }
+    ensures { not_null p -> heap.s_instance_fmap (p, f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   let function iss [@inline:trivial] (heap: t) (f: static_field) : jshort =
@@ -147,6 +150,7 @@ end
 
 module C
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -169,17 +173,17 @@ module C
       heap.c_instance_fmap (pp,ff) = old_heap.c_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jchar
-    requires { p <> Ptr.null }
+    requires { not_null p }
     ensures { result = heap.c_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jchar
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> result = isf heap p f }
+    ensures { not_null p -> result = isf heap p f }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jchar) : unit
     writes { heap.c_instance_fmap }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.c_instance_fmap (p, f) = v }
+    ensures { not_null p -> heap.c_instance_fmap (p, f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   let function iss [@inline:trivial] (heap: t) (f: static_field) : jchar =
@@ -196,6 +200,7 @@ end
 
 module I
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -218,17 +223,17 @@ module I
       heap.i_instance_fmap (pp,ff) = old_heap.i_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jint
-    requires { p <> Ptr.null }
+    requires { not_null p }
     ensures { result = heap.i_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jint
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> result = isf heap p f }
+    ensures { not_null p -> result = isf heap p f }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jint) : unit
     writes { heap.i_instance_fmap }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.i_instance_fmap (p, f) = v }
+    ensures { not_null p -> heap.i_instance_fmap (p, f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   let function iss [@inline:trivial] (heap: t) (f: static_field) : jint =
@@ -245,6 +250,7 @@ end
 
 module J
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -267,17 +273,17 @@ module J
       heap.j_instance_fmap (pp,ff) = old_heap.j_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jlong
-    requires { p <> Ptr.null }
+    requires { not_null p }
     ensures { result = heap.j_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jlong
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> result = isf heap p f }
+    ensures { not_null p -> result = isf heap p f }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jlong) : unit
     writes { heap.j_instance_fmap }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.j_instance_fmap (p, f) = v }
+    ensures { not_null p -> heap.j_instance_fmap (p, f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   let function iss [@inline:trivial] (heap: t) (f: static_field) : jlong =
@@ -294,6 +300,7 @@ end
 
 module F
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -316,17 +323,17 @@ module F
       heap.f_instance_fmap (pp,ff) = old_heap.f_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jfloat
-    requires { p <> Ptr.null }
+    requires { not_null p }
     ensures { result = heap.f_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jfloat
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> result = isf heap p f }
+    ensures { not_null p -> result = isf heap p f }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jfloat) : unit
     writes { heap.f_instance_fmap }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.f_instance_fmap (p, f) = v }
+    ensures { not_null p -> heap.f_instance_fmap (p, f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   let function iss [@inline:trivial] (heap: t) (f: static_field) : jfloat =
@@ -343,6 +350,7 @@ end
 
 module D
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -365,17 +373,17 @@ module D
       heap.d_instance_fmap (pp,ff) = old_heap.d_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jdouble
-    requires { p <> Ptr.null }
+    requires { not_null p }
     ensures { result = heap.d_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jdouble
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> result = isf heap p f }
+    ensures { not_null p -> result = isf heap p f }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: jdouble) : unit
     writes { heap.d_instance_fmap }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.d_instance_fmap (p, f) = v }
+    ensures { not_null p -> heap.d_instance_fmap (p, f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   let function iss [@inline:trivial] (heap: t) (f: static_field) : jdouble =
@@ -392,6 +400,7 @@ end
 
 module L
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use set.Set
 
@@ -418,20 +427,20 @@ module L
       heap.l_instance_fmap (pp,ff) = old_heap.l_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : Ptr.t
-    requires { p <> Ptr.null }
+    requires { not_null p }
     ensures { result = heap.l_instance_fmap (p,f) }
     ensures { compatible result heap.typeof f.i_type }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : Ptr.t
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> result = isf heap p f }
-    ensures { p <> Ptr.null -> compatible result heap.typeof f.i_type }
+    ensures { not_null p -> result = isf heap p f }
+    ensures { not_null p -> compatible result heap.typeof f.i_type }
 
   val putf (heap: t) (p: Ptr.t) (f: instance_field) (v: Ptr.t) : unit
     writes { heap.l_instance_fmap }
     requires { compatible v heap.typeof f.i_type }
     (* raises { JException e -> npe_if_null e p } *)
-    ensures { p <> Ptr.null -> heap.l_instance_fmap (p,f) = v }
+    ensures { not_null p -> heap.l_instance_fmap (p,f) = v }
     ensures { other_same_instance heap (old heap) p f }
 
   val function iss (heap: t) (f: static_field) : Ptr.t
@@ -456,6 +465,7 @@ end
 
 module RZ
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -504,6 +514,7 @@ end
 
 module RB
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -552,6 +563,7 @@ end
 
 module RS
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -600,6 +612,7 @@ end
 
 module RC
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -648,6 +661,7 @@ end
 
 module RI
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -696,6 +710,7 @@ end
 
 module RJ
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -744,6 +759,7 @@ end
 
 module RF
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -792,6 +808,7 @@ end
 
 module RD
   use prelude.ptr.Ptr
+  use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
   use prelude.numeric.Operators
@@ -896,11 +913,27 @@ module Heap
 
   use L
 
+  let predicate check_ptr_mem [@inline:trivial] (heap: ht) (p: Ptr.t) (typ: Type.t)
+    requires { not_null p }
+  =
+    heap.l.pointers p && match (typ) with
+      | BoolArray ->      heap.rz.rz_arrays p
+      | ByteArray ->      heap.rb.rb_arrays p
+      | ShortArray ->     heap.rs.rs_arrays p
+      | CharArray ->      heap.rc.rc_arrays p
+      | IntArray ->       heap.ri.ri_arrays p
+      | LongArray ->      heap.rj.rj_arrays p
+      | FloatArray ->     heap.rf.rf_arrays p
+      | DoubleArray ->    heap.rd.rd_arrays p
+      | Class _ ->        true
+      | ArrayOf _ ->      heap.rl_arrays p
+    end
+
   let predicate instanceof [@inline:trivial] (heap: ht) (p: Ptr.t) (t: Type.t) =
-    not_null p && compatible p heap.l.typeof t
+    not_null p && compatible p heap.l.typeof t && check_ptr_mem heap p t
 
   let predicate isinstance [@inline:trivial] (heap: ht) (p: Ptr.t) (t: Type.t) =
-    is_null p || compatible p heap.l.typeof t
+    is_null p || instanceof heap p t
 
   val checkcast (heap: ht) (p: Ptr.t) (t: Type.t) : Ptr.t
     ensures { compatible p heap.l.typeof t -> result = p }

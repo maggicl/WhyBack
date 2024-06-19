@@ -309,6 +309,21 @@ public class PureExpressionExtractor extends JimpleValueSwitch<Expression> {
 					.formatted(v1, v2, v1.type(), v2.type()));
 		}
 
+		if (hr.getType() == WhyJVMType.PTR) {
+			boolean firstIsNull = hr.getFirstOp() == NullLiteral.INSTANCE;
+			if (firstIsNull || hr.getSecondOp() == NullLiteral.INSTANCE) {
+				final Expression other = firstIsNull ? hr.getSecondOp() : hr.getFirstOp();
+
+				setExpression(new UnaryExpression(
+						kind == Comparison.Kind.EQ
+								? UnaryExpression.Operator.IS_NULL
+								: UnaryExpression.Operator.NOT_NULL,
+						other
+				));
+				return;
+			}
+		}
+
 		try {
 			setExpression(new BinaryExpression(new Comparison(hr.getType(), kind), hr.getFirstOp(), hr.getSecondOp()));
 		} catch (IllegalArgumentException e) {

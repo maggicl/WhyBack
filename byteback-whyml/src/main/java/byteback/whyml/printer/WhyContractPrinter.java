@@ -4,6 +4,7 @@ import static byteback.whyml.printer.Code.line;
 import static byteback.whyml.printer.Code.many;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.InstanceOfExpression;
+import byteback.whyml.syntax.expr.OldReference;
 import byteback.whyml.syntax.expr.binary.BinaryExpression;
 import byteback.whyml.syntax.expr.binary.LogicConnector;
 import byteback.whyml.syntax.function.WhyCondition;
@@ -74,7 +75,7 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 			returnsList.add(
 					new BinaryExpression(
 							LogicConnector.IMPLIES,
-							r.when().getExpression(),
+							new OldReference(r.when().getExpression()),
 							WhyLocal.CAUGHT_EXCEPTION.isNullExpression()
 					).toWhy(true).statement("ensures { ", " }")
 			);
@@ -89,12 +90,12 @@ public class WhyContractPrinter implements WhyCondition.Visitor {
 
 		final Expression expr = new BinaryExpression(
 				LogicConnector.IMPLIES,
+				new OldReference(r.getWhen().getExpression()),
 				new InstanceOfExpression(
 						WhyLocal.CAUGHT_EXCEPTION.expression(),
 						new WhyReference(r.getException()),
 						true
-				),
-				r.getWhen().getExpression()
+				)
 		);
 
 		raisesList.add(expr.toWhy(true).statement("ensures { ", " }"));

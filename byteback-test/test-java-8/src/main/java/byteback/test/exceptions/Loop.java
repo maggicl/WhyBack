@@ -57,6 +57,7 @@ public class Loop {
 		boolean iterate = true;
 
 		while (iterate) {
+			invariant(iterate);
 			try {
 				throwsInFor();
 				assertion(false);

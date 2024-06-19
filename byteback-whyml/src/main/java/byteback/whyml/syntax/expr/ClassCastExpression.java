@@ -7,6 +7,7 @@ import static byteback.whyml.printer.SExpr.terminal;
 import byteback.whyml.syntax.expr.transformer.ExpressionTransformer;
 import byteback.whyml.syntax.expr.transformer.ExpressionVisitor;
 import byteback.whyml.syntax.type.WhyJVMType;
+import byteback.whyml.syntax.type.WhyReference;
 import byteback.whyml.syntax.type.WhyType;
 
 public record ClassCastExpression(Expression reference, WhyType exactType, boolean forSpec) implements Expression {
@@ -22,6 +23,10 @@ public record ClassCastExpression(Expression reference, WhyType exactType, boole
 
 	@Override
 	public SExpr toWhy(boolean useLogicOps) {
+		if (exactType.equals(WhyReference.OBJECT)) {
+			return reference.toWhy(useLogicOps);
+		}
+
 		return prefix(
 				forSpec ? "iscast" : "checkcast",
 				terminal(Identifier.Special.HEAP),

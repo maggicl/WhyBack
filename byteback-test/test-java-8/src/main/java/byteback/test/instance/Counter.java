@@ -47,7 +47,7 @@ public class Counter {
 	public void countTo10Indirectly() {
 		for (int i = 0; i < 10; ++i) {
 			invariant(lte(0, i) & lte(i, 10));
-      invariant(eq(count, old(count) + i));
+      		invariant(eq(count, old(count) + i));
 			increment();
 		}
 	}

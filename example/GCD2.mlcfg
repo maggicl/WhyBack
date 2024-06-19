@@ -1,0 +1,156 @@
+module Program
+  (* prelude import *)
+  use prelude.ptr.Ptr
+  use prelude.typing.Type
+  use prelude.exceptions.Throw
+  use export prelude.bootstrap.Bootstrap
+  use export prelude.logic.Operators
+  use export prelude.numeric.Operators
+  use export prelude.boolean.Operators
+  use export prelude.ptr.Operators
+  use prelude.heap.Z
+  use prelude.heap.B
+  use prelude.heap.S
+  use prelude.heap.C
+  use prelude.heap.I
+  use prelude.heap.J
+  use prelude.heap.F
+  use prelude.heap.D
+  use prelude.heap.L
+  use prelude.heap.RZ
+  use prelude.heap.RB
+  use prelude.heap.RS
+  use prelude.heap.RC
+  use prelude.heap.RI
+  use prelude.heap.RJ
+  use prelude.heap.RF
+  use prelude.heap.RD
+  use prelude.heap.Heap
+  use set.Set
+
+  scope Java
+  scope Io
+  scope Serializable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Throwable
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Io.Serializable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Exception
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Lang.Throwable.class)
+  end
+  end
+  end
+
+  scope Byteback
+  scope Test
+  scope Exceptions
+  scope Exception2
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Lang.Exception.class)
+  end
+  end
+  end
+  end
+
+  scope Byteback
+  scope Test
+  scope Exceptions
+  scope Exception1
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Lang.Exception.class)
+  end
+  end
+  end
+  end
+
+  val byteback_test_exceptions_Exception1_'5init'5'7'7V (heap: Heap.t) (this: Ptr.t) : unit
+      requires { is_null caughtexception }
+      requires { instanceof
+        heap
+        this
+        (Class Byteback.Test.Exceptions.Exception1.class) }
+      ensures { true -> (is_null caughtexception) }
+      writes { caughtexception }
+
+    let cfg byteback_test_exceptions_TryWithResources_tryWithResourcesOnExistingResourceClosesResource'7'7V (heap: Heap.t) (this: Ptr.t) : unit
+      requires { is_null caughtexception }
+      requires { instanceof
+        heap
+        this
+        (Class Byteback.Test.Exceptions.TryWithResources.class) }
+      writes { heap.l.pointers }
+      writes { heap.l.l_instance_fmap }
+      writes { caughtexception }
+      writes { heap.z.z_instance_fmap }
+    =
+      var lv_'4stack3: Ptr.t;
+      {
+        lv_'4stack3 <- Ptr.null;
+        goto L1
+      }
+      L1 {
+        caughtexception <- Ptr.null;
+        lv_'4stack3 <- new
+          heap
+          (Byteback.Test.Exceptions.TryWithResources'4Resource.class);
+        void
+          (byteback_test_exceptions_TryWithResources'4Resource_'5init'5'7LByteback_Test_Exceptions_TryWithResources'6'7V
+            heap
+            lv_'4stack3
+            (this));
+        switch (LCMP.eq caughtexception Ptr.null)
+        | True -> goto L3
+        | False -> goto L2
+        end
+      }
+      L2 {
+        return (jthrow caughtexception)
+      }
+      L3 {
+        switch (LCMP.eq lv_'4stack3 Ptr.null)
+        | True -> goto L6
+        | False -> goto L4
+        end
+      }
+      L4 {
+        void
+          (byteback_test_exceptions_TryWithResources'4Resource_close'7'7V
+            heap
+            (lv_'4stack3));
+        switch (LCMP.eq caughtexception Ptr.null)
+        | True -> goto L6
+        | False -> goto L5
+        end
+      }
+      L5 {
+        return (jthrow caughtexception)
+      }
+      L6 {
+        assert { [@expl:TryWithResources.java: (line 42): assertion might not hold] byteback_test_exceptions_TryWithResources'4Resource_isClosed'7'7Z
+          heap
+          (lv_'4stack3) };
+        return ()
+      }
+
+end

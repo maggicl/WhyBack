@@ -9,8 +9,6 @@ import byteback.analysis.vimp.AssumptionStmt;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.whyml.syntax.expr.Expression;
 import byteback.whyml.syntax.expr.LocalExpression;
-import byteback.whyml.syntax.expr.binary.BinaryExpression;
-import byteback.whyml.syntax.expr.binary.LogicConnector;
 import byteback.whyml.syntax.expr.field.Access;
 import byteback.whyml.syntax.expr.harmonization.WhyTypeHarmonizer;
 import byteback.whyml.syntax.field.WhyField;
@@ -45,7 +43,6 @@ import soot.jimple.InstanceFieldRef;
 import soot.jimple.InvokeStmt;
 import soot.jimple.ParameterRef;
 import soot.jimple.StaticFieldRef;
-import soot.jimple.ThisRef;
 import soot.tagkit.AbstractHost;
 
 public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatement>> {
@@ -89,24 +86,19 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 		if (lValue instanceof Local local) {
 			if (rValue instanceof CaughtExceptionRef) {
 				visit(Grimp.v().newAssignStmt(local, Vimp.v().newCaughtExceptionRef()));
-			} else if (rValue instanceof ParameterRef || rValue instanceof ThisRef) {
+			} else if (rValue instanceof ParameterRef paramRef) {
 				final WhyLocal lValueLocal = vimpLocalParser.parse(local);
 
-				final WhyLocal rValueLocal;
-				if (rValue instanceof ParameterRef paramRef) {
-					rValueLocal = signature.getParam(paramRef.getIndex()).orElseThrow(() ->
-							new WhyTranslationException(identity, "parameter %s missing from signature: %s"
-									.formatted(paramRef, signature)));
-				} else {
-					rValueLocal = signature.getThisParam().orElseThrow(() ->
-							new WhyTranslationException(identity, "'this' parameter missing from signature: " + signature));
-				}
+				final WhyLocal rValueLocal = signature.getParam(paramRef.getIndex()).orElseThrow(() ->
+						new WhyTranslationException(identity, "parameter %s missing from signature: %s"
+								.formatted(paramRef, signature)));
 
 				addStatement(new LocalAssignment(
 						lValueLocal,
 						new LocalExpression(rValueLocal.name(), rValueLocal.type().jvm())
 				));
 			}
+			// ignore ThisRef deliberately as it is immutable and does not need a local variable
 		}
 	}
 
@@ -225,11 +217,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 				new CFGLogicalStatement(
 						CFGLogicalStatement.Kind.INVARIANT,
 						position,
-						new BinaryExpression(
-								LogicConnector.AND,
-								WhyLocal.CAUGHT_EXCEPTION.isNullExpression(),
-								condition
-						)
+						condition
 				)
 		);
 	}

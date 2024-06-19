@@ -20,6 +20,7 @@ public class TryWithResources {
 			closed = false;
 		}
 
+		@Return
 		@Ensure("isClosed")
 		public void close() {
 			closed = true;

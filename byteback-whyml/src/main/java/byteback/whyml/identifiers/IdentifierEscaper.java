@@ -139,11 +139,15 @@ public class IdentifierEscaper {
 	}
 
 	public Identifier.L escapeLocalVariable(String input) {
+		if ("this".equals(input)) return Identifier.Special.THIS;
+
 		// no need to check for reserved keywords thanks to prefix
 		return new Identifier.L(LOCAL_VARIABLE_PREFIX + escape(input, IdentifierClass.LIDENT, true));
 	}
 
 	public Identifier.L escapeParam(String input) {
+		if ("this".equals(input)) return Identifier.Special.THIS;
+
 		// no need to check for reserved keywords thanks to prefix
 		return new Identifier.L(PARAM_PREFIX + escape(input, IdentifierClass.LIDENT, true));
 	}

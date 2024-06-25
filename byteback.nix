@@ -9,8 +9,12 @@ pkgs.mkShell {
     ))
     pkgs.boogie
     pkgs.z3
-    # pkgs.alt-ergo # breaks nix on mac, codesign not found
+    pkgs.z3_4_8_5
+    #pkgs.alt-ergo
     pkgs.why3
+    pkgs.cvc4
+    pkgs.cvc5
+    pkgs.gappa
     pkgs.coq
   ];
 

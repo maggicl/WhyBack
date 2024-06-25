@@ -3,7 +3,7 @@ module Z
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -23,7 +23,7 @@ module Z
       heap.z_instance_fmap (pp,ff) = old_heap.z_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jbool
-    requires { not_null p }
+    requires { p <> Ptr.null }
     ensures { result = heap.z_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jbool
@@ -53,7 +53,7 @@ module B
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -73,7 +73,7 @@ module B
       heap.b_instance_fmap (pp,ff) = old_heap.b_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jbyte
-    requires { not_null p }
+    requires { p <> Ptr.null }
     ensures { result = heap.b_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jbyte
@@ -103,7 +103,7 @@ module S
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -123,7 +123,7 @@ module S
       heap.s_instance_fmap (pp,ff) = old_heap.s_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jshort
-    requires { not_null p }
+    requires { p <> Ptr.null }
     ensures { result = heap.s_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jshort
@@ -153,7 +153,7 @@ module C
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -173,7 +173,7 @@ module C
       heap.c_instance_fmap (pp,ff) = old_heap.c_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jchar
-    requires { not_null p }
+    requires { p <> Ptr.null }
     ensures { result = heap.c_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jchar
@@ -203,7 +203,7 @@ module I
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -223,7 +223,7 @@ module I
       heap.i_instance_fmap (pp,ff) = old_heap.i_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jint
-    requires { not_null p }
+    requires { p <> Ptr.null }
     ensures { result = heap.i_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jint
@@ -253,7 +253,7 @@ module J
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -273,7 +273,7 @@ module J
       heap.j_instance_fmap (pp,ff) = old_heap.j_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jlong
-    requires { not_null p }
+    requires { p <> Ptr.null }
     ensures { result = heap.j_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jlong
@@ -303,7 +303,7 @@ module F
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -323,7 +323,7 @@ module F
       heap.f_instance_fmap (pp,ff) = old_heap.f_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jfloat
-    requires { not_null p }
+    requires { p <> Ptr.null }
     ensures { result = heap.f_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jfloat
@@ -353,7 +353,7 @@ module D
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -373,7 +373,7 @@ module D
       heap.d_instance_fmap (pp,ff) = old_heap.d_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : jdouble
-    requires { not_null p }
+    requires { p <> Ptr.null }
     ensures { result = heap.d_instance_fmap (p, f) }
 
   val getf (heap: t) (p: Ptr.t) (f: instance_field) : jdouble
@@ -427,7 +427,7 @@ module L
       heap.l_instance_fmap (pp,ff) = old_heap.l_instance_fmap (pp,ff)
 
   val function isf (heap: t) (p: Ptr.t) (f: instance_field) : Ptr.t
-    requires { not_null p }
+    requires { p <> Ptr.null }
     ensures { result = heap.l_instance_fmap (p,f) }
     ensures { compatible result heap.typeof f.i_type }
 
@@ -468,7 +468,7 @@ module RZ
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -501,8 +501,7 @@ module RZ
     ensures { other_same_array heap (old heap) p }
 
   val function arraylength (heap: t) (p: Ptr.t) : jint
-    requires { mem p heap.rz_arrays }
-    ensures { result = int2i (heap.rz_elements p).length }
+    ensures { mem p heap.rz_arrays -> result = int2i (heap.rz_elements p).length }
 
   predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
     result <> Ptr.null /\
@@ -517,7 +516,7 @@ module RB
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -550,8 +549,7 @@ module RB
     ensures { other_same_array heap (old heap) p }
 
   val function arraylength (heap: t) (p: Ptr.t) : jint
-    requires { mem p heap.rb_arrays }
-    ensures { result = int2i (heap.rb_elements p).length }
+    ensures { mem p heap.rb_arrays -> result = int2i (heap.rb_elements p).length }
 
   predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
     result <> Ptr.null /\
@@ -566,7 +564,7 @@ module RS
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -599,8 +597,7 @@ module RS
     ensures { other_same_array heap (old heap) p }
 
   val function arraylength (heap: t) (p: Ptr.t) : jint
-    requires { mem p heap.rs_arrays }
-    ensures { result = int2i (heap.rs_elements p).length }
+    ensures { mem p heap.rs_arrays -> result = int2i (heap.rs_elements p).length }
 
   predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
     result <> Ptr.null /\
@@ -615,7 +612,7 @@ module RC
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -648,8 +645,7 @@ module RC
     ensures { other_same_array heap (old heap) p }
 
   val function arraylength (heap: t) (p: Ptr.t) : jint
-    requires { mem p heap.rc_arrays }
-    ensures { result = int2i (heap.rc_elements p).length }
+    ensures { mem p heap.rc_arrays -> result = int2i (heap.rc_elements p).length }
 
   predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
     result <> Ptr.null /\
@@ -664,7 +660,7 @@ module RI
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -697,8 +693,7 @@ module RI
     ensures { other_same_array heap (old heap) p }
 
   val function arraylength (heap: t) (p: Ptr.t) : jint
-    requires { mem p heap.ri_arrays }
-    ensures { result = int2i (heap.ri_elements p).length }
+    ensures { mem p heap.ri_arrays -> result = int2i (heap.ri_elements p).length }
 
   predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
     result <> Ptr.null /\
@@ -713,7 +708,7 @@ module RJ
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -746,8 +741,7 @@ module RJ
     ensures { other_same_array heap (old heap) p }
 
   val function arraylength (heap: t) (p: Ptr.t) : jint
-    requires { mem p heap.rj_arrays }
-    ensures { result = int2i (heap.rj_elements p).length }
+    ensures { mem p heap.rj_arrays -> result = int2i (heap.rj_elements p).length }
 
   predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
     result <> Ptr.null /\
@@ -762,7 +756,7 @@ module RF
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -795,8 +789,7 @@ module RF
     ensures { other_same_array heap (old heap) p }
 
   val function arraylength (heap: t) (p: Ptr.t) : jint
-    requires { mem p heap.rf_arrays }
-    ensures { result = int2i (heap.rf_elements p).length }
+    ensures { mem p heap.rf_arrays -> result = int2i (heap.rf_elements p).length }
 
   predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
     result <> Ptr.null /\
@@ -811,7 +804,7 @@ module RD
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -844,8 +837,7 @@ module RD
     ensures { other_same_array heap (old heap) p }
 
   val function arraylength (heap: t) (p: Ptr.t) : jint
-    requires { mem p heap.rd_arrays }
-    ensures { result = int2i (heap.rd_elements p).length }
+    ensures { mem p heap.rd_arrays -> result = int2i (heap.rd_elements p).length }
 
   predicate is_new_array (result: Ptr.t) (len: int) (heap: t) (old_heap: t) =
     result <> Ptr.null /\
@@ -860,7 +852,7 @@ module Heap
   use prelude.ptr.Ptr
   use prelude.typing.Type
   use prelude.ptr.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set

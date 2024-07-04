@@ -10,7 +10,7 @@ pkgs.mkShell {
     pkgs.boogie
     pkgs.z3
     pkgs.z3_4_8_5
-    #pkgs.alt-ergo
+    pkgs.alt-ergo
     pkgs.why3
     pkgs.cvc4
     pkgs.cvc5

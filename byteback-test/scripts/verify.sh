@@ -26,7 +26,7 @@ shift 1
 # Gappa,1.4.0,
 
 # Run prover
-exec why3 --config "$conf" prove -P Gappa,1.4.0, -L "$prelude" \
+exec why3 --config "$conf" prove -P Alt-Ergo,2.5.4, -L "$prelude" \
   --timelimit=10 \
   --warn-off=unused_expression --warn-off=unused_variable --warn-off=useless_at \
   "$file$extension" "$@" 2>&1 | tee "$file.out"

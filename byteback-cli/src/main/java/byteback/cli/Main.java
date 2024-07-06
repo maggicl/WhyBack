@@ -3,6 +3,7 @@ package byteback.cli;
 import byteback.analysis.ClassInjector;
 import byteback.analysis.RootResolver;
 import byteback.converter.soottoboogie.Prelude;
+import byteback.whyml.syntax.HeapKind;
 import com.beust.jcommander.ParameterException;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -49,9 +50,21 @@ public class Main {
 			output = System.out;
 		}
 
-		final ConversionTask task = configuration.useWhy()
-				? new WhyConversionTask(resolver)
-				: new BoogieConversionTask(resolver, prelude);
+		final ConversionTask task;
+		if (configuration.useWhy()) {
+			final String heapKind = configuration.getHeapKind().get(0);
+			final HeapKind kind;
+			if ("machine".equalsIgnoreCase(heapKind)) {
+				kind = HeapKind.MACHINE;
+			} else if ("math".equalsIgnoreCase(heapKind)) {
+				kind = HeapKind.MATH;
+			} else {
+				throw new IllegalArgumentException("given heap kind must be either 'machine' or 'math', given '" + heapKind + "'");
+			}
+			task = new WhyConversionTask(resolver, kind);
+		} else {
+			task = new BoogieConversionTask(resolver, prelude);
+		}
 		output.print(task.run().print());
 		output.close();
 	}

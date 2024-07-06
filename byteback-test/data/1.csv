@@ -1,0 +1,3 @@
+kind,goal
+cfg,byteback.test.library.java.util.AbstractCollection.finishToArray(RLJava.Lang.Object;LJava.Util.Iterator;)RLJava.Lang.Object;
+cfg,byteback.test.library.java.util.ArrayList.grow(I)V

@@ -2,43 +2,38 @@ package byteback.whyml.syntax;
 
 import byteback.frontend.boogie.ast.Printable;
 import byteback.whyml.printer.Code;
+import static byteback.whyml.printer.Code.block;
+import static byteback.whyml.printer.Code.indent;
 import static byteback.whyml.printer.Code.line;
 import static byteback.whyml.printer.Code.many;
-import static byteback.whyml.printer.Code.indent;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-public record WhyProgram(Code program) implements Printable {
-	private static final String IMPORT_FRAGMENT_PATH = "fragment/import.mlw";
+public record WhyProgram(Code program, HeapKind kind) implements Printable {
+	private Code getImports() {
+		final List<String> primitives = List.of("Z", "B", "S", "C", "I", "J", "F", "D");
 
-	private static Code getImports() {
-		final ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		try (final InputStream is = classloader.getResourceAsStream(IMPORT_FRAGMENT_PATH)) {
-			if (is == null) {
-				throw new IllegalStateException("Could not read import fragment file: input stream is null");
-			}
-			final List<Code> lines = new ArrayList<>();
-			try (Scanner it = new Scanner(is, StandardCharsets.UTF_8).useDelimiter("\n")) {
-				while (it.hasNext()) {
-					lines.add(line(it.next()));
-				}
-			}
-			return many(lines.stream());
-		} catch (IOException e) {
-			throw new IllegalStateException("Could not read import fragment file", e);
-		}
+		return block(
+				line("(* prelude import *)"),
+				line("use prelude.ptr.Ptr"),
+				line("use prelude.typing.Type"),
+				line("use prelude.exceptions.Throw"),
+				line("use export prelude.bootstrap.Bootstrap"),
+				line("use export prelude.logic.Operators"),
+				line("use export prelude.%s.Operators".formatted(kind.getName())),
+				line("use export prelude.boolean.Operators"),
+				line("use export prelude.ptr.Operators"),
+				many(primitives.stream().map(e -> line("use prelude.heap_%s.%s".formatted(kind.getName(), e)))),
+				line("use prelude.heap_%s.L".formatted(kind.getName())),
+				many(primitives.stream().map(e -> line("use prelude.heap_%s.R%s".formatted(kind.getName(), e)))),
+				line("use prelude.heap_%s.Heap".formatted(kind.getName()))
+		);
 	}
 
 	@Override
 	public void print(StringBuilder b) {
-		b.append(Code.block(
+		b.append(block(
 				line("module Program"),
-				getImports(),
-				indent(line(""), program),
+				indent(getImports(), program),
 				line("end")
 		));
 	}

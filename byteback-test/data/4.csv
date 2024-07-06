@@ -1,0 +1,8 @@
+kind,goal
+cfg,byteback.test.array.Basic.constructors()V
+cfg,byteback.test.exceptions.TryWithResources.emptyTryWithResourcesFinally()V
+cfg,byteback.test.exceptions.TryWithResources.tryWithResourcesClosesResource()V
+cfg,byteback.test.library.java.util.ArrayList$SubList.<init>(LByteback.Test.Library.Java.Util.ArrayList;LByteback.Test.Library.Java.Util.AbstractList;III)V
+cfg,byteback.test.library.java.util.LinkedList.clear()V
+cfg,byteback.test.switchexpression.Basic.switchInteger()V
+cfg,byteback.test.switchexpression.Basic.switchYieldInteger()V

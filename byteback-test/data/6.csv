@@ -1,0 +1,4 @@
+kind,goal
+cfg,byteback.test.exceptions.PotentialIndexOutOfBounds.passedArrayAndIndex(RII)V
+cfg,byteback.test.exceptions.PotentialIndexOutOfBounds.passedTarget(RI)V
+cfg,byteback.test.exceptions.PotentialIndexOutOfBounds.passedTarget(RI)V

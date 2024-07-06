@@ -1,0 +1,7 @@
+kind,goal
+cfg,byteback.test.array.Basic.lengthReference(RI)V
+predicate,byteback.test.algorithm.ArrayReverse.bounded_index(RII)Z
+predicate,byteback.test.algorithm.DoubleSelectionSort.bounded_index(RDI)Z
+predicate,byteback.test.algorithm.IntegerSelectionSort.bounded_index(RII)Z
+predicate,byteback.test.examples.ReadResource.a_is_empty(LByteback.Test.Examples.ReadResource$Resource;RII)Z
+predicate,byteback.test.exceptions.PotentialIndexOutOfBounds.array_is_empty(RI)Z

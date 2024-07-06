@@ -24,9 +24,11 @@ shift 1
 # CVC4,1.8,
 # CVC5,1.0.8,
 # Gappa,1.4.0,
+# Alt-Ergo,2.5.4,
+# Z3,4.8.5,
 
 # Run prover
-exec why3 --config "$conf" prove -P Alt-Ergo,2.5.4, -L "$prelude" \
+exec why3 --config "$conf" prove -P Z3,4.8.9, -L "$prelude" \
   --timelimit=10 \
   --warn-off=unused_expression --warn-off=unused_variable --warn-off=useless_at \
   "$file$extension" "$@" 2>&1 | tee "$file.out"

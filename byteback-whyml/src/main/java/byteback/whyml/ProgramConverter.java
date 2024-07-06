@@ -8,6 +8,7 @@ import static byteback.whyml.printer.Code.many;
 import byteback.whyml.printer.WhyClassDeclaration;
 import byteback.whyml.printer.WhyClassPrinter;
 import byteback.whyml.printer.WhyFunctionPrinter;
+import byteback.whyml.syntax.HeapKind;
 import byteback.whyml.syntax.WhyProgram;
 import byteback.whyml.vimp.WhyResolver;
 import java.util.List;
@@ -40,7 +41,7 @@ public class ProgramConverter {
 		}
 	}
 
-	public WhyProgram convert(final RootResolver resolver) {
+	public WhyProgram convert(final RootResolver resolver, final HeapKind kind) {
 		resolveAll(resolver);
 		whyResolver.printStats();
 
@@ -59,6 +60,6 @@ public class ProgramConverter {
 				block(decls.stream().map(WhyClassDeclaration::fieldDeclaration).flatMap(Optional::stream)),
 				block(line("(* methods *)")),
 				block(functionDecls.stream())
-		));
+		), kind);
 	}
 }

@@ -29,3 +29,6 @@ bin/
 # Intellij IDEA
 .idea
 /example/stdlib/
+
+# Jupyter
+**/.ipynb_checkpoints/*

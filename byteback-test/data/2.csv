@@ -1,0 +1,4 @@
+kind,goal
+cfg,byteback.test.exceptions.Basic.catchesIfEven()V
+cfg,byteback.test.exceptions.Basic.catchesIfEven()V
+cfg,byteback.test.exceptions.Basic.catchesIfEven()V

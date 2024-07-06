@@ -1,0 +1,4 @@
+kind,goal
+cfg,byteback.test.library.java.util.LinkedList.peek()LJava.Lang.Object;
+cfg,byteback.test.library.java.util.LinkedList.peekFirst()LJava.Lang.Object;
+cfg,byteback.test.library.java.util.LinkedList.peekLast()LJava.Lang.Object;

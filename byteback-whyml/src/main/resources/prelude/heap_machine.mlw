@@ -3,7 +3,7 @@ module Z
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -53,7 +53,7 @@ module B
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -103,7 +103,7 @@ module S
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -153,7 +153,7 @@ module C
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -203,7 +203,7 @@ module I
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -253,7 +253,7 @@ module J
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -303,7 +303,7 @@ module F
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -353,7 +353,7 @@ module D
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
 
   type static_field = abstract { }
   type instance_field = abstract { }
@@ -468,7 +468,7 @@ module RZ
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -516,7 +516,7 @@ module RB
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -564,7 +564,7 @@ module RS
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -612,7 +612,7 @@ module RC
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -660,7 +660,7 @@ module RI
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -708,7 +708,7 @@ module RJ
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -756,7 +756,7 @@ module RF
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -804,7 +804,7 @@ module RD
   use prelude.ptr.Operators
   use prelude.typing.Type
   use prelude.boolean.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set
@@ -852,7 +852,7 @@ module Heap
   use prelude.ptr.Ptr
   use prelude.typing.Type
   use prelude.ptr.Operators
-  use prelude.numeric.Operators
+  use prelude.machine.Operators
   use array.Array
   use int.Int
   use set.Set

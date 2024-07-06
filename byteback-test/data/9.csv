@@ -1,0 +1,3 @@
+kind,goal
+predicate,byteback.test.algorithm.DoubleSelectionSort.is_minimum(RDII)Z
+predicate,byteback.test.algorithm.IntegerSelectionSort.is_minimum(RIII)Z

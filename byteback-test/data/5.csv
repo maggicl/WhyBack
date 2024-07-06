@@ -1,0 +1,2 @@
+kind,goal
+cfg,byteback.test.exceptions.Basic.throwsAlternatingExceptions()V

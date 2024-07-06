@@ -29,6 +29,9 @@ public class Configuration {
 	@Parameter(names = {"-p", "--prelude"}, description = "Path to the prelude file")
 	private Path preludePath;
 
+	@Parameter(names = {"-h", "--heap"}, description = "Heap kind to use", required = true)
+	private List<String> heapKind;
+
 	@Parameter(names = {"--npe"}, description = "Models implicit NullPointerExceptions")
 	private boolean transformNullCheck = false;
 
@@ -82,4 +85,7 @@ public class Configuration {
 		return transformArrayCheck;
 	}
 
+	public List<String> getHeapKind() {
+		return heapKind;
+	}
 }

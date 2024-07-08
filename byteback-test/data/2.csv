@@ -1,4 +1,2 @@
 kind,goal
-cfg,byteback.test.exceptions.Basic.catchesIfEven()V
-cfg,byteback.test.exceptions.Basic.catchesIfEven()V
-cfg,byteback.test.exceptions.Basic.catchesIfEven()V
+cfg,byteback.test.patternmatching.Basic.test()I

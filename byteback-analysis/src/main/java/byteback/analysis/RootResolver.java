@@ -49,6 +49,7 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.NewExpr;
 import soot.tagkit.AbstractHost;
 import soot.tagkit.SourceFileTag;
+import soot.tagkit.SourceLnPosTag;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 public class RootResolver {
@@ -96,8 +97,12 @@ public class RootResolver {
 					path = tag.getSourceFile();
 				}
 				if (path != null) {
+					// get line from source
+					SourceLnPosTag endTag = (SourceLnPosTag) method.getTag(SourceLnPosTag.NAME);
+					int endPos = (endTag == null) ? -1 : endTag.endPos();
+
 					new PositionTagTransformer(path).transform(body);
-					method.addTag(new PositionTag(path, method.getJavaSourceStartLineNumber()));
+					method.addTag(new PositionTag(path, method.getJavaSourceStartLineNumber(), method.getJavaSourceStartColumnNumber(), endPos));
 				}
 			}
 

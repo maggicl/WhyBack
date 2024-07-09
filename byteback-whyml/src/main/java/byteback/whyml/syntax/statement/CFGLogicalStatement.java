@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public record CFGLogicalStatement(CFGLogicalStatement.Kind kind,
-								  Optional<String> annotation,
+								  Optional<WhyLocation> location,
 								  Expression expression) implements CFGStatement {
 	public CFGLogicalStatement {
 		if (!kind.expressionTypes.contains(expression.type())) {
@@ -21,7 +21,9 @@ public record CFGLogicalStatement(CFGLogicalStatement.Kind kind,
 	@Override
 	public Code toWhy() {
 		return expression.toWhy(true).statement(
-				"%s { %s".formatted(kind.keyword, annotation.map("[@expl:%s] "::formatted).orElse("")),
+				"%s { %s".formatted(kind.keyword, location.map(WhyLocation::toWhy)
+						.map(e -> e + " ")
+						.orElse("")),
 				" };"
 		);
 	}

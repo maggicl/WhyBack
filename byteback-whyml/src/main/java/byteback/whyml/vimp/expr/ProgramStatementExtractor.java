@@ -22,6 +22,7 @@ import byteback.whyml.syntax.statement.CFGLogicalStatement;
 import byteback.whyml.syntax.statement.CFGStatement;
 import byteback.whyml.syntax.statement.FieldAssignment;
 import byteback.whyml.syntax.statement.LocalAssignment;
+import byteback.whyml.syntax.statement.WhyLocation;
 import byteback.whyml.syntax.type.WhyArrayType;
 import byteback.whyml.syntax.type.WhyJVMType;
 import byteback.whyml.syntax.type.WhyType;
@@ -180,10 +181,10 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 		addStatement(new CFGInvokeStmt(programExpressionExtractor.visit(invokeStatement.getInvokeExpr())));
 	}
 
-	private Optional<String> positionAttribute(AbstractHost stmt, String string) {
+	private Optional<WhyLocation> positionAttribute(AbstractHost stmt) {
 		if (stmt.hasTag("PositionTag")) {
 			final PositionTag tag = (PositionTag) stmt.getTag("PositionTag");
-			return Optional.of("%s: (line %d): %s might not hold".formatted(tag.file, tag.lineNumber, string));
+			return Optional.of(new WhyLocation(tag.file, tag.lineNumber, tag.startColumn, tag.endColumn));
 		} else {
 			return Optional.empty();
 		}
@@ -192,7 +193,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 	@Override
 	public void caseAssertionStmt(final AssertionStmt assertionStmt) {
 		final Expression condition = pureProgramExpressionExtractor.visit(assertionStmt.getCondition());
-		final Optional<String> position = positionAttribute(assertionStmt, "assertion");
+		final Optional<WhyLocation> position = positionAttribute(assertionStmt);
 
 		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.ASSERT, position, condition));
 	}
@@ -200,7 +201,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 	@Override
 	public void caseAssumptionStmt(final AssumptionStmt assumptionStmt) {
 		final Expression condition = pureProgramExpressionExtractor.visit(assumptionStmt.getCondition());
-		final Optional<String> position = positionAttribute(assumptionStmt, "assumption");
+		final Optional<WhyLocation> position = positionAttribute(assumptionStmt);
 
 		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.ASSUME, position, condition));
 	}
@@ -208,7 +209,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 	@Override
 	public void caseInvariantStmt(final InvariantStmt assumptionStmt) {
 		final Expression condition = pureProgramExpressionExtractor.visit(assumptionStmt.getCondition());
-		final Optional<String> position = positionAttribute(assumptionStmt, "invariant");
+		final Optional<WhyLocation> position = positionAttribute(assumptionStmt);
 
 		// for each invariant we also assert that no exception has been thrown. This is to capture the operational
 		// semantics of a loop

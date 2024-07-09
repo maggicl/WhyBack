@@ -5,7 +5,7 @@ module Program
   use prelude.exceptions.Throw
   use export prelude.bootstrap.Bootstrap
   use export prelude.logic.Operators
-  use export prelude.numeric.Operators
+  use export prelude.math.Operators
   use export prelude.boolean.Operators
   use export prelude.ptr.Operators
   use prelude.heap.Z

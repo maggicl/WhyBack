@@ -5,30 +5,79 @@ module Program
   use prelude.exceptions.Throw
   use export prelude.bootstrap.Bootstrap
   use export prelude.logic.Operators
-  use export prelude.heap_machine.Operators
+  use export prelude.machine.Operators
   use export prelude.boolean.Operators
   use export prelude.ptr.Operators
-  use prelude.machine.Z
-  use prelude.machine.B
-  use prelude.machine.S
-  use prelude.machine.C
-  use prelude.machine.I
-  use prelude.machine.J
-  use prelude.machine.F
-  use prelude.machine.D
-  use prelude.machine.L
-  use prelude.machine.RZ
-  use prelude.machine.RB
-  use prelude.machine.RS
-  use prelude.machine.RC
-  use prelude.machine.RI
-  use prelude.machine.RJ
-  use prelude.machine.RF
-  use prelude.machine.RD
-  use prelude.machine.RL
-  use prelude.machine.Heap
+  use prelude.heap_machine.Z
+  use prelude.heap_machine.B
+  use prelude.heap_machine.S
+  use prelude.heap_machine.C
+  use prelude.heap_machine.I
+  use prelude.heap_machine.J
+  use prelude.heap_machine.F
+  use prelude.heap_machine.D
+  use prelude.heap_machine.L
+  use prelude.heap_machine.RZ
+  use prelude.heap_machine.RB
+  use prelude.heap_machine.RS
+  use prelude.heap_machine.RC
+  use prelude.heap_machine.RI
+  use prelude.heap_machine.RJ
+  use prelude.heap_machine.RF
+  use prelude.heap_machine.RD
+  use prelude.heap_machine.Heap
 
   (* class type hierarchy declaration *)
+
+  scope Java
+  scope Lang
+  scope AutoCloseable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope Closeable
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Lang.AutoCloseable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope Flushable
+    val constant class: Type.class
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope OutputStream
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Io.Closeable.class) &&
+      (Class class :> Class Java.Io.Flushable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope FilterOutputStream
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Io.OutputStream.class)
+  end
+  end
+  end
 
   scope Java
   scope Io
@@ -89,94 +138,8 @@ module Program
 
   scope Java
   scope Lang
-  scope Throwable
-    val constant class: Type.class
-
-    axiom hierarchy:
-      (Class class :> Class Java.Io.Serializable.class)
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope AutoCloseable
-    val constant class: Type.class
-  end
-  end
-  end
-
-  scope Java
-  scope Io
-  scope Closeable
-    val constant class: Type.class
-
-    axiom hierarchy:
-      (Class class :> Class Java.Lang.AutoCloseable.class)
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
   scope Appendable
     val constant class: Type.class
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope System
-    val constant class: Type.class
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope Exception
-    val constant class: Type.class
-
-    axiom hierarchy:
-      (Class class :> Class Java.Lang.Throwable.class)
-  end
-  end
-  end
-
-  scope Java
-  scope Io
-  scope Flushable
-    val constant class: Type.class
-  end
-  end
-  end
-
-  scope Java
-  scope Io
-  scope OutputStream
-    val constant class: Type.class
-
-    axiom hierarchy:
-      (Class class :> Class Java.Io.Closeable.class) &&
-      (Class class :> Class Java.Io.Flushable.class)
-  end
-  end
-  end
-
-  scope Default'8
-  scope GCD
-    val constant class: Type.class
-  end
-  end
-
-  scope Java
-  scope Io
-  scope FilterOutputStream
-    val constant class: Type.class
-
-    axiom hierarchy:
-      (Class class :> Class Java.Io.OutputStream.class)
   end
   end
   end
@@ -190,6 +153,28 @@ module Program
       (Class class :> Class Java.Io.FilterOutputStream.class) &&
       (Class class :> Class Java.Lang.Appendable.class) &&
       (Class class :> Class Java.Io.Closeable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Throwable
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Io.Serializable.class)
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope Exception
+    val constant class: Type.class
+
+    axiom hierarchy:
+      (Class class :> Class Java.Lang.Throwable.class)
   end
   end
   end
@@ -216,7 +201,35 @@ module Program
   end
   end
 
+  scope Default'8
+  scope GCD
+    val constant class: Type.class
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope System
+    val constant class: Type.class
+  end
+  end
+  end
+
   (* class field declaration *)
+
+  scope Java
+  scope Io
+  scope FilterOutputStream
+    val constant f_out: L.instance_field
+    axiom f_out_type: f_out.i_type = Class Java.Io.OutputStream.class
+
+    val constant f_closed: Z.instance_field
+
+    val constant f_closeLock: L.instance_field
+    axiom f_closeLock_type: f_closeLock.i_type = Class Java.Lang.Object.class
+  end
+  end
+  end
 
   scope Java
   scope Lang
@@ -245,6 +258,27 @@ module Program
     val constant f_LATIN1: B.static_field
 
     val constant f_UTF16: B.static_field
+  end
+  end
+  end
+
+  scope Java
+  scope Io
+  scope PrintStream
+    val constant f_autoFlush: Z.instance_field
+
+    val constant f_trouble: Z.instance_field
+
+    val constant f_formatter: L.instance_field
+    axiom f_formatter_type: f_formatter.i_type = Type.unknown (* Class Java.Util.Formatter.class *)
+
+    val constant f_textOut: L.instance_field
+    axiom f_textOut_type: f_textOut.i_type = Type.unknown (* Class Java.Io.BufferedWriter.class *)
+
+    val constant f_charOut: L.instance_field
+    axiom f_charOut_type: f_charOut.i_type = Type.unknown (* Class Java.Io.OutputStreamWriter.class *)
+
+    val constant f_closing: Z.instance_field
   end
   end
   end
@@ -299,6 +333,30 @@ module Program
 
   scope Java
   scope Lang
+  scope Exception
+    val constant f_serialVersionUID: J.static_field
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope RuntimeException
+    val constant f_serialVersionUID: J.static_field
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
+  scope IllegalArgumentException
+    val constant f_serialVersionUID: J.static_field
+  end
+  end
+  end
+
+  scope Java
+  scope Lang
   scope System
     val constant f_in: L.static_field
     axiom f_in_type: f_in.s_type = Type.unknown (* Class Java.Io.InputStream.class *)
@@ -332,65 +390,6 @@ module Program
 
     val constant f_bootLayer: L.static_field
     axiom f_bootLayer_type: f_bootLayer.s_type = Type.unknown (* Class Java.Lang.ModuleLayer.class *)
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope Exception
-    val constant f_serialVersionUID: J.static_field
-  end
-  end
-  end
-
-  scope Java
-  scope Io
-  scope FilterOutputStream
-    val constant f_out: L.instance_field
-    axiom f_out_type: f_out.i_type = Class Java.Io.OutputStream.class
-
-    val constant f_closed: Z.instance_field
-
-    val constant f_closeLock: L.instance_field
-    axiom f_closeLock_type: f_closeLock.i_type = Class Java.Lang.Object.class
-  end
-  end
-  end
-
-  scope Java
-  scope Io
-  scope PrintStream
-    val constant f_autoFlush: Z.instance_field
-
-    val constant f_trouble: Z.instance_field
-
-    val constant f_formatter: L.instance_field
-    axiom f_formatter_type: f_formatter.i_type = Type.unknown (* Class Java.Util.Formatter.class *)
-
-    val constant f_textOut: L.instance_field
-    axiom f_textOut_type: f_textOut.i_type = Type.unknown (* Class Java.Io.BufferedWriter.class *)
-
-    val constant f_charOut: L.instance_field
-    axiom f_charOut_type: f_charOut.i_type = Type.unknown (* Class Java.Io.OutputStreamWriter.class *)
-
-    val constant f_closing: Z.instance_field
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope RuntimeException
-    val constant f_serialVersionUID: J.static_field
-  end
-  end
-  end
-
-  scope Java
-  scope Lang
-  scope IllegalArgumentException
-    val constant f_serialVersionUID: J.static_field
   end
   end
   end
@@ -562,11 +561,9 @@ module Program
       end
     }
     L13 {
-      invariant { [@expl:GCD.java: (line 75): invariant might not hold] (ICMP.gt
-        (int2i (s2int lv_l2))
-        ((0:jint)))
+      invariant { [# "GCD.java" 75 0 75 0 ] (ICMP.gt (int2i (s2int lv_l2)) (0:jint))
       /\ (ICMP.gt (int2i (s2int lv_l3)) (0:jint)) };
-      invariant { [@expl:GCD.java: (line 76): invariant might not hold] SCMP.eq
+      invariant { [# "GCD.java" 76 0 76 0 ] SCMP.eq
         (default'8_GCD_gcd'3recursive'7SS'7S heap lv_l2 lv_l3)
         (default'8_GCD_gcd'3recursive'7SS'7S heap lv_l0 lv_l1) };
       switch (ICMP.le (int2i (s2int lv_l2)) (int2i (s2int lv_l3)))
@@ -644,6 +641,14 @@ module Program
       return ()
     }
 
+  let rec function default'8_GCD_test'7S'7S (heap: Heap.t) (p_l0: jshort) : jshort
+    variant { 0 } (* no variant on method *)
+  = if SCMP.le p_l0 (0:jshort) then
+    (0:jshort)
+    else default'8_GCD_test'7S'7S
+      heap
+      (int2s (i2int (isub (int2i (s2int p_l0)) (1:jint))))
+
   let predicate default'8_GCD_test2'7'7Z (heap: Heap.t) : jbool
   = q_forall
     heap
@@ -652,12 +657,4 @@ module Program
   let predicate default'8_GCD_arguments'3are'3positive'7SS'7Z (heap: Heap.t) (p_l0: jshort) (p_l1: jshort) : jbool
   = (ICMP.le (int2i (s2int p_l0)) (0:jint))
   /\. (ICMP.le (int2i (s2int p_l1)) (0:jint))
-
-  let rec function default'8_GCD_test'7S'7S (heap: Heap.t) (p_l0: jshort) : jshort
-    variant { 0 } (* no variant on method *)
-  = if SCMP.le p_l0 (0:jshort) then
-    (0:jshort)
-    else default'8_GCD_test'7S'7S
-      heap
-      (int2s (i2int (isub (int2i (s2int p_l0)) (1:jint))))
 end

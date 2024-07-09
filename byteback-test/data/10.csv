@@ -4,7 +4,6 @@ cfg,byteback.test.instance.Unit.identity(LJava.Lang.Object;)LJava.Lang.Object;
 cfg,byteback.test.instance.Unit.identity(LJava.Lang.Object;)LJava.Lang.Object;
 cfg,byteback.test.operation.VirtualCall.proceduralGetThis()LByteback.Test.Operation.VirtualCall;
 function,byteback.test.operation.VirtualCall.getThis()LByteback.Test.Operation.VirtualCall;
-predicate,byteback.test.algorithm.ArrayReverse.bounded_indices(RIII)Z
 predicate,byteback.test.algorithm.DoubleSelectionSort.bounded_indices(RDII)Z
 predicate,byteback.test.algorithm.DoubleSum.positive_arguments_imply_positive_sum(RDD)Z
 predicate,byteback.test.algorithm.GCD.result'020is'020gcd(III)Z

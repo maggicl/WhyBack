@@ -7,6 +7,8 @@ import soot.BodyTransformer;
 import soot.Unit;
 import soot.UnitBox;
 import soot.grimp.GrimpBody;
+import soot.tagkit.AbstractHost;
+import soot.tagkit.SourceLnPosTag;
 
 public class PositionTagTransformer extends BodyTransformer implements UnitTransformer {
 
@@ -29,7 +31,11 @@ public class PositionTagTransformer extends BodyTransformer implements UnitTrans
 	public void transformUnit(final UnitBox unitBox) {
 		final Unit unit = unitBox.getUnit();
 		final int lineNumber = unit.getJavaSourceStartLineNumber();
-		unit.addTag(new PositionTag(file, lineNumber));
+
+		final SourceLnPosTag endTag = (SourceLnPosTag) unit.getTag(SourceLnPosTag.NAME);
+		int endPos = (endTag == null) ? -1 : endTag.endPos();
+
+		unit.addTag(new PositionTag(file, lineNumber, unit.getJavaSourceStartColumnNumber(), endPos));
 	}
 
 }

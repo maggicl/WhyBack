@@ -107,10 +107,6 @@ function,byteback.test.operation.Real.multiplication(FF)F
 function,byteback.test.operation.StaticCall.getConstant()I
 function,byteback.test.operation.StaticCall.increment(I)I
 function,byteback.test.operation.StaticCall.main()I
-predicate,byteback.test.algorithm.ArrayReverse.array'020is'020not'020null(RIII)Z
-predicate,byteback.test.algorithm.ArrayReverse.array'020is'020null(RI)Z
-predicate,byteback.test.algorithm.ArrayReverse.array_is_null(RI)Z
-predicate,byteback.test.algorithm.ArrayReverse.array_is_null(RI)Z
 predicate,byteback.test.algorithm.DoubleMax.array_is_not_null(RD)Z
 predicate,byteback.test.algorithm.GCD.arguments'020are'020negative(II)Z
 predicate,byteback.test.algorithm.GCD.arguments_are_negative(II)Z

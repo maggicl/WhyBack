@@ -1,4 +1,4 @@
-kind,goal
-cfg,byteback.test.exceptions.Basic.catchesIfEven()V
-cfg,byteback.test.exceptions.Basic.catchesIfEven()V
-cfg,byteback.test.exceptions.Basic.catchesIfEven()V
+kind,file,goal
+cfg,test-java-8/src/main/java/byteback/test/exceptions/Output/Basic.java.tmp.mlcfg,byteback.test.exceptions.Basic.catchesIfEven()V
+cfg,test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg,byteback.test.exceptions.Basic.catchesIfEven()V
+cfg,test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg,byteback.test.exceptions.Basic.catchesIfEven()V

@@ -73,8 +73,7 @@ public class StatsVisitor extends StatementVisitor {
 
 	@Override
 	public void visitLogicalStatement(CFGLogicalStatement cfgLogicalStatement) {
-		if (cfgLogicalStatement.kind() == CFGLogicalStatement.Kind.INVARIANT
-				&& cfgLogicalStatement.expression() == BooleanLiteral.TRUE) {
+		if (cfgLogicalStatement.inferredAutomatically()) {
 			missingInvariantCount++;
 		}
 

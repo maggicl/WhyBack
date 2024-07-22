@@ -76,7 +76,7 @@ public class Vimp {
 	}
 
 	public InvariantStmt newInvariantStmt(final Value c) {
-		return new InvariantStmt(c);
+		return new InvariantStmt(c, false);
 	}
 
 	public LogicAndExpr newLogicAndExpr(final Value a, final Value b) {

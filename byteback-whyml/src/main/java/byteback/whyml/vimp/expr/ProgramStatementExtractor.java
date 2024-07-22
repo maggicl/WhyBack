@@ -195,7 +195,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 		final Expression condition = pureProgramExpressionExtractor.visit(assertionStmt.getCondition());
 		final Optional<WhyLocation> position = positionAttribute(assertionStmt);
 
-		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.ASSERT, position, condition));
+		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.ASSERT, position, condition, false));
 	}
 
 	@Override
@@ -203,7 +203,7 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 		final Expression condition = pureProgramExpressionExtractor.visit(assumptionStmt.getCondition());
 		final Optional<WhyLocation> position = positionAttribute(assumptionStmt);
 
-		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.ASSUME, position, condition));
+		addStatement(new CFGLogicalStatement(CFGLogicalStatement.Kind.ASSUME, position, condition, false));
 	}
 
 	@Override
@@ -218,12 +218,11 @@ public class ProgramStatementExtractor extends JimpleStmtSwitch<List<CFGStatemen
 				new CFGLogicalStatement(
 						CFGLogicalStatement.Kind.INVARIANT,
 						position,
-						condition
+						condition,
+						assumptionStmt.isInferredAutomatically()
 				)
 		);
 	}
-
-	// TODO: variants
 
 	@Override
 	public void caseDefault(final Unit unit) {

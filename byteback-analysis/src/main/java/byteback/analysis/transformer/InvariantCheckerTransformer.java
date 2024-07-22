@@ -66,7 +66,7 @@ public class InvariantCheckerTransformer extends BodyTransformer {
 				units.insertBefore(
 						new InvariantStmt(nothingThrown
 								? Vimp.v().newEqExpr(Vimp.v().newCaughtExceptionRef(), VoidConstant.v())
-								: LogicConstant.v(true)),
+								: LogicConstant.v(true), true),
 						loop.getHead()
 				);
 			}

@@ -10,7 +10,8 @@ import java.util.Set;
 
 public record CFGLogicalStatement(CFGLogicalStatement.Kind kind,
 								  Optional<WhyLocation> location,
-								  Expression expression) implements CFGStatement {
+								  Expression expression,
+								  boolean inferredAutomatically) implements CFGStatement {
 	public CFGLogicalStatement {
 		if (!kind.expressionTypes.contains(expression.type())) {
 			throw new IllegalArgumentException("%s logical statements must have %s expression types, got %s"
@@ -21,7 +22,9 @@ public record CFGLogicalStatement(CFGLogicalStatement.Kind kind,
 	@Override
 	public Code toWhy() {
 		return expression.toWhy(true).statement(
-				"%s { %s".formatted(kind.keyword, location.map(WhyLocation::toWhy)
+				"%s { %s%s".formatted(kind.keyword,
+						inferredAutomatically ? "[@expl:inferred] " : "",
+						location.map(WhyLocation::toWhy)
 						.map(e -> e + " ")
 						.orElse("")),
 				" };"

@@ -8,8 +8,15 @@ import soot.util.Switch;
 
 public class InvariantStmt extends LogicStmt {
 
-	public InvariantStmt(final Value condition) {
+	public boolean isInferredAutomatically() {
+		return inferredAutomatically;
+	}
+
+	final boolean inferredAutomatically;
+
+	public InvariantStmt(final Value condition, boolean inferredAutomatically) {
 		super(condition);
+		this.inferredAutomatically = inferredAutomatically;
 	}
 
 	@Override
@@ -21,7 +28,7 @@ public class InvariantStmt extends LogicStmt {
 
 	@Override
 	public InvariantStmt clone() {
-		return new InvariantStmt(Vimp.cloneIfNecessary(getCondition()));
+		return new InvariantStmt(Vimp.cloneIfNecessary(getCondition()), inferredAutomatically);
 	}
 
 	@Override

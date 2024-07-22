@@ -1,3 +1,2 @@
 kind,file,goal
-cfg,test-java-8/src/main/java/byteback/test/exceptions/Output/PotentialNullDereference.java.tmp.mlcfg,byteback.test.exceptions.PotentialNullDereference.constrainedPassedArrayTarget(RI)V
-cfg,test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp.mlcfg,byteback.test.exceptions.PotentialNullDereference.constrainedPassedArrayTarget(RI)V
+cfg,test-java-8/src/main/java/byteback/test/library/java/util/Output/ArrayList.java.tmp.mlcfg,byteback.test.library.java.util.ArrayList$SubList.iterator()LJava.Util.Iterator;

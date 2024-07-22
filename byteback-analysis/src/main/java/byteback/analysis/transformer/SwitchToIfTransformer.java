@@ -87,7 +87,7 @@ public class SwitchToIfTransformer extends BodyTransformer {
 				transformSwitchStmt(
 						body,
 						tableSwitchStmt,
-						IntStream.range(tableSwitchStmt.getLowIndex(), tableSwitchStmt.getHighIndex())
+						IntStream.rangeClosed(tableSwitchStmt.getLowIndex(), tableSwitchStmt.getHighIndex())
 								.mapToObj(IntConstant::v)
 								.toList(),
 						switchCounter

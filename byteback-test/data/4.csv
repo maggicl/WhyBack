@@ -1,3 +1,1 @@
 kind,file,goal
-predicate,test-java-8/src/main/java/byteback/test/algorithm/Output/DoubleSelectionSort.java.tmp.mlcfg,byteback.test.algorithm.DoubleSelectionSort.is_minimum(RDII)Z
-predicate,test-java-8/src/main/java/byteback/test/algorithm/Output/IntegerSelectionSort.java.tmp.mlcfg,byteback.test.algorithm.IntegerSelectionSort.is_minimum(RIII)Z

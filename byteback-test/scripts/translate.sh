@@ -2,13 +2,14 @@
 
 set -euo pipefail
 
-byteback="$1"
-jar="$2"
-source="$3"
-file="$4"
-shift 4
+heap="$1"
 
-heap="machine"
+byteback="$2"
+jar="$3"
+source="$4"
+file="$5"
+
+shift 5
 
 extension=".mlcfg"
 
@@ -16,6 +17,4 @@ extension=".mlcfg"
 class="$(realpath "$source" --relative-to="$(dirname "$0")/.." | \
   sed 's/\.[a-z]*$//;s/\//\./g;s/.*\.src\.main\.[a-z][a-z]*\.//')"
 
-# TODO: handle --npe and --iobe options in "$@"
-
-exec "$byteback" -cp "$jar" -c "$class" -h "$heap" -o "$file$extension" 2>&1 | tee "$file.whyback"
+exec "$byteback" -cp "$jar" -c "$class" -h "$heap" -o "$file$extension" $@ 2>&1 | tee "$file.whyback"

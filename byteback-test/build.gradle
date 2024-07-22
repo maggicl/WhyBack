@@ -15,11 +15,15 @@ subprojects { test ->
         def testDirs = ["java", "scala", "kotlin"]
         def targetProperty = project.findProperty("TEST_TARGET")
         def jobsProperty = project.findProperty("TEST_JOBS") ?: "4"
+        def prover = project.findProperty("prover")
+        def heap = project.findProperty("heap")
 
         def execute = { target ->
             exec {
                 environment('BYTEBACK_ROOT', bytebackRoot)
                 environment('TEST_JAR', project.shadowJar.archivePath)
+                environment('PROVER', prover)
+                environment('HEAP', heap)
                 commandLine 'lit', target, '-a', '-j', jobsProperty
             }
         }

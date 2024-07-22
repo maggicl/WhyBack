@@ -9,10 +9,12 @@ prelude="$(dirname "$0")/../../byteback-whyml/src/main/resources"
 # is not given explicitly.
 conf="$(realpath ~)/.why3.conf"
 
-file="$1"
-extension=".mlcfg"
+prover="$1"
+file="$2"
 
-shift 1
+shift 2
+
+extension=".mlcfg"
 
 # Check syntax only
 #exec why3 --config "$conf" prove -L "$prelude" \
@@ -28,7 +30,7 @@ shift 1
 # Z3,4.8.5,
 
 # Run prover
-exec why3 --config "$conf" prove -P Z3,4.8.9, -L "$prelude" \
+exec why3 --config "$conf" prove -P "$prover" -L "$prelude" \
   --timelimit=10 \
   --warn-off=unused_expression --warn-off=unused_variable --warn-off=useless_at \
   "$file$extension" "$@" 2>&1 | tee "$file.out"

@@ -1,1 +1,2 @@
 kind,file,goal
+cfg,test-java-8/src/main/java/byteback/test/library/java/util/Output/ArrayList.java.tmp.mlcfg,byteback.test.library.java.util.ArrayList$SubList.iterator()LJava.Util.Iterator;

@@ -1,11 +1,3 @@
 kind,file,goal
-cfg,test-java-17/src/main/java/byteback/test/switchexpression/Output/Basic.java.tmp.mlcfg,byteback.test.switchexpression.Basic.switchInteger()V
-cfg,test-java-17/src/main/java/byteback/test/switchexpression/Output/Basic.java.tmp.mlcfg,byteback.test.switchexpression.Basic.switchYieldInteger()V
-cfg,test-java-8/src/main/java/byteback/test/array/Output/Basic.java.tmp.mlcfg,byteback.test.array.Basic.constructors()V
-cfg,test-java-8/src/main/java/byteback/test/exceptions/Output/Basic.java.tmp.mlcfg,byteback.test.exceptions.Basic.catchesIfEven()V
-cfg,test-java-8/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp.mlcfg,byteback.test.exceptions.TryWithResources.emptyTryWithResourcesFinally()V
-cfg,test-java-8/src/main/java/byteback/test/exceptions/Output/TryWithResources.java.tmp.mlcfg,byteback.test.exceptions.TryWithResources.tryWithResourcesClosesResource()V
-cfg,test-java-8/src/main/java/byteback/test/library/java/util/Output/ArrayList.java.tmp.mlcfg,byteback.test.library.java.util.ArrayList$SubList.<init>(LByteback.Test.Library.Java.Util.ArrayList;LByteback.Test.Library.Java.Util.AbstractList;III)V
-cfg,test-java-8/src/main/java/byteback/test/library/java/util/Output/LinkedList.java.tmp.mlcfg,byteback.test.library.java.util.LinkedList.clear()V
-cfg,test-kotlin-1.8.0/src/main/kotlin/byteback/test/exceptions/Output/Basic.kt.tmp.mlcfg,byteback.test.exceptions.Basic.catchesIfEven()V
-cfg,test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/Basic.scala.tmp.mlcfg,byteback.test.exceptions.Basic.catchesIfEven()V
+cfg,test-java-8/src/main/java/byteback/test/exceptions/Output/PotentialNullDereference.java.tmp.mlcfg,byteback.test.exceptions.PotentialNullDereference.constrainedPassedArrayTarget(RI)V
+cfg,test-scala-2.13.8/src/main/scala/byteback/test/exceptions/Output/PotentialNullDereference.scala.tmp.mlcfg,byteback.test.exceptions.PotentialNullDereference.constrainedPassedArrayTarget(RI)V

@@ -17,7 +17,8 @@ in
         packages: with packages; [pandas lit filecheck click]
       ))
       pkgs.boogie
-      #pkgs.z3
+      pkgs.gcc
+      pkgs.z3
       pkgs.alt-ergo
       #old_pkgs.vampire
       pkgs.why3

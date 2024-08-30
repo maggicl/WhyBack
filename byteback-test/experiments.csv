@@ -1,0 +1,71 @@
+Language,folder,Description,Package
+Java 1.8,java-8,Array Operations,array.Basic
+Java 1.8,java-8,ArrayList,library.java.util.ArrayList
+Java 1.8,java-8,Binary Search,algorithm.BinarySearch
+Java 1.8,java-8,Boolean Operations,operation.Boolean
+Java 1.8,java-8,Casting `float` and `double` to `int`,casting.RealToInt
+Java 1.8,java-8,Casting `int` to `bool`,casting.BoolToInt
+Java 1.8,java-8,Casting `int` to `float` and `double`,casting.IntToReal
+Java 1.8,java-8,Comparator,instance.Comparator
+Scala 2.13.8,scala-2.13.8,Comparator,instance.Comparator
+Java 1.8,java-8,Control Flow,controlflow.Basic
+Kotlin 1.8.0,kotlin-1.8.0,Control Flow,controlflow.Basic
+Scala 2.13.8,scala-2.13.8,Control Flow,controlflow.Basic
+Java 1.8,java-8,Counter,instance.Counter
+Kotlin 1.8.0,kotlin-1.8.0,Counter,algorithm.Counter
+Scala 2.13.8,scala-2.13.8,Counter,instance.Counter
+Java 1.8,java-8,Dice,instance.Dice
+Scala 2.13.8,scala-2.13.8,Dice,instance.Dice
+Java 1.8,java-8,Enhanced For,controlflow.EnhancedFor
+Java 1.8,java-8,Exceptions,exceptions.Basic
+Kotlin 1.8.0,kotlin-1.8.0,Exceptions,exceptions.Basic
+Scala 2.13.8,scala-2.13.8,Exceptions,exceptions.Basic
+Java 1.8,java-8,Exceptions in Loops,exceptions.Loop
+Java 1.8,java-8,Field Access,instance.FieldAccess
+Java 1.8,java-8,Floating-Point Operations,operation.Real
+Java 1.8,java-8,GCD,algorithm.GCD
+Kotlin 1.8.0,kotlin-1.8.0,GCD,algorithm.GCD
+Scala 2.13.8,scala-2.13.8,GCD,algorithm.GCD
+Java 1.8,java-8,Generic List,generics.List
+Java 1.8,java-8,Insertion Sort `double`,algorithm.DoubleInsertionSort
+Java 1.8,java-8,Insertion Sort `int`,algorithm.IntegerInsertionSort
+Java 1.8,java-8,Instance Field,instance.InstanceField
+Java 1.8,java-8,Integer Operations,operation.Integer
+Java 1.8,java-8,Lambda,lambda.Basic
+Java 1.8,java-8,Linear Search,algorithm.LinearSearch
+Kotlin 1.8.0,kotlin-1.8.0,Linear Search,algorithm.LinearSearch
+Scala 2.13.8,scala-2.13.8,Linear Search,algorithm.LinearSearch
+Java 1.8,java-8,LinkedList,library.java.util.LinkedList
+Java 1.8,java-8,Max `double`,algorithm.DoubleMax
+Java 1.8,java-8,Max `int`,algorithm.IntegerMax
+Java 1.8,java-8,Multi Catch,exceptions.MultiCatch
+Scala 2.13.8,scala-2.13.8,Multi Catch,exceptions.MultiCatch
+Java 17,java-17,Pattern Matching,patternmatching.Basic
+Java 1.8,java-8,Potential `ArrayIndexOutOfBoundsException`,exceptions.PotentialIndexOutOfBounds
+Kotlin 1.8.0,kotlin-1.8.0,Potential `ArrayIndexOutOfBoundsException`,exceptions.PotentialIndexOutOfBounds
+Scala 2.13.8,scala-2.13.8,Potential `ArrayIndexOutOfBoundsException`,exceptions.PotentialIndexOutOfBounds
+Java 1.8,java-8,Potential `NullPointerException`,exceptions.PotentialNullDereference
+Kotlin 1.8.0,kotlin-1.8.0,Potential `NullPointerException`,exceptions.PotentialNullDereference
+Scala 2.13.8,scala-2.13.8,Potential `NullPointerException`,exceptions.PotentialNullDereference
+Java 1.8,java-8,Quantifiers,quantifier.Basic
+Java 17,java-17,Read Resource,examples.ReadResource
+Java 1.8,java-8,Selection Sort `double`,algorithm.DoubleSelectionSort
+Java 1.8,java-8,Selection Sort `int`,algorithm.IntegerSelectionSort
+Java 1.8,java-8,Square Sorted Array,algorithm.SquareSortedArray
+Java 1.8,java-8,Static Field,instance.StaticField
+Java 1.8,java-8,Static Initializer,instance.StaticInitializer
+Java 1.8,java-8,Static Method Calls,operation.StaticCall
+Java 1.8,java-8,Sum `double`,algorithm.DoubleSum
+Java 1.8,java-8,Sum `int`,algorithm.IntegerSum
+Java 17,java-17,Summary,examples.Summary
+Java 1.8,java-8,Supported Instance,instance.Supported
+Java 1.8,java-8,Switch,controlflow.Switch
+Java 17,java-17,Switch Expressions,switchexpression.Basic
+Java 17,java-17,Try With Resources,exceptions.TryWithResources
+Java 1.8,java-8,Try With Resources,exceptions.TryWithResources
+Java 1.8,java-8,Try-Finally,exceptions.TryFinally
+Kotlin 1.8.0,kotlin-1.8.0,Try-Finally,exceptions.TryFinally
+Scala 2.13.8,scala-2.13.8,Try-Finally,exceptions.TryFinally
+Java 17,java-17,Type Inference,typeinference.Basic
+Java 1.8,java-8,Unit,instance.Unit
+Java 1.8,java-8,Virtual Method Calls,operation.VirtualCall

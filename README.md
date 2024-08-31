@@ -1,25 +1,23 @@
-**ByteBack** is a deductive verifier for Java that works at the level
-of JVM bytecode.  It provides an annotation library to specify
-programs at the source code level in a way that "survives" compilation
-to bytecode.  Then, ByteBack encodes bytecode programs into
-[Boogie](https://github.com/boogie-org/boogie), which performs the
-actual verification.
+**WhyBack** is a deductive verifier for JVM languages that works at the level
+of JVM bytecode.  It provides an annotation library to specify programs at the
+source code level in a way that "survives" compilation to bytecode.  Then,
+WhyBack encodes bytecode programs into [Why3](https://www.why3.org), which
+performs the actual verification.
 
-By working on bytecode while supporting specification at the source
-code level, ByteBack can accommodate a lot of Java features in a
-uniform way.  In fact, it can verify programs written in recent Java
-versions, and even supports some features of other JVM languages such
-as [Kotlin](https://kotlinlang.org/) and
+By working on bytecode while supporting specification at the source code level,
+WhyBack can accommodate a lot of Java features in a uniform way.  In fact, it
+can verify programs written in recent Java versions, and even supports some
+features of other JVM languages such as [Kotlin](https://kotlinlang.org/) and
 [Scala](https://www.scala-lang.org/).
 
+WhyBack is built on top of [ByteBack](https://github.com/atom-sw/byteback),
+which encodes programs in the Boogie IVL instead and can be referred as
+BoogieBack.
+
+Installation instructions for WhyBack are the same as the ones for BoogieBack,
+and they are included below.
 
 # Installing ByteBack
-
-## Docker image
-
-The simplest way of using ByteBack is through its Docker image.  The
-image is available on DockerHub (<`paganma/byteback:latest`>), and can
-be built using the provided [Dockerfile](./Dockerfile).
 
 ## Manual setup
 

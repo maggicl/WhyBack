@@ -11,8 +11,8 @@ features of other JVM languages such as [Kotlin](https://kotlinlang.org/) and
 [Scala](https://www.scala-lang.org/).
 
 WhyBack is built on top of [ByteBack](https://github.com/atom-sw/byteback),
-which encodes programs in the Boogie IVL instead and can be referred as
-BoogieBack.
+which encodes programs in the Boogie IVL for use with the Boogie verifier. This 
+version of ByteBack is also referred to as "BoogieBack".
 
 Installation instructions for WhyBack are the same as the ones for BoogieBack,
 and they are included below.
